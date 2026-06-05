@@ -293,6 +293,43 @@ footer{background:#030610;color:rgba(255,255,255,.3);text-align:center;padding:3
 ::-webkit-scrollbar-track{background:#080f26;}
 ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--blue2),var(--cyan));border-radius:3px;}
 
+
+/* ===== BEFORE / AFTER ===== */
+.bfa-sec{background:linear-gradient(150deg,#04080f 0%,#080f26 50%,#0a1430 100%);position:relative;overflow:hidden;}
+.bfa-sec::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(37,99,235,.07) 1px,transparent 1px);background-size:24px 24px;}
+
+/* LIVE バッジ */
+.live-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.35);color:var(--orange);font-size:12px;font-weight:700;padding:7px 18px;border-radius:999px;margin-bottom:32px;letter-spacing:1px;}
+.live-dot{width:8px;height:8px;background:var(--orange);border-radius:50%;animation:blink 1.5s infinite;}
+
+/* KPI 大数字エリア */
+.bfa-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.07);border-radius:20px;overflow:hidden;margin-bottom:64px;max-width:760px;}
+.bfa-kpi{background:rgba(255,255,255,.04);padding:32px 20px;text-align:center;transition:.3s;}
+.bfa-kpi:hover{background:rgba(255,255,255,.08);}
+.bfa-kpi .big{font-size:clamp(36px,5vw,58px);font-weight:900;background:linear-gradient(135deg,#fbbf24,var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;display:block;}
+.bfa-kpi .big sup{font-size:.45em;vertical-align:super;}
+.bfa-kpi .lbl{font-size:12px;color:rgba(255,255,255,.5);margin-top:8px;letter-spacing:1px;line-height:1.6;}
+
+/* カードグリッド */
+.bfa-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-bottom:48px;}
+.bfa-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:28px 24px;transition:.35s;position:relative;overflow:hidden;}
+.bfa-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue2),var(--cyan));}
+.bfa-card:hover{background:rgba(255,255,255,.07);transform:translateY(-4px);border-color:rgba(255,255,255,.16);}
+.bfa-card-icon{font-size:28px;margin-bottom:14px;}
+.bfa-card-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:16px;}
+.bfa-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.bfa-before{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.25);color:#fca5a5;font-size:13px;font-weight:700;padding:8px 14px;border-radius:10px;flex:1;text-align:center;}
+.bfa-arrow{color:var(--orange);font-size:18px;font-weight:900;flex-shrink:0;}
+.bfa-after{background:rgba(6,182,212,.12);border:1px solid rgba(6,182,212,.25);color:#67e8f9;font-size:13px;font-weight:700;padding:8px 14px;border-radius:10px;flex:1;text-align:center;}
+.bfa-rate{text-align:right;margin-top:10px;}
+.bfa-rate span{background:rgba(245,158,11,.15);color:var(--orange);font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;}
+
+/* 現在も更新中メッセージ */
+.bfa-note{background:rgba(37,99,235,.1);border:1px solid rgba(37,99,235,.25);border-radius:16px;padding:24px 28px;display:flex;gap:16px;align-items:flex-start;max-width:720px;margin:0 auto;}
+.bfa-note-icon{font-size:28px;flex-shrink:0;}
+.bfa-note h4{font-size:15px;font-weight:700;color:#fff;margin-bottom:6px;}
+.bfa-note p{font-size:13px;color:rgba(255,255,255,.65);line-height:1.8;}
+
 </style>
 </head>
 <body>
@@ -411,6 +448,109 @@ footer{background:#030610;color:rgba(255,255,255,.3);text-align:center;padding:3
       <div class="flow-item reveal"><div class="flow-num">2</div><div class="flow-body"><h4>課題整理・プラン提案</h4><p>ヒアリング内容をもとに、最適なサービス・ツール・進め方をご提案。費用感もこの段階でご確認いただけます。</p><span class="flow-tag">通常 3〜5営業日以内</span></div></div>
       <div class="flow-item reveal"><div class="flow-num">3</div><div class="flow-body"><h4>実装・構築</h4><p>合意いただいたプランに沿って自動化ツールやシステムを構築。進捗は随時共有し、軌道修正も柔軟に対応します。</p></div></div>
       <div class="flow-item reveal"><div class="flow-num">4</div><div class="flow-body"><h4>納品・引き継ぎ・継続サポート</h4><p>納品後も月次サポートプランで継続フォロー可能。AI技術の進化にも一緒に対応します。</p><span class="flow-tag">作って終わりにしません</span></div></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- BEFORE / AFTER -->
+<section class="sec bfa-sec" id="bfa">
+  <div class="container">
+    <div style="text-align:center;">
+      <div class="live-badge reveal"><span class="live-dot"></span>自社（山西水産）導入実績 — 2026年現在も更新中</div>
+      <h2 class="sec-title reveal" style="color:#fff;">月<span style="background:linear-gradient(135deg,#fbbf24,var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">30時間以上</span>の<br>繰り返し作業を削減しました。</h2>
+      <p class="sec-sub reveal" style="color:rgba(255,255,255,.65);margin:0 auto 48px;">コンサルタントが「できる」と言うのではなく、<br>自社で実際に動かした仕組みだけを提供します。</p>
+    </div>
+
+    <!-- 大数字KPI -->
+    <div class="bfa-kpis reveal" style="margin:0 auto 64px;">
+      <div class="bfa-kpi">
+        <span class="big count" data-target="30">0<sup>h以上</sup></span>
+        <div class="lbl">月間削減時間</div>
+      </div>
+      <div class="bfa-kpi">
+        <span class="big">年<br>108万円<sup>相当</sup></span>
+        <div class="lbl">人件費換算（時給3,000円）</div>
+      </div>
+      <div class="bfa-kpi">
+        <span class="big">6種類</span>
+        <div class="lbl">自社で実装した<br>自動化ツール数</div>
+      </div>
+    </div>
+
+    <!-- ビフォーアフターカード -->
+    <div class="bfa-grid">
+      <div class="bfa-card reveal">
+        <div class="bfa-card-icon">🛒</div>
+        <div class="bfa-card-title">4モール同時管理（楽天・Yahoo・Amazon・BASE）</div>
+        <div class="bfa-row">
+          <div class="bfa-before">週 4時間</div>
+          <div class="bfa-arrow">→</div>
+          <div class="bfa-after">週 1時間</div>
+        </div>
+        <div class="bfa-rate"><span>▲75% 削減</span></div>
+      </div>
+      <div class="bfa-card reveal">
+        <div class="bfa-card-icon">🔑</div>
+        <div class="bfa-card-title">季節キーワード更新（年4回）</div>
+        <div class="bfa-row">
+          <div class="bfa-before">4時間の手作業</div>
+          <div class="bfa-arrow">→</div>
+          <div class="bfa-after">5分・ボタン1つ</div>
+        </div>
+        <div class="bfa-rate"><span>▲98% 削減</span></div>
+      </div>
+      <div class="bfa-card reveal">
+        <div class="bfa-card-icon">📸</div>
+        <div class="bfa-card-title">経費精算（写真を撮るだけ）</div>
+        <div class="bfa-row">
+          <div class="bfa-before">月 4時間</div>
+          <div class="bfa-arrow">→</div>
+          <div class="bfa-after">月 20分</div>
+        </div>
+        <div class="bfa-rate"><span>▲92% 削減</span></div>
+      </div>
+      <div class="bfa-card reveal">
+        <div class="bfa-card-icon">💰</div>
+        <div class="bfa-card-title">給与計算・打刻集計</div>
+        <div class="bfa-row">
+          <div class="bfa-before">毎月 数時間の転記</div>
+          <div class="bfa-arrow">→</div>
+          <div class="bfa-after">完全ゼロに</div>
+        </div>
+        <div class="bfa-rate"><span>▲100% 削減</span></div>
+      </div>
+      <div class="bfa-card reveal">
+        <div class="bfa-card-icon">📒</div>
+        <div class="bfa-card-title">販売王 ↔ 弥生会計 経理連携</div>
+        <div class="bfa-row">
+          <div class="bfa-before">月 4時間</div>
+          <div class="bfa-arrow">→</div>
+          <div class="bfa-after">月 20分</div>
+        </div>
+        <div class="bfa-rate"><span>▲92% 削減</span></div>
+      </div>
+      <div class="bfa-card reveal">
+        <div class="bfa-card-icon">⚡</div>
+        <div class="bfa-card-title">商品情報一括更新（全モール）</div>
+        <div class="bfa-row">
+          <div class="bfa-before">2時間の手作業</div>
+          <div class="bfa-arrow">→</div>
+          <div class="bfa-after">10分・ワンタッチ</div>
+        </div>
+        <div class="bfa-rate"><span>▲92% 削減</span></div>
+      </div>
+    </div>
+
+    <!-- 現在も更新中メッセージ -->
+    <div class="bfa-note reveal">
+      <div class="bfa-note-icon">🔄</div>
+      <div>
+        <h4>現在も、まだまだ削減中です。</h4>
+        <p>山西水産では今この瞬間も、新しいAIツールを試し続けています。<br>
+        「試して、動いた仕組みだけ」をクライアントに展開するのが、Yスタジオ＋のスタイルです。<br>
+        教科書ではなく、<strong style="color:#fff">稼働中の現場から学んだ知恵</strong>をそのまま持ち込みます。</p>
+      </div>
     </div>
   </div>
 </section>
