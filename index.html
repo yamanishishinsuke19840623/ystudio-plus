@@ -330,6 +330,40 @@ footer{background:#030610;color:rgba(255,255,255,.3);text-align:center;padding:3
 .bfa-note h4{font-size:15px;font-weight:700;color:#fff;margin-bottom:6px;}
 .bfa-note p{font-size:13px;color:rgba(255,255,255,.65);line-height:1.8;}
 
+
+/* ===== MISSION SECTION ===== */
+.mission-sec{background:#fff;position:relative;overflow:hidden;}
+.mission-sec::before{content:"";position:absolute;right:-120px;top:-120px;width:480px;height:480px;border-radius:50%;background:radial-gradient(circle,rgba(37,99,235,.06),transparent 70%);}
+
+.mission-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+@media(max-width:860px){.mission-grid{grid-template-columns:1fr;gap:48px;}}
+
+/* 左：コピー */
+.mission-copy{}
+.mission-copy .quote-mark{font-size:80px;color:var(--light);font-family:Georgia,serif;line-height:.7;margin-bottom:16px;display:block;}
+.mission-copy p{font-size:clamp(15px,1.8vw,17px);color:var(--sub);line-height:2.1;margin-bottom:20px;}
+.mission-copy p strong{color:var(--navy2);font-weight:700;}
+.mission-copy .mission-core{font-size:clamp(18px,2.5vw,24px);font-weight:900;color:var(--navy2);line-height:1.5;border-left:4px solid var(--orange);padding-left:20px;margin:32px 0;}
+
+/* 右：実績タイムライン */
+.mission-timeline{display:flex;flex-direction:column;gap:0;position:relative;}
+.mission-timeline::before{content:"";position:absolute;left:22px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--blue2),var(--cyan) 70%,transparent);}
+.mt-item{display:flex;gap:24px;padding-bottom:32px;position:relative;}
+.mt-item:last-child{padding-bottom:0;}
+.mt-dot{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--blue2),var(--cyan));color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:1;box-shadow:0 4px 16px rgba(37,99,235,.25);}
+.mt-body{}
+.mt-years{font-size:12px;font-weight:700;color:var(--orange);letter-spacing:1px;margin-bottom:3px;}
+.mt-title{font-size:15px;font-weight:700;color:var(--navy2);margin-bottom:4px;}
+.mt-desc{font-size:13px;color:var(--sub);line-height:1.7;}
+
+/* 講演バッジ */
+.lecture-badge{display:inline-flex;align-items:center;gap:12px;background:linear-gradient(135deg,var(--navy2),var(--blue));border-radius:16px;padding:18px 24px;margin-top:40px;color:#fff;text-decoration:none;transition:.3s;box-shadow:0 4px 20px rgba(13,27,62,.2);}
+.lecture-badge:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(13,27,62,.3);}
+.lecture-badge .badge-icon{font-size:28px;}
+.lecture-badge .badge-text .badge-date{font-size:11px;color:rgba(255,255,255,.6);letter-spacing:1px;margin-bottom:2px;}
+.lecture-badge .badge-text .badge-title{font-size:14px;font-weight:700;}
+.lecture-badge .badge-text .badge-sub{font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;}
+
 </style>
 </head>
 <body>
@@ -568,6 +602,95 @@ footer{background:#030610;color:rgba(255,255,255,.3);text-align:center;padding:3
       <div class="res-card reveal"><div class="res-tick">✓</div><span>経費精算を「写真を撮るだけ」で自動化する仕組みを構築</span></div>
       <div class="res-card reveal"><div class="res-tick">✓</div><span>給与管理・製造日報・販売王↔弥生連携など業務システム多数開発</span></div>
       <div class="res-card reveal"><div class="res-tick">✓</div><span>かんもんノート管理人として地域メディアプロデュースを担当</span></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- MISSION -->
+<section class="sec mission-sec" id="mission">
+  <div class="container">
+    <div class="mission-grid">
+
+      <!-- 左：コピー -->
+      <div class="mission-copy reveal-left">
+        <div class="sec-eyebrow">Mission</div>
+        <h2 class="sec-title">なぜ、<br>Yスタジオ＋を<br>つくったのか</h2>
+        <span class="quote-mark">"</span>
+        <p>消防団に<strong>10年</strong>。まち協で<strong>7年</strong>、<br>
+        シャボン玉を自作し、音楽を地域に届けてきた。<br>
+        ぜんぶ「<strong>下関が好き</strong>」という一点からきている。</p>
+
+        <p>山西水産を経営しながら、あることに気づいた。</p>
+
+        <div class="mission-core">
+          AIを知っている人と知らない人の差が、<br>
+          地方の中小企業の明暗を分けていく——。
+        </div>
+
+        <p>だから先に自分でやった。<br>
+        月30時間削減できた。年72万円分の時間を取り戻した。<br>
+        「<strong>これを隣の人に渡したい</strong>」。ただそれだけ。</p>
+
+        <p style="margin-top:20px;font-size:clamp(16px,2vw,20px);font-weight:900;color:var(--navy2);line-height:1.6;">
+          Yスタジオ＋は、AIの会社じゃない。<br>
+          下関・山口で<span style="color:var(--blue2)">「自分らしく生きる人」</span>を<br>増やすための、小さな実践の場所です。
+        </p>
+
+        <a href="#contact" class="lecture-badge">
+          <div class="badge-icon">🎤</div>
+          <div class="badge-text">
+            <div class="badge-date">2026.08.01 · 下関市</div>
+            <div class="badge-title">社会教育主事講習 現地研修 登壇</div>
+            <div class="badge-sub">テーマ：あなたはどう生きるか？</div>
+          </div>
+        </a>
+      </div>
+
+      <!-- 右：タイムライン -->
+      <div class="mission-timeline reveal-right">
+        <div class="mt-item">
+          <div class="mt-dot">🚒</div>
+          <div class="mt-body">
+            <div class="mt-years">10年間</div>
+            <div class="mt-title">消防団</div>
+            <div class="mt-desc">地域を守る義務と誇り。<br>「いざというとき頼れる人」であり続けた10年。</div>
+          </div>
+        </div>
+        <div class="mt-item">
+          <div class="mt-dot">🎵</div>
+          <div class="mt-body">
+            <div class="mt-years">7年間</div>
+            <div class="mt-title">まちづくり協議会</div>
+            <div class="mt-desc">シャボン玉・音楽イベントを企画・運営。<br>地域に「楽しい場」を生み出し続けた。</div>
+          </div>
+        </div>
+        <div class="mt-item">
+          <div class="mt-dot">🛒</div>
+          <div class="mt-body">
+            <div class="mt-years">8年間（現在も継続）</div>
+            <div class="mt-title">山西水産 × AI自動化</div>
+            <div class="mt-desc">楽天市場上位1%・最高月商900万円。<br>AI活用で月30時間削減を自社で実証。</div>
+          </div>
+        </div>
+        <div class="mt-item">
+          <div class="mt-dot">💡</div>
+          <div class="mt-body">
+            <div class="mt-years">2026年〜</div>
+            <div class="mt-title">Yスタジオ＋ 始動</div>
+            <div class="mt-desc">自社で動いた仕組みを、地域の事業者へ。<br>「実証済みのAI活用」を隣の人に渡す。</div>
+          </div>
+        </div>
+        <div class="mt-item">
+          <div class="mt-dot">🎤</div>
+          <div class="mt-body">
+            <div class="mt-years">2026.08.01</div>
+            <div class="mt-title">社会教育主事講習 現地研修 登壇</div>
+            <div class="mt-desc">教育のプロたちへ「あなたはどう生きるか？」を語る。<br>地域と生きる実践者として、下関から発信。</div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
