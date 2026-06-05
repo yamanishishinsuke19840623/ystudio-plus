@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yスタジオ＋ | AIで、あなたの仕事を10倍速く。</title>
+<style>
+:root {
+  --navy: #0d1b3e;
+  --navy2: #1a2f5e;
+  --blue: #1a4aad;
+  --blue2: #2e6db4;
+  --cyan: #00b4d8;
+  --orange: #f0a500;
+  --orange2: #e08c00;
+  --light: #e8f0fe;
+  --gray: #f4f6fb;
+  --text: #1a1a2e;
+  --sub: #4a5568;
+  --white: #ffffff;
+  --border: rgba(255,255,255,0.12);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:"Noto Sans JP","Yu Gothic","游ゴシック",sans-serif;color:var(--text);line-height:1.7;background:#fff;}
+
+/* ===== HEADER ===== */
+.hd{position:sticky;top:0;z-index:100;background:rgba(13,27,62,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;justify-content:space-between;align-items:center;}
+.hd-logo{color:#fff;font-size:22px;font-weight:900;letter-spacing:2px;display:flex;align-items:center;gap:8px;}
+.hd-logo .plus{color:var(--orange);font-size:28px;}
+.hd-nav{display:flex;gap:20px;align-items:center;}
+.hd-nav a{color:rgba(255,255,255,0.75);font-size:13px;text-decoration:none;transition:.2s;}
+.hd-nav a:hover{color:#fff;}
+.hd-cta{background:linear-gradient(135deg,var(--orange),var(--orange2));color:#fff;font-size:13px;font-weight:bold;padding:9px 22px;border-radius:24px;text-decoration:none;transition:.2s;box-shadow:0 4px 12px rgba(240,165,0,0.35);}
+.hd-cta:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(240,165,0,0.45);}
+
+/* ===== HERO ===== */
+.hero{min-height:100vh;background:linear-gradient(150deg,#050d20 0%,#0d1b3e 40%,#102459 70%,#0a2050 100%);position:relative;display:flex;align-items:center;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(26,74,173,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(26,74,173,0.08) 1px,transparent 1px);background-size:60px 60px;}
+.hero-glow{position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(26,74,173,0.25) 0%,transparent 70%);top:-100px;right:-100px;border-radius:50%;}
+.hero-glow2{position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(0,180,216,0.12) 0%,transparent 70%);bottom:50px;left:-50px;border-radius:50%;}
+.hero-inner{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:100px 24px 80px;width:100%;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(240,165,0,0.15);border:1px solid rgba(240,165,0,0.4);color:var(--orange);font-size:12px;font-weight:bold;padding:6px 16px;border-radius:20px;margin-bottom:28px;letter-spacing:1px;}
+.hero-badge::before{content:"●";font-size:8px;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.hero h1{font-size:clamp(32px,6vw,64px);font-weight:900;color:#fff;line-height:1.2;margin-bottom:24px;}
+.hero h1 .line2{color:var(--orange);}
+.hero h1 .line3{font-size:clamp(18px,3vw,32px);color:rgba(255,255,255,0.7);font-weight:400;display:block;margin-top:12px;}
+.hero-sub{font-size:clamp(14px,1.8vw,17px);color:rgba(255,255,255,0.75);margin-bottom:40px;line-height:1.9;max-width:640px;}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:64px;}
+.btn-hero{background:linear-gradient(135deg,var(--orange),var(--orange2));color:#fff;font-weight:900;font-size:16px;padding:16px 40px;border-radius:32px;text-decoration:none;box-shadow:0 6px 24px rgba(240,165,0,0.4);transition:.25s;display:flex;align-items:center;gap:8px;}
+.btn-hero:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(240,165,0,0.5);}
+.btn-hero2{background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.3);color:#fff;font-size:15px;padding:16px 32px;border-radius:32px;text-decoration:none;transition:.25s;}
+.btn-hero2:hover{background:rgba(255,255,255,0.14);}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,0.08);border-radius:16px;overflow:hidden;max-width:640px;}
+.hero-stat{background:rgba(13,27,62,0.8);backdrop-filter:blur(8px);padding:24px 20px;text-align:center;}
+.hero-stat .num{font-size:clamp(32px,5vw,52px);font-weight:900;color:var(--orange);line-height:1;display:block;}
+.hero-stat .num sup{font-size:0.5em;vertical-align:super;}
+.hero-stat .lbl{font-size:11px;color:rgba(255,255,255,0.6);margin-top:6px;letter-spacing:1px;}
+
+/* ===== SECTION BASE ===== */
+.sec{padding:96px 24px;}
+.container{max-width:1100px;margin:0 auto;}
+.sec-label{font-size:11px;color:var(--cyan);font-weight:bold;letter-spacing:4px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.sec-label::before{content:"";display:block;width:24px;height:2px;background:var(--cyan);}
+.sec-title{font-size:clamp(24px,4vw,40px);font-weight:900;color:var(--navy);line-height:1.3;margin-bottom:16px;}
+.sec-sub{font-size:15px;color:var(--sub);line-height:1.9;margin-bottom:56px;max-width:640px;}
+
+/* ===== PROBLEMS ===== */
+.problems{background:var(--gray);position:relative;overflow:hidden;}
+.problems::before{content:"?";position:absolute;font-size:400px;font-weight:900;color:rgba(26,74,173,0.04);top:-100px;right:-40px;line-height:1;font-family:serif;}
+.prob-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;}
+.prob-card{background:#fff;border-radius:16px;padding:28px 24px;border-left:4px solid var(--blue2);box-shadow:0 2px 16px rgba(0,0,0,0.05);display:flex;gap:16px;align-items:flex-start;transition:.25s;}
+.prob-card:hover{transform:translateY(-4px);box-shadow:0 8px 28px rgba(0,0,0,0.1);}
+.prob-icon{font-size:28px;flex-shrink:0;line-height:1;margin-top:2px;}
+.prob-card h4{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.prob-card p{font-size:13px;color:var(--sub);line-height:1.7;}
+.prob-resolve{text-align:center;margin-top:48px;font-size:clamp(18px,3vw,26px);font-weight:900;color:var(--navy);}
+.prob-resolve em{color:var(--orange);font-style:normal;}
+.prob-resolve span{display:block;font-size:14px;font-weight:400;color:var(--sub);margin-top:8px;}
+
+/* ===== WHY ===== */
+.why-frame{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);border-radius:24px;padding:56px 40px;color:#fff;position:relative;overflow:hidden;margin-bottom:48px;}
+.why-frame::after{content:"Y+";position:absolute;font-size:180px;font-weight:900;color:rgba(255,255,255,0.04);right:-20px;bottom:-40px;}
+.why-frame-label{font-size:11px;color:var(--cyan);letter-spacing:4px;font-weight:bold;margin-bottom:16px;}
+.why-frame h3{font-size:clamp(20px,3vw,32px);font-weight:900;color:#fff;margin-bottom:16px;line-height:1.3;}
+.why-frame p{font-size:15px;color:rgba(255,255,255,0.8);line-height:1.9;max-width:640px;}
+.why-tags{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px;}
+.why-tag{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.85);font-size:13px;padding:6px 14px;border-radius:20px;}
+.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;}
+.why-card{background:var(--light);border-radius:16px;padding:32px 24px;position:relative;overflow:hidden;transition:.25s;}
+.why-card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--blue),var(--cyan));}
+.why-card:hover{transform:translateY(-4px);box-shadow:0 8px 28px rgba(26,74,173,0.12);}
+.why-num{font-size:52px;font-weight:900;color:var(--blue);line-height:1;margin-bottom:8px;}
+.why-num span{font-size:20px;}
+.why-card h4{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:8px;}
+.why-card p{font-size:13px;color:var(--sub);line-height:1.7;}
+
+/* ===== SERVICES ===== */
+.services{background:var(--gray);}
+.srv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;}
+.srv-card{background:#fff;border-radius:20px;padding:32px 28px;border:1.5px solid #e8edf8;transition:.25s;position:relative;overflow:hidden;}
+.srv-card::after{content:"";position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--cyan));transform:scaleX(0);transform-origin:left;transition:.3s;}
+.srv-card:hover{box-shadow:0 12px 36px rgba(26,74,173,0.12);transform:translateY(-4px);border-color:var(--blue2);}
+.srv-card:hover::after{transform:scaleX(1);}
+.srv-icon-wrap{width:56px;height:56px;background:var(--light);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:18px;}
+.srv-card h3{font-size:17px;font-weight:900;color:var(--navy);margin-bottom:10px;line-height:1.3;}
+.srv-card p{font-size:13px;color:var(--sub);line-height:1.75;margin-bottom:18px;}
+.srv-price{font-size:20px;font-weight:900;color:var(--blue);display:flex;align-items:baseline;gap:4px;}
+.srv-price small{font-size:13px;font-weight:400;color:var(--sub);}
+
+/* ===== FLOW ===== */
+.flow-track{position:relative;max-width:800px;margin:0 auto;}
+.flow-line{position:absolute;left:28px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--blue),var(--cyan));z-index:0;}
+.flow-step{display:flex;gap:32px;padding-bottom:48px;position:relative;}
+.flow-step:last-child{padding-bottom:0;}
+.step-dot{width:58px;height:58px;background:linear-gradient(135deg,var(--blue),var(--cyan));border-radius:50%;color:#fff;font-weight:900;font-size:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:1;box-shadow:0 4px 16px rgba(26,74,173,0.3);}
+.step-body{background:#fff;border-radius:16px;padding:24px 28px;border:1px solid #e8edf8;flex:1;box-shadow:0 2px 12px rgba(0,0,0,0.04);}
+.step-body h4{font-size:17px;font-weight:900;color:var(--navy);margin-bottom:8px;}
+.step-body p{font-size:14px;color:var(--sub);line-height:1.8;}
+
+/* ===== RESULTS (dark) ===== */
+.results-sec{background:linear-gradient(150deg,#050d20 0%,var(--navy) 100%);color:#fff;position:relative;overflow:hidden;}
+.results-sec::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(26,74,173,0.15) 1px,transparent 1px);background-size:32px 32px;}
+.results-sec .sec-title{color:#fff;}
+.results-sec .sec-sub{color:rgba(255,255,255,0.7);}
+.results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;position:relative;}
+.res-item{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:24px 20px;display:flex;gap:14px;align-items:flex-start;transition:.25s;}
+.res-item:hover{background:rgba(255,255,255,0.1);}
+.res-check{width:28px;height:28px;background:linear-gradient(135deg,var(--orange),var(--orange2));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:bold;flex-shrink:0;font-size:14px;margin-top:2px;}
+.res-item span{font-size:14px;color:rgba(255,255,255,0.85);line-height:1.7;}
+
+/* ===== PROFILE ===== */
+.profile-card{background:var(--navy);border-radius:24px;padding:56px;color:#fff;display:flex;gap:48px;align-items:center;flex-wrap:wrap;position:relative;overflow:hidden;}
+.profile-card::before{content:"";position:absolute;top:-60px;right:-60px;width:240px;height:240px;background:radial-gradient(circle,rgba(26,74,173,0.3),transparent 70%);border-radius:50%;}
+.profile-avatar{width:140px;height:140px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:56px;font-weight:900;color:#fff;flex-shrink:0;box-shadow:0 8px 32px rgba(0,0,0,0.3);overflow:hidden;}
+.profile-avatar img{width:100%;height:100%;object-fit:cover;}
+.profile-info{flex:1;min-width:240px;position:relative;}
+.profile-info h3{font-size:28px;font-weight:900;color:#fff;margin-bottom:4px;}
+.profile-title{font-size:13px;color:var(--cyan);font-weight:bold;margin-bottom:18px;letter-spacing:1px;}
+.profile-text{font-size:14px;color:rgba(255,255,255,0.8);line-height:1.9;}
+.profile-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;}
+.profile-tag{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.85);font-size:12px;padding:5px 12px;border-radius:12px;}
+
+/* ===== FAQ ===== */
+.faq-sec{background:var(--gray);}
+.faq-list{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:12px;}
+details.faq-item{background:#fff;border-radius:14px;border:1.5px solid #e8edf8;overflow:hidden;transition:.25s;}
+details.faq-item[open]{border-color:var(--blue2);box-shadow:0 4px 20px rgba(26,74,173,0.1);}
+details.faq-item summary{padding:20px 24px;font-size:15px;font-weight:700;color:var(--navy);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px;user-select:none;}
+details.faq-item summary::-webkit-details-marker{display:none;}
+.faq-q-icon{width:28px;height:28px;background:var(--light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:var(--blue);flex-shrink:0;}
+details.faq-item[open] .faq-q-icon{background:var(--blue);color:#fff;}
+.faq-q-text{flex:1;}
+.faq-toggle{color:var(--blue);font-size:22px;flex-shrink:0;transition:transform .25s;}
+details.faq-item[open] .faq-toggle{transform:rotate(45deg);}
+.faq-answer{padding:0 24px 20px;font-size:14px;color:var(--sub);line-height:1.9;border-top:1px solid #eef1f8;margin-top:0;padding-top:16px;}
+
+/* ===== CTA ===== */
+.cta-sec{background:linear-gradient(135deg,var(--navy) 0%,#102459 50%,#0a2050 100%);position:relative;overflow:hidden;text-align:center;padding:120px 24px;}
+.cta-sec::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(26,74,173,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(26,74,173,0.06) 1px,transparent 1px);background-size:48px 48px;}
+.cta-inner{position:relative;}
+.cta-sec h2{font-size:clamp(24px,4vw,44px);font-weight:900;color:#fff;margin-bottom:20px;line-height:1.3;}
+.cta-sec h2 em{color:var(--orange);font-style:normal;}
+.cta-sec p{font-size:15px;color:rgba(255,255,255,0.75);margin-bottom:48px;line-height:1.9;}
+.cta-box{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:20px;padding:36px 48px;display:inline-block;margin-bottom:36px;text-align:left;}
+.cta-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.cta-row:last-child{margin-bottom:0;}
+.cta-row .icon{font-size:18px;}
+.cta-row .label{font-size:11px;color:rgba(255,255,255,0.55);width:70px;flex-shrink:0;}
+.cta-row a,.cta-row span{color:#fff;font-size:15px;font-weight:bold;text-decoration:none;}
+.cta-row a:hover{color:var(--orange);}
+.cta-main-btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--orange),var(--orange2));color:#fff;font-size:18px;font-weight:900;padding:20px 56px;border-radius:40px;text-decoration:none;box-shadow:0 8px 32px rgba(240,165,0,0.45);transition:.25s;}
+.cta-main-btn:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(240,165,0,0.55);}
+
+/* ===== FOOTER ===== */
+footer{background:#06091a;color:rgba(255,255,255,0.4);text-align:center;padding:28px;font-size:12px;}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:700px){
+  .hd-nav{display:none;}
+  .hero-stats{grid-template-columns:repeat(3,1fr);}
+  .hero-stat .num{font-size:28px;}
+  .why-frame{padding:36px 24px;}
+  .profile-card{padding:36px 24px;}
+  .cta-box{padding:24px;}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hd">
+  <div class="hd-logo">Yスタジオ<span class="plus">＋</span></div>
+  <nav class="hd-nav">
+    <a href="#services">サービス</a>
+    <a href="#flow">流れ</a>
+    <a href="#profile">プロフィール</a>
+    <a href="#faq">FAQ</a>
+  </nav>
+  <a href="#contact" class="hd-cta">無料相談する</a>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-glow2"></div>
+  </div>
+  <div class="hero-inner">
+    <div class="hero-badge">山口・下関の中小企業・個人事業主に伴走</div>
+    <h1>AIで、あなたの仕事を<br><span class="line2">10倍速く。</span><span class="line3">現役EC事業者が、現場で動く仕組みをつくります。</span></h1>
+    <p class="hero-sub">「ChatGPTは知ってるけど、業務にどう使えばいい？」<br>そのまま放置すると、競合との差は広がり続けます。<br>Yスタジオ＋は、地方の中小企業が<strong style="color:#fff">今すぐ動ける</strong>AI活用を伴走支援します。</p>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-hero">▶ 無料相談を予約する</a>
+      <a href="#services" class="btn-hero2">サービスを見る</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><span class="num">8<sup>年</sup></span><div class="lbl">EC事業歴</div></div>
+      <div class="hero-stat"><span class="num">900<sup>万</sup></span><div class="lbl">最高月商</div></div>
+      <div class="hero-stat"><span class="num">上位<br style="line-height:0.5">1%</span><div class="lbl">楽天市場</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEMS -->
+<section class="sec problems">
+  <div class="container">
+    <div class="sec-label">Problems</div>
+    <h2 class="sec-title">こんな悩み、<br>ありませんか？</h2>
+    <p class="sec-sub">AI活用の遅れは、経営上のリスクに直結します。</p>
+    <div class="prob-grid">
+      <div class="prob-card"><div class="prob-icon">😫</div><div><h4>作業が終わらない</h4><p>毎日同じ繰り返し作業で手が回らない。本来やるべき仕事に時間を使えていない。</p></div></div>
+      <div class="prob-card"><div class="prob-icon">🤷</div><div><h4>AIの使い方がわからない</h4><p>ChatGPTは試したが、業務に落とし込む方法がわからず結局使わなくなった。</p></div></div>
+      <div class="prob-card"><div class="prob-icon">💸</div><div><h4>コストが心配</h4><p>システム会社に相談したら高額見積もりで断念。もっと低コストでできないか。</p></div></div>
+      <div class="prob-card"><div class="prob-icon">📊</div><div><h4>データ管理が限界</h4><p>ExcelやGoogleシートが複雑になりすぎて、入力ミスや抜けが頻発している。</p></div></div>
+      <div class="prob-card"><div class="prob-icon">🌐</div><div><h4>集客が後手に回っている</h4><p>HP・SNSの更新が追いつかず、競合に対してオンラインでの存在感が弱い。</p></div></div>
+      <div class="prob-card"><div class="prob-icon">🚀</div><div><h4>DXで取り残される感覚</h4><p>競合がAI・自動化を進める中、自社だけ旧来のやり方のまま取り残されている。</p></div></div>
+    </div>
+    <p class="prob-resolve"><em>そのすべて、Yスタジオ＋が一緒に解決します。</em><span>「何から始めれば？」その一言からで大丈夫です。</span></p>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="sec" id="why">
+  <div class="container">
+    <div class="sec-label">Why Yスタジオ＋</div>
+    <h2 class="sec-title">「実践者」だから、<br>現場に刺さる提案ができる。</h2>
+    <p class="sec-sub">コンサルタントではなく、毎日AIを使って事業を回している現役事業者です。教科書的な提案ではなく、実際に動く仕組みを一緒に作ります。</p>
+    <div class="why-frame">
+      <div class="why-frame-label">CORE CONCEPT</div>
+      <h3>「経営 × 現場 × AI」の<br>三位一体で業務改革を実現</h3>
+      <p>AI導入が失敗する最大の原因は「現場を知らない提案」と「経営視点のなさ」。Yスタジオ＋は、自ら経営者として現場を回しながら最新AI技術を活用してきた経験から、経営的な費用対効果と現場の実務をつなぐ提案を行います。</p>
+      <div class="why-tags"><span class="why-tag">Claude / ChatGPT</span><span class="why-tag">PADノーコード</span><span class="why-tag">GAS（Google Apps Script）</span><span class="why-tag">EC多モール運営</span><span class="why-tag">業務自動化</span></div>
+    </div>
+    <div class="why-grid">
+      <div class="why-card"><div class="why-num">8<span>年</span></div><h4>EC事業の現場経験</h4><p>楽天・Yahoo・Amazon多モール運営を自ら実践。現場課題を肌で知っています。</p></div>
+      <div class="why-card"><div class="why-num">900<span>万</span></div><h4>最高月商の実績</h4><p>楽天市場で上位1%を継続。数字にコミットする実践者として支援します。</p></div>
+      <div class="why-card"><div class="why-num">0<span>円〜</span></div><h4>高コストなシステム不要</h4><p>GAS・PADノーコードを活用し、初期費用を最小限に抑えた自動化を実現。</p></div>
+      <div class="why-card"><div class="why-num">地元</div><h4>山口・下関に根ざす</h4><p>同じ地域の事業者として、顔が見える関係で長期的にサポートします。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="sec services" id="services">
+  <div class="container">
+    <div class="sec-label">Services</div>
+    <h2 class="sec-title">サービスメニュー</h2>
+    <p class="sec-sub">課題と予算に合わせて最適なプランをご提案します。まずは無料相談からどうぞ。</p>
+    <div class="srv-grid">
+      <div class="srv-card">
+        <div class="srv-icon-wrap">🤝</div>
+        <h3>AI導入<br>コンサルティング</h3>
+        <p>業務課題を診断してAIツール導入を伴奏支援。経営者に寄り添い、現場で動く仕組みを一緒に作ります。</p>
+        <div class="srv-price">5,500円<small>／時間</small></div>
+      </div>
+      <div class="srv-card">
+        <div class="srv-icon-wrap">🧠</div>
+        <h3>AI研修・<br>社内デモ</h3>
+        <p>スタッフ向けAI活用研修。実務に即したプロンプト術を現場視点でわかりやすく解説します。</p>
+        <div class="srv-price">22,000円<small>〜</small></div>
+      </div>
+      <div class="srv-card">
+        <div class="srv-icon-wrap">⚙️</div>
+        <h3>業務自動化<br>ツール開発</h3>
+        <p>PADノーコードでEC業務・経費精算・日報など繰り返し作業をゼロに。システム費不要で実現。</p>
+        <div class="srv-price">33,000円<small>〜</small></div>
+      </div>
+      <div class="srv-card">
+        <div class="srv-icon-wrap">🛒</div>
+        <h3>EC運営<br>効率化</h3>
+        <p>楽天・Yahoo・Amazonマルチモール一括管理。季節ワード自動更新・商品登録自動化も対応。</p>
+        <div class="srv-price">33,000円<small>〜</small></div>
+      </div>
+      <div class="srv-card">
+        <div class="srv-icon-wrap">💻</div>
+        <h3>Webアプリ<br>開発（GAS）</h3>
+        <p>Googleスプレッドシートをデータベースにした低コスト独自システム。給与管理・日報・在庫管理など実績多数。</p>
+        <div class="srv-price">55,000円<small>〜</small></div>
+      </div>
+      <div class="srv-card">
+        <div class="srv-icon-wrap">📅</div>
+        <h3>月次AI<br>サポート</h3>
+        <p>導入後の定期相談・ツール改善・最新AI情報の共有まで継続フォロー。作って終わりにしません。</p>
+        <div class="srv-price">16,500円<small>／月</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FLOW -->
+<section class="sec" id="flow">
+  <div class="container">
+    <div class="sec-label">Flow</div>
+    <h2 class="sec-title">ご依頼の流れ</h2>
+    <p class="sec-sub">最短1週間でAI活用の第一歩が踏み出せます。</p>
+    <div class="flow-track">
+      <div class="flow-line"></div>
+      <div class="flow-step">
+        <div class="step-dot">1</div>
+        <div class="step-body"><h4>無料相談（オンライン or 対面）</h4><p>現在の業務課題や「こうなりたい」というイメージをヒアリング。どんな些細な疑問でも歓迎です。<br><small style="color:#a0aec0">所要時間：30〜60分</small></p></div>
+      </div>
+      <div class="flow-step">
+        <div class="step-dot">2</div>
+        <div class="step-body"><h4>課題整理・プラン提案</h4><p>ヒアリング内容をもとに、最適なサービス・ツール・進め方をご提案。費用感もこの段階でご確認いただけます。<br><small style="color:#a0aec0">通常3〜5営業日以内</small></p></div>
+      </div>
+      <div class="flow-step">
+        <div class="step-dot">3</div>
+        <div class="step-body"><h4>実装・構築</h4><p>合意いただいたプランに沿って、自動化ツールやシステムを構築。進捗は随時共有し、軌道修正も柔軟に対応します。</p></div>
+      </div>
+      <div class="flow-step">
+        <div class="step-dot">4</div>
+        <div class="step-body"><h4>納品・引き継ぎ・継続サポート</h4><p>納品後も月次サポートプランで継続フォロー可能。「作って終わり」にはなりません。AI技術の進化にも一緒に対応します。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<section class="sec results-sec">
+  <div class="container">
+    <div class="sec-label" style="color:var(--cyan)">Track Record</div>
+    <h2 class="sec-title">主な実績・経歴</h2>
+    <p class="sec-sub">すべて自分自身が現場で実践してきた経験です。</p>
+    <div class="results-grid">
+      <div class="res-item"><div class="res-check">✓</div><span>楽天市場プロショップ運営8年・上位1%・最高月商900万円</span></div>
+      <div class="res-item"><div class="res-check">✓</div><span>自社EC 4モール一括管理・業務自動化システムを開発・実運用</span></div>
+      <div class="res-item"><div class="res-check">✓</div><span>AI流行前からPADノーコード自動化ツールを構築・運用</span></div>
+      <div class="res-item"><div class="res-check">✓</div><span>経費精算を「写真を撮るだけ」で自動化する仕組みを構築</span></div>
+      <div class="res-item"><div class="res-check">✓</div><span>給与管理・製造日報・販売王↔弥生連携など業務システム多数開発</span></div>
+      <div class="res-item"><div class="res-check">✓</div><span>かんもんノート管理人として地域メディアプロデュースを担当</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROFILE -->
+<section class="sec" id="profile">
+  <div class="container">
+    <div class="sec-label">Profile</div>
+    <h2 class="sec-title">代表プロフィール</h2>
+    <div class="profile-card">
+      <div class="profile-avatar">山</div>
+      <div class="profile-info">
+        <h3>山西 伸典</h3>
+        <div class="profile-title">AI導入コンサルタント ／ 山西水産 代表</div>
+        <p class="profile-text">山口県下関市在住。EC歴8年、現役の事業者として楽天市場にて上位1%の成果を上げ続けています（最高月商900万円）。<br><br>自らショップを運営しながら最新のAI技術を現場に落とし込む「実践者」として、地方の中小企業や個人事業主の業務効率化を全力でサポートします。「地元の力になりたい」という思いで、山口・下関エリアを中心に活動しています。</p>
+        <div class="profile-tags">
+          <span class="profile-tag">EC歴8年</span>
+          <span class="profile-tag">楽天上位1%</span>
+          <span class="profile-tag">PADノーコード</span>
+          <span class="profile-tag">GAS開発</span>
+          <span class="profile-tag">Claude / ChatGPT</span>
+          <span class="profile-tag">山口・下関在住</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec faq-sec" id="faq">
+  <div class="container">
+    <div class="sec-label">FAQ</div>
+    <h2 class="sec-title">よくある質問</h2>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary><span class="faq-q-icon">Q</span><span class="faq-q-text">AIに詳しくなくても大丈夫ですか？</span><span class="faq-toggle">＋</span></summary>
+        <div class="faq-answer">まったく問題ありません。「ChatGPTって何？」というレベルからでも丁寧にご説明します。専門用語を使わず、現場の言葉でお伝えすることを心がけています。むしろAI未経験の方こそ、伸びしろが大きく効果を実感しやすいです。</div>
+      </details>
+      <details class="faq-item">
+        <summary><span class="faq-q-icon">Q</span><span class="faq-q-text">費用はどのくらいかかりますか？</span><span class="faq-toggle">＋</span></summary>
+        <div class="faq-answer">まずは無料相談でお気軽にご連絡ください。課題をヒアリングしたうえで、予算に合わせた最適なプランをご提案します。時間単位のコンサルから始めることも可能です（5,500円/時間〜）。</div>
+      </details>
+      <details class="faq-item">
+        <summary><span class="faq-q-icon">Q</span><span class="faq-q-text">下関・山口以外でも対応していますか？</span><span class="faq-toggle">＋</span></summary>
+        <div class="faq-answer">オンライン対応が可能ですので、全国どこからでもご依頼いただけます。ただし対面をご希望の場合は山口・下関エリアを優先させていただいています。</div>
+      </details>
+      <details class="faq-item">
+        <summary><span class="faq-q-icon">Q</span><span class="faq-q-text">どんな業種・規模でも対応できますか？</span><span class="faq-toggle">＋</span></summary>
+        <div class="faq-answer">飲食・小売・製造・サービス業など、さまざまな業種の実績があります。従業員1名の個人事業主から、数十名規模の中小企業まで柔軟に対応しています。</div>
+      </details>
+      <details class="faq-item">
+        <summary><span class="faq-q-icon">Q</span><span class="faq-q-text">導入後のサポートはありますか？</span><span class="faq-toggle">＋</span></summary>
+        <div class="faq-answer">月次AIサポートプラン（16,500円/月）で、導入後の定期相談・ツール改善・最新AI情報の共有まで継続的にサポートします。AI技術は日進月歩なので、導入後も一緒にアップデートしていきます。</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-sec" id="contact">
+  <div class="cta-inner">
+    <h2>まずは<em>無料相談</em>から。<br>気軽に話しかけてください。</h2>
+    <p>「AIに興味はあるけど何から始めれば？」<br>そのひと言で大丈夫です。一緒に考えましょう。</p>
+    <div class="cta-box">
+      <div class="cta-row"><span class="icon">📧</span><span class="label">メール</span><a href="mailto:yamanishishinsuke19840623@gmail.com">yamanishishinsuke19840623@gmail.com</a></div>
+      <div class="cta-row"><span class="icon">🌐</span><span class="label">Web</span><a href="https://yamanishishinsuke1.wixsite.com/y-studio-plus" target="_blank">yamanishishinsuke1.wixsite.com/y-studio-plus</a></div>
+    </div>
+    <br>
+    <a href="mailto:yamanishishinsuke19840623@gmail.com" class="cta-main-btn">▶ 無料相談のメールを送る</a>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 Yスタジオ＋ / 山西伸典 All Rights Reserved.</p>
+</footer>
+
+</body>
+</html>
