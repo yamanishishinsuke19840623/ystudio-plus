@@ -210,6 +210,105 @@ footer{background:#030610;color:rgba(255,255,255,.3);text-align:center;padding:3
   .cta-contact-box{padding:28px 24px;}
   .flow-wrap::before{left:37px;}
 }
+
+/* ===== 中央揃え ===== */
+.hero-inner{text-align:center;display:flex;flex-direction:column;align-items:center;}
+.hero-desc{margin:0 auto 44px;}
+.hero-btns{justify-content:center;}
+.hero-kpis{width:100%;max-width:600px;}
+
+/* ===== ヒーロー フェードイン ===== */
+.hero-eyebrow{opacity:0;animation:fu .7s ease forwards .1s;}
+.hero h1     {opacity:0;animation:fu .8s ease forwards .35s;}
+.hero-desc   {opacity:0;animation:fu .8s ease forwards .55s;}
+.hero-btns   {opacity:0;animation:fu .8s ease forwards .72s;}
+.hero-kpis   {opacity:0;animation:fu .8s ease forwards .88s;}
+@keyframes fu{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+
+/* ===== タイプライター カーソル ===== */
+.hero h1 .accent::after{content:"|";animation:blink-cur .75s step-end infinite;color:var(--orange);margin-left:2px;font-weight:300;}
+@keyframes blink-cur{0%,100%{opacity:1}50%{opacity:0}}
+
+/* ===== KPI グラデーション数字 ===== */
+.kpi-num{background:linear-gradient(135deg,#fbbf24,var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-size:clamp(40px,6vw,64px);}
+.kpi{transition:.3s;cursor:default;}
+.kpi:hover{background:rgba(255,255,255,.07);transform:scale(1.04);}
+
+/* ===== HERO 背景 グラデーション強化 ===== */
+.hero-grad{background:
+  radial-gradient(ellipse 90% 60% at 50% 10%,rgba(37,99,235,.2),transparent),
+  radial-gradient(ellipse 55% 50% at 10% 80%,rgba(6,182,212,.14),transparent),
+  radial-gradient(ellipse 50% 60% at 90% 60%,rgba(245,158,11,.07),transparent);}
+
+/* ===== フローティングシェイプ ===== */
+.hero-shape1,.hero-shape2,.hero-shape3{position:absolute;border-radius:50%;pointer-events:none;z-index:1;}
+.hero-shape1{width:320px;height:320px;border:1px solid rgba(37,99,235,.18);top:15%;right:5%;animation:float1 8s ease-in-out infinite;}
+.hero-shape2{width:180px;height:180px;border:1px solid rgba(6,182,212,.14);bottom:25%;right:20%;animation:float2 11s ease-in-out infinite;}
+.hero-shape3{width:80px;height:80px;background:rgba(245,158,11,.07);top:30%;right:12%;animation:float3 7s ease-in-out infinite;}
+@keyframes float1{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-24px) rotate(8deg)}}
+@keyframes float2{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-16px) rotate(-6deg)}}
+@keyframes float3{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-12px) scale(1.1)}}
+
+/* ===== スクロールリビール 強化 ===== */
+.reveal{opacity:0;transform:translateY(48px);transition:.85s cubic-bezier(.16,1,.3,1);}
+.reveal.visible{opacity:1;transform:none;}
+.reveal-left{opacity:0;transform:translateX(-48px);transition:.85s cubic-bezier(.16,1,.3,1);}
+.reveal-left.visible{opacity:1;transform:none;}
+.reveal-right{opacity:0;transform:translateX(48px);transition:.85s cubic-bezier(.16,1,.3,1);}
+.reveal-right.visible{opacity:1;transform:none;}
+
+/* ===== 課題カード hover ===== */
+.prob-card{transition:.35s;}
+.prob-card:hover{transform:translateY(-8px) scale(1.01);box-shadow:0 12px 48px rgba(37,99,235,.14);}
+.prob-icon-box{transition:.35s;}
+.prob-card:hover .prob-icon-box{transform:scale(1.15) rotate(-4deg);}
+
+/* ===== サービスカード アイコン 浮遊 ===== */
+.srv-card:hover .srv-icon{transform:translateY(-4px) scale(1.1);background:linear-gradient(135deg,var(--blue2),var(--cyan));}
+.srv-card:hover{box-shadow:0 24px 64px rgba(37,99,235,.18),0 0 0 1px rgba(37,99,235,.15);}
+
+/* ===== WHY カード 数字グラデ ===== */
+.why-big{background:linear-gradient(135deg,var(--blue2),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+/* ===== FLOW num グロー ===== */
+.flow-num{box-shadow:0 6px 24px rgba(37,99,235,.4),0 0 0 8px rgba(37,99,235,.1);transition:.35s;}
+.flow-item:hover .flow-num{transform:scale(1.08);box-shadow:0 8px 32px rgba(37,99,235,.6),0 0 0 10px rgba(37,99,235,.12);}
+.flow-body{transition:.35s;}
+.flow-item:hover .flow-body{transform:translateX(6px);}
+
+/* ===== RESULTS カード ===== */
+.res-card{border-left:3px solid var(--orange);transition:.35s;}
+.res-card:hover{transform:translateX(6px);background:rgba(255,255,255,.1);}
+.res-tick{transition:.35s;}
+.res-card:hover .res-tick{transform:scale(1.15);}
+
+/* ===== PROFILE 写真グロー ===== */
+.profile-photo{box-shadow:0 0 0 4px rgba(6,182,212,.3),0 16px 56px rgba(0,0,0,.35);transition:.4s;}
+.profile-photo:hover{box-shadow:0 0 0 6px rgba(6,182,212,.5),0 20px 64px rgba(0,0,0,.4);transform:scale(1.03);}
+
+/* ===== FAQ item ===== */
+.faq-item{transition:.3s;}
+.faq-item:hover{border-color:rgba(37,99,235,.3);}
+
+/* ===== CTA ボタン パルスリング ===== */
+@keyframes pulse-ring{0%{box-shadow:0 10px 40px rgba(245,158,11,.45),0 0 0 0 rgba(245,158,11,.4)}70%{box-shadow:0 10px 40px rgba(245,158,11,.45),0 0 0 18px rgba(245,158,11,0)}100%{box-shadow:0 10px 40px rgba(245,158,11,.45),0 0 0 0 rgba(245,158,11,0)}}
+.cta-main{animation:pulse-ring 2.5s ease infinite;}
+.cta-main:hover{animation:none;box-shadow:0 18px 56px rgba(245,158,11,.6);}
+
+/* ===== HEADER ナビ アンダーライン ===== */
+.hd-nav a{position:relative;}
+.hd-nav a::after{content:"";position:absolute;bottom:-3px;left:0;right:0;height:2px;background:var(--orange);transform:scaleX(0);transform-origin:left;transition:.3s;}
+.hd-nav a:hover::after{transform:scaleX(1);}
+
+/* ===== スクロールバー ===== */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:#080f26;}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--blue2),var(--cyan));border-radius:3px;}
+
+/* ===== 数字セクション カード間ストローク ===== */
+.hero-kpis{border:1px solid rgba(255,255,255,.12);border-radius:24px;overflow:hidden;backdrop-filter:blur(18px);}
+.kpi{padding:32px 16px;}
+
 </style>
 </head>
 <body>
@@ -233,6 +332,9 @@ footer{background:#030610;color:rgba(255,255,255,.3);text-align:center;padding:3
 <section class="hero" id="hero">
   <canvas id="hero-canvas"></canvas>
   <div class="hero-grad"></div>
+  <div class="hero-shape1"></div>
+  <div class="hero-shape2"></div>
+  <div class="hero-shape3"></div>
   <div class="hero-inner">
     <div class="hero-eyebrow"><span class="dot"></span>山口・下関の中小企業・個人事業主に伴走</div>
     <h1>AIで、あなたの仕事を<br><span class="accent">10倍速く。</span><span class="sub">現役EC事業者が、現場で動く仕組みをつくります。</span></h1>
@@ -411,6 +513,8 @@ footer{background:#030610;color:rgba(255,255,255,.3);text-align:center;padding:3
   <p>© 2026 Yスタジオ＋ / 山西伸典 All Rights Reserved.</p>
 </footer>
 
+<!-- JS_REPLACED -->
+
 <script>
 // ── HEADER SCROLL ──
 const hd=document.getElementById('hd');
@@ -422,27 +526,46 @@ window.addEventListener('scroll',()=>{
 (()=>{
   const canvas=document.getElementById('hero-canvas');
   const ctx=canvas.getContext('2d');
+  const hero=document.querySelector('.hero');
   let W,H,pts=[];
-  const N=80;
-  const resize=()=>{W=canvas.width=innerWidth;H=canvas.height=document.querySelector('.hero').offsetHeight;};
+  const N=90;
+  const resize=()=>{W=canvas.width=innerWidth;H=canvas.height=hero.offsetHeight;};
   resize();
-  window.addEventListener('resize',resize);
-  for(let i=0;i<N;i++)pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*2+.5,a:Math.random()});
+  window.addEventListener('resize',resize,{passive:true});
+  const rand=(a,b)=>Math.random()*(b-a)+a;
+  for(let i=0;i<N;i++)pts.push({
+    x:rand(0,W),y:rand(0,H),
+    vx:rand(-.25,.25),vy:rand(-.25,.25),
+    r:rand(.6,2.2),a:rand(.2,.8),
+    hue:rand(180,230)
+  });
+  let mouseX=W/2,mouseY=H/2;
+  canvas.addEventListener('mousemove',e=>{mouseX=e.clientX;mouseY=e.clientY;},{passive:true});
   const draw=()=>{
     ctx.clearRect(0,0,W,H);
     pts.forEach(p=>{
+      // マウス引力
+      const dx=mouseX-p.x,dy=mouseY-p.y,d=Math.hypot(dx,dy);
+      if(d<200){p.vx+=dx/d*.012;p.vy+=dy/d*.012;}
+      // 速度制限
+      const spd=Math.hypot(p.vx,p.vy);
+      if(spd>.5){p.vx=p.vx/spd*.5;p.vy=p.vy/spd*.5;}
       p.x+=p.vx;p.y+=p.vy;
       if(p.x<0||p.x>W)p.vx*=-1;
       if(p.y<0||p.y>H)p.vy*=-1;
       ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle=`rgba(99,179,237,${p.a*.5})`;ctx.fill();
+      ctx.fillStyle=`hsla(${p.hue},80%,70%,${p.a*.6})`;ctx.fill();
     });
+    // 接続ライン
     pts.forEach((a,i)=>{
-      pts.slice(i+1).forEach(b=>{
-        const d=Math.hypot(a.x-b.x,a.y-b.y);
-        if(d<120){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);
-          ctx.strokeStyle=`rgba(99,179,237,${(1-d/120)*.15})`;ctx.stroke();}
-      });
+      for(let j=i+1;j<pts.length;j++){
+        const b=pts[j],d=Math.hypot(a.x-b.x,a.y-b.y);
+        if(d<130){
+          ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);
+          ctx.strokeStyle=`rgba(96,165,250,${(1-d/130)*.18})`;
+          ctx.lineWidth=.8;ctx.stroke();
+        }
+      }
     });
     requestAnimationFrame(draw);
   };
@@ -450,32 +573,62 @@ window.addEventListener('scroll',()=>{
 })();
 
 // ── SCROLL REVEAL ──
-const observer=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');}});
-},{threshold:.08,rootMargin:'0px 0px -40px 0px'});
-document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el=>observer.observe(el));
+const revealObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      // stagger子要素
+      e.target.querySelectorAll('.prob-card,.srv-card,.why-card,.res-card,.flow-item,.faq-item').forEach((c,i)=>{
+        setTimeout(()=>c.classList.add('visible'),i*80);
+      });
+    }
+  });
+},{threshold:.06,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el=>revealObs.observe(el));
+// 子カードも個別に observe
+document.querySelectorAll('.prob-card,.srv-card,.why-card,.res-card,.flow-item,.faq-item').forEach(el=>{
+  el.style.opacity='0';
+  el.style.transform='translateY(36px)';
+  el.style.transition='.65s cubic-bezier(.16,1,.3,1)';
+  revealObs.observe(el);
+});
+// visibleクラスでスタイルをリセット
+const style=document.createElement('style');
+style.textContent='.prob-card.visible,.srv-card.visible,.why-card.visible,.res-card.visible,.flow-item.visible,.faq-item.visible{opacity:1!important;transform:none!important;}';
+document.head.appendChild(style);
 
 // ── COUNT UP ──
-const countObserver=new IntersectionObserver(entries=>{
+const countObs=new IntersectionObserver(entries=>{
   entries.forEach(e=>{
     if(!e.isIntersecting)return;
-    const el=e.target;
-    const target=+el.dataset.target;
-    const suffix=el.innerHTML.replace(/[0-9]/g,'').replace(/<[^>]*>/g,'');
+    const el=e.target,target=+el.dataset.target;
+    const inner=el.innerHTML;
     const sup=el.querySelector('sup')?el.querySelector('sup').outerHTML:'';
     const span=el.querySelector('span')?el.querySelector('span').outerHTML:'';
-    let cur=0;
-    const step=target/60;
-    const tick=()=>{
-      cur=Math.min(cur+step,target);
-      el.innerHTML=Math.round(cur)+(sup||span||'');
-      if(cur<target)requestAnimationFrame(tick);
+    let cur=0,dur=1400,start=null;
+    const ease=t=>t<.5?2*t*t:-1+(4-2*t)*t;
+    const tick=ts=>{
+      if(!start)start=ts;
+      const p=Math.min((ts-start)/dur,1);
+      cur=Math.round(ease(p)*target);
+      el.innerHTML=cur+(sup||span);
+      if(p<1)requestAnimationFrame(tick);
+      else el.innerHTML=target+(sup||span);
     };
-    tick();
-    countObserver.unobserve(el);
+    requestAnimationFrame(tick);
+    countObs.unobserve(el);
   });
 },{threshold:.5});
-document.querySelectorAll('.count[data-target]').forEach(el=>countObserver.observe(el));
+document.querySelectorAll('.count[data-target]').forEach(el=>countObs.observe(el));
+
+// ── ACTIVE NAV ──
+const sections=document.querySelectorAll('section[id]');
+const navLinks=document.querySelectorAll('.hd-nav a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  sections.forEach(s=>{if(window.scrollY>=s.offsetTop-120)cur=s.id;});
+  navLinks.forEach(a=>{a.style.color=a.getAttribute('href')==='#'+cur?'#fff':'rgba(255,255,255,.7)';});
+},{passive:true});
 </script>
 </body>
 </html>
