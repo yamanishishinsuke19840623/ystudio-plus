@@ -364,6 +364,29 @@ footer{background:#030610;color:rgba(255,255,255,.3);text-align:center;padding:3
 .lecture-badge .badge-text .badge-title{font-size:14px;font-weight:700;}
 .lecture-badge .badge-text .badge-sub{font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;}
 
+
+/* ===== 価格メモ ===== */
+.price-note{background:linear-gradient(135deg,rgba(245,158,11,.07),rgba(37,99,235,.05));border:1px solid rgba(245,158,11,.2);border-radius:16px;padding:24px 28px;margin-top:40px;text-align:center;}
+.price-note p{font-size:14px;color:var(--sub);line-height:1.9;}
+.price-note p strong{color:var(--navy2);}
+.price-note .price-heart{font-size:28px;margin-bottom:12px;display:block;}
+
+/* ===== 講演来場者セクション ===== */
+.lecture-sec{background:linear-gradient(135deg,#0a1430 0%,#0d1b3e 100%);padding:72px 32px;position:relative;overflow:hidden;}
+.lecture-sec::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(37,99,235,.08) 1px,transparent 1px);background-size:20px 20px;}
+.lecture-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;}
+@media(max-width:700px){.lecture-inner{grid-template-columns:1fr;gap:40px;text-align:center;}}
+.lecture-copy .tag{display:inline-flex;align-items:center;gap:8px;background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);color:var(--orange);font-size:11px;font-weight:700;padding:5px 14px;border-radius:999px;margin-bottom:20px;letter-spacing:1.5px;}
+.lecture-copy h3{font-size:clamp(20px,3vw,30px);font-weight:900;color:#fff;line-height:1.4;margin-bottom:16px;}
+.lecture-copy p{font-size:14px;color:rgba(255,255,255,.7);line-height:1.9;margin-bottom:24px;}
+.lecture-copy .lc-btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--orange),var(--orange2));color:#fff;font-size:15px;font-weight:700;padding:14px 32px;border-radius:999px;text-decoration:none;transition:.3s;box-shadow:0 6px 20px rgba(245,158,11,.35);}
+.lecture-copy .lc-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(245,158,11,.5);}
+.lecture-qr{display:flex;flex-direction:column;align-items:center;gap:16px;}
+.qr-frame{background:#fff;border-radius:20px;padding:20px;box-shadow:0 8px 32px rgba(0,0,0,.3);}
+.qr-frame img{display:block;width:180px;height:180px;}
+.qr-label{color:rgba(255,255,255,.6);font-size:12px;letter-spacing:1px;text-align:center;line-height:1.7;}
+.qr-url{color:rgba(255,255,255,.45);font-size:11px;word-break:break-all;text-align:center;max-width:200px;}
+
 </style>
 </head>
 <body>
@@ -470,6 +493,17 @@ footer{background:#030610;color:rgba(255,255,255,.3);text-align:center;padding:3
     </div>
   </div>
 </section>
+
+
+    <!-- 価格への考え方 -->
+    <div class="price-note reveal">
+      <span class="price-heart">🏠</span>
+      <p>
+        <strong>この価格は、下関・山口の事業者の方が「まず一度試してみよう」と思える金額に意図的に設定しています。</strong><br>
+        消防団に10年、まち協に7年——ずっと地元で生きてきた。<br>
+        Yスタジオ＋の価格は「安売り」ではなく、<strong>地元への還元</strong>です。
+      </p>
+    </div>
 
 <!-- FLOW -->
 <section class="sec" id="flow">
@@ -796,6 +830,36 @@ footer{background:#030610;color:rgba(255,255,255,.3);text-align:center;padding:3
         </button>
         <p class="form-note">通常2営業日以内にご返信します。<br>メールアドレス: yamanishishinsuke19840623@gmail.com</p>
       </form>
+    </div>
+  </div>
+</section>
+
+
+<!-- 講演来場者 -->
+<section class="lecture-sec" id="lecture">
+  <div class="lecture-inner">
+    <div class="lecture-copy reveal-left">
+      <div class="tag">🎤 2026.08.01 · 下関市</div>
+      <h3>社会教育主事講習<br>現地研修にご参加の方へ</h3>
+      <p>
+        本日の研修テーマ「あなたはどう生きるか？」に<br>共感していただけた方へ。<br><br>
+        このサイトが、やまちゃんの「実践の場所」です。<br>
+        消防団・まち協・山西水産・AI活用——<br>
+        すべての実績はここに繋がっています。<br><br>
+        <strong style="color:#fff">無料相談は30〜60分。</strong><br>
+        「うちの地域の事業者に紹介したい」も大歓迎です。
+      </p>
+      <a href="#contact" class="lc-btn">
+        無料相談を申し込む
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+    <div class="lecture-qr reveal-right">
+      <div class="qr-frame">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://yamanishishinsuke19840623.github.io/ystudio-plus/&color=0d1b3e&bgcolor=ffffff&margin=4" alt="Yスタジオ+ QRコード">
+      </div>
+      <div class="qr-label">📱 スマホで読み取る</div>
+      <div class="qr-url">yamanishishinsuke19840623<br>.github.io/ystudio-plus/</div>
     </div>
   </div>
 </section>
