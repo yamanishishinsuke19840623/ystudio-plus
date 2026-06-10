@@ -530,27 +530,63 @@ footer{background:#020510;color:rgba(255,255,255,.28);text-align:center;padding:
   </div>
 </section>
 
-<!-- LECTURE -->
-<section class="lecture-sec" id="lecture">
-  <div class="lecture-inner">
-    <div class="lecture-copy">
-      <div class="lc-tag">🎤 2026.08.01 · 下関市</div>
-      <h3>社会教育主事講習<br>現地研修にご参加の方へ</h3>
-      <p>本日の研修テーマ「あなたはどう生きるか？」に共感していただけた方へ。<br><br>
-         このサイトが、やまちゃんの「実践の場所」です。<br>
-         消防団・まち協・山西水産・AI活用——すべての実績はここに繋がっています。<br><br>
-         <strong style="color:#fff">無料相談は30〜60分。</strong><br>「うちの地域の事業者に紹介したい」も大歓迎です。</p>
-      <a href="#contact" class="lc-btn">無料相談を申し込む →</a>
+
+<!-- SNS -->
+<section style="background:linear-gradient(135deg,#060e26,#0d1b3e);padding:72px 48px;" id="sns">
+  <div style="max-width:1100px;margin:0 auto;text-align:center;">
+    <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.35);color:#f59e0b;font-size:11px;font-weight:700;padding:6px 16px;border-radius:999px;margin-bottom:20px;letter-spacing:1.5px;">FOLLOW US</div>
+    <h2 style="font-size:clamp(22px,3vw,34px);font-weight:900;color:#fff;margin-bottom:12px;">最新情報はSNSで発信中</h2>
+    <p style="font-size:15px;color:rgba(255,255,255,.6);margin-bottom:52px;">AI活用Tips・下関の事業者向け情報を定期発信しています。フォローでつながりましょう。</p>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;max-width:900px;margin:0 auto;">
+
+      <!-- X （旧Twitter） -->
+      <a href="https://x.com/" target="_blank" rel="noopener"
+         style="display:flex;flex-direction:column;align-items:center;gap:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:32px 24px;text-decoration:none;transition:.3s;"
+         onmouseover="this.style.background='rgba(255,255,255,.09)';this.style.transform='translateY(-4px)'"
+         onmouseout="this.style.background='rgba(255,255,255,.05)';this.style.transform=''">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="#fff"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        <div>
+          <div style="font-size:16px;font-weight:900;color:#fff;margin-bottom:4px;">X（旧Twitter）</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.5);">@YstudioPlus</div>
+        </div>
+        <div style="background:#f59e0b;color:#fff;font-size:12px;font-weight:700;padding:8px 22px;border-radius:999px;margin-top:4px;">フォローする</div>
+      </a>
+
+      <!-- Instagram -->
+      <a href="https://www.instagram.com/" target="_blank" rel="noopener"
+         style="display:flex;flex-direction:column;align-items:center;gap:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:32px 24px;text-decoration:none;transition:.3s;"
+         onmouseover="this.style.background='rgba(255,255,255,.09)';this.style.transform='translateY(-4px)'"
+         onmouseout="this.style.background='rgba(255,255,255,.05)';this.style.transform=''">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        <div>
+          <div style="font-size:16px;font-weight:900;color:#fff;margin-bottom:4px;">Instagram</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.5);">@ystudio_plus</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;font-size:12px;font-weight:700;padding:8px 22px;border-radius:999px;margin-top:4px;">フォローする</div>
+      </a>
+
+      <!-- LINE公式 -->
+      <a href="https://lin.ee/" target="_blank" rel="noopener"
+         style="display:flex;flex-direction:column;align-items:center;gap:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:32px 24px;text-decoration:none;transition:.3s;"
+         onmouseover="this.style.background='rgba(255,255,255,.09)';this.style.transform='translateY(-4px)'"
+         onmouseout="this.style.background='rgba(255,255,255,.05)';this.style.transform=''">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="#fff"><path d="M12 2C6.48 2 2 5.82 2 10.5c0 3.27 2.09 6.14 5.26 7.75L6 22l4.5-2.4c.49.07.99.1 1.5.1 5.52 0 10-3.82 10-8.5S17.52 2 12 2zm-1 11.5H8v-5h1.5v3.5H11V9H12v3.5h.5V9H14v5h-3zm5 0h-1.5V9H16v4.5z"/></svg>
+        <div>
+          <div style="font-size:16px;font-weight:900;color:#fff;margin-bottom:4px;">LINE公式</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.5);">相談・問い合わせ</div>
+        </div>
+        <div style="background:#06C755;color:#fff;font-size:12px;font-weight:700;padding:8px 22px;border-radius:999px;margin-top:4px;">友だち追加</div>
+      </a>
+
     </div>
-    <div class="lecture-qr">
-      <div class="qr-frame">
-        <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://yamanishishinsuke19840623.github.io/ystudio-plus/&color=0d1b3e&bgcolor=ffffff&margin=4" alt="Yスタジオ+ QRコード">
-      </div>
-      <div class="qr-label">📱 スマホで読み取る</div>
-      <div class="qr-url">yamanishishinsuke19840623.github.io/ystudio-plus/</div>
-    </div>
+
+    <p style="margin-top:40px;font-size:12px;color:rgba(255,255,255,.3);">
+      ※ リンクは随時更新予定。まずはメールやお問い合わせフォームからどうぞ。
+    </p>
   </div>
 </section>
+
 
 <footer>
   <p>© 2026 Yスタジオ＋ / 山西伸典 All Rights Reserved.</p>
