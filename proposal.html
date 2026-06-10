@@ -110,17 +110,43 @@ body{font-family:'Noto Sans JP',sans-serif;background:#f0f4ff;}
 .hero-kpi .unit{font-size:11px;color:rgba(255,255,255,.5);margin-top:3px;}
 
 /* ══════════════════════════════
-   ② FDE説明帯（細め）
+   ② FDE用語解説ブロック
 ══════════════════════════════ */
-.fde-band{
-  background:linear-gradient(90deg,#f59e0b,#f97316);
-  padding:10px 36px;
-  display:flex;align-items:center;gap:12px;
+.fde-block{
+  background:#fffbeb;
+  border-top:4px solid #f59e0b;
+  border-bottom:1px solid #fde68a;
+  padding:14px 36px;
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:16px;
+  align-items:start;
   flex:0 0 auto;
 }
-.fde-band .icon{font-size:20px;}
-.fde-band p{font-size:12px;color:#fff;font-weight:700;line-height:1.5;}
-.fde-band p span{opacity:.85;font-weight:400;}
+.fde-keyword-badge{
+  background:#f59e0b;color:#fff;
+  font-size:9px;font-weight:900;letter-spacing:2px;
+  padding:5px 10px;border-radius:6px;
+  writing-mode:horizontal-tb;
+  white-space:nowrap;
+  margin-top:2px;
+}
+.fde-def-title{
+  font-size:14px;font-weight:900;color:#92400e;margin-bottom:5px;
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+}
+.fde-def-title .en{font-size:11px;font-weight:400;color:#b45309;background:#fef3c7;padding:2px 8px;border-radius:4px;}
+.fde-def-title .origin{font-size:10px;color:#9ca3af;font-weight:400;}
+.fde-def-body{font-size:12px;color:#374151;line-height:1.8;}
+.fde-def-body strong{color:#92400e;}
+.fde-highlights{
+  display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;
+}
+.fde-chip{
+  background:#fff;border:1px solid #fcd34d;
+  color:#92400e;font-size:10px;font-weight:700;
+  padding:3px 10px;border-radius:999px;
+}
 
 /* ══════════════════════════════
    ③ 中段：Before/After + FDE比較
@@ -291,13 +317,30 @@ body{font-family:'Noto Sans JP',sans-serif;background:#f0f4ff;}
     </div>
   </div>
 
-  <!-- ② FDE帯 -->
-  <div class="fde-band">
-    <div class="icon">⚡</div>
-    <p>
-      OpenAIも採用した新スタイル「FDE（Forward Deployed Engineer）」——
-      <span>現場に入り、業務フローを見てから、実装まで一緒にやる伴走型支援です。</span>
-    </p>
+  <!-- ② FDE用語解説 -->
+  <div class="fde-block">
+    <div class="fde-keyword-badge">KEYWORD</div>
+    <div>
+      <div class="fde-def-title">
+        FDE（Forward Deployed Engineer）
+        <span class="en">フォワード・デプロイド・エンジニア</span>
+        <span class="origin">── パランティア社が発明・OpenAIが大規模展開</span>
+      </div>
+      <div class="fde-def-body">
+        AIベンチャーなどが、顧客企業に送り込んでいる<strong>「前面展開エンジニア」</strong>という職種のこと。<br>
+        相手先のオフィスに常駐し、その会社の<strong>事業内容やワークフローを細かく理解</strong>したうえで、
+        AIソフトウェアのカスタム支援・導入・定着まで責任を持って行う。<br>
+        コンサルタントが「提案書を出して終わり」なのに対し、FDEは<strong>「実装して、動くまで帰らない」</strong>スタイル。
+        2026年、OpenAIがDeployment Companyを設立しFDEを法人支援の主軸に据え、世界的に注目を集めている。
+      </div>
+      <div class="fde-highlights">
+        <span class="fde-chip">📍 現場常駐型</span>
+        <span class="fde-chip">⚙️ 実装まで責任</span>
+        <span class="fde-chip">🏭 業務フロー理解</span>
+        <span class="fde-chip">🤝 定着まで伴走</span>
+        <span class="fde-chip">🌏 Palantir発祥 → OpenAIが採用</span>
+      </div>
+    </div>
   </div>
 
   <!-- ③ 中段 -->
