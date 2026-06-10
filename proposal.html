@@ -34,10 +34,10 @@ body{font-family:'Noto Sans JP',sans-serif;background:#f0f4ff;}
 ══════════════════════════════ */
 .hero{
   background:linear-gradient(135deg,#0d1b3e 0%,#1e3a8a 55%,#1d4ed8 100%);
-  padding:14px 28px 0;
+  padding:10px 28px 0;
   position:relative;
   overflow:hidden;
-  flex:0 0 auto;
+  flex:0 0 175px;
 }
 /* 右上の大きな装飾円 */
 .hero::before{
@@ -116,12 +116,13 @@ body{font-family:'Noto Sans JP',sans-serif;background:#f0f4ff;}
   background:#fffbeb;
   border-top:4px solid #f59e0b;
   border-bottom:1px solid #fde68a;
-  padding:9px 28px;
+  padding:8px 28px;
   display:grid;
   grid-template-columns:auto 1fr;
-  gap:16px;
+  gap:12px;
   align-items:start;
-  flex:0 0 auto;
+  flex:0 0 80px;
+  overflow:hidden;
 }
 .fde-keyword-badge{
   background:#f59e0b;color:#fff;
@@ -152,11 +153,13 @@ body{font-family:'Noto Sans JP',sans-serif;background:#f0f4ff;}
    ③ 中段：Before/After + FDE比較
 ══════════════════════════════ */
 .mid{
-  padding:10px 28px;
+  padding:8px 28px;
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:14px;
-  flex:1 1 auto;
+  gap:12px;
+  flex:1 1 0;
+  overflow:hidden;
+  min-height:0;
 }
 
 /* ビフォーアフター */
@@ -206,8 +209,9 @@ body{font-family:'Noto Sans JP',sans-serif;background:#f0f4ff;}
    ④ プラン3列
 ══════════════════════════════ */
 .plans-section{
-  padding:0 28px 8px;
-  flex:0 0 auto;
+  padding:0 28px 6px;
+  flex:0 0 140px;
+  overflow:hidden;
 }
 .plans-grid{
   display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
@@ -249,9 +253,10 @@ body{font-family:'Noto Sans JP',sans-serif;background:#f0f4ff;}
 ══════════════════════════════ */
 .footer{
   background:#0d1b3e;
-  padding:10px 28px;
-  display:flex;align-items:center;gap:14px;
-  flex:0 0 auto;
+  padding:8px 28px;
+  display:flex;align-items:center;gap:12px;
+  flex:0 0 72px;
+  overflow:hidden;
 }
 .footer-qr img{
   width:60px;height:60px;display:block;
