@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yスタジオ＋ 法人向けAI活用支援 提案書</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: #fff;
+    color: #1a1a2e;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  /* A4ページ */
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto;
+    padding: 14mm 14mm 12mm;
+    background: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* 印刷設定 */
+  @media print {
+    body { margin: 0; }
+    .page { margin: 0; width: 100%; min-height: 100vh; padding: 12mm; page-break-after: always; }
+    .no-print { display: none; }
+  }
+
+  /* ヘッダー */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 3px solid #0d1b3e;
+    padding-bottom: 10px;
+    margin-bottom: 16px;
+  }
+  .header-left .company { font-size: 10px; color: #6b7280; letter-spacing: 1px; }
+  .header-left .title { font-size: 22px; font-weight: 900; color: #0d1b3e; line-height: 1.2; margin: 4px 0; }
+  .header-left .subtitle { font-size: 12px; color: #2563eb; font-weight: 700; }
+  .header-right { text-align: right; font-size: 10px; color: #9ca3af; }
+  .header-right .date { font-size: 11px; color: #374151; font-weight: 700; }
+
+  /* アクセントバー */
+  .accent-bar {
+    background: linear-gradient(90deg, #0d1b3e, #2563eb, #06b6d4);
+    height: 3px;
+    border-radius: 2px;
+    margin-bottom: 14px;
+  }
+
+  /* セクションタイトル */
+  .sec-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #eff6ff;
+    border-left: 3px solid #2563eb;
+    color: #1d4ed8;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+  }
+
+  /* 強み3列 */
+  .strengths {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .strength-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .strength-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #2563eb, #06b6d4);
+  }
+  .strength-card .icon { font-size: 20px; margin-bottom: 6px; }
+  .strength-card .label { font-size: 9px; color: #6b7280; letter-spacing: 1px; margin-bottom: 4px; }
+  .strength-card .value { font-size: 18px; font-weight: 900; color: #0d1b3e; line-height: 1; }
+  .strength-card .desc { font-size: 10px; color: #6b7280; margin-top: 4px; }
+
+  /* ビフォーアフター */
+  .bfa-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 14px;
+    font-size: 11px;
+  }
+  .bfa-table th {
+    background: #0d1b3e;
+    color: #fff;
+    padding: 6px 10px;
+    font-size: 10px;
+    font-weight: 700;
+    text-align: left;
+  }
+  .bfa-table td { padding: 6px 10px; border-bottom: 1px solid #f0f0f0; }
+  .bfa-table tr:nth-child(even) td { background: #f9fafb; }
+  .before { color: #ef4444; font-weight: 700; }
+  .after { color: #0891b2; font-weight: 700; }
+  .rate { color: #f59e0b; font-weight: 700; text-align: center; }
+
+  /* FDE説明 */
+  .fde-box {
+    background: linear-gradient(135deg, #0d1b3e, #1e3a8a);
+    border-radius: 10px;
+    padding: 14px 18px;
+    color: #fff;
+    margin-bottom: 14px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 14px;
+    align-items: center;
+  }
+  .fde-box .fde-icon { font-size: 32px; }
+  .fde-box .fde-title { font-size: 13px; font-weight: 900; margin-bottom: 4px; }
+  .fde-box .fde-title span { color: #fbbf24; }
+  .fde-box p { font-size: 11px; color: rgba(255,255,255,.8); line-height: 1.7; }
+
+  /* プラン */
+  .plans {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .plan {
+    border-radius: 10px;
+    padding: 14px 12px;
+    border: 1px solid #e5e7eb;
+    position: relative;
+  }
+  .plan.featured {
+    background: linear-gradient(135deg, #0d1b3e, #1e3a8a);
+    border: none;
+    box-shadow: 0 4px 16px rgba(13,27,62,.2);
+  }
+  .plan.featured::before {
+    content: "人気No.1";
+    position: absolute;
+    top: -10px; left: 50%;
+    transform: translateX(-50%);
+    background: #f59e0b;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .plan-name { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; margin-bottom: 4px; }
+  .plan.featured .plan-name { color: rgba(255,255,255,.6); }
+  .plan:not(.featured) .plan-name { color: #2563eb; }
+  .plan-price { font-size: 20px; font-weight: 900; line-height: 1; margin-bottom: 2px; }
+  .plan.featured .plan-price { color: #fff; }
+  .plan:not(.featured) .plan-price { color: #0d1b3e; }
+  .plan-price sup { font-size: .5em; vertical-align: super; }
+  .plan-unit { font-size: 10px; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid; }
+  .plan.featured .plan-unit { color: rgba(255,255,255,.6); border-color: rgba(255,255,255,.15); }
+  .plan:not(.featured) .plan-unit { color: #6b7280; border-color: #f0f0f0; }
+  .plan-desc { font-size: 10px; line-height: 1.6; margin-bottom: 8px; }
+  .plan.featured .plan-desc { color: rgba(255,255,255,.75); }
+  .plan:not(.featured) .plan-desc { color: #6b7280; }
+  .plan-features { list-style: none; font-size: 10px; }
+  .plan-features li { padding: 2px 0; display: flex; gap: 4px; }
+  .plan-features li::before { content: "✓"; color: #22c55e; flex-shrink: 0; }
+  .plan.featured .plan-features li { color: rgba(255,255,255,.8); }
+  .plan:not(.featured) .plan-features li { color: #374151; }
+
+  /* フッター */
+  .footer-cta {
+    background: #fef3c7;
+    border: 1px solid #f59e0b;
+    border-radius: 10px;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .footer-cta .qr-wrap { flex-shrink: 0; }
+  .footer-cta .qr-wrap img { width: 70px; height: 70px; display: block; }
+  .footer-cta .cta-text .cta-title { font-size: 13px; font-weight: 900; color: #0d1b3e; margin-bottom: 4px; }
+  .footer-cta .cta-text p { font-size: 11px; color: #374151; line-height: 1.6; }
+  .footer-cta .cta-text .contact-info { margin-top: 6px; font-size: 11px; font-weight: 700; color: #1d4ed8; }
+
+  /* 印刷ボタン（画面表示のみ） */
+  .print-btn {
+    display: block;
+    width: 200px;
+    margin: 20px auto;
+    padding: 12px;
+    background: #0d1b3e;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+  }
+  .print-btn:hover { background: #1e3a8a; }
+</style>
+</head>
+<body>
+
+<div class="no-print" style="background:#f0f4ff;padding:12px;text-align:center;font-size:13px;color:#374151;">
+  <strong>印刷用提案書</strong>（A4縦・1枚）
+  <button class="print-btn" onclick="window.print()">🖨️ 印刷する（PDF保存も可）</button>
+</div>
+
+<div class="page">
+
+  <!-- ヘッダー -->
+  <div class="header">
+    <div class="header-left">
+      <div class="company">Yスタジオ＋（山西伸典）</div>
+      <div class="title">AIで、御社の現場を変えます。</div>
+      <div class="subtitle">法人向け 前面展開型AI活用支援 ご提案</div>
+    </div>
+    <div class="header-right">
+      <div class="date">2026年</div>
+      <div>山西 伸典</div>
+      <div>下関市富任町1-1-5</div>
+      <div style="margin-top:4px;color:#2563eb;font-weight:700;">yamanishishinsuke19840623@gmail.com</div>
+    </div>
+  </div>
+
+  <div class="accent-bar"></div>
+
+  <!-- 強み3列 -->
+  <div class="sec-label">TRACK RECORD ／ 自社実証データ</div>
+  <div class="strengths">
+    <div class="strength-card">
+      <div class="icon">⏰</div>
+      <div class="label">月間削減時間</div>
+      <div class="value">30h<span style="font-size:.5em">以上</span></div>
+      <div class="desc">山西水産（自社）で実証中</div>
+    </div>
+    <div class="strength-card">
+      <div class="icon">💰</div>
+      <div class="label">年間人件費換算削減</div>
+      <div class="value">108<span style="font-size:.5em">万円</span></div>
+      <div class="desc">時給3,000円換算</div>
+    </div>
+    <div class="strength-card">
+      <div class="icon">⚡</div>
+      <div class="label">自動化ツール数</div>
+      <div class="value">6<span style="font-size:.5em">種類</span></div>
+      <div class="desc">楽天上位1%・月商最高900万</div>
+    </div>
+  </div>
+
+  <!-- ビフォーアフター -->
+  <div class="sec-label">BEFORE / AFTER ／ 実際の削減実績</div>
+  <table class="bfa-table">
+    <tr>
+      <th style="width:30%">業務内容</th>
+      <th style="width:25%">Before（導入前）</th>
+      <th style="width:25%">After（導入後）</th>
+      <th style="width:20%">削減率</th>
+    </tr>
+    <tr>
+      <td>4モール同時管理（楽天・Yahoo・Amazon・BASE）</td>
+      <td class="before">週4時間</td>
+      <td class="after">週1時間</td>
+      <td class="rate">▲75%</td>
+    </tr>
+    <tr>
+      <td>季節キーワード更新（年4回）</td>
+      <td class="before">4時間の手作業</td>
+      <td class="after">5分・ボタン1つ</td>
+      <td class="rate">▲98%</td>
+    </tr>
+    <tr>
+      <td>経費精算（写真を撮るだけ）</td>
+      <td class="before">月4時間</td>
+      <td class="after">月20分</td>
+      <td class="rate">▲92%</td>
+    </tr>
+    <tr>
+      <td>給与計算・打刻集計</td>
+      <td class="before">毎月数時間の転記</td>
+      <td class="after">完全ゼロ</td>
+      <td class="rate">▲100%</td>
+    </tr>
+    <tr>
+      <td>販売王 ↔ 弥生会計 経理連携</td>
+      <td class="before">月4時間</td>
+      <td class="after">月20分</td>
+      <td class="rate">▲92%</td>
+    </tr>
+  </table>
+
+  <!-- FDE説明 -->
+  <div class="fde-box">
+    <div class="fde-icon">🚀</div>
+    <div>
+      <div class="fde-title">Yスタジオ＋は「<span>前面展開型（FDE）</span>」で動きます</div>
+      <p>
+        OpenAIも採用した新スタイル。コンサルタントのように「提案書を出して終わり」ではなく、<strong style="color:#fbbf24">御社の現場に直接入り</strong>、業務フローを目で見てからAIを実装します。<br>
+        「山西水産（自社）で実際に動いている仕組みだけ」を持ち込むため、理論ではなく実証済みの結果を届けられます。
+      </p>
+    </div>
+  </div>
+
+  <!-- 料金プラン -->
+  <div class="sec-label">PLAN ／ 法人向け3プラン（すべて現場訪問込み）</div>
+  <div class="plans">
+    <div class="plan">
+      <div class="plan-name">SPOT 診断</div>
+      <div class="plan-price"><sup>¥</sup>50,000<sup>〜</sup></div>
+      <div class="plan-unit">スポット（1回）</div>
+      <div class="plan-desc">業務フロー診断＋AI活用マップ。何から始めるかを整理します。</div>
+      <ul class="plan-features">
+        <li>現場訪問1回（2〜3時間）</li>
+        <li>業務フロー可視化レポート</li>
+        <li>AI活用ロードマップ作成</li>
+      </ul>
+    </div>
+    <div class="plan featured">
+      <div class="plan-name">MONTHLY 月次顧問</div>
+      <div class="plan-price"><sup>¥</sup>100,000<sup>〜</sup></div>
+      <div class="plan-unit">/ 月（月2回訪問）</div>
+      <div class="plan-desc">前面展開型で伴走。実装・定着・改善まで継続サポート。</div>
+      <ul class="plan-features">
+        <li>月2回現場訪問</li>
+        <li>AIツール実装・カスタマイズ</li>
+        <li>スタッフ向けレクチャー</li>
+        <li>チャットサポート込み</li>
+      </ul>
+    </div>
+    <div class="plan">
+      <div class="plan-name">PACKAGE 完全自動化</div>
+      <div class="plan-price"><sup>¥</sup>300,000<sup>〜</sup></div>
+      <div class="plan-unit">1業務・完全自動化</div>
+      <div class="plan-desc">1業務を完全自動化するまで責任を持って実装。</div>
+      <ul class="plan-features">
+        <li>現場訪問・要件定義込み</li>
+        <li>完全自動化まで実装</li>
+        <li>運用マニュアル作成</li>
+        <li>3ヶ月アフターサポート</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- フッターCTA -->
+  <div class="footer-cta">
+    <div class="qr-wrap">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=70x70&data=https://yamanishishinsuke19840623.github.io/ystudio-plus/&color=0d1b3e&bgcolor=ffffff&margin=2" alt="QR">
+    </div>
+    <div class="cta-text">
+      <div class="cta-title">まず無料相談（30〜60分）からどうぞ。下関・山口県内は訪問無料です。</div>
+      <p>
+        「うちでも使えるの？」「何から始めればいい？」——そこから一緒に整理します。<br>
+        相談後に「合わない」と思えば断ってOK。提案書・見積りは無料です。
+      </p>
+      <div class="contact-info">
+        📧 yamanishishinsuke19840623@gmail.com　／　🌐 上記QRコードからHPへ
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+</body>
+</html>
