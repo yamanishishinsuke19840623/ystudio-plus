@@ -70,15 +70,16 @@ body{font-family:"Noto Sans JP",sans-serif;background:#e8edf5;}
   flex:1 1 0;min-height:0;
   border-bottom:1px solid #f0f0f0;
 }
-.mid-left{padding:11px 14px 11px 28px;border-right:1px solid #f0f0f0;display:flex;flex-direction:column;overflow:hidden;}
-.mid-right{padding:11px 28px 11px 14px;display:flex;flex-direction:column;gap:7px;overflow:hidden;}
+.mid-left{padding:11px 14px 11px 28px;border-right:1px solid #f0f0f0;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;}
+.mid-right{padding:11px 28px 11px 14px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;}
 
 /* Before/After */
 .ba-title{font-size:9px;font-weight:700;color:#6b7280;letter-spacing:2px;margin-bottom:7px;}
 .ba-row{
   display:grid;grid-template-columns:1.2fr auto auto auto auto;
   align-items:center;gap:4px;
-  padding:4px 0;border-bottom:1px solid #f5f5f5;
+  padding:0;border-bottom:1px solid #f5f5f5;
+  flex:1;align-content:center;
 }
 .ba-row:last-of-type{border-bottom:none;}
 .ba-item{color:#374151;font-weight:700;font-size:9.5px;}
@@ -90,7 +91,7 @@ body{font-family:"Noto Sans JP",sans-serif;background:#e8edf5;}
 
 /* 特徴01/02/03 */
 .feat-title{font-size:9px;font-weight:700;color:#6b7280;letter-spacing:2px;margin-bottom:2px;}
-.feat-card{border-radius:10px;padding:9px 13px;}
+.feat-card{border-radius:10px;padding:12px 14px;flex:1;}
 .feat-card.f1{background:#f0f9ff;border:1px solid #bae6fd;}
 .feat-card.f2{background:linear-gradient(135deg,#0d1b3e,#1e3a8a);box-shadow:0 4px 14px rgba(13,27,62,.2);}
 .feat-card.f3{background:#fff7ed;border:1px solid #fed7aa;}
