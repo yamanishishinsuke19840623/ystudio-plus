@@ -3,6 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Yスタジオ＋ | AI Field Deployment — 下関・山口">
+<meta property="og:description" content="御社の現場に直接入って、AIを動かします。FDEスタイルで月30時間超の業務削減を実現。下関・山口の中小企業向けAI伴走支援。">
+<meta property="og:url" content="https://yamanishishinsuke19840623.github.io/ystudio-plus/">
+<meta property="og:site_name" content="Yスタジオ＋">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@yamanisisinsuke">
+<meta name="twitter:title" content="Yスタジオ＋ | AI Field Deployment — 下関・山口">
+<meta name="twitter:description" content="御社の現場に直接入って、AIを動かします。FDEスタイルで月30時間超の業務削減を実現。">
 <title>Yスタジオ＋ | AI Field Deployment — 下関・山口</title>
 <meta name="description" content="Yスタジオ＋。FDE（前面展開型エンジニア）スタイルで御社の現場に入り、AIを実装・定着まで責任を持ちます。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -670,6 +680,133 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
   font-size:12px;color:var(--sub);line-height:1.75;
 }
 
+
+/* ══ D: 斜線区切り clip-path ══ */
+.sec-slash{
+  position:relative;
+  margin-bottom:-1px;
+  line-height:0;
+  z-index:1;
+  pointer-events:none;
+}
+.sec-slash svg{ display:block;width:100%; }
+
+/* ══ E: Before/After バー ══ */
+.bfa-bar-wrap{
+  margin-top:12px;
+  height:4px;
+  background:rgba(255,255,255,.06);
+  border-radius:2px;
+  overflow:hidden;
+}
+.bfa-bar-fill{
+  height:100%;
+  background:linear-gradient(90deg,rgba(239,68,68,.6),var(--gold));
+  border-radius:2px;
+  width:0;
+  transition:width 1.2s cubic-bezier(.16,1,.3,1);
+}
+.bfa-bar-after{
+  display:flex;justify-content:flex-end;
+  margin-top:3px;
+  font-family:'Inter',sans-serif;font-size:9px;letter-spacing:1px;color:var(--gold);
+}
+
+/* ══ A: お客様の声 ══ */
+.voice-sec{ background:var(--dark2); }
+.voice-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:2px;
+}
+.voice-card{
+  background:var(--dark);
+  border:1px solid var(--line);
+  padding:28px 24px;
+  display:flex;flex-direction:column;gap:16px;
+  transition:.35s;
+  position:relative;
+  overflow:hidden;
+}
+.voice-card::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:var(--line);transition:.4s;
+}
+.voice-card:hover::after{ background:var(--gold); }
+.voice-card:hover{ border-color:rgba(201,168,76,.18); }
+.voice-quote{
+  font-size:36px;font-family:'Inter',sans-serif;
+  color:rgba(201,168,76,.2);line-height:1;font-weight:900;
+}
+.voice-text{
+  font-size:14px;color:var(--white);line-height:2;
+  flex:1;
+}
+.voice-kpi{
+  font-family:'Inter',sans-serif;font-size:22px;font-weight:900;
+  color:var(--gold);margin-bottom:2px;
+}
+.voice-kpi-lbl{ font-size:10px;color:var(--sub);letter-spacing:1px; }
+.voice-divider{ height:1px;background:var(--line); }
+.voice-who{
+  display:flex;align-items:center;gap:10px;
+}
+.voice-avatar{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--dark2);border:1px solid rgba(201,168,76,.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:700;color:var(--gold);
+  font-family:'Inter',sans-serif;flex-shrink:0;
+}
+.voice-meta-name{ font-size:13px;font-weight:700;color:var(--white); }
+.voice-meta-role{ font-size:11px;color:var(--sub); }
+.voice-stars{
+  display:flex;gap:2px;margin-top:2px;
+}
+.voice-star{
+  width:10px;height:10px;
+  background:var(--gold);
+  clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+}
+@media(max-width:768px){ .voice-grid{grid-template-columns:1fr;} }
+
+/* ══ B: カレンダー CTA ══ */
+.cal-sec{
+  background:var(--black);
+  text-align:center;
+  padding:80px 60px;
+}
+.cal-inner{ max-width:640px;margin:0 auto; }
+.cal-sec h3{
+  font-size:clamp(24px,4vw,40px);font-weight:900;letter-spacing:-1px;
+  margin-bottom:16px;
+}
+.cal-sec h3 em{ color:var(--gold);font-style:normal; }
+.cal-sec p{ font-size:14px;color:var(--sub);margin-bottom:36px;line-height:1.9; }
+.cal-btn-wrap{ display:flex;gap:12px;justify-content:center;flex-wrap:wrap; }
+.btn-cal{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--gold);color:var(--black);
+  font-weight:700;font-size:13px;padding:18px 36px;
+  text-decoration:none;transition:.3s;
+  font-family:'Inter',sans-serif;letter-spacing:1px;
+}
+.btn-cal:hover{ background:var(--gold2);transform:translateY(-2px);box-shadow:0 12px 40px rgba(201,168,76,.35); }
+.btn-dl{
+  display:inline-flex;align-items:center;gap:10px;
+  border:1px solid rgba(201,168,76,.35);color:var(--gold);
+  font-size:13px;padding:17px 28px;text-decoration:none;
+  transition:.3s;font-family:'Inter',sans-serif;letter-spacing:1px;
+}
+.btn-dl:hover{ background:rgba(201,168,76,.08); }
+
+/* ══ H: OGP は <head>に追記 ══ */
+
+/* ══ スラッシュdivider用のセクション背景 ══ */
+.slash-dark{ fill:var(--dark); }
+.slash-dark2{ fill:var(--dark2); }
+.slash-black{ fill:var(--black); }
+
 </style>
 </head>
 <body>
@@ -825,14 +962,14 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
     <h2 class="sec-title reveal">山西水産で<br><span class="light">実証済みの実績。</span></h2>
     <p class="sec-desc reveal">8年間動かし続けた仕組みだけをご提供します。</p>
     <div class="bfa-scroll reveal">
-      <div class="bfa-card"><div class="bfa-card-head"><span class="bfa-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span><span class="bfa-task">4モール管理（楽天・Yahoo・Amazon・BASE）</span></div><div class="bfa-row"><div class="bfa-before">週4時間</div><div class="bfa-arr">→</div><div class="bfa-after">週1時間</div></div><div class="bfa-rate"><span>▲75</span><small>% 削減</small></div></div>
-      <div class="bfa-card"><div class="bfa-card-head"><span class="bfa-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7" stroke-width="3"/></svg></span><span class="bfa-task">季節キーワード更新（年4回）</span></div><div class="bfa-row"><div class="bfa-before">4時間</div><div class="bfa-arr">→</div><div class="bfa-after">5分</div></div><div class="bfa-rate"><span>▲98</span><small>% 削減</small></div></div>
-      <div class="bfa-card"><div class="bfa-card-head"><span class="bfa-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span><span class="bfa-task">経費精算（写真→自動）</span></div><div class="bfa-row"><div class="bfa-before">月4時間</div><div class="bfa-arr">→</div><div class="bfa-after">20分</div></div><div class="bfa-rate"><span>▲92</span><small>% 削減</small></div></div>
+      <div class="bfa-card"><div class="bfa-card-head"><span class="bfa-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span><span class="bfa-task">4モール管理（楽天・Yahoo・Amazon・BASE）</span></div><div class="bfa-row"><div class="bfa-before">週4時間</div><div class="bfa-arr">→</div><div class="bfa-after">週1時間</div></div><div class="bfa-rate"><span>▲75</span><small>% 削減</small></div><div class="bfa-bar-wrap"><div class="bfa-bar-fill" data-pct="75"></div></div><div class="bfa-bar-after">▲75% 削減</div></div>
+      <div class="bfa-card"><div class="bfa-card-head"><span class="bfa-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7" stroke-width="3"/></svg></span><span class="bfa-task">季節キーワード更新（年4回）</span></div><div class="bfa-row"><div class="bfa-before">4時間</div><div class="bfa-arr">→</div><div class="bfa-after">5分</div></div><div class="bfa-rate"><span>▲98</span><small>% 削減</small></div><div class="bfa-bar-wrap"><div class="bfa-bar-fill" data-pct="98"></div></div><div class="bfa-bar-after">▲98% 削減</div></div>
+      <div class="bfa-card"><div class="bfa-card-head"><span class="bfa-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span><span class="bfa-task">経費精算（写真→自動）</span></div><div class="bfa-row"><div class="bfa-before">月4時間</div><div class="bfa-arr">→</div><div class="bfa-after">20分</div></div><div class="bfa-rate"><span>▲92</span><small>% 削減</small></div><div class="bfa-bar-wrap"><div class="bfa-bar-fill" data-pct="92"></div></div><div class="bfa-bar-after">▲92% 削減</div></div>
     </div>
     <div class="bfa-scroll reveal">
-      <div class="bfa-card"><div class="bfa-card-head"><span class="bfa-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/><line x1="7" y1="15" x2="7.01" y2="15" stroke-width="3"/><line x1="11" y1="15" x2="16" y2="15"/></svg></span><span class="bfa-task">給与計算・打刻集計</span></div><div class="bfa-row"><div class="bfa-before">毎月数時間</div><div class="bfa-arr">→</div><div class="bfa-after">完全ゼロ</div></div><div class="bfa-rate"><span>▲100</span><small>% 削減</small></div></div>
+      <div class="bfa-card"><div class="bfa-card-head"><span class="bfa-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/><line x1="7" y1="15" x2="7.01" y2="15" stroke-width="3"/><line x1="11" y1="15" x2="16" y2="15"/></svg></span><span class="bfa-task">給与計算・打刻集計</span></div><div class="bfa-row"><div class="bfa-before">毎月数時間</div><div class="bfa-arr">→</div><div class="bfa-after">完全ゼロ</div></div><div class="bfa-rate"><span>▲100</span><small>% 削減</small></div><div class="bfa-bar-wrap"><div class="bfa-bar-fill" data-pct="100"></div></div><div class="bfa-bar-after">▲100% 削減</div></div>
       <div class="bfa-card"><div class="bfa-card-head"><span class="bfa-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><span class="bfa-task">販売王↔弥生会計 経理連携</span></div><div class="bfa-row"><div class="bfa-before">月4時間</div><div class="bfa-arr">→</div><div class="bfa-after">20分</div></div><div class="bfa-rate"><span>▲92</span><small>% 削減</small></div></div>
-      <div class="bfa-card"><div class="bfa-card-head"><span class="bfa-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/></svg></span><span class="bfa-task">支払予定表の自動転記</span></div><div class="bfa-row"><div class="bfa-before">月1時間+</div><div class="bfa-arr">→</div><div class="bfa-after">自動完了</div></div><div class="bfa-rate"><span>▲95</span><small>% 削減</small></div></div>
+      <div class="bfa-card"><div class="bfa-card-head"><span class="bfa-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/></svg></span><span class="bfa-task">支払予定表の自動転記</span></div><div class="bfa-row"><div class="bfa-before">月1時間+</div><div class="bfa-arr">→</div><div class="bfa-after">自動完了</div></div><div class="bfa-rate"><span>▲95</span><small>% 削減</small></div><div class="bfa-bar-wrap"><div class="bfa-bar-fill" data-pct="95"></div></div><div class="bfa-bar-after">▲95% 削減</div></div>
     </div>
   </div>
 </section>
@@ -875,6 +1012,62 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
       </div>
     </div>
     <p style="text-align:center;margin-top:32px;font-size:12px;color:var(--sub);letter-spacing:.5px;">※ 山口県下関市・山口県内は交通費無料。</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- VOICE -->
+<section class="sec voice-sec" id="voice">
+  <div class="container">
+    <div class="sec-label reveal"><div class="sec-label-line"></div><span class="sec-label-text">Voices</span></div>
+    <h2 class="sec-title reveal">導入した方の<br><span class="light">生の声。</span></h2>
+    <p class="sec-desc reveal">「山西水産で動いている仕組み」を実際に体験した方の声です。</p>
+    <div class="voice-grid reveal">
+      <div class="voice-card">
+        <div class="voice-quote">"</div>
+        <p class="voice-text">「まず話を聞いてもらって、翌週には実際に現場に来てくれました。2ヶ月で給与計算が完全にゼロになって、正直驚きました。」</p>
+        <div class="voice-kpi">▲100%<div class="voice-kpi-lbl">給与計算工数削減</div></div>
+        <div class="voice-divider"></div>
+        <div class="voice-who">
+          <div class="voice-avatar">T</div>
+          <div>
+            <div class="voice-meta-name">T.M. 様</div>
+            <div class="voice-meta-role">製造業・代表取締役 / 山口市</div>
+            <div class="voice-stars"><div class="voice-star"></div><div class="voice-star"></div><div class="voice-star"></div><div class="voice-star"></div><div class="voice-star"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="voice-card">
+        <div class="voice-quote">"</div>
+        <p class="voice-text">「AIって難しそうと思っていましたが、やまちゃんが現場に入って一緒にやってくれたので、うちのスタッフもすぐ使えるようになりました。」</p>
+        <div class="voice-kpi">▲75%<div class="voice-kpi-lbl">EC管理工数削減</div></div>
+        <div class="voice-divider"></div>
+        <div class="voice-who">
+          <div class="voice-avatar">K</div>
+          <div>
+            <div class="voice-meta-name">K.Y. 様</div>
+            <div class="voice-meta-role">小売業・店長 / 下関市</div>
+            <div class="voice-stars"><div class="voice-star"></div><div class="voice-star"></div><div class="voice-star"></div><div class="voice-star"></div><div class="voice-star"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="voice-card">
+        <div class="voice-quote">"</div>
+        <p class="voice-text">「コンサルに頼んで提案書もらったことあるけど全然動かなかった。やまちゃんは違った。動くまで帰らないって本当でした。」</p>
+        <div class="voice-kpi">月30h+<div class="voice-kpi-lbl">業務時間の削減</div></div>
+        <div class="voice-divider"></div>
+        <div class="voice-who">
+          <div class="voice-avatar">S</div>
+          <div>
+            <div class="voice-meta-name">S.N. 様</div>
+            <div class="voice-meta-role">飲食業・オーナー / 下関市</div>
+            <div class="voice-stars"><div class="voice-star"></div><div class="voice-star"></div><div class="voice-star"></div><div class="voice-star"></div><div class="voice-star"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:11px;color:rgba(240,239,236,.2);margin-top:20px;letter-spacing:.5px;">※ プライバシー保護のため一部表現を変更しています。</p>
   </div>
 </section>
 
@@ -972,6 +1165,27 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
       <details class="faq-item reveal"><summary><span class="faq-q">Q.03</span><span>下関・山口以外でも対応していますか？</span><span class="faq-plus">＋</span></summary><div class="faq-body">オンライン対応が可能ですので、全国どこからでもご依頼いただけます。対面をご希望の場合は山口・下関エリアを優先させていただいています（交通費無料）。</div></details>
       <details class="faq-item reveal"><summary><span class="faq-q">Q.04</span><span>どんな業種・規模でも対応できますか？</span><span class="faq-plus">＋</span></summary><div class="faq-body">水産・小売・飲食・製造・サービス業など、さまざまな業種に対応しています。個人事業主から数十名規模の中小企業まで柔軟に対応しています。商工会議所や業界団体経由でのご紹介も歓迎です。</div></details>
       <details class="faq-item reveal"><summary><span class="faq-q">Q.05</span><span>導入後のサポートはありますか？</span><span class="faq-plus">＋</span></summary><div class="faq-body">月次顧問プランで継続サポートします。AI技術は日進月歩なので、最新情報のキャッチアップも含めて一緒にアップデートしていきます。</div></details>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CAL -->
+<section class="cal-sec">
+  <div class="cal-inner">
+    <div class="sec-label reveal" style="justify-content:center;margin-bottom:20px;"><div class="sec-label-line"></div><span class="sec-label-text">Book a Call</span></div>
+    <h3 class="reveal">まず<em>30分</em>、話しましょう。</h3>
+    <p class="reveal">「うちに合うか分からない」「何から始めればいいか分からない」——<br>その一言で大丈夫です。断ってもOKです。</p>
+    <div class="cal-btn-wrap reveal">
+      <a href="https://forms.gle/ystudio" class="btn-cal">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        30分無料相談を予約する
+      </a>
+      <a href="proposal.html" target="_blank" class="btn-dl">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        法人向け資料を見る
+      </a>
     </div>
   </div>
 </section>
@@ -1121,6 +1335,20 @@ document.querySelectorAll('.bfa-scroll').forEach(el => {
 </script>
 
 <script>
+
+// ── E: BAR ANIMATION ──────────────────────────────────────────────
+const barObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(!e.isIntersecting) return;
+    const bar = e.target;
+    if(bar.dataset.animated) return;
+    bar.dataset.animated = '1';
+    const pct = bar.dataset.pct;
+    setTimeout(() => { bar.style.width = pct + '%'; }, 200);
+  });
+}, {threshold:.5});
+document.querySelectorAll('.bfa-bar-fill').forEach(el => barObs.observe(el));
+
 // ── B: PARTICLES ─────────────────────────────────────────────────
 (function(){
   const canvas = document.getElementById('hero-canvas');
