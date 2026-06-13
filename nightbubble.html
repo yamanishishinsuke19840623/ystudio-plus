@@ -28,7 +28,8 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:var(--white);line-height:1.7;overflow-x:hidden;}
+body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rgba(4,4,15,.88),rgba(4,4,15,.88)),url('bubble-bg.png') center/cover fixed;color:var(--white);line-height:1.7;overflow-x:hidden;}
+@media(max-width:768px){body{background-attachment:scroll;}}
 ::-webkit-scrollbar{width:3px;}
 ::-webkit-scrollbar-track{background:var(--bg);}
 ::-webkit-scrollbar-thumb{background:var(--purple);border-radius:2px;}
@@ -91,7 +92,7 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
 /* ── STATS BAR ── */
 .stats-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);margin-top:80px;border:1px solid var(--line);}
 @media(max-width:600px){.stats-bar{grid-template-columns:1fr;}}
-.stat-item{padding:36px 32px;background:var(--bg2);text-align:center;position:relative;overflow:hidden;}
+.stat-item{padding:36px 32px;background:rgba(7,7,21,0.78);text-align:center;position:relative;overflow:hidden;}
 .stat-item::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--gp),transparent);opacity:0;transition:.4s;}
 .stat-item:hover::before{opacity:1;}
 .stat-num{font-family:'Inter',sans-serif;font-size:clamp(32px,5vw,56px);font-weight:900;line-height:1;}
@@ -132,7 +133,7 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
 
 /* ── LOCAL SCHEDULE ── */
 .local-sch{margin-top:48px;display:flex;flex-direction:column;gap:1px;background:var(--line);border:1px solid var(--line);}
-.local-sch-item{display:grid;grid-template-columns:52px 120px 1fr auto;align-items:center;gap:20px;padding:20px 28px;background:var(--bg2);transition:.3s;position:relative;overflow:hidden;}
+.local-sch-item{display:grid;grid-template-columns:52px 120px 1fr auto;align-items:center;gap:20px;padding:20px 28px;background:rgba(7,7,21,0.78);transition:.3s;position:relative;overflow:hidden;}
 .local-sch-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(180deg,var(--purple),var(--cyan));transition:.35s;}
 .local-sch-item:hover::before{width:3px;}
 .local-sch-item:hover{background:rgba(124,58,237,.07);}
@@ -162,7 +163,7 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
 
 /* ── FLOW ── */
 .flow-list{margin-top:48px;display:flex;flex-direction:column;gap:1px;background:var(--line);border:1px solid var(--line);}
-.flow-item{display:grid;grid-template-columns:80px 1fr;gap:28px;align-items:flex-start;padding:28px 32px;background:var(--bg2);transition:.3s;position:relative;overflow:hidden;}
+.flow-item{display:grid;grid-template-columns:80px 1fr;gap:28px;align-items:flex-start;padding:28px 32px;background:rgba(7,7,21,0.78);transition:.3s;position:relative;overflow:hidden;}
 .flow-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(180deg,var(--purple),var(--cyan));transition:.35s;}
 .flow-item:hover::before{width:3px;}
 .flow-item:hover{background:rgba(124,58,237,.07);}
@@ -267,7 +268,7 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
       <div class="about-bignum">無数</div>
       <div>
         <p class="about-copy">下関・周辺エリアへ、<span class="grd">バブルエンターテインメント</span>をお届けします。</p>
-        <p class="about-text">「ナイトバブル」を国内で初めてエンターテインメントショー化・事業化したteam bub.の下関担当として、やまちゃんこと山西が学校・保育園・地域イベントへ出張します。<br><br>ご家族・友達・カップル――どんな特別な夜も、ナイトバブルが彩ります。</p>
+        <p class="about-text">シャボン玉に喜ぶ子どもの顔が忘れられず、気がつけばシャボン玉おじさんになっていました。<br><br>学校・保育園・地域イベントへ、光と音楽に包まれた夢のような空間をお届けします。毎年呼んでくれる学校も増え、今年で定例開催3年目を迎えた会場もあります。</p>
       </div>
     </div>
 
@@ -281,8 +282,8 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
         <div class="stat-lbl">下関での開催実績</div>
       </div>
       <div class="stat-item">
-        <div class="stat-num grd">∞</div>
-        <div class="stat-lbl">フォトジェニックな瞬間</div>
+        <div class="stat-num grd">3</div>
+        <div class="stat-lbl">定例開催 3年目の会場も</div>
       </div>
     </div>
   </div>
