@@ -161,9 +161,15 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
 @media(max-width:900px){.photo-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:480px){.photo-grid{grid-template-columns:repeat(2,1fr);}}
 .photo-item{position:relative;overflow:hidden;border-radius:4px;aspect-ratio:4/3;cursor:pointer;}
-.photo-item img{width:100%;height:100%;object-fit:cover;transition:.4s;}
+.photo-item img{width:100%;height:100%;object-fit:cover;transition:.4s;cursor:zoom-in;}
 .photo-item:hover img{transform:scale(1.06);}
 .photo-item::after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(4,4,15,.5),transparent);pointer-events:none;}
+#nb-lb{position:fixed;inset:0;background:rgba(4,4,15,.95);z-index:9999;display:none;align-items:center;justify-content:center;cursor:zoom-out;animation:lbFadeIn .2s ease;}
+#nb-lb.open{display:flex;}
+@keyframes lbFadeIn{from{opacity:0}to{opacity:1}}
+#nb-lb img{max-width:92vw;max-height:88vh;object-fit:contain;border-radius:6px;box-shadow:0 0 80px rgba(124,58,237,.5),0 0 40px rgba(6,182,212,.2);}
+#nb-lb-close{position:absolute;top:20px;right:28px;color:rgba(255,255,255,.7);font-size:36px;cursor:pointer;font-family:'Inter',sans-serif;line-height:1;transition:.2s;}
+#nb-lb-close:hover{color:#fff;transform:scale(1.15);}
 .yt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
 @media(max-width:900px){.yt-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:600px){.yt-grid{grid-template-columns:1fr;}}
@@ -495,14 +501,13 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
       <div class="photo-item"><img src="otsukimi-1.jpg" alt="ナイトバブル お月見 2024" loading="lazy"></div>
       <div class="photo-item"><img src="otsukimi-2.jpg" alt="ナイトバブル 子どもたち" loading="lazy"></div>
       <div class="photo-item"><img src="otsukimi-3.jpg" alt="ナイトバブル ライト演出" loading="lazy"></div>
-      <div class="photo-item"><img src="event-day.jpg" alt="昼のシャボン玉ショー" loading="lazy"></div>
     </div>
 
     <!-- Daytime Photos -->
     <div class="media-sub-label" style="margin-top:32px;">昼のシャボン玉ショー</div>
     <div class="photo-grid" style="grid-template-columns:repeat(2,1fr);max-width:560px;">
+      <div class="photo-item"><img src="event-day.jpg" alt="シャボン玉ショー やまちゃん" loading="lazy"></div>
       <div class="photo-item"><img src="event-day2.jpg" alt="シャボン玉ショー やまちゃん" loading="lazy"></div>
-      <div class="photo-item"><img src="shabon-ojisan.jpeg" alt="シャボン玉おじさん やまちゃん" loading="lazy"></div>
     </div>
 
     <!-- Instagram -->
@@ -727,6 +732,8 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
   <p class="footer-copy">© 2025 Yスタジオ＋ / team bub. All rights reserved.</p>
 </footer>
 
+<div id="nb-lb"><span id="nb-lb-close">×</span><img id="nb-lb-img" src="" alt=""></div>
+
 <script async src="https://www.instagram.com/embed.js"></script>
 
 <script>
@@ -754,11 +761,11 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
 
   function mkBubble(){
     const c = GC[Math.floor(Math.random()*GC.length)];
-    const r = Math.random()*20+8;
+    const r = Math.random()*28+28; // 28〜56px 大きいだけ
     return {x:Math.random()*(W-r*2)+r, y:H+r+10,
-      r, vx:(Math.random()-.5)*.5, vy:-(Math.random()*.7+.3),
+      r, vx:(Math.random()-.5)*.45, vy:-(Math.random()*.55+.25),
       color:c, phase:Math.random()*Math.PI*2, wobble:Math.random()*.4+.2,
-      pts: Math.max(1,Math.round(20/r))};
+      pts: 1};
   }
 
   function mkParticles(b){
@@ -909,6 +916,21 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
   window.addEventListener('resize',resize);
   init(); draw();
 // ── END BACKGROUND BUBBLES ──
+})();
+
+// ── LIGHTBOX ──
+(function(){
+  const lb=document.getElementById('nb-lb');
+  const lbImg=document.getElementById('nb-lb-img');
+  const close=document.getElementById('nb-lb-close');
+  function open(src,alt){lbImg.src=src;lbImg.alt=alt;lb.classList.add('open');document.body.style.overflow='hidden';}
+  function shut(){lb.classList.remove('open');document.body.style.overflow='';}
+  document.querySelectorAll('.photo-item img').forEach(img=>{
+    img.parentElement.addEventListener('click',()=>open(img.src,img.alt));
+  });
+  lb.addEventListener('click',shut);
+  close.addEventListener('click',e=>{e.stopPropagation();shut();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')shut();});
 })();
 
 window.addEventListener('scroll',()=>{
