@@ -1228,6 +1228,68 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
   transition:width .5s cubic-bezier(.16,1,.3,1);width:0%;
 }
 
+
+/* ══ MEDIA BADGE BAR ══ */
+.media-bar{
+  background:rgba(5,8,15,.95);
+  border-top:1px solid rgba(201,168,76,.1);
+  border-bottom:1px solid rgba(201,168,76,.1);
+  padding:20px 60px;
+  display:flex;align-items:center;justify-content:center;
+  gap:0;flex-wrap:wrap;overflow:hidden;
+}
+.media-item{
+  display:flex;align-items:center;gap:12px;
+  padding:0 28px;
+  border-right:1px solid rgba(201,168,76,.12);
+  white-space:nowrap;
+}
+.media-item:last-child{border-right:none;}
+.media-icon{
+  width:32px;height:32px;
+  border:1px solid rgba(201,168,76,.2);border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+  color:rgba(201,168,76,.6);flex-shrink:0;
+}
+.media-text{
+  font-family:'Inter',sans-serif;font-size:10px;letter-spacing:1px;
+  color:rgba(240,239,236,.35);text-transform:uppercase;line-height:1.4;
+}
+.media-text strong{display:block;color:rgba(240,239,236,.65);font-size:11px;}
+@media(max-width:768px){
+  .media-bar{padding:16px 20px;gap:4px;}
+  .media-item{padding:8px 14px;border-right:none;border-bottom:1px solid rgba(201,168,76,.08);}
+  .media-item:last-child{border-bottom:none;}
+}
+
+/* ══ PLANS MOBILE FIX ══ */
+@media(max-width:860px){.plans-grid{grid-template-columns:1fr;}}
+@media(min-width:600px) and (max-width:860px){.plans-grid{grid-template-columns:1fr 1fr;}}
+
+/* ══ HERO BG 強化 ══ */
+#hero{position:relative;}
+#hero::before{
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 50%, rgba(201,168,76,.04) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 80% at 80% 30%, rgba(26,58,143,.06) 0%, transparent 70%);
+}
+
+/* ══ GOLD 抑制 — sec-label-lineを細く ══ */
+.sec-label-line{width:24px;height:1px;background:rgba(201,168,76,.4);}
+
+/* ══ PLAN CARD 強化 ══ */
+.plan-includes{
+  margin-top:12px;padding-top:12px;
+  border-top:1px solid rgba(201,168,76,.1);
+  font-size:11px;color:rgba(240,239,236,.3);letter-spacing:.5px;
+}
+.plan-result{
+  font-family:'Inter',sans-serif;font-size:18px;font-weight:900;
+  color:var(--gold);margin-bottom:4px;
+}
+.plan-result-lbl{font-size:10px;color:var(--sub);letter-spacing:.5px;margin-bottom:16px;}
+
 </style>
 <script type="application/ld+json">
 {
@@ -1313,6 +1375,31 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
   <span class="slots-num">残 3 社</span>
   <span class="slots-unit">/ 5社限定</span>
   <span class="slots-note">（毎月更新 · 先着順）</span>
+</div>
+
+
+<!-- MEDIA BAR -->
+<div class="media-bar reveal">
+  <div class="media-item">
+    <div class="media-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12.5v4.5c0 1.5 2.7 2.5 6 2.5s6-1 6-2.5V12.5"/></svg></div>
+    <div class="media-text"><strong>山口大学</strong>平野ゼミ 2年連続登壇</div>
+  </div>
+  <div class="media-item">
+    <div class="media-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+    <div class="media-text"><strong>自叙伝</strong>「知られざる軌跡」出版 2025</div>
+  </div>
+  <div class="media-item">
+    <div class="media-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a4 4 0 0 1-4-4V6"/><line x1="10" y1="7" x2="16" y2="7"/><line x1="10" y1="11" x2="16" y2="11"/><line x1="10" y1="15" x2="14" y2="15"/></svg></div>
+    <div class="media-text"><strong>かんもんノート</strong>関門エリア情報メディア 管理人</div>
+  </div>
+  <div class="media-item">
+    <div class="media-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="12" rx="1"/><path d="M3 9l9-7 9 7"/><line x1="9" y1="22" x2="9" y2="12"/><line x1="15" y1="22" x2="15" y2="12"/></svg></div>
+    <div class="media-text"><strong>JOIN083</strong>下関大丸店7F 入居クリエイター</div>
+  </div>
+  <div class="media-item">
+    <div class="media-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.54C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg></div>
+    <div class="media-text"><strong>YouTube</strong>チャンネル登録者 1,330人</div>
+  </div>
 </div>
 
 <!-- HERO -->
@@ -1471,6 +1558,8 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
         <div class="plan-name">診断</div>
         <div class="plan-price"><sup>¥</sup>50,000<sup style="font-size:.35em">〜</sup></div>
         <div class="plan-unit">スポット / 1回</div>
+        <div class="plan-result">課題が明確になる</div>
+        <div class="plan-result-lbl">「何から始めるか」が1日で決まる</div>
         <div class="plan-desc">業務フロー診断＋AI活用マップ。何から始めればいいかを一緒に整理します。</div>
         <ul class="plan-feats"><li>現場訪問1回（2〜3時間）</li><li>業務フロー可視化レポート</li><li>AI活用ロードマップ</li><li>優先順位付き実装リスト</li></ul>
         <a href="#contact" class="plan-btn">相談する</a>
@@ -1480,6 +1569,8 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
         <div class="plan-name">月次顧問</div>
         <div class="plan-price"><sup>¥</sup>100,000<sup style="font-size:.35em">〜</sup></div>
         <div class="plan-unit">/ 月（月2回訪問）</div>
+        <div class="plan-result">月10〜30h 削減</div>
+        <div class="plan-result-lbl">継続3ヶ月で業務が変わる</div>
         <div class="plan-desc">前面展開型。月2回現場に入り、実装・定着・改善まで継続サポート。</div>
         <ul class="plan-feats"><li>月2回現場訪問（各2〜3時間）</li><li>AIツール実装・カスタマイズ</li><li>スタッフ向けレクチャー込み</li><li>Slack/LINEチャットサポート</li><li>月次効果レポート</li></ul>
         <a href="#contact" class="plan-btn">相談する</a>
@@ -1489,6 +1580,8 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
         <div class="plan-name">完全自動化</div>
         <div class="plan-price"><sup>¥</sup>300,000<sup style="font-size:.35em">〜</sup></div>
         <div class="plan-unit">1業務・一括実装</div>
+        <div class="plan-result">1業務 完全自動化</div>
+        <div class="plan-result-lbl">動くまで帰りません</div>
         <div class="plan-desc">1つの業務を「完全に自動化」するまで責任を持って実装します。</div>
         <ul class="plan-feats"><li>現場訪問・要件定義込み</li><li>完全自動化まで実装</li><li>スタッフ定着サポート（1ヶ月）</li><li>運用マニュアル作成</li><li>3ヶ月アフターサポート</li></ul>
         <a href="#contact" class="plan-btn">相談する</a>
@@ -1804,7 +1897,7 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
           <div class="profile-axis">
             <div class="profile-axis-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="7" r="3"/><path d="M3 20v-1.5A3.5 3.5 0 0 1 6.5 15h3A3.5 3.5 0 0 1 13 18.5V20"/><circle cx="17" cy="8" r="2.5"/><path d="M15 20v-1A2.5 2.5 0 0 1 17.5 17H19"/></svg></div>
             <div class="profile-axis-label">Community</div>
-            <div class="profile-axis-text">消防団10年・PTA・しゃぼん玉おじさん<br>集客5,000人イベント主催（7回）</div>
+            <div class="profile-axis-text">消防団10年・PTA・しゃぼん玉おじさん<br>5,000人イベント主催 / かんもんノート管理人</div>
           </div>
         </div>
 
@@ -1861,6 +1954,9 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
       <details class="faq-item reveal"><summary><span class="faq-q">Q.03</span><span>下関・山口以外でも対応していますか？</span><span class="faq-plus">＋</span></summary><div class="faq-body">オンライン対応が可能ですので、全国どこからでもご依頼いただけます。対面をご希望の場合は山口・下関エリアを優先させていただいています（交通費無料）。</div></details>
       <details class="faq-item reveal"><summary><span class="faq-q">Q.04</span><span>どんな業種・規模でも対応できますか？</span><span class="faq-plus">＋</span></summary><div class="faq-body">水産・小売・飲食・製造・サービス業など、さまざまな業種に対応しています。個人事業主から数十名規模の中小企業まで柔軟に対応しています。商工会議所や業界団体経由でのご紹介も歓迎です。</div></details>
       <details class="faq-item reveal"><summary><span class="faq-q">Q.05</span><span>導入後のサポートはありますか？</span><span class="faq-plus">＋</span></summary><div class="faq-body">月次顧問プランで継続サポートします。AI技術は日進月歩なので、最新情報のキャッチアップも含めて一緒にアップデートしていきます。</div></details>
+      <details class="faq-item reveal"><summary><span class="faq-q">Q.06</span><span>かんもんノートとの関係は？</span><span class="faq-plus">＋</span></summary><div class="faq-body">関門海峡エリアの情報メディア「かんもんノート」の管理人も務めています。地域の事業者・お店・イベント情報を発信しており、Yスタジオ＋のHP制作・EC支援と連携したプロモーションも対応可能です。</div></details>
+      <details class="faq-item reveal"><summary><span class="faq-q">Q.07</span><span>月次顧問はいつでも解約できますか？</span><span class="faq-plus">＋</span></summary><div class="faq-body">月単位のご契約です。翌月の継続・停止はご自由にお選びいただけます。最低契約期間はありません。「まず3ヶ月試してみたい」というご相談も大歓迎です。</div></details>
+      <details class="faq-item reveal"><summary><span class="faq-q">Q.08</span><span>スタッフへの浸透まで支援してもらえますか？</span><span class="faq-plus">＋</span></summary><div class="faq-body">はい、スタッフへのレクチャー・マニュアル作成・定着確認まで含まれています。「社長だけが分かる」状態では意味がないので、現場全体が使えるまでサポートします。</div></details>
     </div>
   </div>
 </section>
@@ -2212,7 +2308,7 @@ calcSim();
   const ctx = canvas.getContext('2d');
   let W, H, pts = [];
   const GOLD = 'rgba(201,168,76,';
-  const COUNT = 80;
+  const COUNT = 120;
   function resize(){
     W = canvas.width = canvas.offsetWidth;
     H = canvas.height = canvas.offsetHeight;
@@ -2224,8 +2320,8 @@ calcSim();
         x: Math.random()*W,
         y: Math.random()*H,
         r: Math.random()*1.5+.5,
-        vx:(Math.random()-.5)*.25,
-        vy:(Math.random()-.5)*.25,
+        vx:(Math.random()-.5)*.35,
+        vy:(Math.random()-.5)*.35,
         a: Math.random()
       });
     }
@@ -2237,11 +2333,11 @@ calcSim();
       for(let j=i+1;j<pts.length;j++){
         const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y;
         const d=Math.sqrt(dx*dx+dy*dy);
-        if(d<120){
+        if(d<150){
           ctx.beginPath();
           ctx.moveTo(pts[i].x,pts[i].y);
           ctx.lineTo(pts[j].x,pts[j].y);
-          ctx.strokeStyle=GOLD+(1-d/120)*.12+')';
+          ctx.strokeStyle=GOLD+(1-d/150)*.18+')';
           ctx.lineWidth=.5;
           ctx.stroke();
         }
