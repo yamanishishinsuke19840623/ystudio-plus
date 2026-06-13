@@ -266,12 +266,18 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
 .game-stat span{display:block;font-size:22px;font-weight:900;color:var(--cyan2);letter-spacing:-1px;line-height:1.2;}
 #game-canvas{display:block;width:100%;height:400px;cursor:crosshair;}
 @media(max-width:600px){#game-canvas{height:300px;}}
-.game-overlay{position:absolute;inset:49px 0 0 0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(4,4,15,0.72);gap:14px;transition:.3s;}
+.game-overlay{position:absolute;inset:49px 0 0 0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(4,4,15,0.82);gap:10px;transition:.3s;overflow-y:auto;padding:16px 0;}
 .game-overlay.hidden{display:none;}
 .g-title{font-size:clamp(22px,5vw,34px);font-weight:900;background:linear-gradient(135deg,var(--purple2),var(--cyan2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .g-sub{font-size:13px;color:var(--sub);text-align:center;line-height:1.8;}
-.g-btn{background:linear-gradient(135deg,var(--purple),var(--cyan));color:#fff;border:none;padding:14px 40px;border-radius:50px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:.3s;margin-top:8px;}
+.g-btn{background:linear-gradient(135deg,var(--purple),var(--cyan));color:#fff;border:none;padding:14px 40px;border-radius:50px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:.3s;margin-top:4px;}
 .g-btn:hover{opacity:.85;transform:translateY(-2px);}
+.g-rank-wrap{width:100%;max-width:280px;border:1px solid var(--line);border-radius:4px;overflow:hidden;}
+.g-rank-tbl{width:100%;border-collapse:collapse;font-size:13px;}
+.g-rank-tbl th{font-family:'Inter',sans-serif;font-size:9px;letter-spacing:1.5px;color:var(--sub);text-transform:uppercase;padding:6px 12px;text-align:left;background:rgba(7,7,21,.9);border-bottom:1px solid var(--line);}
+.g-rank-tbl td{padding:7px 12px;color:var(--white);}
+.g-rank-tbl tr:nth-child(even) td{background:rgba(255,255,255,.03);}
+.g-rank-current td{color:var(--cyan2) !important;font-weight:700;}
 
 /* ── FOOTER ── */
 .nb-footer{padding:40px 48px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1;}
@@ -369,7 +375,7 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
       <div class="pain-card"><span class="pain-card-check">写真映えする企画を探している</span></div>
       <div class="pain-card"><span class="pain-card-check">地域の人が自然に集まる企画が欲しい</span></div>
       <div class="pain-card"><span class="pain-card-check">夜のイベントに目玉企画が欲しい</span></div>
-      <div class="pain-card"><span class="pain-card-check">PTA行事を盛り上げたい</span></div>
+      <div class="pain-card"><span class="pain-card-check">子どもだけでなく大人も楽しめる企画がない</span></div>
     </div>
     <div class="pain-solve">
       <p class="pain-solve-text">その悩み、<span class="grd">ナイトバブルが解決します。</span><br>
@@ -394,8 +400,8 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
       </div>
       <div class="feature-card">
         <div class="feature-num">02</div>
-        <h3>来場者がSNSで発信したくなる</h3>
-        <p>「写真撮りたい！」が自然に起きる空間になります。来場者のSNS投稿がイベントの口コミになり、次回の集客にもつながります。</p>
+        <h3>子どもから大人まで全員が楽しめる</h3>
+        <p>幼児もお年寄りも、高校生も大学生も、親御さんも。シャボン玉という存在は年齢を選びません。会場全体が同じ瞬間に笑顔になります。</p>
       </div>
       <div class="feature-card">
         <div class="feature-num">03</div>
@@ -827,7 +833,7 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
       <canvas id="game-canvas"></canvas>
       <div class="game-overlay" id="game-overlay">
         <p class="g-title">🫧 シャボン玉わりゲーム</p>
-        <p class="g-sub">30秒間、シャボン玉をタップして割ろう！<br>小さいシャボン玉ほど高得点！</p>
+        <p class="g-sub">20秒間、シャボン玉をタップして割ろう！<br>ランキング上位を目指せ！</p>
         <button class="g-btn" id="g-start-btn">スタート！</button>
       </div>
     </div>
@@ -878,9 +884,29 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
   const overlay = document.getElementById('game-overlay');
   const startBtn= document.getElementById('g-start-btn');
 
-  let W,H,gBubbles=[],gParticles=[],gScore=0,gTimer=30,gRunning=false,gInterval,gRaf;
+  let W,H,gBubbles=[],gParticles=[],gScore=0,gTimer=20,gRunning=false,gInterval,gRaf;
   let gBest = parseInt(localStorage.getItem('nb-game-best')||'0');
   bestEl.textContent = gBest;
+
+  const RANK_KEY='nb-game-ranking-v2';
+  function getRanking(){return JSON.parse(localStorage.getItem(RANK_KEY)||'[]');}
+  function saveRanking(score){
+    if(score<=0)return;
+    const r=getRanking();
+    const d=new Date();
+    r.push({score,date:(d.getMonth()+1)+'/'+(d.getDate())});
+    r.sort((a,b)=>b.score-a.score); r.splice(5);
+    localStorage.setItem(RANK_KEY,JSON.stringify(r));
+  }
+  function rankHTML(currentScore){
+    const r=getRanking(); if(!r.length)return'';
+    const medals=['🥇','🥈','🥉','4位','5位'];
+    const rows=r.map((e,i)=>{
+      const cur=e.score===currentScore&&i===r.findIndex(x=>x.score===currentScore);
+      return`<tr${cur?' class="g-rank-current"':''}><td>${medals[i]||i+1}</td><td>${e.score}点</td><td>${e.date}</td></tr>`;
+    }).join('');
+    return`<div class="g-rank-wrap"><table class="g-rank-tbl"><thead><tr><th>順位</th><th>スコア</th><th>日付</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  }
 
   const GC = [[124,58,237],[6,182,212],[167,139,250],[240,171,252],[34,211,238],[251,191,36]];
 
@@ -944,18 +970,21 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
 
   function endGame(){
     gRunning=false; clearInterval(gInterval);
-    if(gScore>gBest){gBest=gScore;localStorage.setItem('nb-game-best',gBest);bestEl.textContent=gBest;}
+    const isNewBest=gScore>gBest&&gScore>0;
+    if(isNewBest){gBest=gScore;localStorage.setItem('nb-game-best',gBest);bestEl.textContent=gBest;}
+    saveRanking(gScore);
     overlay.innerHTML=`<p class="g-title">${gScore}点！</p>
-      <p class="g-sub">${gScore>=30?'すごい！シャボン玉名人だ🎉':gScore>=15?'いいね！もう一回！':'まだまだ！練習あるのみ！'}</p>
-      ${gScore>=gBest&&gScore>0?'<p class="g-sub" style="color:var(--cyan2)">🏆 ベスト更新！</p>':''}
-      <button class="g-btn" id="g-restart-btn">もう一度</button>`;
+      <p class="g-sub">${gScore>=20?'すごい！シャボン玉名人だ🎉':gScore>=10?'いいね！もう一回！':'まだまだ！練習あるのみ！'}</p>
+      ${isNewBest?'<p class="g-sub" style="color:var(--cyan2);font-weight:700;">🏆 ベスト更新！</p>':''}
+      ${rankHTML(gScore)}
+      <button class="g-btn" id="g-restart-btn">もう一度！</button>`;
     overlay.classList.remove('hidden');
     document.getElementById('g-restart-btn').addEventListener('click',startGame);
   }
 
   function startGame(){
-    gScore=0; gTimer=30; gBubbles=[]; gParticles=[];
-    scoreEl.textContent=0; timerEl.textContent=30;
+    gScore=0; gTimer=20; gBubbles=[]; gParticles=[];
+    scoreEl.textContent=0; timerEl.textContent=20;
     overlay.classList.add('hidden');
     gRunning=true;
     cancelAnimationFrame(gRaf);
