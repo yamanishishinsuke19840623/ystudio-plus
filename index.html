@@ -912,7 +912,147 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
 .bfa-rate span{ font-size:24px !important;font-weight:900 !important; }
 .bfa-rate small{ font-size:11px !important; }
 
+
+/* ══ HAMBURGER ══ */
+.hd-ham{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;z-index:300;}
+.hd-ham span{display:block;width:22px;height:1.5px;background:var(--white);transition:.4s;transform-origin:center;}
+.hd-ham.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+.hd-ham.open span:nth-child(2){opacity:0;}
+.hd-ham.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
+.mob-nav{
+  display:none;position:fixed;inset:0;top:0;z-index:250;
+  background:rgba(5,8,15,.97);backdrop-filter:blur(20px);
+  flex-direction:column;align-items:center;justify-content:center;gap:36px;
+  opacity:0;pointer-events:none;transition:.4s;
+}
+.mob-nav.open{opacity:1;pointer-events:auto;}
+.mob-nav a{
+  font-family:'Inter',sans-serif;font-size:clamp(22px,5vw,36px);font-weight:900;
+  color:var(--white);text-decoration:none;letter-spacing:3px;text-transform:uppercase;
+  transition:.3s;
+}
+.mob-nav a:hover{color:var(--gold);}
+.mob-nav-cta{
+  border:1px solid var(--gold);color:var(--gold) !important;
+  padding:14px 36px;font-size:14px !important;
+}
+@media(max-width:768px){
+  .hd-ham{display:flex;}
+  .mob-nav{display:flex;}
+}
+
+/* ══ COMPARE TABLE ══ */
+.compare-sec{background:var(--dark2);}
+.compare-wrap{overflow-x:auto;}
+.compare-tbl{
+  width:100%;border-collapse:collapse;min-width:560px;
+}
+.compare-tbl th,.compare-tbl td{
+  padding:14px 18px;text-align:center;font-size:13px;
+  border-bottom:1px solid var(--line);
+}
+.compare-tbl th{
+  font-family:'Inter',sans-serif;font-size:10px;letter-spacing:2px;
+  text-transform:uppercase;padding:18px;background:var(--dark);
+}
+.compare-tbl th:first-child,.compare-tbl td:first-child{
+  text-align:left;font-weight:700;color:var(--sub);width:35%;
+}
+.compare-tbl th.col-ys,.compare-tbl td.col-ys{
+  background:rgba(201,168,76,.04);border-left:1px solid rgba(201,168,76,.2);border-right:1px solid rgba(201,168,76,.2);
+}
+.compare-tbl th.col-ys{border-top:2px solid var(--gold);color:var(--gold);}
+.cmp-ok{color:var(--gold);font-weight:900;font-size:16px;}
+.cmp-ng{color:rgba(239,68,68,.6);font-weight:700;}
+.cmp-tri{color:rgba(240,239,236,.35);}
+.cmp-txt{font-size:12px;color:var(--sub);}
+.cmp-txt.g{color:var(--gold);font-weight:700;}
+
+/* ══ CHECKLIST ══ */
+.check-sec{background:var(--black);}
+.check-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:2px;
+  margin-bottom:40px;
+}
+.check-item{
+  background:var(--dark);border:1px solid var(--line);
+  padding:18px 20px;
+  display:flex;align-items:flex-start;gap:14px;
+  transition:.35s;cursor:default;
+}
+.check-item:hover{border-color:rgba(201,168,76,.2);background:rgba(201,168,76,.03);}
+.check-box{
+  width:20px;height:20px;border:1.5px solid rgba(201,168,76,.4);
+  border-radius:3px;flex-shrink:0;margin-top:1px;
+  display:flex;align-items:center;justify-content:center;
+  transition:.35s;
+}
+.check-item:hover .check-box{border-color:var(--gold);background:rgba(201,168,76,.1);}
+.check-txt{font-size:13px;color:var(--sub);line-height:1.6;}
+.check-cta-wrap{
+  border:1px solid rgba(201,168,76,.3);background:rgba(201,168,76,.05);
+  padding:28px 32px;text-align:center;
+}
+.check-cta-lead{font-size:14px;color:var(--white);font-weight:700;margin-bottom:16px;}
+.check-cta-sub{font-size:13px;color:var(--sub);margin-bottom:20px;}
+@media(max-width:640px){.check-grid{grid-template-columns:1fr;}}
+
+/* ══ SLOTS（限定感） ══ */
+.slots-bar{
+  background:rgba(5,8,15,.9);border-top:1px solid rgba(201,168,76,.15);
+  border-bottom:1px solid rgba(201,168,76,.15);
+  padding:16px 60px;display:flex;align-items:center;justify-content:center;gap:24px;
+  flex-wrap:wrap;
+}
+.slots-dot{width:8px;height:8px;background:#22c55e;border-radius:50%;animation:pulse-g 1.5s infinite;}
+@keyframes pulse-g{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(34,197,94,.4);}50%{opacity:.8;box-shadow:0 0 0 6px rgba(34,197,94,0);}}
+.slots-label{font-size:13px;color:var(--sub);}
+.slots-num{font-family:'Inter',sans-serif;font-size:20px;font-weight:900;color:var(--gold);}
+.slots-unit{font-size:13px;color:var(--sub);}
+.slots-note{font-size:11px;color:rgba(240,239,236,.25);letter-spacing:.5px;}
+@media(max-width:640px){.slots-bar{padding:14px 24px;gap:12px;}}
+
+/* ══ YOUTUBE ══ */
+.yt-sec{background:var(--dark2);}
+.yt-embed-wrap{
+  position:relative;width:100%;padding-top:56.25%;
+  border:1px solid var(--line);overflow:hidden;margin-bottom:16px;
+}
+.yt-embed-wrap iframe{
+  position:absolute;top:0;left:0;width:100%;height:100%;border:none;
+}
+.yt-caption{font-size:13px;color:var(--sub);text-align:center;}
+
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "Yスタジオ＋",
+  "description": "御社の現場に直接入ってAIを実装します。FDE（前面展開型エンジニア）スタイルのAI伴走支援。",
+  "url": "https://yamanishishinsuke19840623.github.io/ystudio-plus/",
+  "telephone": "070-5483-0623",
+  "email": "yamanishishinsuke19840623@gmail.com",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "富任町1-1-5",
+    "addressLocality": "下関市",
+    "addressRegion": "山口県",
+    "postalCode": "759-6613",
+    "addressCountry": "JP"
+  },
+  "geo": {"@type":"GeoCoordinates","latitude":33.9520,"longitude":130.9147},
+  "areaServed": [{"@type":"Prefecture","name":"山口県"},{"@type":"City","name":"下関市"}],
+  "priceRange": "¥¥",
+  "openingHours": "Mo-Fr 09:00-18:00",
+  "founder": {"@type":"Person","name":"山西伸典"},
+  "sameAs": [
+    "https://x.com/yamanisisinsuke",
+    "https://www.instagram.com/fuguya_sensei/",
+    "https://www.youtube.com/@shimofugu"
+  ]
+}
+</script>
 </head>
 <body>
 <div id="loader">
@@ -935,7 +1075,18 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
     <a href="#faq">FAQ</a>
   </nav>
   <a href="#contact" class="hd-cta">FREE CONSULTATION</a>
+  <div class="hd-ham" id="hd-ham" aria-label="メニュー">
+    <span></span><span></span><span></span>
+  </div>
 </header>
+<nav class="mob-nav" id="mob-nav">
+  <a href="#fde" onclick="closeMob()">APPROACH</a>
+  <a href="#results" onclick="closeMob()">RESULTS</a>
+  <a href="#plans" onclick="closeMob()">PLAN</a>
+  <a href="#profile" onclick="closeMob()">PROFILE</a>
+  <a href="#faq" onclick="closeMob()">FAQ</a>
+  <a href="#contact" onclick="closeMob()" class="mob-nav-cta">FREE CONSULTATION</a>
+</nav>
 
 
 <!-- TEL BAR -->
@@ -944,6 +1095,15 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
   <a href="tel:07054836023" class="tel-bar-num">070-5483-0623</a>
   <span class="tel-bar-note">受付 平日 9:00〜18:00</span>
   <span class="tel-bar-free">下関・山口県内 訪問無料</span>
+</div>
+
+<!-- SLOTS -->
+<div class="slots-bar reveal">
+  <div class="slots-dot"></div>
+  <span class="slots-label">今月の現場訪問枠</span>
+  <span class="slots-num">残 3 社</span>
+  <span class="slots-unit">/ 5社限定</span>
+  <span class="slots-note">（毎月更新 · 先着順）</span>
 </div>
 
 <!-- HERO -->
@@ -1131,6 +1291,59 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
 
 <div class="divider"></div>
 
+<!-- COMPARE -->
+<section class="sec compare-sec" id="compare">
+  <div class="container">
+    <div class="sec-label reveal"><div class="sec-label-line"></div><span class="sec-label-text">Compare</span></div>
+    <h2 class="sec-title reveal">他と何が<br><span class="light">違うのか。</span></h2>
+    <div class="compare-wrap reveal">
+      <table class="compare-tbl">
+        <thead><tr>
+          <th></th>
+          <th>他社<br>コンサル</th>
+          <th>AI人材<br>採用</th>
+          <th class="col-ys">Yスタジオ＋</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>現場に直接入る</td><td><span class="cmp-ng">✗</span></td><td><span class="cmp-tri">△</span></td><td class="col-ys"><span class="cmp-ok">✓✓</span></td></tr>
+          <tr><td>実装まで責任を持つ</td><td><span class="cmp-ng">✗</span></td><td><span class="cmp-tri">△</span></td><td class="col-ys"><span class="cmp-ok">✓✓</span></td></tr>
+          <tr><td>自社で実証済みの仕組み</td><td><span class="cmp-ng">✗</span></td><td><span class="cmp-ng">✗</span></td><td class="col-ys"><span class="cmp-ok">✓✓</span></td></tr>
+          <tr><td>下関・山口で訪問可能</td><td><span class="cmp-ng">✗</span></td><td><span class="cmp-ng">✗</span></td><td class="col-ys"><span class="cmp-ok">✓✓</span></td></tr>
+          <tr><td>スタッフ定着まで支援</td><td><span class="cmp-ng">✗</span></td><td><span class="cmp-tri">△</span></td><td class="col-ys"><span class="cmp-ok">✓✓</span></td></tr>
+          <tr><td>初期コスト</td><td><span class="cmp-txt">高額</span></td><td><span class="cmp-txt">採用費 百万〜</span></td><td class="col-ys"><span class="cmp-txt g">5万円〜</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CHECK -->
+<section class="sec check-sec" id="check">
+  <div class="container">
+    <div class="sec-label reveal"><div class="sec-label-line"></div><span class="sec-label-text">Is This You?</span></div>
+    <h2 class="sec-title reveal">こんな課題、<br><span class="light">ありませんか？</span></h2>
+    <div class="check-grid reveal">
+      <div class="check-item"><div class="check-box"></div><div class="check-txt">給与計算・経費精算をExcelや手作業でやっている</div></div>
+      <div class="check-item"><div class="check-box"></div><div class="check-txt">ECモール管理に週3時間以上かかっている</div></div>
+      <div class="check-item"><div class="check-box"></div><div class="check-txt">AIに興味はあるが、何から始めればいいか分からない</div></div>
+      <div class="check-item"><div class="check-box"></div><div class="check-txt">ChatGPTを触ったことはあるが、業務には使えていない</div></div>
+      <div class="check-item"><div class="check-box"></div><div class="check-txt">コンサルに頼んだが「提案書だけ」で終わった経験がある</div></div>
+      <div class="check-item"><div class="check-box"></div><div class="check-txt">AI担当者を採用したいが、採用コストと育成コストが怖い</div></div>
+      <div class="check-item"><div class="check-box"></div><div class="check-txt">人手不足で余裕がなく、新しいことを始められない</div></div>
+      <div class="check-item"><div class="check-box"></div><div class="check-txt">東京のコンサルに頼んでも「地元の事情」を分かってもらえない</div></div>
+    </div>
+    <div class="check-cta-wrap reveal">
+      <div class="check-cta-lead">1つでも当てはまるなら、まず話してみてください。</div>
+      <div class="check-cta-sub">「断ってもOKです」——30分、聴くだけでも構いません。</div>
+      <a href="#contact" class="btn-gold">無料相談を申し込む</a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
 <!-- REASONS -->
 <section class="sec reasons-sec" id="reasons">
   <div class="container">
@@ -1162,6 +1375,28 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
           <div class="reason-text">下関・山口県内は<strong style="color:var(--gold)">訪問無料</strong>。消防団10年・PTA・地域活動12年。地元の事業者の課題と文化を知っています。</div>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- YOUTUBE -->
+<section class="sec yt-sec" id="youtube">
+  <div class="container">
+    <div class="sec-label reveal"><div class="sec-label-line"></div><span class="sec-label-text">Watch</span></div>
+    <h2 class="sec-title reveal">動画で<br><span class="light">知ってもらう。</span></h2>
+    <div style="max-width:760px;margin:0 auto;" class="reveal">
+      <div class="yt-embed-wrap">
+        <!-- 動画IDを差し替えてください: https://youtu.be/VIDEO_ID の VIDEO_ID 部分 -->
+        <iframe
+          src="https://www.youtube.com/embed/PLACEHOLDER?rel=0&modestbranding=1"
+          allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"
+          allowfullscreen loading="lazy"
+          title="Yスタジオ+ チャンネル動画">
+        </iframe>
+      </div>
+      <p class="yt-caption">ふぐ屋の社長がAIを語る。チャンネル登録者1,330人 · <a href="https://www.youtube.com/@shimofugu" target="_blank" style="color:var(--gold);">@shimofugu</a></p>
     </div>
   </div>
 </section>
@@ -1499,6 +1734,17 @@ const barObs = new IntersectionObserver((entries) => {
   });
 }, {threshold:.5});
 document.querySelectorAll('.bfa-bar-fill').forEach(el => barObs.observe(el));
+
+
+// ── F: HAMBURGER ─────────────────────────────────────────────────
+const ham = document.getElementById('hd-ham');
+const mobNav = document.getElementById('mob-nav');
+function closeMob(){ ham.classList.remove('open'); mobNav.classList.remove('open'); document.body.style.overflow=''; }
+if(ham){ ham.addEventListener('click', () => {
+  ham.classList.toggle('open');
+  mobNav.classList.toggle('open');
+  document.body.style.overflow = mobNav.classList.contains('open') ? 'hidden' : '';
+}); }
 
 // ── B: PARTICLES ─────────────────────────────────────────────────
 (function(){
