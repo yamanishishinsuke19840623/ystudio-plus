@@ -807,6 +807,111 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
 .slash-dark2{ fill:var(--dark2); }
 .slash-black{ fill:var(--black); }
 
+
+/* ══ FLYER: TEL + 選ばれる理由 ══ */
+.tel-bar{
+  background:rgba(201,168,76,.06);
+  border-top:1px solid rgba(201,168,76,.15);
+  border-bottom:1px solid rgba(201,168,76,.15);
+  padding:14px 60px;
+  display:flex;align-items:center;justify-content:center;gap:32px;
+  flex-wrap:wrap;
+}
+.tel-bar-label{
+  font-family:'Inter',sans-serif;font-size:10px;letter-spacing:2px;
+  color:var(--gold);text-transform:uppercase;
+}
+.tel-bar-num{
+  font-family:'Inter',sans-serif;font-size:22px;font-weight:900;
+  color:var(--white);letter-spacing:2px;text-decoration:none;
+  transition:.3s;
+}
+.tel-bar-num:hover{color:var(--gold);}
+.tel-bar-note{font-size:12px;color:var(--sub);}
+.tel-bar-free{
+  background:rgba(201,168,76,.12);
+  border:1px solid rgba(201,168,76,.3);
+  color:var(--gold);font-size:11px;font-weight:700;
+  padding:4px 14px;letter-spacing:.5px;
+}
+@media(max-width:640px){.tel-bar{padding:14px 24px;gap:16px;}.tel-bar-num{font-size:18px;}}
+
+/* ══ 選ばれる3理由 ══ */
+.reasons-sec{background:var(--dark2);}
+.reasons-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:2px;
+}
+.reason-card{
+  background:var(--dark);border:1px solid var(--line);
+  padding:32px 24px;
+  display:flex;flex-direction:column;gap:16px;
+  position:relative;overflow:hidden;transition:.35s;
+}
+.reason-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--line);transition:.4s;
+}
+.reason-card:hover::before{background:var(--gold);}
+.reason-card:hover{background:rgba(201,168,76,.03);border-color:rgba(201,168,76,.2);}
+.reason-num{
+  font-family:'Inter',sans-serif;font-size:48px;font-weight:900;
+  color:rgba(201,168,76,.08);line-height:1;letter-spacing:-2px;
+  position:absolute;top:12px;right:18px;
+}
+.reason-icon-wrap{
+  width:48px;height:48px;border-radius:8px;
+  border:1px solid rgba(201,168,76,.2);background:rgba(201,168,76,.04);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--gold);transition:.35s;
+}
+.reason-card:hover .reason-icon-wrap{background:rgba(201,168,76,.1);border-color:rgba(201,168,76,.4);}
+.reason-title{font-size:18px;font-weight:900;color:var(--white);line-height:1.3;}
+.reason-title em{color:var(--gold);font-style:normal;}
+.reason-text{font-size:13px;color:var(--sub);line-height:1.9;}
+@media(max-width:768px){.reasons-grid{grid-template-columns:1fr;}}
+
+
+/* ══ BFA CARD REDESIGN ══ */
+.bfa-card{
+  padding:28px 22px !important;
+  display:flex;
+  flex-direction:column;
+  gap:0;
+}
+.bfa-card-head{
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:flex-start !important;
+  gap:14px !important;
+  margin-bottom:20px !important;
+}
+.bfa-icon{
+  width:52px !important;height:52px !important;
+  border-radius:10px !important;
+  border:1px solid rgba(201,168,76,.25) !important;
+  background:rgba(201,168,76,.06) !important;
+  display:flex !important;align-items:center !important;justify-content:center !important;
+  color:var(--gold) !important;
+  flex-shrink:0;
+  transition:.35s;
+}
+.bfa-icon svg{ width:26px !important;height:26px !important; }
+.bfa-card:hover .bfa-icon{
+  background:rgba(201,168,76,.14) !important;
+  border-color:rgba(201,168,76,.5) !important;
+  transform:scale(1.06);
+}
+.bfa-task{
+  font-size:14px !important;
+  font-weight:700 !important;
+  color:var(--white) !important;
+  line-height:1.5 !important;
+}
+.bfa-before{ font-size:13px !important; }
+.bfa-after{ font-size:13px !important; }
+.bfa-rate span{ font-size:24px !important;font-weight:900 !important; }
+.bfa-rate small{ font-size:11px !important; }
+
 </style>
 </head>
 <body>
@@ -832,6 +937,15 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
   <a href="#contact" class="hd-cta">FREE CONSULTATION</a>
 </header>
 
+
+<!-- TEL BAR -->
+<div class="tel-bar">
+  <span class="tel-bar-label">Tel</span>
+  <a href="tel:07054836023" class="tel-bar-num">070-5483-0623</a>
+  <span class="tel-bar-note">受付 平日 9:00〜18:00</span>
+  <span class="tel-bar-free">下関・山口県内 訪問無料</span>
+</div>
+
 <!-- HERO -->
 <section class="hero">
   <canvas id="hero-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.6;"></canvas>
@@ -843,7 +957,7 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
     <div class="hero-tag reveal"><div class="hero-tag-line"></div><span class="hero-tag-text">AI Field Deployment / Shimonoseki · Yamaguchi</span></div>
     <h1 class="reveal">
       <span class="en">Forward Deployed Engineer</span>
-      御社の現場に<br>直接入って、<br><span class="gold">AIを動かします。</span>
+      AI担当者を雇う前に、<br>私を<span class="gold">1日貸してください。</span>
     </h1>
     <div class="hero-typing"><span class="ttype" id="ttype"></span><span class="tcursor">|</span></div>
 <p class="hero-desc reveal">コンサルは提案書を出す。Yスタジオ＋は「実装して、動くまで帰らない」スタイルです。<br>下関ふぐ屋の社長 × AI教育者 × 3児のパパが現場に入ります。</p>
@@ -1017,6 +1131,43 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
 
 <div class="divider"></div>
 
+<!-- REASONS -->
+<section class="sec reasons-sec" id="reasons">
+  <div class="container">
+    <div class="sec-label reveal"><div class="sec-label-line"></div><span class="sec-label-text">Why Ystudio+</span></div>
+    <h2 class="sec-title reveal">選ばれる<br><span class="light">3つの理由。</span></h2>
+    <p class="sec-desc reveal">「提案書だけで終わらない。動くまで帰らない。」それがYスタジオ＋です。</p>
+    <div class="reasons-grid reveal">
+      <div class="reason-card">
+        <div class="reason-num">01</div>
+        <div class="reason-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg></div>
+        <div>
+          <div class="reason-title"><em>現場に入る</em></div>
+          <div class="reason-text">コンサルは提案書を出して終わり。Yスタジオ＋は実際に現場に入り、業務フローを目で見てから設計・実装します。</div>
+        </div>
+      </div>
+      <div class="reason-card">
+        <div class="reason-num">02</div>
+        <div class="reason-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div>
+          <div class="reason-title"><em>自社で実証済み</em></div>
+          <div class="reason-text">山西水産で8年以上実際に動かしてきた仕組みのみを提供。月30時間削減・6種の自動化が今も稼働中です。</div>
+        </div>
+      </div>
+      <div class="reason-card">
+        <div class="reason-num">03</div>
+        <div class="reason-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+        <div>
+          <div class="reason-title"><em>地域密着</em></div>
+          <div class="reason-text">下関・山口県内は<strong style="color:var(--gold)">訪問無料</strong>。消防団10年・PTA・地域活動12年。地元の事業者の課題と文化を知っています。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
 <!-- VOICE -->
 <section class="sec voice-sec" id="voice">
   <div class="container">
@@ -1161,7 +1312,7 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
     <h2 class="sec-title reveal" style="margin-bottom:48px;">よくある質問。</h2>
     <div class="faq-list">
       <details class="faq-item reveal"><summary><span class="faq-q">Q.01</span><span>AIに詳しくなくても大丈夫ですか？</span><span class="faq-plus">＋</span></summary><div class="faq-body">まったく問題ありません。「ChatGPTって何？」というレベルからでも丁寧にご説明します。専門用語を使わず、現場の言葉でお伝えします。むしろAI未経験の方こそ効果を実感しやすいです。</div></details>
-      <details class="faq-item reveal"><summary><span class="faq-q">Q.02</span><span>費用はどのくらいかかりますか？</span><span class="faq-plus">＋</span></summary><div class="faq-body">まずは無料相談でお気軽にご連絡ください。スポット診断5万円〜、月次顧問10万円〜です。IT導入補助金の活用で自己負担を大幅に抑えられる場合があります。</div></details>
+      <details class="faq-item reveal"><summary><span class="faq-q">Q.02</span><span>費用はどのくらいかかりますか？</span><span class="faq-plus">＋</span></summary><div class="faq-body">まずは無料相談でお気軽にご連絡ください。スポット診断5万円〜、月次顧問10万円〜です。</div></details>
       <details class="faq-item reveal"><summary><span class="faq-q">Q.03</span><span>下関・山口以外でも対応していますか？</span><span class="faq-plus">＋</span></summary><div class="faq-body">オンライン対応が可能ですので、全国どこからでもご依頼いただけます。対面をご希望の場合は山口・下関エリアを優先させていただいています（交通費無料）。</div></details>
       <details class="faq-item reveal"><summary><span class="faq-q">Q.04</span><span>どんな業種・規模でも対応できますか？</span><span class="faq-plus">＋</span></summary><div class="faq-body">水産・小売・飲食・製造・サービス業など、さまざまな業種に対応しています。個人事業主から数十名規模の中小企業まで柔軟に対応しています。商工会議所や業界団体経由でのご紹介も歓迎です。</div></details>
       <details class="faq-item reveal"><summary><span class="faq-q">Q.05</span><span>導入後のサポートはありますか？</span><span class="faq-plus">＋</span></summary><div class="faq-body">月次顧問プランで継続サポートします。AI技術は日進月歩なので、最新情報のキャッチアップも含めて一緒にアップデートしていきます。</div></details>
@@ -1182,7 +1333,7 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         30分無料相談を予約する
       </a>
-      <a href="proposal.html" target="_blank" class="btn-dl">
+      <a href="flyer.png" download="Yスタジオ+_AI事業開始チラシ.png" class="btn-dl">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         法人向け資料を見る
       </a>
@@ -1219,7 +1370,7 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
         </div>
         <div class="form-row"><div class="form-group full"><label class="form-label" for="message">Message *</label><textarea class="form-textarea" id="message" name="message" placeholder="現在の課題や、お聞きしたいことを自由にご記入ください。" required></textarea></div></div>
         <button type="submit" class="form-submit" id="submit-btn">Send Message</button>
-        <p class="form-note">通常2営業日以内にご返信 · yamanishishinsuke19840623@gmail.com</p>
+        <p class="form-note">通常2営業日以内にご返信 · yamanishishinsuke19840623@gmail.com · TEL: 070-5483-0623</p>
       </form>
     </div>
   </div>
