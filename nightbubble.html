@@ -28,7 +28,7 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rgba(4,4,15,.88),rgba(4,4,15,.88)),url('bubble-bg.png') center/cover fixed;color:var(--white);line-height:1.7;overflow-x:hidden;}
+body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rgba(4,4,15,.75),rgba(4,4,15,.75)),url('bubble-bg.png') center/cover fixed;color:var(--white);line-height:1.7;overflow-x:hidden;}
 @media(max-width:768px){body{background-attachment:scroll;}}
 ::-webkit-scrollbar{width:3px;}
 ::-webkit-scrollbar-track{background:var(--bg);}
@@ -92,7 +92,7 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
 /* ── STATS BAR ── */
 .stats-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);margin-top:80px;border:1px solid var(--line);}
 @media(max-width:600px){.stats-bar{grid-template-columns:1fr;}}
-.stat-item{padding:36px 32px;background:rgba(7,7,21,0.78);text-align:center;position:relative;overflow:hidden;}
+.stat-item{padding:36px 32px;background:rgba(7,7,21,0.65);text-align:center;position:relative;overflow:hidden;}
 .stat-item::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--gp),transparent);opacity:0;transition:.4s;}
 .stat-item:hover::before{opacity:1;}
 .stat-num{font-family:'Inter',sans-serif;font-size:clamp(32px,5vw,56px);font-weight:900;line-height:1;}
@@ -145,6 +145,7 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
 .lsch-sub{font-weight:400;font-size:12px;color:var(--sub);display:block;margin-top:2px;}
 .lsch-badge-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:6px;position:relative;z-index:1;}
 .lsch-upcoming{font-family:'Inter',sans-serif;font-size:9px;letter-spacing:1.5px;background:linear-gradient(135deg,var(--purple),var(--cyan));color:#fff;padding:4px 12px;border-radius:20px;white-space:nowrap;}
+.lsch-done{font-family:'Inter',sans-serif;font-size:9px;letter-spacing:1.5px;color:#4ade80;border:1px solid rgba(74,222,128,.35);padding:4px 12px;border-radius:20px;white-space:nowrap;}
 @media(max-width:700px){.local-sch-item{grid-template-columns:40px 90px 1fr;gap:12px;padding:14px 16px;}.lsch-badge-wrap{display:none;}}
 @media(max-width:480px){.local-sch-item{grid-template-columns:1fr;gap:4px;}.lsch-month{display:none;}}
 
@@ -174,11 +175,11 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
 
 /* ── PROFILE ── */
 .profile-inner{display:grid;grid-template-columns:260px 1fr;gap:64px;align-items:center;}
-@media(max-width:800px){.profile-inner{grid-template-columns:1fr;gap:40px;text-align:center;}}
-.profile-avatar{width:220px;height:220px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--cyan));display:flex;align-items:center;justify-content:center;margin:0 auto;position:relative;flex-shrink:0;}
-.profile-avatar::before{content:'';position:absolute;inset:-3px;border-radius:50%;background:linear-gradient(135deg,var(--purple2),var(--cyan2));z-index:-1;}
-.profile-avatar-inner{width:214px;height:214px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:72px;overflow:hidden;}
-.profile-avatar-inner img{width:100%;height:100%;object-fit:cover;object-position:center top;}
+@media(max-width:800px){.profile-inner{grid-template-columns:1fr;gap:40px;text-align:center;}.profile-avatar{width:160px;height:224px;}.profile-avatar-inner{width:154px;height:218px;}}
+.profile-avatar{width:200px;height:280px;border-radius:16px;background:linear-gradient(135deg,var(--purple),var(--cyan));display:flex;align-items:center;justify-content:center;margin:0 auto;position:relative;flex-shrink:0;}
+.profile-avatar::before{content:'';position:absolute;inset:-3px;border-radius:18px;background:linear-gradient(135deg,var(--purple2),var(--cyan2));z-index:-1;}
+.profile-avatar-inner{width:194px;height:274px;border-radius:14px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:72px;overflow:hidden;}
+.profile-avatar-inner img{width:100%;height:100%;object-fit:cover;object-position:center 30%;}
 .profile-nick{font-family:'Inter',sans-serif;font-size:11px;letter-spacing:3px;color:var(--cyan2);text-transform:uppercase;margin-bottom:12px;}
 .profile-name{font-size:clamp(22px,3.5vw,34px);font-weight:900;margin-bottom:8px;}
 .profile-sub{font-size:13px;color:var(--sub);margin-bottom:28px;line-height:1.8;}
@@ -330,46 +331,46 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
       <span class="sec-label-line"></span>
       <span class="sec-label-text">Achievements</span>
     </div>
-    <h2 class="sec-title">下関での<span class="grd">実績</span></h2>
+    <h2 class="sec-title">開催<span class="grd">実績</span></h2>
     <div class="achv-count">
       <span class="achv-count-num grd">12</span>
       <span class="achv-count-lbl">会場・イベントで開催（うち1件予定）</span>
     </div>
     <div class="achv-grid">
       <div class="achv-card">
-        <div class="achv-type school">小学校</div>
-        <div class="achv-name">安岡小学校</div>
+        <div class="achv-type school">市立小学校</div>
+        <div class="achv-name">下関市立 安岡小学校</div>
         <div class="achv-area">下関市</div>
       </div>
       <div class="achv-card">
-        <div class="achv-type school">小学校</div>
-        <div class="achv-name">垢田小学校</div>
+        <div class="achv-type school">市立小学校</div>
+        <div class="achv-name">下関市立 垢田小学校</div>
         <div class="achv-area">下関市</div>
       </div>
       <div class="achv-card">
-        <div class="achv-type plan">小学校</div>
-        <div class="achv-name">山の田小学校</div>
+        <div class="achv-type plan">市立小学校</div>
+        <div class="achv-name">下関市立 山の田小学校</div>
         <div class="achv-area">下関市</div>
         <span class="achv-upcoming">7月予定</span>
       </div>
       <div class="achv-card">
-        <div class="achv-type school">小学校</div>
-        <div class="achv-name">清末小学校</div>
+        <div class="achv-type school">市立小学校</div>
+        <div class="achv-name">下関市立 清末小学校</div>
         <div class="achv-area">下関市</div>
       </div>
       <div class="achv-card">
-        <div class="achv-type school">中学校</div>
-        <div class="achv-name">東部中学校</div>
+        <div class="achv-type school">市立中学校</div>
+        <div class="achv-name">下関市立 東部中学校</div>
         <div class="achv-area">下関市</div>
       </div>
       <div class="achv-card">
-        <div class="achv-type school">小学校</div>
-        <div class="achv-name">向井小学校</div>
+        <div class="achv-type school">市立小学校</div>
+        <div class="achv-name">下関市立 向井小学校</div>
         <div class="achv-area">下関市</div>
       </div>
       <div class="achv-card">
-        <div class="achv-type school">小学校</div>
-        <div class="achv-name">本村小学校</div>
+        <div class="achv-type school">市立小学校</div>
+        <div class="achv-name">下関市立 本村小学校</div>
         <div class="achv-area">下関市</div>
       </div>
       <div class="achv-card">
@@ -411,31 +412,31 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
     <h2 class="sec-title">今年の<span class="grd">下関スケジュール</span></h2>
     <p class="sec-desc">山西です！ナイトバブル＆シャボン玉のお誘いです！</p>
     <div class="local-sch">
-      <div class="local-sch-item">
+      <div class="local-sch-item" data-date="2025-07-25">
         <div class="lsch-month">Jul</div>
         <div class="lsch-date">7 / 25<span>土</span></div>
-        <div class="lsch-venue">清末小学校</div>
+        <div class="lsch-venue">下関市立 清末小学校</div>
         <div class="lsch-badge-wrap">
           <span class="lsch-upcoming">受付中</span>
         </div>
       </div>
-      <div class="local-sch-item">
+      <div class="local-sch-item" data-date="2025-08-01">
         <div class="lsch-month">Aug</div>
         <div class="lsch-date">8 / 1<span>土</span></div>
-        <div class="lsch-venue">東部中学校</div>
+        <div class="lsch-venue">下関市立 東部中学校</div>
         <div class="lsch-badge-wrap">
           <span class="lsch-upcoming">受付中</span>
         </div>
       </div>
-      <div class="local-sch-item">
+      <div class="local-sch-item" data-date="2025-08-09">
         <div class="lsch-month">Aug</div>
         <div class="lsch-date">8 / 9<span>日</span></div>
-        <div class="lsch-venue">向井小学校</div>
+        <div class="lsch-venue">下関市立 向井小学校</div>
         <div class="lsch-badge-wrap">
           <span class="lsch-upcoming">受付中</span>
         </div>
       </div>
-      <div class="local-sch-item">
+      <div class="local-sch-item" data-date="2025-11-29">
         <div class="lsch-month">Nov</div>
         <div class="lsch-date">11 / 29<span>日</span></div>
         <div class="lsch-venue">やすらガーデン<span class="lsch-sub">日中開催 12:00〜15:00ごろ</span></div>
@@ -601,8 +602,19 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
         <input class="form-input" type="email" id="cf-email" name="email" required placeholder="example@email.com">
       </div>
       <div class="form-group">
-        <label class="form-label" for="cf-date">ご希望の開催日時（わかる範囲で）</label>
-        <input class="form-input" type="text" id="cf-date" name="date" placeholder="例：2025年10月の土日午後">
+        <label class="form-label" for="cf-date">ご希望の開催日（わかる範囲で）</label>
+        <input class="form-input" type="text" id="cf-date" name="date" placeholder="例：2025年10月の土日">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="cf-time">ご希望の時間帯</label>
+        <select class="form-input" id="cf-time" name="time">
+          <option value="">選択してください</option>
+          <option value="午前（10:00〜12:00ごろ）">午前（10:00〜12:00ごろ）</option>
+          <option value="昼（12:00〜15:00ごろ）">昼（12:00〜15:00ごろ）</option>
+          <option value="夕方（15:00〜18:00ごろ）">夕方（15:00〜18:00ごろ）</option>
+          <option value="夜（18:00〜21:00ごろ）">夜（18:00〜21:00ごろ）</option>
+          <option value="未定・相談したい">未定・相談したい</option>
+        </select>
       </div>
       <div class="form-group">
         <label class="form-label" for="cf-msg">ご相談内容</label>
@@ -704,6 +716,20 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
 window.addEventListener('scroll',()=>{
   document.getElementById('nb-hd').classList.toggle('scrolled',window.scrollY>40);
 });
+
+(function(){
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  document.querySelectorAll('.local-sch-item[data-date]').forEach(item=>{
+    const d = new Date(item.dataset.date);
+    d.setHours(0,0,0,0);
+    if(d < today){
+      const wrap = item.querySelector('.lsch-badge-wrap');
+      if(wrap) wrap.innerHTML='<span class="lsch-done">開催済み ✓</span>';
+      item.style.opacity='.6';
+    }
+  });
+})();
 </script>
 </body>
 </html>
