@@ -1248,8 +1248,8 @@ window.addEventListener('scroll',()=>{
   let W,H,bubbles=[];
 
   function resize(){
-    W=c.width=c.offsetWidth;
-    H=c.height=c.offsetHeight;
+    W=c.width=window.innerWidth;
+    H=c.height=window.innerHeight;
   }
 
   function newBubble(startY){
