@@ -7,8 +7,9 @@
 <meta property="og:title" content="ナイトバブル事業部 | Yスタジオ＋ × NIGHT BUBBLE TOUR 2025">
 <meta property="og:description" content="Yスタジオ＋ ナイトバブル事業部。夜を彩る無数のシャボン玉。光と音楽に包まれた非日常体験。">
 <meta name="twitter:card" content="summary_large_image">
-<title>ナイトバブル事業部 | Yスタジオ＋</title>
-<meta name="description" content="Yスタジオ＋ ナイトバブル事業部。業界初のバブルエンターテインメントショー。夜空に無数のシャボン玉が輝く幻想的な空間へ。">
+<title>ナイトバブルショー 下関 | 学校・PTA・地域イベントへの出張バブル演出 | Yスタジオ＋</title>
+<meta name="description" content="下関市で活動するシャボン玉おじさんやまちゃんのナイトバブルショー。学校行事・PTA・地域イベントへ、無数のシャボン玉が夜空を彩る幻想的な演出をお届けします。まずはお気軽にご相談ください。">
+<meta name="keywords" content="ナイトバブル,シャボン玉ショー,下関,学校行事,PTA,地域イベント,バブルエンターテインメント,出張ショー,シャボン玉おじさん">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700;900&family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
 <style>
@@ -225,6 +226,38 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
 .btn-lg{font-size:16px;padding:22px 60px;}
 .cta-meta{margin-top:40px;font-size:11px;color:rgba(248,250,252,.25);font-family:'Inter',sans-serif;letter-spacing:1px;}
 
+/* ── PAIN POINTS ── */
+.pain-intro{font-size:15px;color:var(--sub);line-height:2;margin-bottom:40px;max-width:600px;}
+.pain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px;}
+@media(max-width:900px){.pain-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:480px){.pain-grid{grid-template-columns:1fr;}}
+.pain-card{background:rgba(255,255,255,.03);border:1px solid var(--line);border-left:3px solid;padding:24px 20px;transition:.3s;}
+.pain-card:nth-child(odd){border-left-color:var(--purple);}
+.pain-card:nth-child(even){border-left-color:var(--cyan);}
+.pain-card:hover{background:rgba(124,58,237,.06);transform:translateY(-3px);}
+.pain-card-check{font-size:12px;color:var(--sub);letter-spacing:.5px;line-height:1.7;}
+.pain-card-check::before{content:'✓ ';color:var(--cyan2);font-weight:700;}
+.pain-solve{margin-top:40px;padding:28px 32px;background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(6,182,212,.08));border:1px solid rgba(124,58,237,.25);border-radius:4px;text-align:center;}
+.pain-solve-text{font-size:16px;font-weight:700;line-height:1.8;}
+.pain-solve-text .grd{font-size:20px;}
+
+/* ── GALLERY INTRO ── */
+.gallery-intro{font-size:15px;line-height:2.4;color:rgba(248,250,252,.75);margin-bottom:36px;padding:28px 32px;border-left:3px solid;border-image:linear-gradient(180deg,var(--purple2),var(--cyan2)) 1;background:rgba(255,255,255,.025);}
+@media(max-width:600px){.gallery-intro{padding:20px 16px;font-size:14px;}}
+
+/* ── FAQ ── */
+.faq-list{margin-top:48px;display:flex;flex-direction:column;gap:1px;background:var(--line);border:1px solid var(--line);}
+.faq-item{background:rgba(7,7,21,0.78);overflow:hidden;}
+.faq-q{display:flex;justify-content:space-between;align-items:center;padding:24px 28px;cursor:pointer;transition:.3s;gap:16px;}
+.faq-q:hover{background:rgba(124,58,237,.07);}
+.faq-q-text{font-size:15px;font-weight:700;line-height:1.6;}
+.faq-q-icon{font-size:22px;color:var(--purple2);flex-shrink:0;transition:.3s;font-family:'Inter',sans-serif;font-weight:300;line-height:1;}
+.faq-item.open .faq-q-icon{transform:rotate(45deg);color:var(--cyan2);}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;}
+.faq-item.open .faq-a{max-height:200px;}
+.faq-a-inner{padding:0 28px 24px;font-size:14px;color:var(--sub);line-height:2.2;border-top:1px solid var(--line);}
+@media(max-width:600px){.faq-q{padding:18px 16px;}.faq-q-text{font-size:14px;}.faq-a-inner{padding:0 16px 20px;}}
+
 /* ── GAME ── */
 .game-wrap{position:relative;margin-top:40px;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:rgba(4,4,15,0.65);}
 .game-ui{display:flex;justify-content:space-between;align-items:center;padding:12px 24px;background:rgba(7,7,21,0.75);border-bottom:1px solid var(--line);}
@@ -269,9 +302,9 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
     <span class="en">Yスタジオ＋ Night Bubble Division</span>
     <span class="grd">夜が、<br>輝く。</span>
   </h1>
-  <p class="nb-hero-copy">シャボン玉おじさんが来る日は、<span class="grd">特別な日。</span></p>
-  <p class="nb-hero-sub">光と音楽に包まれた無数のシャボン玉が<br>夜空を幻想的に彩ります。</p>
-  <p class="nb-hero-sub" style="font-size:13px;margin-top:-36px;color:rgba(248,250,252,.55);">昼のシャボン玉ショーも受付中！</p>
+  <p class="nb-hero-copy">子どもたちの歓声が、<span class="grd">夜空いっぱいに広がる。</span></p>
+  <p class="nb-hero-sub">地域イベント・学校行事・お祭りに<br>幻想的なナイトバブルショーを。</p>
+  <p class="nb-hero-sub" style="font-size:13px;margin-top:-36px;color:rgba(248,250,252,.55);">夜も昼も対応。まずはお気軽にご相談ください。</p>
   <div class="btn-wrap">
     <a href="https://line.me/ti/p/~shimonoseki-fugu" target="_blank" rel="noopener" class="btn-line-green">
       <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.137 2 11.2c0 3.277 1.763 6.174 4.46 7.982L5.6 22l3.82-1.884A11.02 11.02 0 0 0 12 20.4c5.523 0 10-4.137 10-9.2S17.523 2 12 2z"/></svg>
@@ -316,6 +349,30 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
         <div class="stat-num grd">3</div>
         <div class="stat-lbl">定例開催 3年目の会場も</div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pain Points -->
+<section class="nb-sec nb-sec-0">
+  <div class="container">
+    <div class="sec-label">
+      <span class="sec-label-line"></span>
+      <span class="sec-label-text">For Organizers</span>
+    </div>
+    <h2 class="sec-title">こんなお悩み、<span class="grd">ありませんか？</span></h2>
+    <p class="pain-intro">PTA・自治会・学校・地域イベント担当者の方から、よくいただく声です。</p>
+    <div class="pain-grid">
+      <div class="pain-card"><span class="pain-card-check">毎年同じイベントになっている</span></div>
+      <div class="pain-card"><span class="pain-card-check">子ども向け企画が少ない</span></div>
+      <div class="pain-card"><span class="pain-card-check">写真映えする企画を探している</span></div>
+      <div class="pain-card"><span class="pain-card-check">地域の人が自然に集まる企画が欲しい</span></div>
+      <div class="pain-card"><span class="pain-card-check">夜のイベントに目玉企画が欲しい</span></div>
+      <div class="pain-card"><span class="pain-card-check">PTA行事を盛り上げたい</span></div>
+    </div>
+    <div class="pain-solve">
+      <p class="pain-solve-text">その悩み、<span class="grd">ナイトバブルが解決します。</span><br>
+      <span style="font-size:13px;color:var(--sub);font-weight:400;">無数のシャボン玉が空を彩るあの瞬間、会場にいた全員が笑顔になります。</span></p>
     </div>
   </div>
 </section>
@@ -485,7 +542,12 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
       <span class="sec-label-text">Gallery</span>
     </div>
     <h2 class="sec-title">動画・写真でみてみよう</h2>
-    <p class="sec-desc">実際の会場の雰囲気をお届けします。</p>
+    <div class="gallery-intro">
+      写真では伝わらない感動があります。<br>
+      会場の照明に照らされた無数のシャボン玉。歓声をあげる子どもたち。<br>
+      スマホを向ける保護者。地域の人たちが自然と笑顔になる時間。<br>
+      そんな景色をお届けしています。
+    </div>
 
     <!-- Event Photos -->
     <div class="media-sub-label">きよすえフェスタ 2025（下関市立清末小学校）</div>
@@ -627,7 +689,7 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
           <span class="profile-tag">地域学校協働推進委員</span>
           <span class="profile-tag">小学校PTA 8年目</span>
         </div>
-        <p class="profile-text">下関で生まれ育ち、ふぐ屋を継ぎ、AIを学び、シャボン玉を飛ばす。<br>「子どもたちの目が輝く瞬間が見たくて」ナイトバブルを始めました。<br><br>学校・保育園・地域イベントへ、光と音楽に包まれた非日常体験をお届けします。お気軽にお声がけください。</p>
+        <p class="profile-text">明治12年創業の老舗ふぐ問屋・山西水産の4代目として下関で生まれ育ちました。<br><br>PTA活動8年目、地域学校協働推進委員として地域の子どもたちと向き合い続けるなかで、「子どもたちに忘れられない思い出を届けたい」という想いからナイトバブルを始めました。<br><br>地域に支えられてきたからこそ、地域へ恩返ししたい。そのシンプルな気持ちが、今も活動を続ける原動力です。お気軽にお声がけください。</p>
       </div>
     </div>
   </div>
@@ -641,7 +703,8 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
       <span class="sec-label-text">Contact</span>
     </div>
     <h2 class="sec-title">ご依頼・<span class="grd">お問い合わせ</span></h2>
-    <p class="sec-desc">夜のナイトバブルも、昼のシャボン玉ショーも受付中。学校・保育園・幼稚園・イベント・企業のご担当者様、お気軽にご連絡ください。</p>
+    <p class="sec-desc" style="margin-bottom:16px;">夜のナイトバブルも、昼のシャボン玉ショーも受付中。学校・保育園・幼稚園・イベント・企業のご担当者様、お気軽にご連絡ください。</p>
+    <p class="sec-desc" style="font-size:16px;font-weight:700;color:var(--cyan2);">まずは相談だけでもOK。見積もり・日程・会場のご相談、大歓迎です。</p>
     <form class="contact-form" action="https://formspree.io/f/xqeoawap" method="POST">
       <p class="form-title">お問い合わせフォーム</p>
       <div class="form-group">
@@ -677,6 +740,65 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
       </div>
       <button type="submit" class="form-submit">送信する</button>
     </form>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="nb-sec nb-sec-0" id="faq">
+  <div class="container">
+    <div class="sec-label">
+      <span class="sec-label-line"></span>
+      <span class="sec-label-text">FAQ</span>
+    </div>
+    <h2 class="sec-title">よくある<span class="grd">ご質問</span></h2>
+    <p class="sec-desc">ご依頼前によくいただく質問をまとめました。</p>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">
+          <span class="faq-q-text">雨天の場合はどうなりますか？</span>
+          <span class="faq-q-icon">+</span>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">体育館・ホール・屋根のある屋外など、雨天でも対応できる会場であれば問題ありません。屋外の場合は雨天時の対応（延期・中止等）を事前にご相談しながら決めます。お気軽にご相談ください。</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">
+          <span class="faq-q-text">どのくらいのスペースが必要ですか？</span>
+          <span class="faq-q-icon">+</span>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">目安として幅8m×奥行き6m程度あれば対応可能です。体育館・グラウンド・公園広場など様々な会場での実績があります。詳しくは会場の広さをお知らせいただければ確認します。</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">
+          <span class="faq-q-text">下関市外からの依頼は受けていますか？</span>
+          <span class="faq-q-icon">+</span>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">現在は下関市および周辺エリアを中心に活動しています。遠方へのご依頼は距離・交通費等を考慮した上でご相談ください。まずはお問い合わせください。</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">
+          <span class="faq-q-text">費用はどのくらいかかりますか？</span>
+          <span class="faq-q-icon">+</span>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">会場の規模・演出内容・所要時間によって異なります。まずはお気軽にご相談ください。見積もり・日程相談・会場相談だけでも大歓迎です。</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">
+          <span class="faq-q-text">昼のシャボン玉ショーも対応していますか？</span>
+          <span class="faq-q-icon">+</span>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">はい、対応しています。夜のナイトバブルショーに加えて、日中の屋外・体育館でのシャボン玉ショーも受付中です。学校の運動会や子ども会のイベントにもどうぞ。</div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -936,6 +1058,16 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
 
 window.addEventListener('scroll',()=>{
   document.getElementById('nb-hd').classList.toggle('scrolled',window.scrollY>40);
+});
+
+// ── FAQ ACCORDION ──
+document.querySelectorAll('.faq-q').forEach(q=>{
+  q.addEventListener('click',()=>{
+    const item = q.closest('.faq-item');
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+    if(!wasOpen) item.classList.add('open');
+  });
 });
 
 (function(){
