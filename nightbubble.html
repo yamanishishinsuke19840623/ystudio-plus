@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ナイトバブル事業部 | Yスタジオ＋ × NIGHT BUBBLE TOUR 2025">
+<meta property="og:description" content="Yスタジオ＋ ナイトバブル事業部。夜を彩る100万個のシャボン玉。光と音楽に包まれた非日常体験。">
+<meta name="twitter:card" content="summary_large_image">
+<title>ナイトバブル事業部 | Yスタジオ＋</title>
+<meta name="description" content="Yスタジオ＋ ナイトバブル事業部。業界初のバブルエンターテインメントショー。夜空に約100万個のシャボン玉が輝く幻想的な空間へ。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700;900&family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#04040f;
+  --bg2:#070715;
+  --purple:#7c3aed;
+  --purple2:#a78bfa;
+  --cyan:#06b6d4;
+  --cyan2:#67e8f9;
+  --white:#f8fafc;
+  --sub:rgba(248,250,252,.55);
+  --line:rgba(248,250,252,.07);
+  --gold:#c9a84c;
+  --gp:rgba(124,58,237,.25);
+  --gc:rgba(6,182,212,.2);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:var(--white);line-height:1.7;overflow-x:hidden;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--purple);border-radius:2px;}
+
+/* ── CANVAS ── */
+#nb-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+
+/* ── HEADER ── */
+.nb-hd{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:flex;justify-content:space-between;align-items:center;transition:.4s;}
+.nb-hd.scrolled{background:rgba(4,4,15,.9);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border-bottom:1px solid var(--line);padding:14px 48px;}
+.nb-back{display:inline-flex;align-items:center;gap:8px;color:var(--gold);font-family:'Inter',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;transition:.3s;}
+.nb-back:hover{opacity:.7;}
+.nb-brand{font-family:'Inter',sans-serif;font-size:11px;letter-spacing:3px;color:var(--sub);text-transform:uppercase;}
+@media(max-width:600px){.nb-hd{padding:16px 20px;}.nb-hd.scrolled{padding:12px 20px;}.nb-brand{display:none;}}
+
+/* ── HERO ── */
+.nb-hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:120px 24px 80px;position:relative;z-index:1;overflow:hidden;}
+.hero-glow{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);width:800px;height:700px;background:radial-gradient(circle,var(--gp) 0%,var(--gc) 40%,transparent 70%);filter:blur(70px);pointer-events:none;}
+.nb-tag{display:inline-flex;align-items:center;gap:12px;margin-bottom:44px;}
+.nb-tag-line{width:32px;height:1px;background:linear-gradient(90deg,var(--purple2),var(--cyan2));}
+.nb-tag-text{font-family:'Inter',sans-serif;font-size:11px;letter-spacing:3px;color:var(--cyan2);text-transform:uppercase;}
+.nb-hero h1{font-size:clamp(60px,14vw,150px);font-weight:900;line-height:1;letter-spacing:-5px;margin-bottom:36px;}
+.nb-hero h1 .en{display:block;font-family:'Inter',sans-serif;font-size:clamp(12px,1.6vw,16px);font-weight:300;letter-spacing:6px;color:var(--sub);margin-bottom:20px;text-transform:uppercase;letter-spacing:8px;}
+.grd{background:linear-gradient(135deg,var(--purple2) 0%,var(--cyan2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.nb-hero-copy{font-size:clamp(16px,2.2vw,22px);color:var(--sub);margin-bottom:14px;font-weight:300;letter-spacing:.5px;}
+.nb-hero-sub{font-size:14px;color:rgba(248,250,252,.38);margin-bottom:60px;line-height:2.2;}
+.btn-wrap{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+.btn-main{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--purple),var(--cyan));color:#fff;font-weight:700;font-size:14px;padding:18px 44px;border-radius:50px;text-decoration:none;transition:.35s;letter-spacing:.5px;box-shadow:0 0 48px var(--gp);}
+.btn-main:hover{transform:translateY(-3px);box-shadow:0 12px 60px var(--gp),0 0 40px var(--gc);}
+.btn-line-green{display:inline-flex;align-items:center;gap:10px;background:#06C755;color:#fff;font-weight:700;font-size:14px;padding:18px 44px;border-radius:50px;text-decoration:none;transition:.35s;letter-spacing:.5px;box-shadow:0 0 40px rgba(6,199,85,.25);}
+.btn-line-green:hover{transform:translateY(-3px);box-shadow:0 12px 50px rgba(6,199,85,.4);}
+.btn-icon{width:18px;height:18px;flex-shrink:0;}
+.scroll-hint{margin-top:72px;display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.38;}
+.scroll-hint-text{font-family:'Inter',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;}
+.scroll-line{width:1px;height:48px;background:linear-gradient(180deg,var(--purple2),transparent);animation:scrollPulse 2s ease-in-out infinite;}
+@keyframes scrollPulse{
+  0%{opacity:0;transform:scaleY(0) translateY(-100%);}
+  50%{opacity:1;transform:scaleY(1) translateY(0);}
+  100%{opacity:0;transform:scaleY(0) translateY(100%);}
+}
+
+/* ── SECTION BASE ── */
+.nb-sec{padding:120px 48px;position:relative;z-index:1;}
+.nb-sec-0{padding-top:0;}
+@media(max-width:768px){.nb-sec{padding:80px 20px;}.nb-sec-0{padding-top:0;}}
+.container{max-width:1080px;margin:0 auto;}
+.sec-label{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.sec-label-line{width:28px;height:1px;background:linear-gradient(90deg,var(--purple2),var(--cyan2));}
+.sec-label-text{font-family:'Inter',sans-serif;font-size:10px;letter-spacing:4px;color:var(--cyan2);text-transform:uppercase;}
+.sec-title{font-size:clamp(28px,4.5vw,52px);font-weight:900;line-height:1.15;letter-spacing:-1px;margin-bottom:16px;}
+.sec-desc{font-size:15px;color:var(--sub);line-height:2;max-width:640px;margin-bottom:0;}
+
+/* ── ABOUT ── */
+.about-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+@media(max-width:768px){.about-inner{grid-template-columns:1fr;gap:32px;}}
+.about-bignum{font-family:'Inter',sans-serif;font-size:clamp(80px,14vw,160px);font-weight:900;background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(6,182,212,.08));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;letter-spacing:-6px;-webkit-user-select:none;user-select:none;}
+.about-copy{font-size:clamp(20px,3vw,32px);font-weight:700;line-height:1.45;margin-bottom:24px;}
+.about-text{font-size:14px;color:var(--sub);line-height:2.2;}
+
+/* ── STATS BAR ── */
+.stats-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);margin-top:80px;border:1px solid var(--line);}
+@media(max-width:600px){.stats-bar{grid-template-columns:1fr;}}
+.stat-item{padding:36px 32px;background:var(--bg2);text-align:center;position:relative;overflow:hidden;}
+.stat-item::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--gp),transparent);opacity:0;transition:.4s;}
+.stat-item:hover::before{opacity:1;}
+.stat-num{font-family:'Inter',sans-serif;font-size:clamp(32px,5vw,56px);font-weight:900;line-height:1;}
+.stat-lbl{font-size:12px;color:var(--sub);letter-spacing:1.5px;margin-top:8px;}
+.stat-unit{font-size:.5em;}
+
+/* ── FEATURES ── */
+.features-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:56px;}
+@media(max-width:900px){.features-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:480px){.features-grid{grid-template-columns:1fr;}}
+.feature-card{background:rgba(255,255,255,.025);border:1px solid var(--line);border-top:2px solid transparent;padding:36px 24px;transition:.35s;position:relative;overflow:hidden;}
+.feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--purple),var(--cyan));transform:scaleX(0);transition:.4s;transform-origin:left;}
+.feature-card:hover{transform:translateY(-5px);background:rgba(124,58,237,.06);border-color:rgba(124,58,237,.3);}
+.feature-card:hover::before{transform:scaleX(1);}
+.feature-num{font-family:'Inter',sans-serif;font-size:38px;font-weight:900;color:rgba(167,139,250,.15);line-height:1;margin-bottom:20px;letter-spacing:-2px;}
+.feature-card h3{font-size:14px;font-weight:700;margin-bottom:10px;line-height:1.6;}
+.feature-card p{font-size:12px;color:var(--sub);line-height:2;}
+
+/* ── ACHIEVEMENTS ── */
+.achv-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:48px;}
+@media(max-width:900px){.achv-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:600px){.achv-grid{grid-template-columns:repeat(2,1fr);}}
+.achv-card{background:rgba(255,255,255,.03);border:1px solid var(--line);padding:24px 20px;position:relative;overflow:hidden;transition:.3s;}
+.achv-card:hover{background:rgba(124,58,237,.07);border-color:rgba(124,58,237,.35);transform:translateY(-3px);}
+.achv-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--purple),var(--cyan));transform:scaleX(0);transition:.35s;transform-origin:left;}
+.achv-card:hover::after{transform:scaleX(1);}
+.achv-type{font-family:'Inter',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+.achv-type.school{color:var(--cyan2);}
+.achv-type.event{color:var(--purple2);}
+.achv-type.nursery{color:#f0abfc;}
+.achv-type.plan{color:#fbbf24;}
+.achv-name{font-size:14px;font-weight:700;line-height:1.5;}
+.achv-area{font-size:11px;color:var(--sub);margin-top:6px;}
+.achv-upcoming{display:inline-block;font-size:9px;letter-spacing:1.5px;background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.3);padding:2px 8px;border-radius:20px;margin-top:8px;}
+.achv-count{display:flex;align-items:baseline;gap:8px;margin-bottom:40px;}
+.achv-count-num{font-family:'Inter',sans-serif;font-size:clamp(48px,8vw,80px);font-weight:900;line-height:1;}
+.achv-count-lbl{font-size:14px;color:var(--sub);}
+
+/* ── LOCAL SCHEDULE ── */
+.local-sch{margin-top:48px;display:flex;flex-direction:column;gap:1px;background:var(--line);border:1px solid var(--line);}
+.local-sch-item{display:grid;grid-template-columns:52px 120px 1fr auto;align-items:center;gap:20px;padding:20px 28px;background:var(--bg2);transition:.3s;position:relative;overflow:hidden;}
+.local-sch-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(180deg,var(--purple),var(--cyan));transition:.35s;}
+.local-sch-item:hover::before{width:3px;}
+.local-sch-item:hover{background:rgba(124,58,237,.07);}
+.lsch-month{font-family:'Inter',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--sub);position:relative;z-index:1;}
+.lsch-date{font-family:'Inter',sans-serif;font-size:18px;font-weight:900;color:var(--cyan2);line-height:1.2;position:relative;z-index:1;}
+.lsch-date span{font-size:11px;font-weight:400;color:var(--sub);margin-left:4px;}
+.lsch-venue{font-size:14px;font-weight:700;position:relative;z-index:1;}
+.lsch-time{font-size:11px;color:var(--sub);position:relative;z-index:1;text-align:right;}
+.lsch-sub{font-weight:400;font-size:12px;color:var(--sub);display:block;margin-top:2px;}
+.lsch-badge-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:6px;position:relative;z-index:1;}
+.lsch-upcoming{font-family:'Inter',sans-serif;font-size:9px;letter-spacing:1.5px;background:linear-gradient(135deg,var(--purple),var(--cyan));color:#fff;padding:4px 12px;border-radius:20px;white-space:nowrap;}
+@media(max-width:700px){.local-sch-item{grid-template-columns:40px 90px 1fr;gap:12px;padding:14px 16px;}.lsch-badge-wrap{display:none;}}
+@media(max-width:480px){.local-sch-item{grid-template-columns:1fr;gap:4px;}.lsch-month{display:none;}}
+
+/* ── MEDIA ── */
+.media-sub-label{font-family:'Inter',sans-serif;font-size:10px;letter-spacing:3px;color:var(--sub);text-transform:uppercase;margin-bottom:20px;margin-top:56px;padding-bottom:12px;border-bottom:1px solid var(--line);}
+.ig-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+@media(max-width:900px){.ig-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:480px){.ig-grid{grid-template-columns:1fr;max-width:400px;margin-left:auto;margin-right:auto;}}
+.ig-item{display:flex;justify-content:center;background:#111;border-radius:4px;overflow:hidden;}
+.ig-item .instagram-media{margin:0 !important;min-width:0 !important;width:100% !important;max-width:100% !important;}
+.yt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+@media(max-width:900px){.yt-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.yt-grid{grid-template-columns:1fr;}}
+.yt-wrap{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:4px;border:1px solid var(--line);background:#000;}
+.yt-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;}
+
+/* ── SCHEDULE ── */
+.schedule-list{margin-top:48px;display:flex;flex-direction:column;gap:1px;background:var(--line);border:1px solid var(--line);}
+.sch-item{display:grid;grid-template-columns:100px 1fr auto;align-items:center;gap:24px;padding:18px 28px;background:var(--bg2);transition:.3s;position:relative;overflow:hidden;}
+.sch-item::after{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,var(--purple),var(--cyan));transition:.35s;opacity:.6;}
+.sch-item:hover::after{width:3px;}
+.sch-item:hover{background:rgba(124,58,237,.06);}
+.sch-date{font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:var(--cyan2);letter-spacing:.5px;position:relative;z-index:1;}
+.sch-venue{font-size:14px;font-weight:700;position:relative;z-index:1;}
+.sch-badge{font-family:'Inter',sans-serif;font-size:10px;letter-spacing:1.5px;color:#fff;background:linear-gradient(135deg,var(--purple),var(--cyan));padding:4px 12px;border-radius:20px;white-space:nowrap;position:relative;z-index:1;}
+.sch-badge.sold{background:rgba(100,116,139,.3);color:var(--sub);}
+@media(max-width:600px){.sch-item{grid-template-columns:72px 1fr;gap:12px;padding:14px 16px;}.sch-badge{display:none;}}
+
+/* ── PROFILE ── */
+.profile-inner{display:grid;grid-template-columns:260px 1fr;gap:64px;align-items:center;}
+@media(max-width:800px){.profile-inner{grid-template-columns:1fr;gap:40px;text-align:center;}}
+.profile-avatar{width:220px;height:220px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--cyan));display:flex;align-items:center;justify-content:center;margin:0 auto;position:relative;flex-shrink:0;}
+.profile-avatar::before{content:'';position:absolute;inset:-3px;border-radius:50%;background:linear-gradient(135deg,var(--purple2),var(--cyan2));z-index:-1;}
+.profile-avatar-inner{width:214px;height:214px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:72px;}
+.profile-nick{font-family:'Inter',sans-serif;font-size:11px;letter-spacing:3px;color:var(--cyan2);text-transform:uppercase;margin-bottom:12px;}
+.profile-name{font-size:clamp(22px,3.5vw,34px);font-weight:900;margin-bottom:8px;}
+.profile-sub{font-size:13px;color:var(--sub);margin-bottom:28px;line-height:1.8;}
+.profile-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;}
+@media(max-width:800px){.profile-tags{justify-content:center;}}
+.profile-tag{font-size:11px;letter-spacing:1px;border:1px solid rgba(124,58,237,.4);color:var(--purple2);padding:5px 14px;border-radius:20px;}
+.profile-text{font-size:14px;color:var(--sub);line-height:2.2;}
+
+/* ── CONTACT FORM ── */
+.contact-form{margin-top:48px;background:rgba(255,255,255,.03);border:1px solid var(--line);padding:48px 40px;max-width:680px;margin-left:auto;margin-right:auto;}
+@media(max-width:600px){.contact-form{padding:32px 20px;}}
+.form-title{font-size:18px;font-weight:700;margin-bottom:32px;text-align:center;}
+.form-group{margin-bottom:20px;}
+.form-label{display:block;font-size:12px;letter-spacing:1.5px;color:var(--sub);margin-bottom:8px;}
+.form-input,.form-textarea{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--white);font-family:'Noto Sans JP','Inter',sans-serif;font-size:14px;padding:14px 16px;border-radius:2px;transition:.3s;outline:none;}
+.form-input:focus,.form-textarea:focus{border-color:rgba(124,58,237,.6);background:rgba(124,58,237,.06);}
+.form-textarea{min-height:120px;resize:vertical;line-height:1.8;}
+.form-submit{width:100%;background:linear-gradient(135deg,var(--purple),var(--cyan));color:#fff;font-weight:700;font-size:14px;padding:16px;border:none;border-radius:50px;cursor:pointer;transition:.35s;letter-spacing:.5px;font-family:'Noto Sans JP','Inter',sans-serif;}
+.form-submit:hover{opacity:.88;transform:translateY(-2px);}
+
+/* ── CTA ── */
+.nb-cta{padding:160px 48px;text-align:center;position:relative;z-index:1;overflow:hidden;}
+@media(max-width:768px){.nb-cta{padding:100px 20px;}}
+.cta-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:900px;height:500px;background:radial-gradient(ellipse,var(--gp) 0%,var(--gc) 45%,transparent 70%);filter:blur(90px);pointer-events:none;}
+.cta-inner{position:relative;z-index:1;}
+.cta-title{font-size:clamp(32px,6vw,76px);font-weight:900;line-height:1.15;letter-spacing:-2px;margin-bottom:24px;}
+.cta-sub{font-size:15px;color:var(--sub);margin-bottom:56px;line-height:2.2;}
+.btn-lg{font-size:16px;padding:22px 60px;}
+.cta-meta{margin-top:40px;font-size:11px;color:rgba(248,250,252,.25);font-family:'Inter',sans-serif;letter-spacing:1px;}
+
+/* ── FOOTER ── */
+.nb-footer{padding:40px 48px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1;}
+@media(max-width:600px){.nb-footer{flex-direction:column;gap:16px;text-align:center;padding:32px 20px;}}
+.footer-brand a{color:var(--gold);font-family:'Inter',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;transition:.3s;}
+.footer-brand a:hover{opacity:.7;}
+.footer-copy{font-size:11px;color:rgba(248,250,252,.22);font-family:'Inter',sans-serif;letter-spacing:1px;}
+</style>
+</head>
+<body>
+
+<canvas id="nb-canvas"></canvas>
+
+<!-- Header -->
+<header class="nb-hd" id="nb-hd">
+  <a href="https://yamanishishinsuke19840623.github.io/ystudio-plus/" class="nb-back">← Yスタジオ＋</a>
+  <span class="nb-brand">Yスタジオ＋ ナイトバブル事業部</span>
+</header>
+
+<!-- Hero -->
+<section class="nb-hero">
+  <div class="hero-glow"></div>
+  <div class="nb-tag">
+    <span class="nb-tag-line"></span>
+    <span class="nb-tag-text">Yスタジオ＋ ナイトバブル事業部</span>
+    <span class="nb-tag-line"></span>
+  </div>
+  <h1>
+    <span class="en">Yスタジオ＋ Night Bubble Division</span>
+    <span class="grd">夜が、<br>輝く。</span>
+  </h1>
+  <p class="nb-hero-copy">シャボン玉おじさんが来る日は、<span class="grd">特別な日。</span></p>
+  <p class="nb-hero-sub">光と音楽に包まれた約100万個のシャボン玉が<br>夜空を幻想的に彩ります。</p>
+  <div class="btn-wrap">
+    <a href="https://line.me/ti/p/~shimonoseki-fugu" target="_blank" rel="noopener" class="btn-line-green">
+      <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.137 2 11.2c0 3.277 1.763 6.174 4.46 7.982L5.6 22l3.82-1.884A11.02 11.02 0 0 0 12 20.4c5.523 0 10-4.137 10-9.2S17.523 2 12 2z"/></svg>
+      LINEで問い合わせる
+    </a>
+    <a href="#contact" class="btn-main">
+      <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+      お問い合わせフォーム
+    </a>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span class="scroll-hint-text">scroll</span>
+  </div>
+</section>
+
+<!-- About -->
+<section class="nb-sec">
+  <div class="container">
+    <div class="sec-label">
+      <span class="sec-label-line"></span>
+      <span class="sec-label-text">About</span>
+    </div>
+    <div class="about-inner">
+      <div class="about-bignum">100<br>万個</div>
+      <div>
+        <p class="about-copy">業界初、<span class="grd">バブルエンターテインメント</span>ショーが全国ツアーへ。</p>
+        <p class="about-text">「ナイトバブル」を国内で初めてエンターテインメントショー化・事業化したteam bub.が、実力派アーティストとともに最高にエモーショナルでフォトジェニックな空間をご提供します。<br><br>ご家族・友達・カップル――どんな特別な夜も、ナイトバブルが彩ります。</p>
+      </div>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-num grd">100<span class="stat-unit">万</span></div>
+        <div class="stat-lbl">シャボン玉の数</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num grd">9</div>
+        <div class="stat-lbl">2025年 開催都市</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num grd">∞</div>
+        <div class="stat-lbl">フォトジェニックな瞬間</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="nb-sec nb-sec-0">
+  <div class="container">
+    <div class="sec-label">
+      <span class="sec-label-line"></span>
+      <span class="sec-label-text">Experience</span>
+    </div>
+    <h2 class="sec-title">4つの体験ポイント</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-num">01</div>
+        <h3>光とシャボン玉の幻想空間</h3>
+        <p>夜空に約100万個のシャボン玉。照明で照らされた幻想的な光景がフォトジェニックな瞬間を生み出します。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">02</div>
+        <h3>ライブパフォーマンス</h3>
+        <p>各会場で実力派アーティストが出演。音楽と映像が一体となったエモーショナルなステージ。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">03</div>
+        <h3>会場限定の特別演出</h3>
+        <p>その会場でしか見られない限定演出を用意。何度来ても新しい感動があります。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">04</div>
+        <h3>キッチンカー出店</h3>
+        <p>フードやドリンクも充実。会場全体でゆったりと特別な夜をお楽しみください。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Achievements -->
+<section class="nb-sec nb-sec-0">
+  <div class="container">
+    <div class="sec-label">
+      <span class="sec-label-line"></span>
+      <span class="sec-label-text">Achievements</span>
+    </div>
+    <h2 class="sec-title">下関での<span class="grd">実績</span></h2>
+    <div class="achv-count">
+      <span class="achv-count-num grd">12</span>
+      <span class="achv-count-lbl">会場・イベントで開催（うち1件予定）</span>
+    </div>
+    <div class="achv-grid">
+      <div class="achv-card">
+        <div class="achv-type school">小学校</div>
+        <div class="achv-name">安岡小学校</div>
+        <div class="achv-area">下関市</div>
+      </div>
+      <div class="achv-card">
+        <div class="achv-type school">小学校</div>
+        <div class="achv-name">垢田小学校</div>
+        <div class="achv-area">下関市</div>
+      </div>
+      <div class="achv-card">
+        <div class="achv-type plan">小学校</div>
+        <div class="achv-name">山の田小学校</div>
+        <div class="achv-area">下関市</div>
+        <span class="achv-upcoming">7月予定</span>
+      </div>
+      <div class="achv-card">
+        <div class="achv-type school">小学校</div>
+        <div class="achv-name">清末小学校</div>
+        <div class="achv-area">下関市</div>
+      </div>
+      <div class="achv-card">
+        <div class="achv-type school">中学校</div>
+        <div class="achv-name">東部中学校</div>
+        <div class="achv-area">下関市</div>
+      </div>
+      <div class="achv-card">
+        <div class="achv-type school">小学校</div>
+        <div class="achv-name">向井小学校</div>
+        <div class="achv-area">下関市</div>
+      </div>
+      <div class="achv-card">
+        <div class="achv-type school">小学校</div>
+        <div class="achv-name">本村小学校</div>
+        <div class="achv-area">下関市</div>
+      </div>
+      <div class="achv-card">
+        <div class="achv-type nursery">幼稚園</div>
+        <div class="achv-name">泉幼稚園</div>
+        <div class="achv-area">下関市</div>
+      </div>
+      <div class="achv-card">
+        <div class="achv-type nursery">保育園</div>
+        <div class="achv-name">みそら保育園</div>
+        <div class="achv-area">下関市</div>
+      </div>
+      <div class="achv-card">
+        <div class="achv-type event">イベント</div>
+        <div class="achv-name">カオスやストリート</div>
+        <div class="achv-area">下関市</div>
+      </div>
+      <div class="achv-card">
+        <div class="achv-type event">公園イベント</div>
+        <div class="achv-name">彦島老の山公園<br>ナイスビューデーズ</div>
+        <div class="achv-area">下関市</div>
+      </div>
+      <div class="achv-card">
+        <div class="achv-type event">駅前イベント</div>
+        <div class="achv-name">下関駅前<br>エキマチ広場</div>
+        <div class="achv-area">下関市</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Local Schedule -->
+<section class="nb-sec nb-sec-0">
+  <div class="container">
+    <div class="sec-label">
+      <span class="sec-label-line"></span>
+      <span class="sec-label-text">下関 開催予定 2025</span>
+    </div>
+    <h2 class="sec-title">今年の<span class="grd">下関スケジュール</span></h2>
+    <p class="sec-desc">山西です！ナイトバブル＆シャボン玉のお誘いです！</p>
+    <div class="local-sch">
+      <div class="local-sch-item">
+        <div class="lsch-month">Jul</div>
+        <div class="lsch-date">7 / 25<span>土</span></div>
+        <div class="lsch-venue">清末小学校</div>
+        <div class="lsch-badge-wrap">
+          <span class="lsch-upcoming">受付中</span>
+        </div>
+      </div>
+      <div class="local-sch-item">
+        <div class="lsch-month">Aug</div>
+        <div class="lsch-date">8 / 1<span>土</span></div>
+        <div class="lsch-venue">東部中学校</div>
+        <div class="lsch-badge-wrap">
+          <span class="lsch-upcoming">受付中</span>
+        </div>
+      </div>
+      <div class="local-sch-item">
+        <div class="lsch-month">Aug</div>
+        <div class="lsch-date">8 / 9<span>日</span></div>
+        <div class="lsch-venue">向井小学校</div>
+        <div class="lsch-badge-wrap">
+          <span class="lsch-upcoming">受付中</span>
+        </div>
+      </div>
+      <div class="local-sch-item">
+        <div class="lsch-month">Nov</div>
+        <div class="lsch-date">11 / 29<span>日</span></div>
+        <div class="lsch-venue">やすらガーデン<span class="lsch-sub">日中開催 12:00〜15:00ごろ</span></div>
+        <div class="lsch-badge-wrap">
+          <span class="lsch-upcoming">受付中</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Media Gallery -->
+<section class="nb-sec nb-sec-0">
+  <div class="container">
+    <div class="sec-label">
+      <span class="sec-label-line"></span>
+      <span class="sec-label-text">Gallery</span>
+    </div>
+    <h2 class="sec-title">動画・写真でみてみよう</h2>
+    <p class="sec-desc">実際の会場の雰囲気をお届けします。</p>
+
+    <!-- Instagram -->
+    <div class="media-sub-label">Instagram</div>
+    <div class="ig-grid">
+      <div class="ig-item">
+        <blockquote class="instagram-media"
+          data-instgrm-permalink="https://www.instagram.com/reel/DZDSYRYy9T4/?utm_source=ig_embed&utm_campaign=loading"
+          data-instgrm-version="14"></blockquote>
+      </div>
+      <div class="ig-item">
+        <blockquote class="instagram-media"
+          data-instgrm-permalink="https://www.instagram.com/p/DYsn2HazAnd/?utm_source=ig_embed&utm_campaign=loading"
+          data-instgrm-version="14"></blockquote>
+      </div>
+      <div class="ig-item">
+        <blockquote class="instagram-media"
+          data-instgrm-permalink="https://www.instagram.com/reel/DYrxoUuy_vx/?utm_source=ig_embed&utm_campaign=loading"
+          data-instgrm-version="14"></blockquote>
+      </div>
+      <div class="ig-item">
+        <blockquote class="instagram-media"
+          data-instgrm-permalink="https://www.instagram.com/reel/DWLcGgREo2R/?utm_source=ig_embed&utm_campaign=loading"
+          data-instgrm-version="14"></blockquote>
+      </div>
+    </div>
+
+    <!-- YouTube -->
+    <div class="media-sub-label">YouTube</div>
+    <div class="yt-grid">
+      <div class="yt-wrap">
+        <iframe src="https://www.youtube.com/embed/mLgAN-oA-G0" title="ナイトバブル 1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      <div class="yt-wrap">
+        <iframe src="https://www.youtube.com/embed/sBEbhyXzJac" title="ナイトバブル 2" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      <div class="yt-wrap">
+        <iframe src="https://www.youtube.com/embed/dbzmUQM1sGQ" title="ナイトバブル 3" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      <div class="yt-wrap">
+        <iframe src="https://www.youtube.com/embed/XiiJ9TxZCj4" title="ナイトバブル 4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      <div class="yt-wrap">
+        <iframe src="https://www.youtube.com/embed/Q53WN_Jm4Ss" title="ナイトバブル 5" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      <div class="yt-wrap">
+        <iframe src="https://www.youtube.com/embed/sHCamH8fmsE" title="ナイトバブル 6" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Schedule -->
+<section class="nb-sec nb-sec-0">
+  <div class="container">
+    <div class="sec-label">
+      <span class="sec-label-line"></span>
+      <span class="sec-label-text">Schedule</span>
+    </div>
+    <h2 class="sec-title">2025 開催スケジュール</h2>
+    <div class="schedule-list">
+      <div class="sch-item">
+        <span class="sch-date">3 / 8–9</span>
+        <span class="sch-venue">長崎</span>
+        <span class="sch-badge">受付中</span>
+      </div>
+      <div class="sch-item">
+        <span class="sch-date">4 / 26–27</span>
+        <span class="sch-venue">大阪</span>
+        <span class="sch-badge sold">SOLD OUT</span>
+      </div>
+      <div class="sch-item">
+        <span class="sch-date">5 / 24</span>
+        <span class="sch-venue">岩手</span>
+        <span class="sch-badge sold">SOLD OUT</span>
+      </div>
+      <div class="sch-item">
+        <span class="sch-date">8 / 30</span>
+        <span class="sch-venue">滋賀</span>
+        <span class="sch-badge">受付中</span>
+      </div>
+      <div class="sch-item">
+        <span class="sch-date">10 / 11</span>
+        <span class="sch-venue">愛知</span>
+        <span class="sch-badge">受付中</span>
+      </div>
+      <div class="sch-item">
+        <span class="sch-date">10 / 25</span>
+        <span class="sch-venue">千葉</span>
+        <span class="sch-badge">受付中</span>
+      </div>
+      <div class="sch-item">
+        <span class="sch-date">11 / 1</span>
+        <span class="sch-venue">新潟</span>
+        <span class="sch-badge">受付中</span>
+      </div>
+      <div class="sch-item">
+        <span class="sch-date">11 / 29</span>
+        <span class="sch-venue">京都</span>
+        <span class="sch-badge">受付中</span>
+      </div>
+      <div class="sch-item">
+        <span class="sch-date">12 / 13</span>
+        <span class="sch-venue">東京</span>
+        <span class="sch-badge">受付中</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Profile -->
+<section class="nb-sec nb-sec-0">
+  <div class="container">
+    <div class="sec-label">
+      <span class="sec-label-line"></span>
+      <span class="sec-label-text">About Me</span>
+    </div>
+    <div class="profile-inner">
+      <div class="profile-avatar">
+        <div class="profile-avatar-inner">🫧</div>
+      </div>
+      <div>
+        <div class="profile-nick">Shabon-dama Ojisan</div>
+        <h2 class="profile-name">やまちゃん<br><span class="grd">シャボン玉おじさん</span></h2>
+        <p class="profile-sub">山西 伸典 — 下関市 山西水産 4代目 / Yスタジオ＋ 代表</p>
+        <div class="profile-tags">
+          <span class="profile-tag">下関市密着</span>
+          <span class="profile-tag">ふぐ屋4代目</span>
+          <span class="profile-tag">AI × バブル</span>
+          <span class="profile-tag">山口大学 ゲスト講師</span>
+          <span class="profile-tag">出版著者</span>
+        </div>
+        <p class="profile-text">下関で生まれ育ち、ふぐ屋を継ぎ、AIを学び、シャボン玉を飛ばす。<br>「子どもたちの目が輝く瞬間が見たくて」ナイトバブルを始めました。<br><br>学校・保育園・地域イベントへ、光と音楽に包まれた非日常体験をお届けします。お気軽にお声がけください。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Form -->
+<section class="nb-sec nb-sec-0" id="contact">
+  <div class="container">
+    <div class="sec-label">
+      <span class="sec-label-line"></span>
+      <span class="sec-label-text">Contact</span>
+    </div>
+    <h2 class="sec-title">ご依頼・<span class="grd">お問い合わせ</span></h2>
+    <p class="sec-desc">学校・保育園・幼稚園・イベント・企業のご担当者様、お気軽にご連絡ください。</p>
+    <form class="contact-form" action="https://formspree.io/f/xqeoawap" method="POST">
+      <p class="form-title">お問い合わせフォーム</p>
+      <div class="form-group">
+        <label class="form-label" for="cf-name">お名前・ご担当者名</label>
+        <input class="form-input" type="text" id="cf-name" name="name" required placeholder="山西 伸典">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="cf-org">学校・園・会社名</label>
+        <input class="form-input" type="text" id="cf-org" name="organization" placeholder="○○小学校 / ○○保育園">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="cf-email">メールアドレス</label>
+        <input class="form-input" type="email" id="cf-email" name="email" required placeholder="example@email.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="cf-date">ご希望の開催日時（わかる範囲で）</label>
+        <input class="form-input" type="text" id="cf-date" name="date" placeholder="例：2025年10月の土日午後">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="cf-msg">ご相談内容</label>
+        <textarea class="form-textarea" id="cf-msg" name="message" required placeholder="開催規模・場所・ご要望など、お気軽にどうぞ。"></textarea>
+      </div>
+      <button type="submit" class="form-submit">送信する</button>
+    </form>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="nb-cta">
+  <div class="cta-glow"></div>
+  <div class="cta-inner">
+    <h2 class="cta-title">ナイトバブルで、<br><span class="grd">特別な夜を。</span></h2>
+    <p class="cta-sub">ご依頼・ご相談はLINEまたはフォームからどうぞ。<br>学校・保育園・イベント・企業向けお問い合わせ受付中です。</p>
+    <div class="btn-wrap">
+      <a href="https://line.me/ti/p/~shimonoseki-fugu" target="_blank" rel="noopener" class="btn-line-green btn-lg">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.137 2 11.2c0 3.277 1.763 6.174 4.46 7.982L5.6 22l3.82-1.884A11.02 11.02 0 0 0 12 20.4c5.523 0 10-4.137 10-9.2S17.523 2 12 2z"/></svg>
+        LINEで問い合わせる
+      </a>
+      <a href="#contact" class="btn-main btn-lg">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        お問い合わせフォーム
+      </a>
+    </div>
+    <p class="cta-meta">Yスタジオ＋ ナイトバブル事業部</p>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="nb-footer">
+  <div class="footer-brand">
+    <a href="https://yamanishishinsuke19840623.github.io/ystudio-plus/">Yスタジオ＋ ナイトバブル事業部</a>
+  </div>
+  <p class="footer-copy">© 2025 Yスタジオ＋ / team bub. All rights reserved.</p>
+</footer>
+
+<script async src="https://www.instagram.com/embed.js"></script>
+
+<script>
+(function(){
+  const canvas = document.getElementById('nb-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, bubbles = [];
+
+  function resize(){
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  const COLORS = [
+    [124,58,237],[6,182,212],[167,139,250],[103,232,249],[196,181,253]
+  ];
+
+  function newBubble(){
+    const c = COLORS[Math.floor(Math.random()*COLORS.length)];
+    const r = Math.random()*26+7;
+    return {
+      x:Math.random()*W, y:H+r+Math.random()*200,
+      r, vx:(Math.random()-.5)*.45, vy:-(Math.random()*.55+.18),
+      alpha:Math.random()*.16+.03, color:c,
+      phase:Math.random()*Math.PI*2, wobble:Math.random()*.7+.25
+    };
+  }
+
+  function init(){
+    resize();
+    bubbles = Array.from({length:55}, newBubble);
+    bubbles.forEach(b=>{b.y=Math.random()*H;});
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    const t = performance.now()/1000;
+    bubbles.forEach((b,i)=>{
+      b.x += b.vx + Math.sin(t*b.wobble+b.phase)*.28;
+      b.y += b.vy;
+      if(b.y < -b.r*2){ bubbles[i]=newBubble(); return; }
+      const [r,g,bl]=b.color;
+      const grd=ctx.createRadialGradient(b.x,b.y,0,b.x,b.y,b.r*1.9);
+      grd.addColorStop(0,`rgba(${r},${g},${bl},${b.alpha*.5})`);
+      grd.addColorStop(1,`rgba(${r},${g},${bl},0)`);
+      ctx.beginPath(); ctx.arc(b.x,b.y,b.r*1.9,0,Math.PI*2);
+      ctx.fillStyle=grd; ctx.fill();
+      ctx.beginPath(); ctx.arc(b.x,b.y,b.r,0,Math.PI*2);
+      ctx.strokeStyle=`rgba(${r},${g},${bl},${b.alpha*2.8})`;
+      ctx.lineWidth=1; ctx.stroke();
+      ctx.beginPath(); ctx.arc(b.x-b.r*.28,b.y-b.r*.28,b.r*.22,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,255,255,${b.alpha*1.3})`; ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize',resize);
+  init(); draw();
+})();
+
+window.addEventListener('scroll',()=>{
+  document.getElementById('nb-hd').classList.toggle('scrolled',window.scrollY>40);
+});
+</script>
+</body>
+</html>
