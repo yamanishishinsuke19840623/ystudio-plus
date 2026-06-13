@@ -550,6 +550,49 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
   .fde-step-visual{ height:100px; }
 }
 
+
+/* ── PROFILE UPDATE ── */
+.profile-stats{ grid-template-columns:repeat(4,1fr); }
+.profile-role{
+  font-size:11px !important;
+  letter-spacing:1.5px !important;
+  margin-bottom:24px !important;
+}
+.profile-book{
+  display:inline-flex;align-items:center;gap:10px;
+  border:1px solid rgba(201,168,76,.3);
+  background:rgba(201,168,76,.05);
+  padding:10px 16px;
+  margin-bottom:24px;
+  text-decoration:none;
+  transition:.3s;
+}
+.profile-book:hover{ background:rgba(201,168,76,.1); }
+.profile-book-label{
+  font-family:'Inter',sans-serif;font-size:9px;letter-spacing:2px;
+  color:var(--gold);text-transform:uppercase;margin-bottom:3px;
+}
+.profile-book-title{ font-size:13px;font-weight:700;color:var(--white); }
+.profile-axes{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:2px;margin-bottom:28px;
+}
+.profile-axis{
+  background:var(--dark);border:1px solid var(--line);padding:14px 16px;
+  display:flex;align-items:flex-start;gap:10px;
+  transition:.3s;
+}
+.profile-axis:hover{ border-color:rgba(201,168,76,.2); }
+.profile-axis-icon{ font-size:18px;flex-shrink:0;margin-top:1px; }
+.profile-axis-label{
+  font-family:'Inter',sans-serif;font-size:9px;letter-spacing:2px;
+  color:var(--gold);text-transform:uppercase;margin-bottom:4px;
+}
+.profile-axis-text{ font-size:12px;color:var(--sub);line-height:1.6; }
+@media(max-width:640px){
+  .profile-stats{ grid-template-columns:repeat(2,1fr); }
+  .profile-axes{ grid-template-columns:1fr; }
+}
+
 </style>
 </head>
 <body>
@@ -772,16 +815,49 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
       </div>
       <div class="profile-right reveal-r">
         <div class="sec-label" style="margin-bottom:20px;"><div class="sec-label-line"></div><span class="sec-label-text">Profile</span></div>
-        <div class="profile-name">山西 伸典</div>
-        <div class="profile-role">AI Educator · Field Deployment Engineer</div>
-        <p class="profile-text">下関市のふぐ老舗問屋「山西水産」代表。AI教育者・地域コーディネーター。<br>3児のパパとして消防団10年・PTA・しゃぼん玉ショーなど地域活動に奮闘しながら、EC販売・動画制作・AI自動化を独学で推進。月30時間超の業務削減を自社で実証済み。<br><br>「自社で動いている仕組み」をそのまま地域の中小企業へ。現場に入る伴走型支援がスタイルです。</p>
+        <div class="profile-name">山西 伸典<small style="font-size:.35em;font-weight:300;color:var(--sub);vertical-align:middle;margin-left:10px;">やまちゃん</small></div>
+        <div class="profile-role">AI × 魚 × 教育 × 地域 ／ 老舗ふぐ屋4代目 × AI教育者 × 地域コーディネーター</div>
+
+        <!-- 4軸グリッド -->
+        <div class="profile-axes">
+          <div class="profile-axis">
+            <div class="profile-axis-icon">🐡</div>
+            <div><div class="profile-axis-label">Fish</div><div class="profile-axis-text">創業147年・老舗ふぐ屋4代目社長<br>楽天市場上位1%優良ショップ 12年連続</div></div>
+          </div>
+          <div class="profile-axis">
+            <div class="profile-axis-icon">🤖</div>
+            <div><div class="profile-axis-label">AI</div><div class="profile-axis-text">AI教育者 / DXで現場に余白を<br>月30時間超の業務削減を自社で実証済み</div></div>
+          </div>
+          <div class="profile-axis">
+            <div class="profile-axis-icon">🎓</div>
+            <div><div class="profile-axis-label">Education</div><div class="profile-axis-text">地域学校協働活動推進員<br>やまぐち若者MYプロジェクト メンター</div></div>
+          </div>
+          <div class="profile-axis">
+            <div class="profile-axis-icon">🏘️</div>
+            <div><div class="profile-axis-label">Community</div><div class="profile-axis-text">消防団10年・PTA・しゃぼん玉おじさん<br>カオスやストリート（5,000人・7回）</div></div>
+          </div>
+        </div>
+
+        <p class="profile-text">「バラバラに見える肩書き、全部つながっています」——ふぐ屋を経営しながら、AIで業務を自動化し、地域の若者と場をつくる。<br>3児のパパとして地域に根ざした実践が、Yスタジオ＋の原点です。<br><br>自分の「好き」を地域の「穴」にはめ込む——それが<strong style="color:var(--gold);font-weight:700;">「関わりのデザイン」</strong>というスタイルです。</p>
+
+        <!-- 新刊バッジ -->
+        <div class="profile-book reveal">
+          <div>
+            <div class="profile-book-label">New Book</div>
+            <div class="profile-book-title">『伝統を守り、未来を創る』 — 発売中</div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(201,168,76,.6)" stroke-width="1.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+
         <div class="profile-tags">
-          <span class="profile-tag">消防団 10年</span>
-          <span class="profile-tag">PTA・地域活動</span>
-          <span class="profile-tag">ふぐ問屋 代表</span>
-          <span class="profile-tag">ECモール運営</span>
+          <span class="profile-tag">老舗ふぐ屋 4代目</span>
+          <span class="profile-tag">楽天1% 12年連続</span>
+          <span class="profile-tag">カオスや 5,000人</span>
+          <span class="profile-tag">TikTok収益化</span>
           <span class="profile-tag">YouTube 1,330人</span>
-          <span class="profile-tag">GAS / Python / AI</span>
+          <span class="profile-tag">新刊発売中</span>
+          <span class="profile-tag">地域学校協働推進員</span>
+          <span class="profile-tag">AI / Python / GAS</span>
         </div>
         <a href="https://www.youtube.com/@shimofugu" target="_blank" rel="noopener" class="yt-card reveal">
           <div class="yt-card-icon"><svg width="44" height="30" viewBox="0 0 24 17"><rect width="24" height="17" rx="3.5" fill="#FF0000"/><path d="M9.6 12.2V4.8L16.5 8.5z" fill="#fff"/></svg></div>
@@ -792,9 +868,10 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
           <div class="yt-card-arr">→</div>
         </a>
         <div class="profile-stats">
-          <div class="profile-stat"><div class="profile-stat-num">8年</div><div class="profile-stat-lbl">AI自走歴</div></div>
-          <div class="profile-stat"><div class="profile-stat-num">30h+</div><div class="profile-stat-lbl">月間削減</div></div>
-          <div class="profile-stat"><div class="profile-stat-num">6種</div><div class="profile-stat-lbl">自動化稼働中</div></div>
+          <div class="profile-stat"><div class="profile-stat-num">147</div><div class="profile-stat-lbl">年の創業</div></div>
+          <div class="profile-stat"><div class="profile-stat-num">12年</div><div class="profile-stat-lbl">楽天1%優良</div></div>
+          <div class="profile-stat"><div class="profile-stat-num">5,000人</div><div class="profile-stat-lbl">カオスや動員</div></div>
+          <div class="profile-stat"><div class="profile-stat-num">30h+</div><div class="profile-stat-lbl">月間AI削減</div></div>
         </div>
       </div>
     </div>
