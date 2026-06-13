@@ -1270,38 +1270,48 @@ window.addEventListener('scroll',()=>{
   function draw(b,t){
     const{x,y,r,hue}=b;
     ctx.save();
-    // soap film
-    const g=ctx.createRadialGradient(x,y,r*.1,x,y,r);
-    g.addColorStop(0,'rgba(255,255,255,.03)');
-    g.addColorStop(.7,`hsla(${hue},90%,75%,.09)`);
-    g.addColorStop(.92,`hsla(${(hue+80)%360},100%,82%,.2)`);
-    g.addColorStop(1,'rgba(255,255,255,.06)');
+    // カラフルなソープフィルム
+    const g=ctx.createRadialGradient(x,y,r*.05,x,y,r);
+    g.addColorStop(0,  `hsla(${hue},100%,90%,.04)`);
+    g.addColorStop(.55,`hsla(${(hue+60)%360},100%,75%,.14)`);
+    g.addColorStop(.82,`hsla(${(hue+140)%360},100%,80%,.28)`);
+    g.addColorStop(.96,`hsla(${(hue+220)%360},100%,88%,.18)`);
+    g.addColorStop(1,  `hsla(${(hue+300)%360},100%,95%,.08)`);
     ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);
     ctx.fillStyle=g;ctx.fill();
-    // rim
-    ctx.strokeStyle=`hsla(${(hue+t*30)%360},100%,88%,.7)`;
-    ctx.lineWidth=2.2;ctx.stroke();
-    // main highlight
-    const hl=ctx.createRadialGradient(x-r*.3,y-r*.3,0,x-r*.3,y-r*.3,r*.42);
-    hl.addColorStop(0,'rgba(255,255,255,.8)');
+    // 虹色リム（2重）
+    ctx.strokeStyle=`hsla(${(hue+t*40)%360},100%,88%,.8)`;
+    ctx.lineWidth=2.5;ctx.stroke();
+    ctx.strokeStyle=`hsla(${(hue+180+t*40)%360},100%,78%,.35)`;
+    ctx.lineWidth=5;ctx.stroke();
+    // メインハイライト
+    const hl=ctx.createRadialGradient(x-r*.28,y-r*.28,0,x-r*.28,y-r*.28,r*.44);
+    hl.addColorStop(0,'rgba(255,255,255,.85)');
+    hl.addColorStop(.6,'rgba(255,255,255,.15)');
     hl.addColorStop(1,'rgba(255,255,255,0)');
-    ctx.beginPath();ctx.arc(x-r*.3,y-r*.3,r*.42,0,Math.PI*2);
+    ctx.beginPath();ctx.arc(x-r*.28,y-r*.28,r*.44,0,Math.PI*2);
     ctx.fillStyle=hl;ctx.fill();
-    // small dot
-    ctx.beginPath();ctx.arc(x+r*.3,y-r*.35,r*.1,0,Math.PI*2);
-    ctx.fillStyle='rgba(255,255,255,.55)';ctx.fill();
+    // サブハイライト
+    ctx.beginPath();ctx.arc(x+r*.3,y-r*.34,r*.11,0,Math.PI*2);
+    ctx.fillStyle='rgba(255,255,255,.6)';ctx.fill();
+    // 底面カラーグロー
+    const bot=ctx.createRadialGradient(x,y+r*.65,0,x,y+r*.65,r*.38);
+    bot.addColorStop(0,`hsla(${(hue+160)%360},100%,80%,.3)`);
+    bot.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.beginPath();ctx.arc(x,y+r*.65,r*.38,0,Math.PI*2);
+    ctx.fillStyle=bot;ctx.fill();
     ctx.restore();
   }
 
   function loop(){
     ctx.clearRect(0,0,W,H);
     const t=performance.now()/3000;
-    if(Math.random()<.05&&bubbles.length<30)bubbles.push(newBubble());
+    if(Math.random()<.08&&bubbles.length<55)bubbles.push(newBubble());
     for(let i=bubbles.length-1;i>=0;i--){
       const b=bubbles[i];
-      b.x+=b.vx+Math.sin(t*b.wobble+b.phase)*1.2;
+      b.x+=b.vx+Math.sin(t*b.wobble+b.phase)*1.3;
       b.y+=b.vy;
-      b.hue+=.5;
+      b.hue+=.7;
       if(b.y<-b.r*2){bubbles.splice(i,1);continue;}
       draw(b,t);
     }
@@ -1312,7 +1322,7 @@ window.addEventListener('scroll',()=>{
   requestAnimationFrame(function(){
     requestAnimationFrame(function(){
       resize();
-      for(let i=0;i<22;i++){
+      for(let i=0;i<45;i++){
         bubbles.push(newBubble(Math.random()*(H+100)));
       }
       loop();
