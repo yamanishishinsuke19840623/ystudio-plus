@@ -29,8 +29,9 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rgba(4,4,15,.75),rgba(4,4,15,.75)),url('bubble-bg.png') center/cover fixed;color:var(--white);line-height:1.7;overflow-x:hidden;}
-@media(max-width:768px){body{background-attachment:scroll;}}
+body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:var(--white);line-height:1.7;overflow-x:hidden;}
+/* ── FIXED BACKGROUND (works on all devices/sizes) ── */
+#nb-bg{position:fixed;inset:0;z-index:-1;background:linear-gradient(rgba(4,4,15,.72),rgba(4,4,15,.72)),url('bubble-bg.png') center/cover no-repeat;pointer-events:none;}
 ::-webkit-scrollbar{width:3px;}
 ::-webkit-scrollbar-track{background:var(--bg);}
 ::-webkit-scrollbar-thumb{background:var(--purple);border-radius:2px;}
@@ -83,14 +84,14 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
 .sec-label-line{width:28px;height:1px;background:linear-gradient(90deg,var(--purple2),var(--cyan2));}
 .sec-label-text{font-family:'Inter',sans-serif;font-size:10px;letter-spacing:4px;color:var(--cyan2);text-transform:uppercase;}
 .sec-title{font-size:clamp(28px,4.5vw,52px);font-weight:900;line-height:1.15;letter-spacing:-1px;margin-bottom:16px;}
-.sec-desc{font-size:15px;color:var(--sub);line-height:2;max-width:640px;margin-bottom:0;}
+.sec-desc{font-size:16px;color:var(--sub);line-height:2;max-width:640px;margin-bottom:0;}
 
 /* ── ABOUT ── */
 .about-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
 @media(max-width:768px){.about-inner{grid-template-columns:1fr;gap:32px;}}
 .about-bignum{font-family:'Inter',sans-serif;font-size:clamp(80px,14vw,160px);font-weight:900;background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(6,182,212,.08));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;letter-spacing:-6px;-webkit-user-select:none;user-select:none;}
 .about-copy{font-size:clamp(20px,3vw,32px);font-weight:700;line-height:1.45;margin-bottom:24px;}
-.about-text{font-size:14px;color:var(--sub);line-height:2.2;}
+.about-text{font-size:15px;color:var(--sub);line-height:2.2;}
 
 /* ── STATS BAR ── */
 .stats-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);margin-top:80px;border:1px solid var(--line);}
@@ -111,8 +112,8 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
 .feature-card:hover{transform:translateY(-5px);background:rgba(124,58,237,.06);border-color:rgba(124,58,237,.3);}
 .feature-card:hover::before{transform:scaleX(1);}
 .feature-num{font-family:'Inter',sans-serif;font-size:38px;font-weight:900;color:rgba(167,139,250,.15);line-height:1;margin-bottom:20px;letter-spacing:-2px;}
-.feature-card h3{font-size:14px;font-weight:700;margin-bottom:10px;line-height:1.6;}
-.feature-card p{font-size:12px;color:var(--sub);line-height:2;}
+.feature-card h3{font-size:16px;font-weight:700;margin-bottom:12px;line-height:1.6;}
+.feature-card p{font-size:14px;color:var(--sub);line-height:2;}
 
 /* ── ACHIEVEMENTS ── */
 .achv-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:48px;}
@@ -187,7 +188,7 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
 .flow-item:hover{background:rgba(124,58,237,.07);}
 .flow-num{font-family:'Inter',sans-serif;font-size:48px;font-weight:900;color:rgba(167,139,250,.18);line-height:1;letter-spacing:-2px;position:relative;z-index:1;}
 .flow-title{font-size:16px;font-weight:700;margin-bottom:8px;position:relative;z-index:1;}
-.flow-text{font-size:13px;color:var(--sub);line-height:2;position:relative;z-index:1;}
+.flow-text{font-size:15px;color:var(--sub);line-height:2;position:relative;z-index:1;}
 @media(max-width:600px){.flow-item{grid-template-columns:56px 1fr;gap:16px;padding:20px 16px;}.flow-num{font-size:32px;}}
 
 /* ── PROFILE ── */
@@ -203,7 +204,7 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
 .profile-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;}
 @media(max-width:800px){.profile-tags{justify-content:center;}}
 .profile-tag{font-size:11px;letter-spacing:1px;border:1px solid rgba(124,58,237,.4);color:var(--purple2);padding:5px 14px;border-radius:20px;}
-.profile-text{font-size:14px;color:var(--sub);line-height:2.2;}
+.profile-text{font-size:15px;color:var(--sub);line-height:2.2;}
 
 /* ── CONTACT FORM ── */
 .contact-form{margin-top:48px;background:rgba(255,255,255,.03);border:1px solid var(--line);padding:48px 40px;max-width:680px;margin-left:auto;margin-right:auto;}
@@ -257,7 +258,7 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
 .faq-item.open .faq-q-icon{transform:rotate(45deg);color:var(--cyan2);}
 .faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;}
 .faq-item.open .faq-a{max-height:200px;}
-.faq-a-inner{padding:0 28px 24px;font-size:14px;color:var(--sub);line-height:2.2;border-top:1px solid var(--line);}
+.faq-a-inner{padding:0 28px 24px;font-size:15px;color:var(--sub);line-height:2.2;border-top:1px solid var(--line);}
 @media(max-width:600px){.faq-q{padding:18px 16px;}.faq-q-text{font-size:14px;}.faq-a-inner{padding:0 16px 20px;}}
 
 /* ── GAME ── */
@@ -281,15 +282,28 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
 .g-rank-current td{color:var(--cyan2) !important;font-weight:700;}
 
 /* ── FOOTER ── */
-.nb-footer{padding:40px 48px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1;}
-@media(max-width:600px){.nb-footer{flex-direction:column;gap:16px;text-align:center;padding:32px 20px;}}
-.footer-brand a{color:var(--gold);font-family:'Inter',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;transition:.3s;}
+.nb-footer{padding:56px 48px 32px;border-top:1px solid var(--line);position:relative;z-index:1;}
+@media(max-width:768px){.nb-footer{padding:40px 20px 24px;}}
+.footer-inner{max-width:1080px;margin:0 auto;}
+.footer-top{display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;padding-bottom:40px;border-bottom:1px solid var(--line);margin-bottom:28px;}
+@media(max-width:768px){.footer-top{grid-template-columns:1fr;gap:28px;}}
+.footer-brand a{color:var(--gold);font-family:'Inter',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;transition:.3s;display:block;margin-bottom:10px;}
 .footer-brand a:hover{opacity:.7;}
-.footer-copy{font-size:11px;color:rgba(248,250,252,.22);font-family:'Inter',sans-serif;letter-spacing:1px;}
+.footer-brand-desc{font-size:12px;color:var(--sub);line-height:1.9;}
+.footer-info-title{font-family:'Inter',sans-serif;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(248,250,252,.3);margin-bottom:12px;}
+.footer-info-list{list-style:none;font-size:12px;color:var(--sub);line-height:2.2;}
+.footer-pp{font-size:12px;color:var(--sub);line-height:2;}
+.footer-pp-title{font-family:'Inter',sans-serif;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(248,250,252,.3);margin-bottom:12px;}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.footer-copy{font-size:11px;color:rgba(248,250,252,.2);font-family:'Inter',sans-serif;letter-spacing:1px;}
+.footer-links{display:flex;gap:20px;}
+.footer-links a{font-size:11px;color:rgba(248,250,252,.3);text-decoration:none;font-family:'Inter',sans-serif;transition:.2s;}
+.footer-links a:hover{color:var(--sub);}
 </style>
 </head>
 <body>
 
+<div id="nb-bg"></div>
 <canvas id="nb-canvas"></canvas>
 
 <!-- Header -->
@@ -864,10 +878,35 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
 
 <!-- Footer -->
 <footer class="nb-footer">
-  <div class="footer-brand">
-    <a href="https://yamanishishinsuke19840623.github.io/ystudio-plus/">Yスタジオ＋ ナイトバブル事業部</a>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="https://yamanishishinsuke19840623.github.io/ystudio-plus/">Yスタジオ＋ ナイトバブル事業部</a>
+        <p class="footer-brand-desc">下関市を拠点に活動する<br>バブルエンターテインメント事業部。<br>地域イベント・学校行事・PTA行事に<br>無数のシャボン玉をお届けします。</p>
+      </div>
+      <div>
+        <p class="footer-info-title">運営情報</p>
+        <ul class="footer-info-list">
+          <li>山西水産株式会社（Yスタジオ＋）</li>
+          <li>代表：山西 伸典</li>
+          <li>〒 山口県下関市</li>
+          <li>活動エリア：下関市および周辺</li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-pp-title">プライバシーポリシー</p>
+        <p class="footer-pp">お問い合わせフォームでご入力いただいた個人情報（氏名・メールアドレス等）は、ご返信・ご連絡のみに使用します。第三者への提供・販売は一切行いません。フォームの送受信にはFormspreeのサービスを利用しています。</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2025–2026 山西水産株式会社 Yスタジオ＋ ナイトバブル事業部. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="https://yamanishishinsuke19840623.github.io/ystudio-plus/">Yスタジオ＋ TOP</a>
+        <a href="#contact">お問い合わせ</a>
+        <a href="#faq">FAQ</a>
+      </div>
+    </div>
   </div>
-  <p class="footer-copy">© 2025 Yスタジオ＋ / team bub. All rights reserved.</p>
 </footer>
 
 <div id="nb-lb"><span id="nb-lb-close">×</span><img id="nb-lb-img" src="" alt=""></div>
