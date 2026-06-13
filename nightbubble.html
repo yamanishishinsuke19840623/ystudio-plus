@@ -156,6 +156,13 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
 @media(max-width:480px){.ig-grid{grid-template-columns:1fr;max-width:400px;margin-left:auto;margin-right:auto;}}
 .ig-item{display:flex;justify-content:center;background:#111;border-radius:4px;overflow:hidden;}
 .ig-item .instagram-media{margin:0 !important;min-width:0 !important;width:100% !important;max-width:100% !important;}
+.photo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:0;}
+@media(max-width:900px){.photo-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:480px){.photo-grid{grid-template-columns:repeat(2,1fr);}}
+.photo-item{position:relative;overflow:hidden;border-radius:4px;aspect-ratio:4/3;cursor:pointer;}
+.photo-item img{width:100%;height:100%;object-fit:cover;transition:.4s;}
+.photo-item:hover img{transform:scale(1.06);}
+.photo-item::after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(4,4,15,.5),transparent);pointer-events:none;}
 .yt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
 @media(max-width:900px){.yt-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:600px){.yt-grid{grid-template-columns:1fr;}}
@@ -209,6 +216,20 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
 .cta-sub{font-size:15px;color:var(--sub);margin-bottom:56px;line-height:2.2;}
 .btn-lg{font-size:16px;padding:22px 60px;}
 .cta-meta{margin-top:40px;font-size:11px;color:rgba(248,250,252,.25);font-family:'Inter',sans-serif;letter-spacing:1px;}
+
+/* ── GAME ── */
+.game-wrap{position:relative;margin-top:40px;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:rgba(4,4,15,0.65);}
+.game-ui{display:flex;justify-content:space-between;align-items:center;padding:12px 24px;background:rgba(7,7,21,0.75);border-bottom:1px solid var(--line);}
+.game-stat{font-family:'Inter',sans-serif;font-size:11px;letter-spacing:1.5px;color:var(--sub);text-transform:uppercase;text-align:center;}
+.game-stat span{display:block;font-size:22px;font-weight:900;color:var(--cyan2);letter-spacing:-1px;line-height:1.2;}
+#game-canvas{display:block;width:100%;height:400px;cursor:crosshair;}
+@media(max-width:600px){#game-canvas{height:300px;}}
+.game-overlay{position:absolute;inset:49px 0 0 0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(4,4,15,0.72);gap:14px;transition:.3s;}
+.game-overlay.hidden{display:none;}
+.g-title{font-size:clamp(22px,5vw,34px);font-weight:900;background:linear-gradient(135deg,var(--purple2),var(--cyan2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.g-sub{font-size:13px;color:var(--sub);text-align:center;line-height:1.8;}
+.g-btn{background:linear-gradient(135deg,var(--purple),var(--cyan));color:#fff;border:none;padding:14px 40px;border-radius:50px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:.3s;margin-top:8px;}
+.g-btn:hover{opacity:.85;transform:translateY(-2px);}
 
 /* ── FOOTER ── */
 .nb-footer{padding:40px 48px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1;}
@@ -458,6 +479,31 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
     <h2 class="sec-title">動画・写真でみてみよう</h2>
     <p class="sec-desc">実際の会場の雰囲気をお届けします。</p>
 
+    <!-- Event Photos -->
+    <div class="media-sub-label">きよすえフェスタ 2025（下関市立清末小学校）</div>
+    <div class="photo-grid">
+      <div class="photo-item"><img src="kiyosue-1.jpg" alt="きよすえフェスタ ナイトバブル" loading="lazy"></div>
+      <div class="photo-item"><img src="kiyosue-2.jpg" alt="きよすえフェスタ ナイトバブル" loading="lazy"></div>
+      <div class="photo-item"><img src="kiyosue-3.jpg" alt="きよすえフェスタ ナイトバブル" loading="lazy"></div>
+      <div class="photo-item"><img src="kiyosue-4.jpg" alt="きよすえフェスタ ナイトバブル" loading="lazy"></div>
+    </div>
+
+    <!-- Otsukimi Photos -->
+    <div class="media-sub-label" style="margin-top:32px;">ナイトバブル＆お月見 2024</div>
+    <div class="photo-grid">
+      <div class="photo-item"><img src="otsukimi-1.jpg" alt="ナイトバブル お月見 2024" loading="lazy"></div>
+      <div class="photo-item"><img src="otsukimi-2.jpg" alt="ナイトバブル 子どもたち" loading="lazy"></div>
+      <div class="photo-item"><img src="otsukimi-3.jpg" alt="ナイトバブル ライト演出" loading="lazy"></div>
+      <div class="photo-item"><img src="event-day.jpg" alt="昼のシャボン玉ショー" loading="lazy"></div>
+    </div>
+
+    <!-- Daytime Photos -->
+    <div class="media-sub-label" style="margin-top:32px;">昼のシャボン玉ショー</div>
+    <div class="photo-grid" style="grid-template-columns:repeat(2,1fr);max-width:560px;">
+      <div class="photo-item"><img src="event-day2.jpg" alt="シャボン玉ショー やまちゃん" loading="lazy"></div>
+      <div class="photo-item"><img src="shabon-ojisan.jpeg" alt="シャボン玉おじさん やまちゃん" loading="lazy"></div>
+    </div>
+
     <!-- Instagram -->
     <div class="media-sub-label">Instagram</div>
     <div class="ig-grid">
@@ -625,6 +671,31 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
   </div>
 </section>
 
+<!-- Game -->
+<section class="nb-sec nb-sec-0" id="game">
+  <div class="container">
+    <div class="sec-label">
+      <span class="sec-label-line"></span>
+      <span class="sec-label-text">Mini Game</span>
+    </div>
+    <h2 class="sec-title">シャボン玉を<span class="grd">割ろう！</span></h2>
+    <p class="sec-desc">タップ／クリックでシャボン玉を割ってスコアを競おう！</p>
+    <div class="game-wrap">
+      <div class="game-ui">
+        <div class="game-stat"><span id="g-score">0</span>スコア</div>
+        <div class="game-stat"><span id="g-timer">30</span>残り秒</div>
+        <div class="game-stat"><span id="g-best">0</span>ベスト</div>
+      </div>
+      <canvas id="game-canvas"></canvas>
+      <div class="game-overlay" id="game-overlay">
+        <p class="g-title">🫧 シャボン玉わりゲーム</p>
+        <p class="g-sub">30秒間、シャボン玉をタップして割ろう！<br>小さいシャボン玉ほど高得点！</p>
+        <button class="g-btn" id="g-start-btn">スタート！</button>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- CTA -->
 <section class="nb-cta">
   <div class="cta-glow"></div>
@@ -656,6 +727,129 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
 <script async src="https://www.instagram.com/embed.js"></script>
 
 <script>
+// ── BUBBLE POP GAME ──
+(function(){
+  const gc = document.getElementById('game-canvas');
+  if(!gc) return;
+  const gx = gc.getContext('2d');
+  const scoreEl = document.getElementById('g-score');
+  const timerEl = document.getElementById('g-timer');
+  const bestEl  = document.getElementById('g-best');
+  const overlay = document.getElementById('game-overlay');
+  const startBtn= document.getElementById('g-start-btn');
+
+  let W,H,gBubbles=[],gParticles=[],gScore=0,gTimer=30,gRunning=false,gInterval,gRaf;
+  let gBest = parseInt(localStorage.getItem('nb-game-best')||'0');
+  bestEl.textContent = gBest;
+
+  const GC = [[124,58,237],[6,182,212],[167,139,250],[240,171,252],[34,211,238],[251,191,36]];
+
+  function gResize(){
+    W = gc.width  = gc.offsetWidth;
+    H = gc.height = gc.offsetHeight;
+  }
+
+  function mkBubble(){
+    const c = GC[Math.floor(Math.random()*GC.length)];
+    const r = Math.random()*20+8;
+    return {x:Math.random()*(W-r*2)+r, y:H+r+10,
+      r, vx:(Math.random()-.5)*.5, vy:-(Math.random()*.7+.3),
+      color:c, phase:Math.random()*Math.PI*2, wobble:Math.random()*.4+.2,
+      pts: Math.max(1,Math.round(20/r))};
+  }
+
+  function mkParticles(b){
+    for(let i=0;i<10;i++){
+      const a=Math.PI*2/10*i;
+      gParticles.push({x:b.x,y:b.y,vx:Math.cos(a)*3,vy:Math.sin(a)*3,
+        r:b.r*.2,color:b.color,alpha:1});
+    }
+  }
+
+  function drawB(b){
+    const [r,g,bl]=b.color;
+    gx.save(); gx.globalAlpha=b.alpha||1;
+    const gr=gx.createRadialGradient(b.x,b.y,0,b.x,b.y,b.r);
+    gr.addColorStop(0,`rgba(${r},${g},${bl},.15)`);
+    gr.addColorStop(1,`rgba(${r},${g},${bl},.04)`);
+    gx.beginPath(); gx.arc(b.x,b.y,b.r,0,Math.PI*2);
+    gx.fillStyle=gr; gx.fill();
+    gx.strokeStyle=`rgba(${r},${g},${bl},.85)`; gx.lineWidth=1.8; gx.stroke();
+    gx.beginPath(); gx.arc(b.x-b.r*.3,b.y-b.r*.3,b.r*.22,0,Math.PI*2);
+    gx.fillStyle='rgba(255,255,255,.55)'; gx.fill();
+    gx.restore();
+  }
+
+  function gameLoop(){
+    gx.clearRect(0,0,W,H);
+    const t=performance.now()/1000;
+    if(Math.random()<.04 && gBubbles.length<40) gBubbles.push(mkBubble());
+    for(let i=gBubbles.length-1;i>=0;i--){
+      const b=gBubbles[i];
+      b.x+=b.vx+Math.sin(t*b.wobble+b.phase)*.35; b.y+=b.vy;
+      if(b.y<-b.r*2){gBubbles.splice(i,1);continue;}
+      drawB(b);
+    }
+    for(let i=gParticles.length-1;i>=0;i--){
+      const p=gParticles[i];
+      p.x+=p.vx; p.y+=p.vy; p.vy+=.12; p.alpha-=.06;
+      if(p.alpha<=0){gParticles.splice(i,1);continue;}
+      const [r,g,bl]=p.color;
+      gx.save(); gx.globalAlpha=p.alpha;
+      gx.beginPath(); gx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      gx.fillStyle=`rgb(${r},${g},${bl})`; gx.fill(); gx.restore();
+    }
+    gRaf=requestAnimationFrame(gameLoop);
+  }
+
+  function endGame(){
+    gRunning=false; clearInterval(gInterval);
+    if(gScore>gBest){gBest=gScore;localStorage.setItem('nb-game-best',gBest);bestEl.textContent=gBest;}
+    overlay.innerHTML=`<p class="g-title">${gScore}点！</p>
+      <p class="g-sub">${gScore>=30?'すごい！シャボン玉名人だ🎉':gScore>=15?'いいね！もう一回！':'まだまだ！練習あるのみ！'}</p>
+      ${gScore>=gBest&&gScore>0?'<p class="g-sub" style="color:var(--cyan2)">🏆 ベスト更新！</p>':''}
+      <button class="g-btn" id="g-restart-btn">もう一度</button>`;
+    overlay.classList.remove('hidden');
+    document.getElementById('g-restart-btn').addEventListener('click',startGame);
+  }
+
+  function startGame(){
+    gScore=0; gTimer=30; gBubbles=[]; gParticles=[];
+    scoreEl.textContent=0; timerEl.textContent=30;
+    overlay.classList.add('hidden');
+    gRunning=true;
+    cancelAnimationFrame(gRaf);
+    gameLoop();
+    gInterval=setInterval(()=>{
+      gTimer--; timerEl.textContent=gTimer;
+      if(gTimer<=0) endGame();
+    },1000);
+  }
+
+  function onTap(e){
+    e.preventDefault();
+    if(!gRunning) return;
+    const rect=gc.getBoundingClientRect();
+    const cx=(e.touches?e.touches[0].clientX:e.clientX)-rect.left;
+    const cy=(e.touches?e.touches[0].clientY:e.clientY)-rect.top;
+    for(let i=gBubbles.length-1;i>=0;i--){
+      const b=gBubbles[i];
+      if((cx-b.x)**2+(cy-b.y)**2<=b.r**2){
+        mkParticles(b); gBubbles.splice(i,1);
+        gScore+=b.pts; scoreEl.textContent=gScore; break;
+      }
+    }
+  }
+
+  gResize();
+  window.addEventListener('resize',gResize);
+  gc.addEventListener('click',onTap);
+  gc.addEventListener('touchstart',onTap,{passive:false});
+  startBtn.addEventListener('click',startGame);
+  gameLoop();
+})();
+
+// ── BACKGROUND BUBBLES ──
 (function(){
   const canvas = document.getElementById('nb-canvas');
   const ctx = canvas.getContext('2d');
@@ -711,6 +905,7 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:linear-gradient(rg
 
   window.addEventListener('resize',resize);
   init(); draw();
+// ── END BACKGROUND BUBBLES ──
 })();
 
 window.addEventListener('scroll',()=>{
