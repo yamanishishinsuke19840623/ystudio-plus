@@ -39,6 +39,8 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
 
 /* ── CANVAS ── */
 #nb-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+#hero-canvas{position:absolute;inset:0;z-index:0;pointer-events:none;width:100%;height:100%;}
+.nb-hero>*:not(#hero-canvas){position:relative;z-index:1;}
 
 /* ── HEADER ── */
 .nb-hd{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:flex;justify-content:space-between;align-items:center;transition:.4s;}
@@ -315,6 +317,7 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
 
 <!-- Hero -->
 <section class="nb-hero">
+  <canvas id="hero-canvas"></canvas>
   <div class="hero-glow"></div>
   <div class="nb-tag">
     <span class="nb-tag-line"></span>
@@ -1236,6 +1239,97 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
 window.addEventListener('scroll',()=>{
   document.getElementById('nb-hd').classList.toggle('scrolled',window.scrollY>40);
 });
+
+// ── HERO GORGEOUS BUBBLES ──
+(function(){
+  const c=document.getElementById('hero-canvas');
+  if(!c)return;
+  const ctx=c.getContext('2d');
+  let W,H,bubbles=[];
+
+  function resize(){
+    W=c.width=c.offsetWidth;
+    H=c.height=c.offsetHeight;
+  }
+
+  function newBubble(startY){
+    const r=Math.random()*60+45; // 45〜105px
+    return{
+      x:Math.random()*W,
+      y:startY!==undefined?startY:H+r+10,
+      r,
+      vx:(Math.random()-.5)*.55,
+      vy:-(Math.random()*.7+.25),
+      wobble:Math.random()*.5+.15,
+      phase:Math.random()*Math.PI*2,
+      hue:Math.random()*360,
+      alpha:Math.random()*.35+.55
+    };
+  }
+
+  function drawBubble(b,t){
+    const{x,y,r,hue}=b;
+    ctx.save();
+    ctx.globalAlpha=b.alpha;
+
+    // ── soap film body ──
+    const film=ctx.createRadialGradient(x,y,0,x,y,r);
+    film.addColorStop(0,  `hsla(${hue},80%,95%,.01)`);
+    film.addColorStop(.65,`hsla(${(hue+40)%360},100%,75%,.05)`);
+    film.addColorStop(.88,`hsla(${(hue+100)%360},100%,80%,.13)`);
+    film.addColorStop(1,  `hsla(${(hue+180)%360},100%,90%,.07)`);
+    ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);
+    ctx.fillStyle=film;ctx.fill();
+
+    // ── iridescent rim ──
+    ctx.strokeStyle=`hsla(${(hue+t*25)%360},100%,88%,.55)`;
+    ctx.lineWidth=2;ctx.stroke();
+
+    // ── main highlight (top-left) ──
+    const hl1=ctx.createRadialGradient(x-r*.35,y-r*.35,0,x-r*.35,y-r*.35,r*.42);
+    hl1.addColorStop(0,'rgba(255,255,255,.65)');
+    hl1.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.beginPath();ctx.arc(x-r*.35,y-r*.35,r*.42,0,Math.PI*2);
+    ctx.fillStyle=hl1;ctx.fill();
+
+    // ── small secondary highlight ──
+    ctx.beginPath();ctx.arc(x+r*.32,y-r*.38,r*.13,0,Math.PI*2);
+    ctx.fillStyle='rgba(255,255,255,.38)';ctx.fill();
+
+    // ── colorful bottom glow ──
+    const bot=ctx.createRadialGradient(x,y+r*.72,0,x,y+r*.72,r*.32);
+    bot.addColorStop(0,`hsla(${(hue+200)%360},100%,85%,.22)`);
+    bot.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.beginPath();ctx.arc(x,y+r*.72,r*.32,0,Math.PI*2);
+    ctx.fillStyle=bot;ctx.fill();
+
+    ctx.restore();
+  }
+
+  function loop(){
+    ctx.clearRect(0,0,W,H);
+    const t=performance.now()/3000;
+    if(Math.random()<.04&&bubbles.length<28)bubbles.push(newBubble());
+    for(let i=bubbles.length-1;i>=0;i--){
+      const b=bubbles[i];
+      b.x+=b.vx+Math.sin(t*b.wobble+b.phase)*.9;
+      b.y+=b.vy;
+      b.hue+=.4;
+      if(b.y<-b.r*2){bubbles.splice(i,1);continue;}
+      drawBubble(b,t);
+    }
+    requestAnimationFrame(loop);
+  }
+
+  resize();
+  window.addEventListener('resize',resize);
+  // 最初から画面いっぱいに配置
+  for(let i=0;i<22;i++){
+    const b=newBubble(Math.random()*H);
+    bubbles.push(b);
+  }
+  loop();
+})();
 
 // ── FAQ ACCORDION ──
 document.querySelectorAll('.faq-q').forEach(q=>{
