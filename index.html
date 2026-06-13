@@ -356,6 +356,92 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
 /* ── ヘッダーロゴ少し大きく ── */
 .hd-logo img{ height:32px; }
 
+
+/* ── FDE FLOW REDESIGN ── */
+.fde-flow{
+  display:flex !important;
+  align-items:stretch;
+  justify-content:center;
+  gap:0;
+  margin-bottom:28px !important;
+  overflow-x:auto;
+  padding-bottom:0 !important;
+}
+.fde-step{
+  flex:1;
+  max-width:220px;
+  min-width:0;
+  border:1px solid var(--line);
+  background:var(--dark2);
+  padding:28px 14px 22px;
+  text-align:center;
+  display:flex !important;
+  flex-direction:column;
+  align-items:center;
+  gap:0;
+  transition:.35s;
+  position:relative;
+  overflow:hidden;
+  min-width:0;
+}
+.fde-step::after{
+  content:'';
+  position:absolute;
+  bottom:0;left:0;right:0;
+  height:2px;
+  background:var(--line);
+  transition:.4s;
+}
+.fde-step:hover::after{ background:var(--gold); }
+.fde-step.final::after{ background:var(--gold); }
+.fde-step:hover{
+  background:rgba(201,168,76,.04);
+  border-color:rgba(201,168,76,.2);
+}
+.fde-step-num{
+  font-family:'Inter',sans-serif;
+  font-size:9px;
+  letter-spacing:3px;
+  color:rgba(201,168,76,.45);
+  margin-bottom:16px;
+}
+.fde-step-icon-wrap{
+  width:56px;height:56px;
+  border:1px solid rgba(201,168,76,.2);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--gold);
+  margin-bottom:16px;
+  background:rgba(201,168,76,.04);
+  transition:.35s;
+}
+.fde-step:hover .fde-step-icon-wrap{
+  background:rgba(201,168,76,.1);
+  border-color:rgba(201,168,76,.5);
+  transform:scale(1.08);
+}
+.fde-step.final .fde-step-icon-wrap{
+  border-color:rgba(201,168,76,.4);
+  background:rgba(201,168,76,.07);
+}
+.fde-step-label{
+  font-size:13px;font-weight:700;color:var(--white);
+  margin-bottom:8px;
+}
+.fde-step-sub{
+  font-size:11px;color:var(--sub);line-height:1.6;
+}
+.fde-arrow{
+  display:flex;align-items:center;justify-content:center;
+  padding:0 4px;flex-shrink:0;color:rgba(201,168,76,.35);
+  align-self:center;
+}
+@media(max-width:640px){
+  .fde-flow{ gap:0; }
+  .fde-step{ min-width:130px; padding:20px 10px 18px; }
+  .fde-step-icon-wrap{ width:44px;height:44px; }
+}
+
 </style>
 </head>
 <body>
@@ -428,13 +514,33 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
     </div>
 
     <div class="fde-flow reveal">
-      <div class="fde-step"><div class="fde-step-icon">👁</div><div class="fde-step-label">現場を見る</div><div class="fde-step-sub">業務フローを目で確認</div></div>
-      <div class="fde-arrow">→</div>
-      <div class="fde-step"><div class="fde-step-icon">⚙️</div><div class="fde-step-label">設計・実装</div><div class="fde-step-sub">実証済み仕組みを投入</div></div>
-      <div class="fde-arrow">→</div>
-      <div class="fde-step"><div class="fde-step-icon">🤝</div><div class="fde-step-label">スタッフ定着</div><div class="fde-step-sub">レクチャー・サポート</div></div>
-      <div class="fde-arrow">→</div>
-      <div class="fde-step final"><div class="fde-step-icon">📊</div><div class="fde-step-label">効果測定</div><div class="fde-step-sub">月次レポートで改善継続</div></div>
+      <div class="fde-step">
+        <div class="fde-step-num">01</div>
+        <div class="fde-step-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+        <div class="fde-step-label">現場を見る</div>
+        <div class="fde-step-sub">業務フローを<br>目で確認</div>
+      </div>
+      <div class="fde-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(201,168,76,.4)" stroke-width="1.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      <div class="fde-step">
+        <div class="fde-step-num">02</div>
+        <div class="fde-step-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+        <div class="fde-step-label">設計・実装</div>
+        <div class="fde-step-sub">実証済みの仕組みを<br>投入</div>
+      </div>
+      <div class="fde-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(201,168,76,.4)" stroke-width="1.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      <div class="fde-step">
+        <div class="fde-step-num">03</div>
+        <div class="fde-step-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div class="fde-step-label">スタッフ定着</div>
+        <div class="fde-step-sub">レクチャー・<br>サポート</div>
+      </div>
+      <div class="fde-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(201,168,76,.4)" stroke-width="1.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      <div class="fde-step final">
+        <div class="fde-step-num">04</div>
+        <div class="fde-step-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+        <div class="fde-step-label">効果測定</div>
+        <div class="fde-step-sub">月次レポートで<br>改善継続</div>
+      </div>
     </div>
 
     <div class="fde-compare reveal">
