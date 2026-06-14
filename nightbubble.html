@@ -40,7 +40,8 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
 /* ── CANVAS ── */
 #nb-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
 #hero-canvas{position:absolute;inset:0;z-index:0;pointer-events:none;width:100%;height:100%;}
-.nb-hero>*:not(#hero-canvas){position:relative;z-index:1;}
+.hero-glow{position:absolute !important;}
+.nb-hero>*:not(#hero-canvas):not(.hero-glow){position:relative;z-index:1;}
 
 /* ── HEADER ── */
 .nb-hd{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:flex;justify-content:space-between;align-items:center;transition:.4s;}
