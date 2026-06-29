@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yスタジオ＋ | 下関商工会議所 会員事業者AI支援 提案資料</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:'Hiragino Sans','Meiryo',sans-serif;margin:0;background:#f0f2f7;color:#222;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.page{width:210mm;min-height:297mm;margin:auto;background:#fff;overflow:hidden}
+
+/* ─── TOP BAND ─── */
+.top-band{background:#b8860b;color:#fff;text-align:center;padding:6px 20px;font-size:10.5px;font-weight:700;letter-spacing:1.5px}
+
+/* ─── HEADER ─── */
+.header{background:#0d1b3e;padding:22px 30px 18px;display:flex;justify-content:space-between;align-items:flex-start;gap:20px}
+.header-left{flex:1}
+.org-label{font-size:9.5px;color:#f59e0b;font-weight:700;letter-spacing:2px;margin-bottom:6px}
+h1.catch{font-size:22px;font-weight:900;color:#fff;line-height:1.4;margin:0 0 10px}
+h1.catch span{color:#f59e0b}
+.sub-catch{font-size:11px;color:#cdd5e0;line-height:1.7;max-width:360px}
+.header-right{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:140px}
+.header-right img.photo{width:100px;height:100px;border-radius:50%;object-fit:cover;border:4px solid #f59e0b}
+.profile-mini{background:rgba(255,255,255,0.1);border-radius:8px;padding:8px 12px;text-align:center}
+.profile-mini .name{font-size:14px;font-weight:900;color:#fff}
+.profile-mini .kana{font-size:8.5px;color:#aab}
+.profile-mini .title{font-size:8.5px;color:#f59e0b;margin-top:3px;line-height:1.5}
+
+/* ─── INTRO BOX ─── */
+.intro-box{background:#f0f4ff;border-left:5px solid #0d1b3e;margin:16px 24px;padding:14px 18px;border-radius:0 8px 8px 0}
+.intro-box .intro-title{font-size:13px;font-weight:900;color:#0d1b3e;margin-bottom:6px}
+.intro-box p{font-size:11px;line-height:1.8;margin:0;color:#333}
+.intro-box strong{color:#0d1b3e}
+
+/* ─── KPIs ─── */
+.kpis{display:flex;gap:10px;padding:0 24px 12px}
+.kpi{flex:1;background:linear-gradient(135deg,#0d1b3e,#1e3a5f);padding:13px 10px;border-radius:10px;text-align:center;color:#fff;position:relative}
+.kpi-num{font-size:22px;font-weight:900;color:#f59e0b}
+.kpi-unit{font-size:12px;color:#f59e0b}
+.kpi-label{font-size:9.5px;color:#cdd5e0;margin-top:2px}
+
+/* ─── 2-COL MAIN ─── */
+.two-col{display:flex;gap:16px;padding:0 24px 14px}
+.col-left{flex:1.4}
+.col-right{flex:1}
+.sec-title{font-size:13px;font-weight:900;color:#0d1b3e;margin:0 0 8px;padding-bottom:5px;border-bottom:3px solid #f59e0b;display:inline-block}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:10px}
+th{background:#0d1b3e;color:#fff;padding:6px 8px;text-align:center;font-size:10px}
+td{border:1px solid #dde;padding:5px 8px;text-align:center}
+tr:nth-child(even) td{background:#f8f9ff}
+.pct{color:#c0392b;font-weight:900}
+td.task{text-align:left}
+
+/* REASON CARDS */
+.reason-cards{display:flex;flex-direction:column;gap:8px}
+.reason-card{display:flex;gap:8px;align-items:flex-start;border:1.5px solid #e0e6f0;border-radius:9px;padding:9px 10px}
+.reason-num{font-size:18px;font-weight:900;color:#f59e0b;min-width:24px}
+.reason-card b{font-size:11px}
+.reason-card p{font-size:9px;margin:2px 0 0;color:#555;line-height:1.5}
+
+/* ─── SUBSIDY BAND ─── */
+.subsidy{background:#dcfce7;border:2px solid #16a34a;border-radius:10px;margin:0 24px 14px;padding:12px 18px}
+.subsidy-title{font-size:13px;font-weight:900;color:#15803d;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.subsidy-body{display:flex;gap:14px}
+.subsidy-item{flex:1;background:#fff;border-radius:8px;padding:10px 12px}
+.subsidy-item .si-name{font-size:11px;font-weight:900;color:#15803d;margin-bottom:5px}
+.subsidy-item p{font-size:9.5px;line-height:1.6;margin:0;color:#333}
+.subsidy-note{font-size:9px;color:#166534;margin-top:8px;text-align:center;font-weight:700}
+
+/* ─── PRICING ─── */
+.price-wrap{padding:0 24px 12px}
+.price-cards{display:flex;gap:10px}
+.price-card{flex:1;border:1.5px solid #dde;border-radius:10px;padding:11px 12px}
+.price-card.popular{border-color:#f59e0b;background:#fffbf0}
+.plan-name{font-size:11.5px;font-weight:900;color:#0d1b3e;margin-bottom:2px}
+.plan-price{font-size:18px;font-weight:900;color:#c0392b;margin-bottom:6px}
+.price-card ul{margin:0;padding-left:12px;font-size:9px;line-height:1.8;color:#444}
+.badge-popular{background:#f59e0b;color:#0d1b3e;padding:2px 8px;border-radius:20px;font-size:8.5px;font-weight:900;display:inline-block;margin-bottom:4px}
+.badge-subsidy{background:#16a34a;color:#fff;padding:2px 8px;border-radius:20px;font-size:8.5px;font-weight:900;display:inline-block;margin-bottom:4px}
+
+/* ─── SPECIAL OFFER ─── */
+.special{background:#fffbf0;border:2px dashed #f59e0b;border-radius:10px;margin:0 24px 14px;padding:12px 18px}
+.special-title{font-size:13px;font-weight:900;color:#b45309;margin-bottom:8px}
+.special-items{display:flex;gap:10px}
+.special-item{flex:1;background:#fff;border-radius:8px;padding:9px 12px;border:1px solid #fde68a;text-align:center}
+.special-item .si-num{font-size:16px;font-weight:900;color:#f59e0b}
+.special-item p{font-size:9.5px;margin:3px 0 0;color:#555;line-height:1.5}
+
+/* ─── FOOTER ─── */
+.footer{background:#0d1b3e;color:#fff;padding:18px 30px}
+.footer-inner{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}
+.footer-left h2{font-size:14px;font-weight:900;margin:0 0 5px}
+.footer-left .free-visit{font-size:20px;font-weight:900;color:#f59e0b;margin:5px 0 2px}
+.footer-left .free-note{font-size:9.5px;color:#cdd5e0;line-height:1.6}
+.footer-right{text-align:right}
+.phone-label{font-size:9.5px;color:#aab;margin-bottom:2px}
+.phone{font-size:24px;font-weight:900;color:#f59e0b;letter-spacing:1px}
+.footer-info{font-size:9px;color:#cdd5e0;line-height:2;margin-top:8px}
+.footer-logo{font-size:13px;font-weight:900;color:#fff;margin-bottom:3px}
+.footer-tagline{font-size:8.5px;color:#f59e0b;letter-spacing:2px}
+
+/* ─── IVS BADGE ─── */
+.ivs-badge{background:linear-gradient(135deg,#6d28d9,#4c1d95);color:#fff;border-radius:8px;padding:7px 10px;text-align:center;font-size:8.5px;line-height:1.6;margin-top:4px}
+.ivs-badge .ivs-label{font-size:7.5px;color:#c4b5fd;letter-spacing:1px;margin-bottom:2px}
+.ivs-badge .ivs-title{font-size:9px;font-weight:900;color:#fff}
+
+/* ─── HISTORY SECTION ─── */
+.history{padding:0 24px 14px}
+.history-cards{display:flex;gap:10px}
+.history-card{flex:1;border-left:4px solid #6d28d9;background:#f5f3ff;border-radius:0 8px 8px 0;padding:10px 14px}
+.history-card .hc-date{font-size:8.5px;color:#6d28d9;font-weight:700;margin-bottom:3px}
+.history-card .hc-event{font-size:10.5px;font-weight:900;color:#0d1b3e;margin-bottom:3px}
+.history-card .hc-theme{font-size:9.5px;color:#4c1d95;font-style:italic;margin-bottom:4px}
+.history-card .hc-desc{font-size:9px;color:#555;line-height:1.55}
+
+@media print{
+  body{background:#fff}
+  .page{margin:0;width:100%}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- TOP BAND -->
+<div class="top-band">下関商工会議所 会員事業者 AI導入支援　事業紹介資料</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="org-label">PROPOSAL FOR SHIMONOSEKI CHAMBER OF COMMERCE</div>
+    <h1 class="catch">地元の中小企業に、<br><span>「動くAI」を届けたい。</span></h1>
+    <p class="sub-catch">
+      提案書だけ置いていくコンサルではありません。<br>
+      現場に入り、業務を理解し、AIを実装し、<br>
+      <strong style="color:#f59e0b">成果が出るまで伴走する</strong>――それが私のスタイルです。<br><br>
+      地元・下関から、商工会議所の会員様の生産性革命を支援します。
+    </p>
+  </div>
+  <div class="header-right">
+    <img class="photo" src="../../じ・自分の写真　免許証・自己紹介/しんすけプロフィール写真.jpg" alt="山西伸典">
+    <div class="profile-mini">
+      <div class="name">山西伸典</div>
+      <div class="kana">やまにし しんすけ</div>
+      <div class="title">山西水産株式会社 代表取締役<br>現場実装型 AIエンジニア<br>FDE（Forward Deployed Engineer）</div>
+    </div>
+    <div class="ivs-badge">
+      <div class="ivs-label">PANELIST / IVS2026 KYOTO</div>
+      <div class="ivs-title">「老舗とAI」登壇</div>
+    </div>
+  </div>
+</div>
+
+<!-- INTRO BOX -->
+<div class="intro-box">
+  <div class="intro-title">商工会議所の皆様へ　―― なぜ、この提案をするのか</div>
+  <p>
+    私は創業<strong>147年の老舗ふく問屋・山西水産</strong>の代表取締役です。自社でAI導入を実践し、<strong>月間30時間以上の業務を削減</strong>しました。<br>
+    同じ悩みを抱える地域の中小企業・個人事業主に、<strong>実証済みの方法</strong>で貢献したい。<br>
+    商工会議所様と連携し、会員の皆様のDX推進を<strong>現場レベルで支援</strong>させてください。
+  </p>
+</div>
+
+<!-- KPIs -->
+<div class="kpis">
+  <div class="kpi">
+    <div class="kpi-num">30<span class="kpi-unit">時間以上</span></div>
+    <div class="kpi-label">月間削減時間（自社実績）</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-num">¥108<span class="kpi-unit">万円</span></div>
+    <div class="kpi-label">年間人件費削減換算</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-num">6<span class="kpi-unit">種類</span></div>
+    <div class="kpi-label">自動化ツール現在も稼働中</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-num">147<span class="kpi-unit">年</span></div>
+    <div class="kpi-label">老舗企業での実証実績</div>
+  </div>
+</div>
+
+<!-- HISTORY -->
+<div class="history">
+  <div class="sec-title">登壇・講演実績</div>
+  <div class="history-cards">
+    <div class="history-card">
+      <div class="hc-date">2026年7月1日　IVS2026 京都　パネリスト登壇</div>
+      <div class="hc-event">「101年目の事業開発　100年企業×スタートアップ」</div>
+      <div class="hc-theme">パネル②「老舗とAI。歴史が生み出すイノベーション」</div>
+      <div class="hc-desc">
+        主催：株式会社エージェント・一般社団法人100年経営研究機構<br>
+        同席者：同志社大学教授・Creww株式会社取締役COO ほか<br>
+        登壇テーマ：歴史の蓄積こそAIの燃料になる。老舗経営者の視点から語る現場AI実装
+      </div>
+    </div>
+    <div class="history-card">
+      <div class="hc-date">2026年6月8日　山口大学 平野ゼミ　講演</div>
+      <div class="hc-event">「あなたはどう生きるか」</div>
+      <div class="hc-theme">AI × 業 × 地域 × 地元　― 147年ふく問屋4代目の挑戦</div>
+      <div class="hc-desc">
+        次世代を担う大学生に向けて、地域産業とAIの可能性を講義。<br>
+        「やりたいこと（個人の熱量）」と「地域課題」が重なる場所に、<br>
+        新しいビジネスが生まれるという視点を伝えた。
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2-COL MAIN -->
+<div class="two-col">
+  <div class="col-left">
+    <div class="sec-title">自社（山西水産）で実証済みの実績</div>
+    <table>
+      <tr><th>業務</th><th>導入前</th><th>導入後</th><th>削減率</th></tr>
+      <tr><td class="task">ネットショップ管理<br><span style="font-size:8px;color:#777">（Yahoo・BASE）</span></td><td>週4時間</td><td>週1時間</td><td class="pct">75%↓</td></tr>
+      <tr><td class="task">季節キーワード更新</td><td>4時間</td><td>5分</td><td class="pct">98%↓</td></tr>
+      <tr><td class="task">経費精算（毎月）</td><td>月4時間</td><td>20分</td><td class="pct">92%↓</td></tr>
+      <tr><td class="task">給与計算</td><td>数時間</td><td>ほぼゼロ</td><td class="pct">100%↓</td></tr>
+      <tr><td class="task">支払予定表作成</td><td>月2時間</td><td>20分</td><td class="pct">92%↓</td></tr>
+      <tr><td class="task">4モール一括商品管理</td><td>週4時間</td><td>週1時間</td><td class="pct">75%↓</td></tr>
+    </table>
+    <p style="font-size:8.5px;color:#888;margin:5px 0 0">※すべて山西水産株式会社にて現在も稼働中のシステム</p>
+  </div>
+  <div class="col-right">
+    <div class="sec-title">選ばれる3つの理由</div>
+    <div class="reason-cards">
+      <div class="reason-card">
+        <div class="reason-num">01</div>
+        <div><b>現場に入る・動くまで帰らない</b><p>提案書を渡して終わりではなく、実装・定着まで現場で伴走。「使えるAI」を一緒につくります。</p></div>
+      </div>
+      <div class="reason-card">
+        <div class="reason-num">02</div>
+        <div><b>地元の老舗企業で実証済み</b><p>147年の歴史を持つ自社で8年以上運用。中小企業の現場を知っているから、現実的な提案ができます。</p></div>
+      </div>
+      <div class="reason-card">
+        <div class="reason-num">03</div>
+        <div><b>下関市内は出張費完全無料</b><p>地元企業として地域に貢献したい。山口県内全域対応。「気軽に呼べる」距離感を大切にします。</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<div class="price-wrap">
+  <div class="sec-title">料金プラン</div>
+  <div class="price-cards">
+    <div class="price-card">
+      <div class="plan-name">SPOT診断</div>
+      <div class="plan-price">50,000円〜</div>
+      <ul>
+        <li>現場訪問・ヒアリング（半日）</li>
+        <li>業務フロー可視化</li>
+        <li>AI導入ロードマップ策定</li>
+        <li>レポート提出</li>
+      </ul>
+    </div>
+    <div class="price-card popular">
+      <div class="badge-popular">人気 No.1</div>
+      <div class="plan-name">MONTHLY（月間契約）</div>
+      <div class="plan-price">100,000円〜</div>
+      <ul>
+        <li>月2回訪問・ツール実装</li>
+        <li>スタッフ教育・サポート</li>
+        <li>チャットでいつでも相談可</li>
+      </ul>
+    </div>
+    <div class="price-card">
+      <div class="plan-name">PACKAGE（完全自動化）</div>
+      <div class="plan-price">300,000円〜</div>
+      <ul>
+        <li>1〜3業務の完全自動化</li>
+        <li>設計・実装・テスト一式</li>
+        <li>マニュアル作成</li>
+        <li>3ヶ月サポート付き</li>
+      </ul>
+    </div>
+  </div>
+  <p style="font-size:8.5px;color:#888;margin:5px 0 0;text-align:center">※料金はすべて税別。業務内容・規模によりカスタマイズ可能です。</p>
+</div>
+
+<!-- SPECIAL OFFER -->
+<div class="special">
+  <div class="special-title">🤝 商工会議所様へのご提案　― 連携の形について</div>
+  <div class="special-items">
+    <div class="special-item">
+      <div class="si-num">01</div>
+      <b style="font-size:10.5px;color:#0d1b3e">会員向けセミナー講師</b>
+      <p>AI導入・DX推進をテーマにしたセミナーを開催。自社の生々しい実績を交えた、実践的な内容でお届けします。</p>
+    </div>
+    <div class="special-item">
+      <div class="si-num">02</div>
+      <b style="font-size:10.5px;color:#0d1b3e">DX相談窓口としての紹介</b>
+      <p>「AIを使ってみたいが何から始めれば？」という会員様の無料相談窓口として、ご紹介いただけると幸いです。</p>
+    </div>
+    <div class="special-item">
+      <div class="si-num">03</div>
+      <b style="font-size:10.5px;color:#0d1b3e">会員向け特別割引の提供</b>
+      <p>商工会議所ご紹介の会員様に限り、初回SPOT診断を特別価格でご提供。導入ハードルを下げて気軽に始められます。</p>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-inner">
+    <div class="footer-left">
+      <div class="footer-logo">Yスタジオ＋</div>
+      <div class="footer-tagline">AI FIELD DEPLOYMENT</div>
+      <h2 style="margin-top:10px">まずは無料相談（30〜60分）</h2>
+      <div class="free-visit">📍 下関市内は訪問完全無料</div>
+      <div class="free-note">「何から始めればいいかわからない」<br>そんな悩みからお気軽にご相談ください。</div>
+    </div>
+    <div class="footer-right">
+      <div class="phone-label">お電話でのご相談</div>
+      <div class="phone">070-5483-0623</div>
+      <div class="footer-info">
+        yamanishishinsuke19840623@gmail.com<br>
+        https://yamanishishinsuke19840623.github.io/ystudio-plus/<br>
+        山西伸典｜山西水産株式会社 代表取締役<br>
+        〒759-6613 下関市富任町1-1-5
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>
