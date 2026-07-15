@@ -47,7 +47,10 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--black);color
 .hero-tag-text{font-family:'Inter',sans-serif;font-size:11px;letter-spacing:3px;color:var(--navy);text-transform:uppercase;}
 .hero h1{font-size:clamp(30px,5vw,52px);font-weight:900;line-height:1.4;letter-spacing:-1px;margin-bottom:24px;}
 .hero h1 .accent{color:var(--navy);}
-.hero-desc{font-size:15px;color:rgba(255,255,255,.8);line-height:2;max-width:600px;margin:0 auto 40px;}
+.hero-desc{font-size:15px;color:rgba(255,255,255,.8);line-height:2;max-width:600px;margin:0 auto 32px;}
+.hero-badges{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:36px;}
+.hero-badge{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);border-radius:30px;padding:9px 20px;font-size:12.5px;color:rgba(255,255,255,.9);}
+.hero-badge strong{color:var(--navy);font-weight:900;margin-right:6px;}
 .hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
 .btn-navy{background:var(--navy);color:#1a1a2e;font-weight:700;font-size:13px;padding:16px 36px;border-radius:2px;text-decoration:none;letter-spacing:1px;font-family:'Inter',sans-serif;}
 .btn-outline{border:1px solid rgba(255,255,255,.4);color:#fff;font-size:13px;padding:15px 30px;border-radius:2px;text-decoration:none;letter-spacing:1px;font-family:'Inter',sans-serif;}
@@ -146,7 +149,12 @@ footer{background:var(--dark);border-top:1px solid var(--line);padding:36px 60px
       <div class="hero-tag-line"></div>
     </div>
     <h1>AI・DX研修で、<br>社内に<span class="accent">「使える人」</span>を育てる。</h1>
-    <p class="hero-desc">Yスタジオ＋は、下関・山口の中小企業に向けて、現場で実際に使えるAI・DX研修を提供します。人材開発支援助成金の対象になりうる「事業内訓練（貴社主催・外部講師招聘）」として設計しており、御社の人材育成計画に組み込みやすいカリキュラムです。</p>
+    <p class="hero-desc">Yスタジオ＋は、下関・山口の中小企業に向けて、現場で実際に使えるAI・DX研修を提供します。人材開発支援助成金の対象になりうるカリキュラムとして設計しており、御社の人材育成計画に組み込みやすい内容です。</p>
+    <div class="hero-badges">
+      <div class="hero-badge"><strong>最大75%</strong>経費助成（中小企業）</div>
+      <div class="hero-badge"><strong>1,000円/時</strong>賃金助成も対象</div>
+      <div class="hero-badge"><strong>〜令和8年度末</strong>時限措置</div>
+    </div>
     <div class="hero-btns">
       <a href="https://line.me/ti/p/~shimonoseki-fugu" target="_blank" class="btn-navy">LINEで研修内容を相談する</a>
       <a href="#courses" class="btn-outline">研修パッケージを見る</a>
@@ -167,6 +175,15 @@ footer{background:var(--dark);border-top:1px solid var(--line);padding:36px 60px
         助成金を受け取るのは<strong>研修を実施する貴社（事業主）</strong>です。Yスタジオ＋は助成金の受給者にはなりません。<br>
         Yスタジオ＋は<strong>山西水産株式会社 Yスタジオ＋事業部</strong>として、法人格を持つ教育訓練機関の要件を満たした上で、外部委託型・外部講師招聘型のいずれの形にも対応します。<br>
         体系立てたカリキュラム・到達目標を明示した「訓練」として設計することが、助成対象として認められるための重要なポイントです。
+      </p>
+    </div>
+
+    <div class="jbox">
+      <div class="jbox-label">助成率の目安（事業展開等リスキリング支援コース・中小企業）</div>
+      <p>
+        <strong>経費助成 最大75%</strong>（大企業は60%）／<strong>賃金助成 1人1時間あたり1,000円</strong>（大企業は500円、上限1,200時間）。<br>
+        経費助成の上限額は訓練時間に応じて設定（10〜100時間未満：1人30万円　100〜200時間未満：1人40万円　200時間以上：1人50万円）。事業所ごとの年間助成上限は1億円です。<br>
+        本コースは<strong>令和8年度末（2027年3月31日）までの時限措置</strong>で、訓練開始の1ヶ月前までに計画届の提出が必要です。
       </p>
     </div>
 
@@ -310,7 +327,15 @@ footer{background:var(--dark);border-top:1px solid var(--line);padding:36px 60px
     </div>
     <div class="faq-item">
       <div class="faq-q"><span class="q-mark">Q.</span>研修は下関・山口以外でも対応可能ですか？</div>
-      <div class="faq-a">オンライン研修であれば全国対応可能です。訪問での対面研修は下関・山口県内を中心に承っております。</div>
+      <div class="faq-a">オンライン研修であれば全国対応可能です。訪問での対面研修は下関・山口県内を中心に承っております。なお助成金の経費助成上限は、eラーニング型（オンデマンド）とZoom等の同時双方向型で異なります。同時双方向型は通学制と同じ上限額の対象ですが、eラーニング型は上限額が抑えられますのでご相談時にご確認ください。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><span class="q-mark">Q.</span>何人からお願いできますか？部署の制限はありますか？</div>
+      <div class="faq-a">1名からご相談いただけます。EC運営・受発注・製造管理・経理事務など、部署・職種は問いません。人数が多いほど1人あたりの経費助成メリットが出やすいため、複数部署でのまとめての実施もおすすめです。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><span class="q-mark">Q.</span>いつまでに申し込めばよいですか？</div>
+      <div class="faq-a">現行の「事業展開等リスキリング支援コース」は令和8年度末（2027年3月31日）までの時限措置で、訓練開始日の1ヶ月前までに計画届の提出が必要です。助成金の活用をご希望の場合は、実施希望時期の2ヶ月前を目安にご相談ください。</div>
     </div>
   </div>
 </section>
