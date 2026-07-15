@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:type" content="website">
+<meta property="og:title" content="AI・DX研修パッケージ｜人材開発支援助成金対応 - Yスタジオ＋">
+<meta property="og:description" content="社内に「使える人」を育てるAI・DX研修。人材開発支援助成金（事業内訓練）に対応した実務直結カリキュラムを、下関・山口の中小企業向けにご提供します。">
+<meta property="og:url" content="https://yamanishishinsuke19840623.github.io/ystudio-plus/training.html">
+<meta property="og:site_name" content="Yスタジオ＋">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<title>AI・DX研修パッケージ｜人材開発支援助成金対応 - Yスタジオ＋</title>
+<meta name="description" content="Yスタジオ＋のAI・DX研修パッケージ。人材開発支援助成金の対象になりうる社内研修（事業内訓練）として、下関・山口の中小企業に実務直結のAI活用力を届けます。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700;900&family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#ffffff;--dark:#f5f7fa;--dark2:#eef1f7;
+  --gold:#1a3a8f;--gold2:#2952c4;--gold3:rgba(26,58,143,.08);
+  --white:#1a1a2e;--sub:rgba(26,26,46,.65);--line:rgba(26,26,46,.1);
+  --navy:#f7c52d;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--black);color:var(--white);line-height:1.8;overflow-x:hidden;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-track{background:var(--black);}
+::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px;}
+
+/* HEADER */
+.hd{position:fixed;top:0;left:0;right:0;z-index:200;padding:18px 60px;display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--line);}
+.hd-logo{font-family:'Inter',sans-serif;font-weight:900;font-size:20px;color:var(--white);text-decoration:none;letter-spacing:-.5px;}
+.hd-logo span{color:var(--gold);}
+.hd-nav{display:flex;gap:28px;align-items:center;}
+.hd-nav a{color:var(--sub);font-size:12px;text-decoration:none;letter-spacing:1px;font-family:'Inter',sans-serif;}
+.hd-nav a:hover{color:var(--gold);}
+.hd-cta{border:1px solid var(--gold);color:var(--gold);font-size:12px;font-weight:600;padding:10px 22px;border-radius:2px;text-decoration:none;letter-spacing:1px;font-family:'Inter',sans-serif;white-space:nowrap;}
+.hd-cta:hover{background:var(--gold);color:#fff;}
+@media(max-width:800px){.hd{padding:14px 20px;}.hd-nav a:not(.hd-cta){display:none;}}
+
+/* HERO */
+.hero{padding:150px 60px 90px;background:linear-gradient(135deg,#1a3a8f 0%,#0d2060 100%);color:#fff;}
+.hero-inner{max-width:760px;margin:0 auto;text-align:center;}
+.hero-tag{display:inline-flex;align-items:center;gap:10px;margin-bottom:28px;}
+.hero-tag-line{width:32px;height:1px;background:var(--navy);}
+.hero-tag-text{font-family:'Inter',sans-serif;font-size:11px;letter-spacing:3px;color:var(--navy);text-transform:uppercase;}
+.hero h1{font-size:clamp(30px,5vw,52px);font-weight:900;line-height:1.4;letter-spacing:-1px;margin-bottom:24px;}
+.hero h1 .accent{color:var(--navy);}
+.hero-desc{font-size:15px;color:rgba(255,255,255,.8);line-height:2;max-width:600px;margin:0 auto 40px;}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+.btn-navy{background:var(--navy);color:#1a1a2e;font-weight:700;font-size:13px;padding:16px 36px;border-radius:2px;text-decoration:none;letter-spacing:1px;font-family:'Inter',sans-serif;}
+.btn-outline{border:1px solid rgba(255,255,255,.4);color:#fff;font-size:13px;padding:15px 30px;border-radius:2px;text-decoration:none;letter-spacing:1px;font-family:'Inter',sans-serif;}
+@media(max-width:768px){.hero{padding:120px 24px 60px;}}
+
+/* SECTION BASE */
+.sec{padding:100px 60px;}
+@media(max-width:768px){.sec{padding:60px 24px;}}
+.container{max-width:980px;margin:0 auto;}
+.sec-label{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.sec-label-line{width:28px;height:1px;background:var(--gold);}
+.sec-label-text{font-family:'Inter',sans-serif;font-size:10px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;}
+.sec-title{font-size:clamp(24px,3.4vw,38px);font-weight:900;line-height:1.4;letter-spacing:-.5px;margin-bottom:16px;}
+.sec-desc{font-size:14px;color:var(--sub);line-height:2;max-width:620px;margin-bottom:52px;}
+.sec.alt{background:var(--dark);}
+
+/* JOSEIKIN BOX */
+.jbox{border:1px solid rgba(26,58,143,.2);background:var(--gold3);border-radius:6px;padding:32px 36px;margin-bottom:20px;}
+.jbox-label{font-family:'Inter',sans-serif;font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:12px;}
+.jbox p{font-size:14px;color:var(--sub);line-height:2;}
+.jbox strong{color:var(--white);}
+.jnote{font-size:12px;color:var(--sub);line-height:1.9;border-left:2px solid var(--navy);padding:14px 18px;background:#fffbe8;border-radius:0 4px 4px 0;margin-top:20px;}
+
+/* COURSE CARDS */
+.courses{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+@media(max-width:900px){.courses{grid-template-columns:1fr;}}
+.course{border:1px solid var(--line);border-radius:6px;padding:32px 26px;background:#fff;transition:.3s;}
+.course:hover{border-color:var(--gold);box-shadow:0 12px 30px rgba(26,58,143,.08);}
+.course-tag{font-family:'Inter',sans-serif;font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:14px;}
+.course-title{font-size:19px;font-weight:900;margin-bottom:10px;}
+.course-time{font-size:12px;color:var(--gold);font-weight:700;margin-bottom:16px;}
+.course-desc{font-size:13px;color:var(--sub);line-height:1.9;margin-bottom:18px;}
+.course-list{list-style:none;}
+.course-list li{font-size:12.5px;color:var(--sub);padding:6px 0;border-top:1px solid var(--line);display:flex;gap:8px;}
+.course-list li:before{content:"—";color:var(--gold);flex-shrink:0;}
+
+/* FLOW */
+.flow{display:flex;flex-direction:column;gap:0;}
+.flow-item{display:flex;gap:24px;padding:24px 0;border-bottom:1px solid var(--line);}
+.flow-item:last-child{border-bottom:none;}
+.flow-num{font-family:'Inter',sans-serif;font-size:26px;font-weight:900;color:var(--gold3);width:52px;flex-shrink:0;}
+.flow-body-title{font-size:15px;font-weight:700;margin-bottom:6px;}
+.flow-body-desc{font-size:13px;color:var(--sub);line-height:1.9;}
+.flow-owner{display:inline-block;font-family:'Inter',sans-serif;font-size:10px;letter-spacing:1px;padding:2px 10px;border-radius:20px;margin-top:8px;}
+.flow-owner.company{background:rgba(26,58,143,.1);color:var(--gold);}
+.flow-owner.ystudio{background:rgba(247,197,45,.25);color:#8a6d00;}
+
+/* PROFILE */
+.profile{display:flex;gap:40px;align-items:flex-start;}
+@media(max-width:768px){.profile{flex-direction:column;}}
+.profile-badge{background:var(--dark);border:1px solid var(--line);border-radius:6px;padding:28px;flex-shrink:0;min-width:220px;}
+.profile-badge-name{font-size:18px;font-weight:900;margin-bottom:4px;}
+.profile-badge-role{font-size:12px;color:var(--gold);margin-bottom:18px;}
+.profile-badge ul{list-style:none;font-size:12px;color:var(--sub);line-height:2.2;}
+.profile-text{font-size:14px;color:var(--sub);line-height:2.1;}
+.profile-text strong{color:var(--white);}
+
+/* FAQ */
+.faq-item{border-bottom:1px solid var(--line);padding:22px 0;}
+.faq-q{font-size:14px;font-weight:700;margin-bottom:10px;display:flex;gap:10px;}
+.faq-q .q-mark{color:var(--gold);}
+.faq-a{font-size:13px;color:var(--sub);line-height:2;padding-left:24px;}
+
+/* CTA */
+.cta-band{background:linear-gradient(135deg,#1a3a8f,#0d2060);padding:90px 60px;text-align:center;color:#fff;}
+.cta-band h2{font-size:clamp(22px,3vw,32px);font-weight:900;margin-bottom:16px;}
+.cta-band p{font-size:14px;color:rgba(255,255,255,.75);margin-bottom:36px;}
+
+footer{background:var(--dark);border-top:1px solid var(--line);padding:36px 60px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+.footer-copy{font-family:'Inter',sans-serif;font-size:11px;color:rgba(26,26,46,.4);letter-spacing:.5px;}
+.footer-links a{color:rgba(26,26,46,.5);text-decoration:none;font-size:12px;margin-left:20px;}
+.footer-links a:hover{color:var(--gold);}
+@media(max-width:768px){footer{flex-direction:column;text-align:center;padding:28px 24px;}.footer-links a{margin:0 10px;}}
+</style>
+</head>
+<body>
+
+<header class="hd">
+  <a href="index.html" class="hd-logo">Y<span>スタジオ＋</span></a>
+  <nav class="hd-nav">
+    <a href="index.html">TOP</a>
+    <a href="#josei">助成金活用</a>
+    <a href="#courses">研修パッケージ</a>
+    <a href="#flow">申請の流れ</a>
+    <a href="#profile">講師実績</a>
+    <a href="#contact" class="hd-cta">研修について相談する</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag" style="justify-content:center;">
+      <div class="hero-tag-line"></div>
+      <div class="hero-tag-text">AI / DX TRAINING PROGRAM</div>
+      <div class="hero-tag-line"></div>
+    </div>
+    <h1>AI・DX研修で、<br>社内に<span class="accent">「使える人」</span>を育てる。</h1>
+    <p class="hero-desc">Yスタジオ＋は、下関・山口の中小企業に向けて、現場で実際に使えるAI・DX研修を提供します。人材開発支援助成金の対象になりうる「事業内訓練（貴社主催・外部講師招聘）」として設計しており、御社の人材育成計画に組み込みやすいカリキュラムです。</p>
+    <div class="hero-btns">
+      <a href="https://line.me/ti/p/~shimonoseki-fugu" target="_blank" class="btn-navy">LINEで研修内容を相談する</a>
+      <a href="#courses" class="btn-outline">研修パッケージを見る</a>
+    </div>
+  </div>
+</section>
+
+<!-- 助成金とは -->
+<section class="sec" id="josei">
+  <div class="container">
+    <div class="sec-label"><div class="sec-label-line"></div><div class="sec-label-text">Subsidy Guide</div></div>
+    <h2 class="sec-title">人材開発支援助成金を、<br>AI・DX研修に活用する</h2>
+    <p class="sec-desc">国は中小企業の人材育成を後押しするため、要件を満たす教育訓練の経費・賃金の一部を助成する制度を設けています。DX・AI分野の人材育成は、その対象となるコースが用意されています。</p>
+
+    <div class="jbox">
+      <div class="jbox-label">Point</div>
+      <p>
+        助成金を受け取るのは<strong>研修を実施する貴社（事業主）</strong>です。Yスタジオ＋は助成金の受給者にはなりません。<br>
+        貴社が研修を企画・主催し、Yスタジオ＋を<strong>外部講師として招く「事業内訓練」</strong>という形であれば、法人格を問わず研修を実施できます。<br>
+        体系立てたカリキュラム・到達目標を明示した「訓練」として設計することが、助成対象として認められるための重要なポイントです。
+      </p>
+    </div>
+
+    <div class="jnote">
+      【ご留意事項】助成金の対象可否・助成率・上限額は、貴社の状況（労働保険適用状況・訓練内容・実施時期など）や制度改定により変動します。本ページの内容は制度の一般的なご案内であり、支給を保証するものではありません。実際の申請にあたっては、必ず貴社顧問の社会保険労務士、または管轄の労働局へご確認ください。Yスタジオ＋は研修カリキュラムのご提供・実施でご協力いたします。
+    </div>
+  </div>
+</section>
+
+<!-- 研修パッケージ -->
+<section class="sec alt" id="courses">
+  <div class="container">
+    <div class="sec-label"><div class="sec-label-line"></div><div class="sec-label-text">Training Package</div></div>
+    <h2 class="sec-title">3つの研修パッケージ</h2>
+    <p class="sec-desc">御社の規模・目的に合わせて、単発の入門研修から数ヶ月の伴走型研修までご用意しています。内容は業種・実務データに合わせてカスタマイズします。</p>
+
+    <div class="courses">
+      <div class="course">
+        <div class="course-tag">Basic</div>
+        <div class="course-title">AI活用入門コース</div>
+        <div class="course-time">半日〜1日 / 1回完結</div>
+        <p class="course-desc">生成AIを初めて使う社員向け。基本操作から日常業務での使い方までを体系的に習得します。</p>
+        <ul class="course-list">
+          <li>生成AIの基礎知識・できること</li>
+          <li>文書作成・情報整理への活用</li>
+          <li>安全に使うための注意点</li>
+        </ul>
+      </div>
+      <div class="course">
+        <div class="course-tag">Practice</div>
+        <div class="course-title">現場実践コース</div>
+        <div class="course-time">半日×3〜5回</div>
+        <p class="course-desc">EC運営・受発注・製造管理など、貴社の実務データを使った演習中心の研修です。</p>
+        <ul class="course-list">
+          <li>業務別ワークフロー設計</li>
+          <li>自社データを使った演習</li>
+          <li>成果物のレビュー・改善</li>
+        </ul>
+      </div>
+      <div class="course">
+        <div class="course-tag">Ongoing</div>
+        <div class="course-title">伴走型定着コース</div>
+        <div class="course-time">3〜6ヶ月 / 定期実施</div>
+        <p class="course-desc">研修で終わらせず、現場に定着するまで継続的に支援する長期プログラムです。</p>
+        <ul class="course-list">
+          <li>月次の実践研修＋質問対応</li>
+          <li>担当者の自走化支援</li>
+          <li>定着度チェック・振り返り</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 申請の流れ -->
+<section class="sec" id="flow">
+  <div class="container">
+    <div class="sec-label"><div class="sec-label-line"></div><div class="sec-label-text">Flow</div></div>
+    <h2 class="sec-title">助成金活用の流れ</h2>
+    <p class="sec-desc">研修計画の策定から支給申請まで、主体は貴社になります。Yスタジオ＋はカリキュラムのご提供・研修実施・必要書類への協力を担当します。</p>
+
+    <div class="flow">
+      <div class="flow-item">
+        <div class="flow-num">01</div>
+        <div>
+          <div class="flow-body-title">研修内容のご相談・カリキュラム設計</div>
+          <div class="flow-body-desc">貴社の課題・対象人数・実施時期をヒアリングし、研修カリキュラム（時間割・到達目標）を作成します。</div>
+          <span class="flow-owner ystudio">Yスタジオ＋が作成協力</span>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">02</div>
+        <div>
+          <div class="flow-body-title">職業訓練実施計画届の提出</div>
+          <div class="flow-body-desc">貴社（または顧問社労士）が、訓練実施計画届などの必要書類を管轄労働局へ提出します。</div>
+          <span class="flow-owner company">貴社が主体</span>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">03</div>
+        <div>
+          <div class="flow-body-title">研修の実施</div>
+          <div class="flow-body-desc">Yスタジオ＋が外部講師として研修を実施します。実施記録・受講者名簿の作成にも協力します。</div>
+          <span class="flow-owner ystudio">Yスタジオ＋が実施</span>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">04</div>
+        <div>
+          <div class="flow-body-title">支給申請</div>
+          <div class="flow-body-desc">貴社が研修実施後に支給申請を行います。必要に応じて講師確認書類等をご提供します。</div>
+          <span class="flow-owner company">貴社が主体</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 講師実績 -->
+<section class="sec alt" id="profile">
+  <div class="container">
+    <div class="sec-label"><div class="sec-label-line"></div><div class="sec-label-text">Instructor</div></div>
+    <h2 class="sec-title">講師について</h2>
+
+    <div class="profile">
+      <div class="profile-badge">
+        <div class="profile-badge-name">山西 伸典</div>
+        <div class="profile-badge-role">Yスタジオ＋ 代表</div>
+        <ul>
+          <li>山西水産株式会社 4代目</li>
+          <li>Yスタジオ＋ 創設 2021年4月</li>
+          <li>下関市・山口大学 講義実績</li>
+          <li>著書「知られざる軌跡」</li>
+        </ul>
+      </div>
+      <div class="profile-text">
+        創業147年の老舗ふぐ屋4代目として、自社のEC運営（10モール＋自社サイト）にAIを実装し、月30時間超の業務削減を実現。その経験をもとに、2021年からYスタジオ＋として地方中小企業のAI導入を現場で支援しています。<br><br>
+        <strong>「教わって終わり」ではなく「現場で回るところまで」</strong>を重視し、実際の業務データを使った実践的な研修を行います。座学だけでなく、御社の業種・規模に合わせたカリキュラムをその都度設計します。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec" id="faq">
+  <div class="container">
+    <div class="sec-label"><div class="sec-label-line"></div><div class="sec-label-text">FAQ</div></div>
+    <h2 class="sec-title">よくあるご質問</h2>
+
+    <div class="faq-item">
+      <div class="faq-q"><span class="q-mark">Q.</span>助成金を使わなくても研修は依頼できますか？</div>
+      <div class="faq-a">もちろん可能です。助成金の活用は任意であり、研修内容自体は通常のコンサルティングメニューとしてもご提供しています。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><span class="q-mark">Q.</span>個人事業主でも講師を依頼できますか？</div>
+      <div class="faq-a">Yスタジオ＋は個人事業として活動していますが、「事業内訓練（外部講師招聘）」の形であれば法人格を問わずご依頼いただけます。詳細な要件は貴社の顧問社労士・労働局にご確認ください。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><span class="q-mark">Q.</span>助成金の申請手続きも代行してもらえますか？</div>
+      <div class="faq-a">申請手続きの主体は貴社（事業主）となるため、Yスタジオ＋が代行することはできません。カリキュラム資料の提供や研修実施記録の作成など、必要な範囲でご協力いたします。申請手続き自体は貴社の顧問社労士へのご相談をおすすめします。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><span class="q-mark">Q.</span>研修は下関・山口以外でも対応可能ですか？</div>
+      <div class="faq-a">オンライン研修であれば全国対応可能です。訪問での対面研修は下関・山口県内を中心に承っております。</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-band" id="contact">
+  <h2>まずは無料相談から</h2>
+  <p>研修内容のご要望・実施時期・対象人数など、お気軽にご相談ください。</p>
+  <a href="https://line.me/ti/p/~shimonoseki-fugu" target="_blank" class="btn-navy">LINEで相談する</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-copy">© 2021-2026 Yスタジオ＋ ＼ 山西伸典 ・ 山口県下関市富任町1-1-5</div>
+  <div class="footer-links">
+    <a href="index.html">TOP</a>
+    <a href="nightbubble.html">NIGHT BUBBLE</a>
+    <a href="privacy.html">プライバシーポリシー</a>
+  </div>
+</footer>
+
+</body>
+</html>
