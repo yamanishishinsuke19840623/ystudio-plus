@@ -67,6 +67,14 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--black);color
 .sec-desc{font-size:14px;color:var(--sub);line-height:2;max-width:620px;margin-bottom:52px;}
 .sec.alt{background:var(--dark);}
 
+/* PAINS */
+.pains{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+@media(max-width:900px){.pains{grid-template-columns:1fr;}}
+.pain{border:1px solid var(--line);border-radius:6px;padding:30px 26px;background:var(--dark);}
+.pain-num{font-family:'Inter',sans-serif;font-size:26px;font-weight:900;color:var(--gold3);margin-bottom:12px;}
+.pain-title{font-size:15.5px;font-weight:700;margin-bottom:10px;}
+.pain-desc{font-size:13px;color:var(--sub);line-height:1.9;}
+
 /* JOSEIKIN BOX */
 .jbox{border:1px solid rgba(26,58,143,.2);background:var(--gold3);border-radius:6px;padding:32px 36px;margin-bottom:20px;}
 .jbox-label{font-family:'Inter',sans-serif;font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:12px;}
@@ -108,6 +116,16 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--black);color
 .profile-text{font-size:14px;color:var(--sub);line-height:2.1;}
 .profile-text strong{color:var(--white);}
 
+/* DOC DOWNLOAD */
+.docs-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+@media(max-width:768px){.docs-grid{grid-template-columns:1fr;}}
+.doc-card{display:block;border:1px solid var(--line);border-radius:6px;padding:30px 28px;background:#fff;text-decoration:none;transition:.3s;}
+.doc-card:hover{border-color:var(--gold);box-shadow:0 12px 30px rgba(26,58,143,.08);}
+.doc-card-tag{font-family:'Inter',sans-serif;font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:14px;}
+.doc-card-title{font-size:17px;font-weight:900;color:var(--white);margin-bottom:10px;}
+.doc-card-desc{font-size:13px;color:var(--sub);line-height:1.9;margin-bottom:18px;}
+.doc-card-dl{font-family:'Inter',sans-serif;font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.5px;}
+
 /* FAQ */
 .faq-item{border-bottom:1px solid var(--line);padding:22px 0;}
 .faq-q{font-size:14px;font-weight:700;margin-bottom:10px;display:flex;gap:10px;}
@@ -136,6 +154,7 @@ footer{background:var(--dark);border-top:1px solid var(--line);padding:36px 60px
     <a href="#courses">研修パッケージ</a>
     <a href="#flow">申請の流れ</a>
     <a href="#profile">講師実績</a>
+    <a href="#docs">資料DL</a>
     <a href="#contact" class="hd-cta">研修について相談する</a>
   </nav>
 </header>
@@ -162,8 +181,35 @@ footer{background:var(--dark);border-top:1px solid var(--line);padding:36px 60px
   </div>
 </section>
 
+<!-- 課題提起 -->
+<section class="sec" id="pain">
+  <div class="container">
+    <div class="sec-label"><div class="sec-label-line"></div><div class="sec-label-text">Common Concerns</div></div>
+    <h2 class="sec-title">こんなお悩み、<br>ありませんか？</h2>
+    <p class="sec-desc">「AIを使え」という号令だけが先行し、現場が置き去りになっているケースをよく見かけます。Yスタジオ＋の研修は、この3つの壁を崩すことから始めます。</p>
+
+    <div class="pains">
+      <div class="pain">
+        <div class="pain-num">01</div>
+        <div class="pain-title">AI活用の方針が定まらない</div>
+        <div class="pain-desc">「とりあえずChatGPTを契約した」で止まっていて、何にどう使うかの方針・優先順位が決まっていない。</div>
+      </div>
+      <div class="pain">
+        <div class="pain-num">02</div>
+        <div class="pain-title">号令だけで、ゴールがない</div>
+        <div class="pain-desc">経営層が「AI推進」と言うだけで、現場は具体的な到達目標も進め方もわからないまま任される。</div>
+      </div>
+      <div class="pain">
+        <div class="pain-num">03</div>
+        <div class="pain-title">なんとなく怖くて、手が動かない</div>
+        <div class="pain-desc">情報漏洩や誤情報への不安から、現場が及び腰になり、結局これまで通りのやり方に戻ってしまう。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- 助成金とは -->
-<section class="sec" id="josei">
+<section class="sec alt" id="josei">
   <div class="container">
     <div class="sec-label"><div class="sec-label-line"></div><div class="sec-label-text">Subsidy Guide</div></div>
     <h2 class="sec-title">人材開発支援助成金を、<br>AI・DX研修に活用する</h2>
@@ -303,6 +349,30 @@ footer{background:var(--dark);border-top:1px solid var(--line);padding:36px 60px
         創業147年の老舗ふぐ屋4代目として、自社のEC運営（10モール＋自社サイト）にAIを実装し、月30時間超の業務削減を実現。その経験をもとに、2021年からYスタジオ＋として地方中小企業のAI導入を現場で支援しています。<br><br>
         <strong>「教わって終わり」ではなく「現場で回るところまで」</strong>を重視し、実際の業務データを使った実践的な研修を行います。座学だけでなく、御社の業種・規模に合わせたカリキュラムをその都度設計します。
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- 資料ダウンロード -->
+<section class="sec alt" id="docs">
+  <div class="container">
+    <div class="sec-label"><div class="sec-label-line"></div><div class="sec-label-text">Download</div></div>
+    <h2 class="sec-title">資料ダウンロード</h2>
+    <p class="sec-desc">研修内容・助成金の詳細をまとめた資料を無料でダウンロードいただけます。社内共有・稟議資料としてもご活用ください。</p>
+
+    <div class="docs-grid">
+      <a class="doc-card" href="training_service_guide.pdf" target="_blank" rel="noopener">
+        <div class="doc-card-tag">Service Guide</div>
+        <div class="doc-card-title">AI・DX研修サービス資料</div>
+        <div class="doc-card-desc">3つの研修パッケージの内容・選ばれる理由・お申込み方法をまとめた資料です。</div>
+        <div class="doc-card-dl">PDFをダウンロード ▶</div>
+      </a>
+      <a class="doc-card" href="subsidy_guide.pdf" target="_blank" rel="noopener">
+        <div class="doc-card-tag">Subsidy Guide</div>
+        <div class="doc-card-title">人材開発支援助成金 活用ガイド</div>
+        <div class="doc-card-desc">助成率・上限額・申請の流れ・時限措置の注意点まで、助成金活用のポイントをまとめた資料です。</div>
+        <div class="doc-card-dl">PDFをダウンロード ▶</div>
+      </a>
     </div>
   </div>
 </section>
