@@ -82,6 +82,13 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--black);color
 .jbox strong{color:var(--white);}
 .jnote{font-size:12px;color:var(--sub);line-height:1.9;border-left:2px solid var(--navy);padding:14px 18px;background:#fffbe8;border-radius:0 4px 4px 0;margin-top:20px;}
 
+/* POINT GRID (制度改正ポイント) */
+.point-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:18px 0 6px;}
+@media(max-width:800px){.point-grid{grid-template-columns:1fr;}}
+.point-item{background:#fff;border:1px solid var(--line);border-radius:6px;padding:20px 22px;}
+.point-tag{font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--gold);margin-bottom:10px;text-transform:uppercase;}
+.point-item p{font-size:13px;color:var(--sub);line-height:1.9;margin:0;}
+
 /* COURSE CARDS */
 .courses{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
 @media(max-width:900px){.courses{grid-template-columns:1fr;}}
@@ -238,6 +245,31 @@ footer{background:var(--dark);border-top:1px solid var(--line);padding:36px 60px
     </div>
 
     <div class="jbox">
+      <div class="jbox-label">令和8年8月3日、制度が変わりました</div>
+      <p>
+        本コース（事業展開等リスキリング支援コース）の「対象とならない訓練」の範囲と、受講回数のルールが見直されています。これから研修導入を検討される場合は、以下の2点にご注意ください。
+      </p>
+
+      <div class="point-grid">
+        <div class="point-item">
+          <div class="point-tag">Point 1 — 対象範囲</div>
+          <p>「AIの一般的な使い方」のような<strong style="color:var(--white);">マナー・リテラシー止まりの研修は助成対象外</strong>になりました。受講者の具体的な職務に直結する実務訓練であることが必須です。</p>
+        </div>
+        <div class="point-item">
+          <div class="point-tag">Point 2 — 受講回数</div>
+          <p>同一の労働者が助成対象として受講できるのは<strong style="color:var(--white);">年度内3回まで（うちeラーニングは年度内1回まで）</strong>となりました（令和8年8月3日以降提出の計画届が対象）。</p>
+        </div>
+      </div>
+
+      <p style="margin-top:18px;">
+        Yスタジオ＋の研修は、この改正を踏まえ、EC運営・受発注・製造管理・営業提案書作成など<strong>貴社の実際の業務データ・業務文書を使った実践演習</strong>を軸に設計しています。入門コースについても「使い方を学んで終わり」にせず、受講者の担当業務に沿った題材を使うことで、対象要件を満たす設計を心がけています。複数コースをご検討の場合は、受講回数の使い方も含めてご相談ください。
+      </p>
+    </div>
+    <div class="jnote">
+      【要確認】助成対象となるか否かの最終判断は、貴社が提出する訓練計画の記載内容・管轄労働局の審査によります。詳細は<a href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/koyou/kyufukin/d01-1.html" target="_blank" rel="noopener" style="color:inherit;">厚生労働省の制度ページ</a>および貴社顧問の社会保険労務士へご確認ください。
+    </div>
+
+    <div class="jbox">
       <div class="jbox-label">受講料の目安</div>
       <p>
         Yスタジオ＋の研修は<strong>1人あたり30万円（税別）</strong>を標準料金の目安としています。内容・実施時間・受講人数に応じて個別にお見積りします。<br>
@@ -262,11 +294,11 @@ footer{background:var(--dark);border-top:1px solid var(--line);padding:36px 60px
         <div class="course-tag">Basic</div>
         <div class="course-title">AI活用入門コース</div>
         <div class="course-time">半日〜1日 / 1回完結</div>
-        <p class="course-desc">生成AIを初めて使う社員向け。基本操作から日常業務での使い方までを体系的に習得します。</p>
+        <p class="course-desc">生成AIを初めて使う社員向け。汎用的な使い方の説明にとどめず、受講者が実際に担当する業務（受発注メール・提案書・日報など）の文書作成・修正を題材に、体系的に習得します。</p>
         <ul class="course-list">
-          <li>生成AIの基礎知識・できること</li>
-          <li>文書作成・情報整理への活用</li>
-          <li>安全に使うための注意点</li>
+          <li>受講者の担当業務に沿った実践演習（提案書・報告書・受発注文書 等）</li>
+          <li>自社の実務データ・実務文書を使った生成・修正の反復練習</li>
+          <li>安全に使うための注意点（情報漏洩対策 等）</li>
         </ul>
       </div>
       <div class="course">
@@ -409,6 +441,10 @@ footer{background:var(--dark);border-top:1px solid var(--line);padding:36px 60px
     <div class="faq-item">
       <div class="faq-q"><span class="q-mark">Q.</span>研修は下関・山口以外でも対応可能ですか？</div>
       <div class="faq-a">オンライン研修であれば全国対応可能です。訪問での対面研修は下関・山口県内を中心に承っております。なお助成金の経費助成上限は、eラーニング型（オンデマンド）とZoom等の同時双方向型で異なります。同時双方向型は通学制と同じ上限額の対象ですが、eラーニング型は上限額が抑えられますのでご相談時にご確認ください。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><span class="q-mark">Q.</span>何回でも研修を受けられますか？</div>
+      <div class="faq-a">令和8年8月3日の制度改正により、本コースで助成対象となる受講回数は、同一の労働者について年度内3回まで（うちeラーニングによる訓練は年度内1回まで）という上限が新設されました（令和8年8月3日以降提出の計画届が対象。経過措置あり）。複数の研修パッケージを組み合わせてご検討の場合は、受講回数の使い方も含めてご相談ください。</div>
     </div>
     <div class="faq-item">
       <div class="faq-q"><span class="q-mark">Q.</span>何人からお願いできますか？部署の制限はありますか？</div>
