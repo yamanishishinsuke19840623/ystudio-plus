@@ -306,6 +306,28 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
 .footer-links a{font-size:11px;color:rgba(248,250,252,.3);text-decoration:none;font-family:'Inter',sans-serif;transition:.2s;}
 .footer-links a:hover{color:var(--sub);}
 </style>
+<style id="related-sites-style">
+footer .related-sites{--related-accent:#c4b5fd;--related-text:#faf8ff;--related-sub:#d4cde6;--related-panel:#151026;--related-border:#30224a;}
+
+/* 関連LPのフッターバナー：既存ページの装飾と分離 */
+footer .related-sites{position:static;display:block;inset:auto;z-index:auto;transform:none;background:none;backdrop-filter:none;width:100%;flex:0 0 100%;max-width:1200px;min-width:0;margin:24px auto;padding:24px 0;text-align:left;border-top:1px solid var(--related-border);box-sizing:border-box;}
+footer .related-sites__heading{margin:0 0 16px;font-family:inherit;font-weight:700;font-size:14px;line-height:1.6;letter-spacing:.08em;color:var(--related-text);}
+footer .related-sites__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;list-style:none;padding:0;margin:0;}
+footer .related-sites__grid .related-sites__book{grid-column:1 / -1;}
+footer .related-sites__book .related-sites__card{border-color:var(--related-accent);}
+footer .related-sites__grid li{min-width:0;margin:0;padding:0;}
+footer a.related-sites__card{display:flex;align-items:center;gap:14px;height:100%;min-height:116px;box-sizing:border-box;padding:20px 16px;border:1px solid var(--related-border);border-radius:12px;background:linear-gradient(120deg,var(--related-panel),var(--related-panel));color:var(--related-text);text-decoration:none;text-align:left;letter-spacing:normal;transition:border-color .2s,box-shadow .2s;}
+footer a.related-sites__card:hover{border-color:var(--related-accent);box-shadow:0 4px 16px #00000018;text-decoration:none;}
+footer a.related-sites__card:focus-visible{outline:3px solid var(--related-accent);outline-offset:4px;}
+footer .related-sites__mark{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;border:1px solid var(--related-border);border-radius:10px;color:var(--related-accent);font:700 15px/1.2 sans-serif;}
+footer .related-sites__body{display:block;min-width:0;flex:1;}
+footer .related-sites__title{display:block;color:var(--related-text);font-size:15px;font-weight:700;line-height:1.6;overflow-wrap:anywhere;}
+footer .related-sites__description{display:block;margin-top:5px;color:var(--related-sub);font-size:12px;line-height:1.7;overflow-wrap:anywhere;}
+footer .related-sites__arrow{width:18px;height:18px;flex:0 0 18px;color:var(--related-accent);fill:none;stroke:currentColor;stroke-width:1.7;}
+@media(max-width:1024px){footer .related-sites__grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:600px){footer .related-sites__grid{grid-template-columns:minmax(0,1fr);}footer a.related-sites__card{min-height:104px;padding:16px;}footer .related-sites{margin:20px auto;padding:20px 0;}}
+@media(prefers-reduced-motion:reduce){footer a.related-sites__card{transition:none;}}
+</style>
 </head>
 <body>
 
@@ -889,10 +911,49 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
         <p class="footer-pp">お問い合わせフォームでご入力いただいた個人情報（氏名・メールアドレス等）は、ご返信・ご連絡のみに使用します。第三者への提供・販売は一切行いません。フォームの送受信にはFormspreeのサービスを利用しています。</p>
       </div>
     </div>
+    <nav class="related-sites" aria-label="関連事業・活動のご案内">
+    <h2 class="related-sites__heading">関連事業・活動のご案内</h2>
+    <ul class="related-sites__grid">
+      <li><a class="related-sites__card" href="index.html">
+        <span class="related-sites__mark" aria-hidden="true">AI</span>
+        <span class="related-sites__body"><span class="related-sites__title">Yスタジオ＋ AI事業</span><span class="related-sites__description">AI活用・業務改善のご相談</span></span>
+        <svg class="related-sites__arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+      </a></li>
+      <li><a class="related-sites__card" href="https://lp.yamanisi.co.jp/">
+        <span class="related-sites__mark" aria-hidden="true">山西</span>
+        <span class="related-sites__body"><span class="related-sites__title">山西水産</span><span class="related-sites__description">下関のふぐ老舗問屋・会社のご案内</span></span>
+        <svg class="related-sites__arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+      </a></li>
+      <li><a class="related-sites__card" href="training.html">
+        <span class="related-sites__mark" aria-hidden="true">DX</span>
+        <span class="related-sites__body"><span class="related-sites__title">AI・DX研修パッケージ</span><span class="related-sites__description">仕事で使えるAI活用を、社内研修に</span></span>
+        <svg class="related-sites__arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+      </a></li>
+      <li><a class="related-sites__card" href="https://yamanishishinsuke19840623.github.io/kaosuya-street-2027/">
+        <span class="related-sites__mark" aria-hidden="true">KS</span>
+        <span class="related-sites__body"><span class="related-sites__title">カオスやストリート</span><span class="related-sites__description">音楽・マルシェ・地域交流のイベント</span></span>
+        <svg class="related-sites__arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+      </a></li>
+      <li><a class="related-sites__card" href="https://yamanishishinsuke19840623.github.io/yamanishi-shinsuke/">
+        <span class="related-sites__mark" aria-hidden="true">山西</span>
+        <span class="related-sites__body"><span class="related-sites__title">山西伸典 プロフィール</span><span class="related-sites__description">AI・魚・教育・地域への取り組み</span></span>
+        <svg class="related-sites__arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+      </a></li>
+      <li><a class="related-sites__card" href="https://my.prairie.cards/u/yamanisisinsuke">
+        <span class="related-sites__mark" aria-hidden="true">PC</span>
+        <span class="related-sites__body"><span class="related-sites__title">山西伸典 プレーリーカード</span><span class="related-sites__description">デジタル名刺・プロフィールはこちら</span></span>
+        <svg class="related-sites__arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+      </a></li>
+      <li class="related-sites__book"><a class="related-sites__card" href="https://www.amazon.co.jp/dp/B0HCTJZHPJ">
+        <span class="related-sites__mark" aria-hidden="true">著書</span>
+        <span class="related-sites__body"><span class="related-sites__title">危機感しかなかった。147年続いたふぐ屋の話</span><span class="related-sites__description">山西伸典の家業と挑戦の歩みを読む — Amazonで書籍を見る</span></span>
+        <svg class="related-sites__arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+      </a></li>
+    </ul>
+  </nav>
     <div class="footer-bottom">
       <p class="footer-copy">© 2025–2026 山西水産株式会社 Yスタジオ＋ ナイトバブル事業部. All rights reserved.</p>
       <div class="footer-links">
-        <a href="https://yamanishishinsuke19840623.github.io/ystudio-plus/">Yスタジオ＋ TOP</a>
         <a href="#contact">お問い合わせ</a>
         <a href="#faq">FAQ</a>
       </div>
