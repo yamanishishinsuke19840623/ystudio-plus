@@ -1,0 +1,13 @@
+{
+  "name": "youtube-ai-dx-scripts",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "AI・DX活用ノウハウ系YouTube動画の台本を自動生成するツール（MVP：台本生成まで）",
+  "scripts": {
+    "generate": "node generate.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.0"
+  }
+}
