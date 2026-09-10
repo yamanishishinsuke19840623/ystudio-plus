@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:type" content="website">
+<meta property="og:title" content="山口銀行 セミナー（仮）2026.11.5｜Yスタジオ＋">
+<meta property="og:description" content="2026年11月5日（木）18:00〜20:00開催予定。詳細は確定次第更新します。">
+<meta property="og:url" content="https://yamanishishinsuke19840623.github.io/ystudio-plus/yamaguchibank-seminar.html">
+<meta property="og:site_name" content="Yスタジオ＋">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="noindex">
+<title>山口銀行 セミナー（仮）2026.11.5｜Yスタジオ＋</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700;900&family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff;--dark:#f5f7fa;--dark2:#eef1f7;
+  --navy:#1a3a8f;--navy2:#0d2060;--navy3:rgba(26,58,143,.08);
+  --ink:#1a1a2e;--sub:rgba(26,26,46,.65);--line:rgba(26,26,46,.1);
+  --gold:#f7c52d;
+  --todo-bg:#fff8e6;--todo-border:#f3b93a;--todo-text:#8a5a00;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:var(--ink);line-height:1.8}
+
+/* TODO / 確認中 ラベル共通 */
+.todo{background:var(--todo-bg);border:1.5px dashed var(--todo-border);border-radius:8px;padding:10px 14px;font-size:12.5px;color:var(--todo-text);display:inline-block}
+.todo b{font-weight:900}
+
+/* HERO */
+.hero{padding:70px 24px 60px;background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);color:#fff;text-align:center}
+.hero-inner{max-width:720px;margin:0 auto}
+.hero-tag{display:inline-flex;align-items:center;gap:10px;margin-bottom:22px}
+.hero-tag-line{width:32px;height:1px;background:var(--gold)}
+.hero-tag-text{font-family:'Inter',sans-serif;font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase}
+.hero h1{font-size:clamp(26px,5vw,42px);font-weight:900;line-height:1.5;letter-spacing:-.5px;margin-bottom:6px}
+.hero h1 .accent{color:var(--gold)}
+.hero-sub{font-size:13px;color:rgba(255,255,255,.75);margin-bottom:30px}
+.date-card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.25);border-radius:12px;padding:24px 28px;display:inline-block;margin-bottom:24px}
+.date-card .d1{font-size:12px;letter-spacing:2px;color:var(--gold);font-family:'Inter',sans-serif;margin-bottom:6px}
+.date-card .d2{font-size:clamp(22px,4vw,32px);font-weight:900;color:#fff}
+.date-card .d3{font-size:14px;color:rgba(255,255,255,.85);margin-top:4px}
+.hero-desc{font-size:14px;color:rgba(255,255,255,.85);line-height:2;max-width:560px;margin:0 auto 20px}
+.hero .todo{background:rgba(255,255,255,.1);border-color:rgba(247,197,45,.6);color:#fff}
+
+/* SECTION */
+.sec{padding:70px 24px}
+.container{max-width:760px;margin:0 auto}
+.sec-label{display:flex;align-items:center;gap:12px;margin-bottom:18px;justify-content:center}
+.sec-label-line{width:28px;height:1px;background:var(--navy)}
+.sec-label-text{font-family:'Inter',sans-serif;font-size:10px;letter-spacing:3px;color:var(--navy);text-transform:uppercase}
+.sec-title{font-size:clamp(20px,3vw,28px);font-weight:900;text-align:center;margin-bottom:40px}
+.sec.alt{background:var(--dark)}
+
+/* 開催概要テーブル */
+.overview{width:100%;border-collapse:collapse}
+.overview th,.overview td{padding:14px 16px;text-align:left;font-size:13.5px;border-bottom:1px solid var(--line);vertical-align:top}
+.overview th{width:140px;color:var(--navy);font-weight:700;white-space:nowrap}
+.overview td.fact{font-weight:700}
+@media(max-width:600px){
+  .overview,.overview tbody,.overview tr,.overview th,.overview td{display:block;width:auto}
+  .overview th{padding-bottom:2px;border-bottom:none}
+  .overview td{padding-top:0;padding-bottom:16px}
+}
+
+/* 登壇者カード */
+.speakers{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:640px){.speakers{grid-template-columns:1fr}}
+.speaker-card{border:1px solid var(--line);border-radius:12px;padding:26px 22px;background:#fff;text-align:center}
+.speaker-card.todo-card{border:1.5px dashed var(--todo-border);background:var(--todo-bg)}
+.speaker-card img{width:88px;height:88px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);margin-bottom:12px}
+.speaker-card .sname{font-size:16px;font-weight:900;color:var(--navy)}
+.speaker-card .skana{font-size:10.5px;color:var(--sub);margin-bottom:8px}
+.speaker-card .stitle{font-size:12px;color:var(--sub);line-height:1.7;margin-bottom:10px}
+.speaker-card a.slink{font-size:11.5px;color:var(--navy);text-decoration:underline}
+.speaker-card p.tnote{font-size:12.5px;color:var(--todo-text);margin-top:4px}
+
+/* こんな方に / プログラム */
+.tag-note{display:inline-block;font-size:10.5px;color:var(--todo-text);background:var(--todo-bg);border:1px solid var(--todo-border);border-radius:20px;padding:3px 12px;margin-bottom:24px}
+ul.points{list-style:none;display:grid;gap:12px}
+ul.points li{font-size:13.5px;padding:14px 18px;background:var(--dark);border-radius:8px;border-left:4px solid var(--navy)}
+.program{border-collapse:collapse;width:100%}
+.program th,.program td{padding:12px 14px;text-align:left;font-size:13px;border-bottom:1px solid var(--line)}
+.program th{width:100px;color:var(--navy);font-weight:900;white-space:nowrap}
+
+/* CTA */
+.cta{padding:70px 24px;background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);color:#fff;text-align:center}
+.cta h2{font-size:clamp(18px,3vw,24px);font-weight:900;margin-bottom:14px}
+.cta p{font-size:13px;color:rgba(255,255,255,.8);max-width:480px;margin:0 auto}
+
+/* FOOTER */
+.footer{background:#0d1b3e;color:#fff;padding:32px 24px;text-align:center}
+.footer .flogo{font-size:14px;font-weight:900;margin-bottom:4px}
+.footer .ftag{font-size:9.5px;color:var(--gold);letter-spacing:2px;margin-bottom:14px}
+.footer .finfo{font-size:11px;color:#cdd5e0;line-height:2}
+
+@media(max-width:768px){.hero{padding:56px 20px 44px}.sec{padding:50px 20px}}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">
+      <div class="hero-tag-line"></div>
+      <div class="hero-tag-text">SAVE THE DATE</div>
+      <div class="hero-tag-line"></div>
+    </div>
+    <h1>山口銀行 セミナー<span class="accent">（仮タイトル）</span></h1>
+    <p class="hero-sub">イベント名・テーマは確定次第、更新します</p>
+
+    <div class="date-card">
+      <div class="d1">DATE &amp; TIME</div>
+      <div class="d2">2026年11月5日（木）</div>
+      <div class="d3">18:00 〜 20:00</div>
+    </div>
+
+    <p class="hero-desc">
+      詳しい内容（会場・登壇者・プログラム・対象者・参加費・お申込み方法）は、<br class="pc-only">
+      確定次第こちらのページに追記していきます。
+    </p>
+    <div class="todo">⚠ <b>山西さんへ：</b>会場・テーマ・登壇者・定員・参加費・主催/共催の関わり方をご確認ください</div>
+  </div>
+</div>
+
+<!-- 開催概要 -->
+<div class="sec">
+  <div class="container">
+    <div class="sec-label"><div class="sec-label-line"></div><div class="sec-label-text">OVERVIEW</div><div class="sec-label-line"></div></div>
+    <div class="sec-title">開催概要</div>
+    <table class="overview">
+      <tr><th>日時</th><td class="fact">2026年11月5日（木）18:00〜20:00</td></tr>
+      <tr><th>会場</th><td><span class="todo">確認中</span></td></tr>
+      <tr><th>主催・共催</th><td><span class="todo">確認中（山口銀行との関わり方を確認）</span></td></tr>
+      <tr><th>対象</th><td><span class="todo">確認中</span></td></tr>
+      <tr><th>定員</th><td><span class="todo">確認中</span></td></tr>
+      <tr><th>参加費</th><td><span class="todo">確認中</span></td></tr>
+      <tr><th>お申込み</th><td><span class="todo">確認中（Peatix等の申込み導線を確認）</span></td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- こんな方に -->
+<div class="sec">
+  <div class="container">
+    <div class="sec-label"><div class="sec-label-line"></div><div class="sec-label-text">FOR YOU</div><div class="sec-label-line"></div></div>
+    <div class="sec-title">こんな方に</div>
+    <div style="text-align:center"><span class="tag-note">たたき台：テーマ確定後に内容を調整してください</span></div>
+    <ul class="points">
+      <li>AI・生成AIを自社の業務にどう活かせばいいか知りたい方</li>
+      <li>DX・AI導入を検討しているが、何から始めればいいか分からない方</li>
+      <li>地域の中小企業・個人事業主で、実際の導入事例を知りたい方</li>
+      <li>山口銀行の取引先・地域事業者の方</li>
+    </ul>
+  </div>
+</div>
+
+<!-- プログラム -->
+<div class="sec alt">
+  <div class="container">
+    <div class="sec-label"><div class="sec-label-line"></div><div class="sec-label-text">PROGRAM</div><div class="sec-label-line"></div></div>
+    <div class="sec-title">プログラム</div>
+    <div style="text-align:center"><span class="tag-note">たたき台：前回イベントの構成を踏襲。会場都合で時間割は要調整</span></div>
+    <table class="program">
+      <tr><th>18:00</th><td>受付開始</td></tr>
+      <tr><th>18:30</th><td>開会・セミナー開始（<span class="todo">テーマ確認中</span>）</td></tr>
+      <tr><th>19:30</th><td>質疑応答</td></tr>
+      <tr><th>19:40</th><td>交流会（<span class="todo">実施有無・形式は確認中</span>）</td></tr>
+      <tr><th>20:00</th><td>終了</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- 登壇者 -->
+<div class="sec">
+  <div class="container">
+    <div class="sec-label"><div class="sec-label-line"></div><div class="sec-label-text">SPEAKERS</div><div class="sec-label-line"></div></div>
+    <div class="sec-title">登壇者</div>
+    <div class="speakers">
+      <div class="speaker-card">
+        <img src="shinsuke.jpg" alt="山西伸典">
+        <div class="sname">山西伸典</div>
+        <div class="skana">やまにし しんすけ</div>
+        <div class="stitle">山西水産株式会社 代表取締役（四代目）<br>現場実装型AIエンジニア／FDE（Forward Deployed Engineer）</div>
+        <a class="slink" href="https://tinyurl.com/24f6pu2p" target="_blank" rel="noopener">プロフィールカードを見る</a>
+      </div>
+      <div class="speaker-card todo-card">
+        <div class="sname">ゲスト登壇者</div>
+        <p class="tnote">確認中<br>氏名・肩書き・実績・SNSリンクが確定次第、掲載します</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta">
+  <h2>詳細確定次第、続報をお届けします</h2>
+  <p>お申込み方法が決まり次第、このページとPeatix等でご案内します。お楽しみに。</p>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="flogo">Yスタジオ＋</div>
+  <div class="ftag">AI FIELD DEPLOYMENT</div>
+  <div class="finfo">
+    山西伸典｜山西水産株式会社 代表取締役<br>
+    070-5483-0623　／　yamanishishinsuke19840623@gmail.com<br>
+    〒759-6613 下関市富任町1-1-5
+  </div>
+</div>
+
+</body>
+</html>
