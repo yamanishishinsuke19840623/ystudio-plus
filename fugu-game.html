@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ふぐ目利き道 | 山西水産">
+<meta property="og:description" content="下関の老舗ふぐ問屋・山西水産発、目利き修行ゲーム。身と白子をキャッチして、毒を避けろ。">
+<meta property="og:site_name" content="Yスタジオ＋">
+<meta property="og:locale" content="ja_JP">
+<title>ふぐ目利き道 | 山西水産</title>
+<meta name="description" content="下関の老舗ふぐ問屋・山西水産の目利きになろう。身と白子をキャッチし、毒の部位を避けるブラウザゲーム。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0d2060;--navy2:#1a3a8f;--navy3:#123073;
+  --gold:#f7c52d;--gold2:#e6b31a;
+  --white:#f4f6fb;--sub:rgba(244,246,251,.68);--line:rgba(244,246,251,.14);
+  --danger:#ff5a5a;--safe:#2ecf8f;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  font-family:'Noto Sans JP','Inter',sans-serif;
+  background:radial-gradient(ellipse at top,#123073 0%,#0a1740 55%,#050b26 100%);
+  color:var(--white);
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;
+  overflow-x:hidden;
+  padding:0 0 32px;
+}
+
+/* header */
+.top{width:100%;max-width:640px;padding:22px 18px 10px;text-align:center;}
+.top-eyebrow{font-family:'Inter',sans-serif;font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+.top h1{font-size:clamp(22px,5.5vw,30px);font-weight:900;letter-spacing:1px;}
+.top h1 .accent{color:var(--gold);}
+.top p{font-size:12.5px;color:var(--sub);margin-top:8px;line-height:1.6;}
+.back-link{display:inline-block;margin-top:12px;font-size:11px;color:var(--sub);text-decoration:none;letter-spacing:1px;border-bottom:1px solid var(--line);padding-bottom:2px;}
+.back-link:hover{color:var(--gold);border-color:var(--gold);}
+
+/* HUD */
+.hud{width:100%;max-width:640px;padding:6px 18px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.hud-item{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:6px;padding:8px 16px;min-width:84px;text-align:center;}
+.hud-label{font-family:'Inter',sans-serif;font-size:9px;letter-spacing:2px;color:var(--sub);text-transform:uppercase;}
+.hud-value{font-family:'Inter',sans-serif;font-size:20px;font-weight:900;color:var(--gold);line-height:1.3;}
+.hud-value.danger{color:var(--danger);}
+
+/* stage */
+.stage-wrap{width:100%;max-width:640px;padding:12px 14px 0;}
+#stage{
+  position:relative;
+  width:100%;
+  aspect-ratio:9/13;
+  max-height:62vh;
+  background:
+    linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px) 0 0/100% 40px,
+    linear-gradient(180deg,#0e2668 0%,#081744 70%,#04102e 100%);
+  border:1px solid rgba(247,197,45,.25);
+  border-radius:10px;
+  overflow:hidden;
+  touch-action:none;
+  cursor:pointer;
+  user-select:none;
+}
+#stage::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(4,16,46,0) 78%,rgba(4,16,46,.55) 100%);
+}
+.item{
+  position:absolute;top:-46px;
+  width:46px;height:46px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:900;font-family:'Noto Sans JP',sans-serif;
+  box-shadow:0 4px 14px rgba(0,0,0,.35);
+  will-change:transform;
+}
+.item.mi{background:radial-gradient(circle at 32% 28%,#fff4d0,var(--gold) 70%);color:#3a2c00;border:2px solid #fff2b8;}
+.item.shirako{background:radial-gradient(circle at 32% 28%,#ffffff,#dfe6f5 70%);color:#1a3a8f;border:2px solid #ffffff;}
+.item.doku{background:radial-gradient(circle at 32% 28%,#ff9d9d,var(--danger) 70%);color:#3a0000;border:2px solid #ffb8b8;}
+.item.doku::after{content:'毒';}
+.item.mi::after{content:'身';}
+.item.shirako::after{content:'白';}
+
+.catcher{
+  position:absolute;bottom:10px;left:50%;
+  width:92px;height:20px;
+  transform:translateX(-50%);
+  background:linear-gradient(180deg,#e8b840,var(--gold2));
+  border-radius:4px;
+  box-shadow:0 6px 16px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.5);
+}
+.catcher::before{
+  content:'まな板';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:700;color:#3a2c00;letter-spacing:1px;
+}
+
+.floater{
+  position:absolute;font-family:'Inter',sans-serif;font-weight:900;font-size:14px;
+  pointer-events:none;animation:floatUp .7s ease-out forwards;
+}
+.floater.plus{color:var(--gold);}
+.floater.minus{color:var(--danger);}
+@keyframes floatUp{
+  0%{opacity:1;transform:translateY(0);}
+  100%{opacity:0;transform:translateY(-38px);}
+}
+
+/* overlays */
+.overlay{
+  position:absolute;inset:0;background:rgba(4,10,30,.88);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:24px;gap:14px;z-index:5;
+}
+.overlay[hidden]{display:none;}
+.overlay h2{font-size:clamp(19px,5vw,24px);font-weight:900;}
+.overlay h2 .accent{color:var(--gold);}
+.overlay p{font-size:12.5px;color:var(--sub);line-height:1.8;max-width:400px;}
+.rank-badge{font-family:'Inter',sans-serif;font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;border:1px solid rgba(247,197,45,.4);border-radius:20px;padding:6px 18px;}
+.big-score{font-family:'Inter',sans-serif;font-size:44px;font-weight:900;color:var(--white);}
+.btn{
+  font-family:'Inter',sans-serif;font-weight:900;font-size:13px;letter-spacing:1px;
+  background:var(--gold);color:#1a1300;border:none;border-radius:4px;
+  padding:14px 34px;cursor:pointer;transition:.2s;
+}
+.btn:hover{background:var(--gold2);transform:translateY(-2px);}
+.btn.ghost{background:transparent;color:var(--white);border:1px solid var(--line);}
+.btn.ghost:hover{border-color:var(--gold);color:var(--gold);}
+.legend{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:4px;}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--sub);}
+.legend-dot{width:16px;height:16px;border-radius:50%;flex-shrink:0;}
+.legend-dot.mi{background:var(--gold);}
+.legend-dot.shirako{background:#dfe6f5;}
+.legend-dot.doku{background:var(--danger);}
+
+.controls-hint{font-size:11px;color:var(--sub);margin-top:14px;text-align:center;}
+
+footer{margin-top:20px;font-size:10.5px;color:rgba(244,246,251,.28);text-align:center;padding:0 20px;}
+footer a{color:rgba(244,246,251,.4);}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-eyebrow">下関 山西水産 — MINI GAME</div>
+  <h1>ふぐ<span class="accent">目利き</span>道</h1>
+  <p>147年続くふぐ問屋の技を継ぐ、目利き修行。<br>「身」と「白子」を受け止めて、「毒」を避けろ。</p>
+  <a class="back-link" href="index.html">← Yスタジオ＋ TOPへ戻る</a>
+</div>
+
+<div class="hud">
+  <div class="hud-item"><div class="hud-label">Score</div><div class="hud-value" id="hud-score">0</div></div>
+  <div class="hud-item"><div class="hud-label">Combo</div><div class="hud-value" id="hud-combo">0</div></div>
+  <div class="hud-item"><div class="hud-label">Life</div><div class="hud-value danger" id="hud-life">♥♥♥</div></div>
+  <div class="hud-item"><div class="hud-label">Time</div><div class="hud-value" id="hud-time">60</div></div>
+</div>
+
+<div class="stage-wrap">
+  <div id="stage">
+    <div class="catcher" id="catcher"></div>
+
+    <div class="overlay" id="start-overlay">
+      <div class="rank-badge">下関 · 老舗ふぐ問屋</div>
+      <h2>一人前の<span class="accent">目利き</span>になれるか？</h2>
+      <p>落ちてくる「身」と「白子」をまな板でキャッチしてスコアを稼ごう。<br>猛毒の「毒」（肝・卵巣）を受け止めるとライフが減る。3回ミスでゲームオーバー。</p>
+      <div class="legend">
+        <div class="legend-item"><span class="legend-dot mi"></span>身 +10</div>
+        <div class="legend-item"><span class="legend-dot shirako"></span>白子 +25</div>
+        <div class="legend-item"><span class="legend-dot doku"></span>毒 −ライフ</div>
+      </div>
+      <button class="btn" id="start-btn">修行を始める</button>
+      <div class="controls-hint">PC：マウスを左右に動かす／← →キー　　スマホ：まな板をドラッグ</div>
+    </div>
+
+    <div class="overlay" id="end-overlay" hidden>
+      <div class="rank-badge" id="end-rank">見習い</div>
+      <h2><span class="accent" id="end-title">修行終了</span></h2>
+      <div class="big-score" id="end-score">0</div>
+      <p id="end-comment">まだまだ下積みだ。もう一度挑もう。</p>
+      <p style="font-size:11px;">自己ベスト：<strong id="end-best">0</strong> 点</p>
+      <div style="display:flex;gap:10px;">
+        <button class="btn" id="retry-btn">もう一度</button>
+        <a class="btn ghost" href="index.html">TOPへ戻る</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  © 2021-2026 山西水産株式会社 Yスタジオ＋事業部 · 山口県下関市富任町1-1-5<br>
+  本ゲームはフィクションであり、実際のふぐ調理・毒性に関する情報を提供するものではありません。
+</footer>
+
+<script>
+(function(){
+  const stage = document.getElementById('stage');
+  const catcher = document.getElementById('catcher');
+  const hudScore = document.getElementById('hud-score');
+  const hudCombo = document.getElementById('hud-combo');
+  const hudLife = document.getElementById('hud-life');
+  const hudTime = document.getElementById('hud-time');
+  const startOverlay = document.getElementById('start-overlay');
+  const endOverlay = document.getElementById('end-overlay');
+  const startBtn = document.getElementById('start-btn');
+  const retryBtn = document.getElementById('retry-btn');
+
+  const GAME_TIME = 60;
+  const BEST_KEY = 'yamanishi-fugu-game-best';
+
+  let score, combo, life, timeLeft, running, spawnTimer, dropSpeed, tickTimer, items, catcherX;
+
+  function stageRect(){ return stage.getBoundingClientRect(); }
+
+  function resetState(){
+    score = 0; combo = 0; life = 3; timeLeft = GAME_TIME;
+    dropSpeed = 1.6; items = [];
+    catcherX = stageRect().width / 2;
+    updateHud();
+    positionCatcher();
+    stage.querySelectorAll('.item,.floater').forEach(el => el.remove());
+  }
+
+  function updateHud(){
+    hudScore.textContent = score;
+    hudCombo.textContent = combo;
+    hudLife.textContent = '♥'.repeat(Math.max(life,0)) + '♡'.repeat(Math.max(3-life,0));
+    hudTime.textContent = timeLeft;
+  }
+
+  function positionCatcher(){
+    const r = stageRect();
+    const half = catcher.offsetWidth / 2 || 46;
+    catcherX = Math.min(Math.max(catcherX, half), r.width - half);
+    catcher.style.left = catcherX + 'px';
+  }
+
+  function moveCatcherTo(clientX){
+    const r = stageRect();
+    catcherX = clientX - r.left;
+    positionCatcher();
+  }
+
+  stage.addEventListener('mousemove', e => { if(running) moveCatcherTo(e.clientX); });
+  stage.addEventListener('touchmove', e => {
+    if(running && e.touches[0]){ moveCatcherTo(e.touches[0].clientX); }
+    e.preventDefault();
+  }, {passive:false});
+  window.addEventListener('keydown', e => {
+    if(!running) return;
+    if(e.key === 'ArrowLeft'){ catcherX -= 28; positionCatcher(); }
+    if(e.key === 'ArrowRight'){ catcherX += 28; positionCatcher(); }
+  });
+
+  function spawnItem(){
+    const r = stageRect();
+    const roll = Math.random();
+    let type;
+    if(roll < 0.5) type = 'mi';
+    else if(roll < 0.78) type = 'shirako';
+    else type = 'doku';
+
+    const el = document.createElement('div');
+    el.className = 'item ' + type;
+    const x = 23 + Math.random() * (r.width - 46);
+    el.style.left = x + 'px';
+    el.dataset.type = type;
+    el.dataset.y = -46;
+    stage.appendChild(el);
+    items.push(el);
+  }
+
+  function floatText(x, y, text, cls){
+    const f = document.createElement('div');
+    f.className = 'floater ' + cls;
+    f.textContent = text;
+    f.style.left = x + 'px';
+    f.style.top = y + 'px';
+    stage.appendChild(f);
+    setTimeout(() => f.remove(), 720);
+  }
+
+  function loseLife(){
+    life -= 1;
+    combo = 0;
+    updateHud();
+    stage.style.boxShadow = '0 0 0 3px rgba(255,90,90,.6) inset';
+    setTimeout(() => stage.style.boxShadow = '', 150);
+    if(life <= 0) endGame();
+  }
+
+  function gainScore(base, x, y){
+    combo += 1;
+    const bonus = Math.min(Math.floor(combo/5), 6) * 2;
+    const gained = base + bonus;
+    score += gained;
+    updateHud();
+    floatText(x, y, '+' + gained, 'plus');
+  }
+
+  function loop(){
+    if(!running) return;
+    const r = stageRect();
+    const catcherTop = r.height - 34;
+    const catcherLeft = catcherX - catcher.offsetWidth/2;
+    const catcherRight = catcherX + catcher.offsetWidth/2;
+
+    for(let i = items.length - 1; i >= 0; i--){
+      const el = items[i];
+      let y = parseFloat(el.dataset.y) + dropSpeed * 4;
+      el.dataset.y = y;
+      el.style.transform = 'translateY(' + y + 'px)';
+
+      const x = parseFloat(el.style.left) + 23;
+      const hit = y + 46 >= catcherTop && y <= catcherTop + 20 && x >= catcherLeft && x <= catcherRight;
+
+      if(hit){
+        const type = el.dataset.type;
+        if(type === 'doku'){
+          loseLife();
+          floatText(x, catcherTop - 6, '毒！', 'minus');
+        } else if(type === 'mi'){
+          gainScore(10, x, catcherTop - 6);
+        } else {
+          gainScore(25, x, catcherTop - 6);
+        }
+        el.remove();
+        items.splice(i, 1);
+        continue;
+      }
+
+      if(y > r.height + 10){
+        if(el.dataset.type !== 'doku'){ combo = 0; updateHud(); }
+        el.remove();
+        items.splice(i, 1);
+      }
+    }
+
+    requestAnimationFrame(loop);
+  }
+
+  function startGame(){
+    resetState();
+    running = true;
+    startOverlay.hidden = true;
+    endOverlay.hidden = true;
+
+    clearInterval(spawnTimer);
+    clearInterval(tickTimer);
+
+    spawnTimer = setInterval(() => { if(running) spawnItem(); }, 620);
+    tickTimer = setInterval(() => {
+      if(!running) return;
+      timeLeft -= 1;
+      dropSpeed = 1.6 + (GAME_TIME - timeLeft) * 0.035;
+      updateHud();
+      if(timeLeft <= 0) endGame();
+    }, 1000);
+
+    requestAnimationFrame(loop);
+  }
+
+  function rankFor(s){
+    if(s >= 900) return {badge:'伝説の目利き', title:'伝説の目利き', comment:'147年の看板を任せられる腕前。お見事！'};
+    if(s >= 600) return {badge:'一人前', title:'一人前', comment:'立派な目利きだ。現場に出ても恥ずかしくない。'};
+    if(s >= 300) return {badge:'見習い卒業', title:'見習い卒業', comment:'筋はいい。修行を重ねればもっと伸びる。'};
+    return {badge:'見習い', title:'見習い', comment:'まだまだ下積みだ。もう一度挑もう。'};
+  }
+
+  function endGame(){
+    running = false;
+    clearInterval(spawnTimer);
+    clearInterval(tickTimer);
+
+    const best = Math.max(score, parseInt(localStorage.getItem(BEST_KEY) || '0', 10));
+    try{ localStorage.setItem(BEST_KEY, String(best)); }catch(e){}
+
+    const rank = rankFor(score);
+    document.getElementById('end-rank').textContent = rank.badge;
+    document.getElementById('end-title').textContent = '修行終了';
+    document.getElementById('end-score').textContent = score;
+    document.getElementById('end-comment').textContent = rank.comment;
+    document.getElementById('end-best').textContent = best;
+
+    endOverlay.hidden = false;
+  }
+
+  startBtn.addEventListener('click', startGame);
+  retryBtn.addEventListener('click', startGame);
+  window.addEventListener('resize', positionCatcher);
+
+  resetState();
+})();
+</script>
+</body>
+</html>
