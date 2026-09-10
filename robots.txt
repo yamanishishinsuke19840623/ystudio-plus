@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ystudio.yamanisi.co.jp/sitemap.xml
