@@ -10,7 +10,7 @@
 1. `topics.json` に企画の種（テーマ・切り口）をキューとして持つ
    - すべて PLAN（構想）/ IDEA（仮説）であり、FACTではありません
 2. `generate.mjs` が未処理（`status: "pending"`）のトピックを1つ取り出し、
-   Claude APIで台本ドラフト（Markdown）を生成
+   GitHub Models で台本ドラフト（Markdown）を生成
 3. 生成結果は `output/` に保存し、`topics.json` の該当トピックを `done` にする
 4. GitHub Actions（`.github/workflows/youtube-ai-dx-script.yml`）で定期実行し、
    生成物をリポジトリにコミットする
@@ -22,19 +22,31 @@
 挿入するよう指示しています。**生成された台本はすべて DRAFT（下書き）であり、
 撮影前に必ず本人が FACT を確認・加筆してください。**
 
+## 使っているAI（無料）
+
+外部AIサービスの契約は不要です。**GitHub Models**（GitHubが無料で提供するAI推論API）を使っています。
+GitHub Actions上では、ワークフローに `permissions: models: read` を付けるだけで
+自動発行される `GITHUB_TOKEN` がそのまま使えます。クレジットカード登録も追加の
+アカウント作成も必要ありません（ただし無料枠にはレート制限があります）。
+
+デフォルトのモデルは `openai/gpt-4o-mini` です。変更したい場合はワークフローや
+ローカル実行時に環境変数 `GITHUB_MODEL` を指定してください（GitHub Models の
+カタログにある他のモデルIDを指定できます）。
+
 ## セットアップ
 
-1. Anthropic の API キーを発行する
-2. GitHub リポジトリの Settings → Secrets and variables → Actions で
-   `ANTHROPIC_API_KEY` という名前のシークレットを登録する
-3. `topics.json` に企画したいテーマを追加していく
+1. GitHub Actions ワークフロー（`.github/workflows/youtube-ai-dx-script.yml`）は
+   すでに `permissions: models: read` を持っているので、追加のシークレット登録は不要です
+2. `topics.json` に企画したいテーマを追加していく
 
 ## ローカルでの実行
+
+GitHub CLI（`gh auth token`）や、`models:read` 権限を持つ Personal Access Token で実行できます。
 
 ```bash
 cd tools/youtube-ai-dx-scripts
 npm install
-ANTHROPIC_API_KEY=sk-xxxx npm run generate
+GITHUB_MODELS_TOKEN=$(gh auth token) npm run generate
 ```
 
 ## 今後の拡張ロードマップ（PLAN）

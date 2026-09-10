@@ -1,11 +1,12 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
-import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 
 const DIR = path.dirname(new URL(import.meta.url).pathname);
 const TOPICS_PATH = path.join(DIR, "topics.json");
 const OUTPUT_DIR = path.join(DIR, "output");
-const MODEL = process.env.CLAUDE_MODEL || "claude-sonnet-5";
+const MODEL = process.env.GITHUB_MODEL || "openai/gpt-4o-mini";
+const GITHUB_MODELS_ENDPOINT = "https://models.github.ai/inference";
 
 const SYSTEM_PROMPT = `あなたは「やまちゃん｜YSTUDIO」のYouTube台本づくりを手伝う思考パートナーです。
 以下の原則を必ず守ってください。
@@ -36,8 +37,11 @@ function slugify(text) {
 }
 
 async function main() {
-  if (!process.env.ANTHROPIC_API_KEY) {
-    throw new Error("ANTHROPIC_API_KEY が設定されていません。GitHub Actions の Secrets に登録してください。");
+  const apiKey = process.env.GITHUB_MODELS_TOKEN || process.env.GITHUB_TOKEN;
+  if (!apiKey) {
+    throw new Error(
+      "GITHUB_MODELS_TOKEN（または GITHUB_TOKEN）が設定されていません。GitHub Actions では permissions.models: read を指定すれば GITHUB_TOKEN が自動で使えます。ローカル実行時は models:read 権限を持つ Personal Access Token を GITHUB_MODELS_TOKEN として渡してください。"
+    );
   }
 
   const topicsFile = JSON.parse(await readFile(TOPICS_PATH, "utf-8"));
@@ -48,20 +52,19 @@ async function main() {
     return;
   }
 
-  const client = new Anthropic();
+  const client = new OpenAI({ baseURL: GITHUB_MODELS_ENDPOINT, apiKey });
   const userPrompt = `テーマ: ${topic.topic}\n切り口（angle）: ${topic.angle || "（指定なし）"}\n\nこのテーマでYouTube動画の台本ドラフトを作成してください。`;
 
-  const response = await client.messages.create({
+  const response = await client.chat.completions.create({
     model: MODEL,
     max_tokens: 4096,
-    system: SYSTEM_PROMPT,
-    messages: [{ role: "user", content: userPrompt }],
+    messages: [
+      { role: "system", content: SYSTEM_PROMPT },
+      { role: "user", content: userPrompt },
+    ],
   });
 
-  const scriptBody = response.content
-    .filter((block) => block.type === "text")
-    .map((block) => block.text)
-    .join("\n");
+  const scriptBody = response.choices[0].message.content;
 
   const today = new Date().toISOString().slice(0, 10);
   const slug = slugify(topic.topic);
