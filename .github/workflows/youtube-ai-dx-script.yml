@@ -1,0 +1,43 @@
+name: YouTube AI・DX 台本自動生成
+
+on:
+  schedule:
+    # 毎日 06:00 JST (21:00 UTC 前日)
+    - cron: "0 21 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  generate-script:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        working-directory: tools/youtube-ai-dx-scripts
+        run: npm install
+
+      - name: Generate script draft
+        working-directory: tools/youtube-ai-dx-scripts
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: npm run generate
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add tools/youtube-ai-dx-scripts/output tools/youtube-ai-dx-scripts/topics.json
+          if ! git diff --cached --quiet; then
+            git commit -m "台本ドラフトを自動生成"
+            git push
+          else
+            echo "変更なし（生成対象のトピックがなかった、など）"
+          fi
