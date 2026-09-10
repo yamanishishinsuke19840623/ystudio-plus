@@ -66,9 +66,25 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
   .overview td{padding-top:0;padding-bottom:16px}
 }
 
-/* 登壇者プレースホルダ */
-.speaker-placeholder{border:1.5px dashed var(--todo-border);border-radius:12px;padding:36px 24px;text-align:center;background:var(--todo-bg)}
-.speaker-placeholder p{font-size:13px;color:var(--todo-text);margin-top:6px}
+/* 登壇者カード */
+.speakers{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:640px){.speakers{grid-template-columns:1fr}}
+.speaker-card{border:1px solid var(--line);border-radius:12px;padding:26px 22px;background:#fff;text-align:center}
+.speaker-card.todo-card{border:1.5px dashed var(--todo-border);background:var(--todo-bg)}
+.speaker-card img{width:88px;height:88px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);margin-bottom:12px}
+.speaker-card .sname{font-size:16px;font-weight:900;color:var(--navy)}
+.speaker-card .skana{font-size:10.5px;color:var(--sub);margin-bottom:8px}
+.speaker-card .stitle{font-size:12px;color:var(--sub);line-height:1.7;margin-bottom:10px}
+.speaker-card a.slink{font-size:11.5px;color:var(--navy);text-decoration:underline}
+.speaker-card p.tnote{font-size:12.5px;color:var(--todo-text);margin-top:4px}
+
+/* こんな方に / プログラム */
+.tag-note{display:inline-block;font-size:10.5px;color:var(--todo-text);background:var(--todo-bg);border:1px solid var(--todo-border);border-radius:20px;padding:3px 12px;margin-bottom:24px}
+ul.points{list-style:none;display:grid;gap:12px}
+ul.points li{font-size:13.5px;padding:14px 18px;background:var(--dark);border-radius:8px;border-left:4px solid var(--navy)}
+.program{border-collapse:collapse;width:100%}
+.program th,.program td{padding:12px 14px;text-align:left;font-size:13px;border-bottom:1px solid var(--line)}
+.program th{width:100px;color:var(--navy);font-weight:900;white-space:nowrap}
 
 /* CTA */
 .cta{padding:70px 24px;background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);color:#fff;text-align:center}
@@ -128,14 +144,54 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
   </div>
 </div>
 
-<!-- 登壇者 -->
+<!-- こんな方に -->
+<div class="sec">
+  <div class="container">
+    <div class="sec-label"><div class="sec-label-line"></div><div class="sec-label-text">FOR YOU</div><div class="sec-label-line"></div></div>
+    <div class="sec-title">こんな方に</div>
+    <div style="text-align:center"><span class="tag-note">たたき台：テーマ確定後に内容を調整してください</span></div>
+    <ul class="points">
+      <li>AI・生成AIを自社の業務にどう活かせばいいか知りたい方</li>
+      <li>DX・AI導入を検討しているが、何から始めればいいか分からない方</li>
+      <li>地域の中小企業・個人事業主で、実際の導入事例を知りたい方</li>
+      <li>山口銀行の取引先・地域事業者の方</li>
+    </ul>
+  </div>
+</div>
+
+<!-- プログラム -->
 <div class="sec alt">
+  <div class="container">
+    <div class="sec-label"><div class="sec-label-line"></div><div class="sec-label-text">PROGRAM</div><div class="sec-label-line"></div></div>
+    <div class="sec-title">プログラム</div>
+    <div style="text-align:center"><span class="tag-note">たたき台：前回イベントの構成を踏襲。会場都合で時間割は要調整</span></div>
+    <table class="program">
+      <tr><th>18:00</th><td>受付開始</td></tr>
+      <tr><th>18:30</th><td>開会・セミナー開始（<span class="todo">テーマ確認中</span>）</td></tr>
+      <tr><th>19:30</th><td>質疑応答</td></tr>
+      <tr><th>19:40</th><td>交流会（<span class="todo">実施有無・形式は確認中</span>）</td></tr>
+      <tr><th>20:00</th><td>終了</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- 登壇者 -->
+<div class="sec">
   <div class="container">
     <div class="sec-label"><div class="sec-label-line"></div><div class="sec-label-text">SPEAKERS</div><div class="sec-label-line"></div></div>
     <div class="sec-title">登壇者</div>
-    <div class="speaker-placeholder">
-      登壇者情報　近日公開
-      <p>氏名・肩書き・実績・SNSリンクが確定次第、掲載します</p>
+    <div class="speakers">
+      <div class="speaker-card">
+        <img src="shinsuke.jpg" alt="山西伸典">
+        <div class="sname">山西伸典</div>
+        <div class="skana">やまにし しんすけ</div>
+        <div class="stitle">山西水産株式会社 代表取締役（四代目）<br>現場実装型AIエンジニア／FDE（Forward Deployed Engineer）</div>
+        <a class="slink" href="https://tinyurl.com/24f6pu2p" target="_blank" rel="noopener">プロフィールカードを見る</a>
+      </div>
+      <div class="speaker-card todo-card">
+        <div class="sname">ゲスト登壇者</div>
+        <p class="tnote">確認中<br>氏名・肩書き・実績・SNSリンクが確定次第、掲載します</p>
+      </div>
     </div>
   </div>
 </div>
