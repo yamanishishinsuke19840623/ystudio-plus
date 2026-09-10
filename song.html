@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>潮風と、ふくと。｜山西水産 オリジナルテーマソング</title>
+<meta name="description" content="創業147年・下関のふぐ問屋 山西水産株式会社のオリジナルテーマソング「潮風と、ふくと。」。作詞・作曲、歌詞、コード譜、試聴デモを公開しています。">
+<style>
+:root{
+  --bg:#ffffff;--bg2:#f5f7fa;--panel:#eef1f7;
+  --ink:#1a1a2e;--sub:rgba(26,26,46,.65);--line:rgba(26,26,46,.12);
+  --navy:#1a3a8f;--navy2:#2952c4;--gold:#c9973a;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP','Hiragino Sans','Inter',sans-serif;background:var(--bg);color:var(--ink);line-height:1.8;}
+a{color:inherit;}
+.wrap{max-width:760px;margin:0 auto;padding:0 24px;}
+
+header.top{border-bottom:1px solid var(--line);padding:16px 0;}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;}
+.brand{font-weight:700;font-size:14px;letter-spacing:.5px;text-decoration:none;color:var(--navy);}
+.back{font-size:12px;color:var(--sub);text-decoration:none;letter-spacing:.5px;}
+.back:hover{color:var(--navy);}
+
+.hero{padding:64px 0 32px;text-align:center;background:linear-gradient(180deg,var(--bg2) 0%,var(--bg) 100%);border-bottom:1px solid var(--line);}
+.hero-eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:14px;}
+.hero h1{font-size:clamp(28px,6vw,44px);font-weight:900;letter-spacing:.02em;margin-bottom:10px;}
+.hero p.sub{color:var(--sub);font-size:15px;margin-bottom:28px;}
+.meta-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:30px;}
+.meta-chip{border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:12px;color:var(--sub);background:var(--bg);}
+
+.player{max-width:480px;margin:0 auto;background:var(--ink);border-radius:16px;padding:24px;color:#fff;}
+.player-title{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:4px;}
+.player-sub{font-size:13px;color:rgba(255,255,255,.75);margin-bottom:18px;}
+.player-controls{display:flex;align-items:center;gap:14px;}
+#playBtn{background:var(--gold);color:#1a1a2e;border:none;width:52px;height:52px;border-radius:50%;font-size:18px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.2s;}
+#playBtn:hover{transform:scale(1.06);}
+#playBtn:disabled{opacity:.6;cursor:default;transform:none;}
+.player-status{flex:1;text-align:left;}
+#nowSection{font-size:13px;font-weight:700;color:#fff;}
+#nowHint{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px;}
+.progress{height:3px;background:rgba(255,255,255,.15);border-radius:2px;margin-top:16px;overflow:hidden;}
+#progressBar{height:100%;width:0%;background:var(--gold);transition:width .1s linear;}
+.player-note{font-size:11px;color:rgba(255,255,255,.4);margin-top:14px;line-height:1.6;}
+
+section{padding:48px 0;}
+section.alt{background:var(--bg2);}
+h2.sec-title{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:6px;}
+h3.sec-heading{font-size:22px;font-weight:900;margin-bottom:24px;}
+
+.lyric-block{margin-bottom:32px;border-left:2px solid var(--line);padding-left:18px;transition:border-color .3s,background .3s;}
+.lyric-block.playing{border-left-color:var(--gold);background:rgba(201,151,58,.06);}
+.lyric-label{display:flex;align-items:baseline;gap:10px;margin-bottom:8px;}
+.lyric-label .name{font-weight:700;font-size:13px;color:var(--navy);}
+.lyric-label .chords{font-size:11px;color:var(--sub);font-family:'Inter',monospace;letter-spacing:.3px;}
+.lyric-block p{font-size:15px;white-space:pre-line;color:var(--ink);}
+.lyric-block p.note{font-size:12px;color:var(--sub);font-style:normal;}
+
+table.chart{width:100%;border-collapse:collapse;font-size:13px;}
+table.chart th,table.chart td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);}
+table.chart th{color:var(--sub);font-weight:700;font-size:11px;letter-spacing:1px;text-transform:uppercase;}
+
+.download-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px;}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--navy);color:var(--navy);font-size:13px;font-weight:700;padding:12px 22px;border-radius:6px;text-decoration:none;transition:.2s;}
+.btn:hover{background:var(--navy);color:#fff;}
+.btn.ghost{border-color:var(--line);color:var(--sub);}
+.btn.ghost:hover{border-color:var(--navy);color:var(--navy);background:none;}
+
+.credits{font-size:13px;color:var(--sub);}
+.credits dt{font-weight:700;color:var(--ink);margin-top:10px;}
+.credits dd{margin:2px 0 0;}
+
+footer{border-top:1px solid var(--line);padding:32px 0 40px;}
+.related{list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:16px;}
+.related a{display:block;border:1px solid var(--line);border-radius:8px;padding:12px 14px;text-decoration:none;font-size:13px;color:var(--sub);transition:.2s;}
+.related a:hover{border-color:var(--navy);color:var(--navy);}
+.related a .t{font-weight:700;color:var(--ink);display:block;margin-bottom:2px;}
+.copy{font-size:11px;color:var(--sub);margin-top:24px;}
+
+@media(max-width:600px){.hero{padding:48px 0 24px;}.player{padding:20px;}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html">Yスタジオ＋</a>
+    <a class="back" href="index.html">← サイトトップへ</a>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="hero-eyebrow">Original Song</div>
+    <h1>潮風と、ふくと。</h1>
+    <p class="sub">山西水産株式会社 オリジナルテーマソング　――　作詞・作曲／制作：Yスタジオ＋</p>
+    <div class="meta-row">
+      <span class="meta-chip">Key: C major → D major（ラストサビで転調）</span>
+      <span class="meta-chip">Tempo: 96 BPM / 4拍子</span>
+      <span class="meta-chip">約3分20秒</span>
+    </div>
+
+    <div class="player">
+      <div class="player-title">Demo Playback</div>
+      <div class="player-sub">イントロ〜Aメロ〜Bメロ〜サビ（冒頭ワンコーラス・約75秒）をブラウザで試聴できます</div>
+      <div class="player-controls">
+        <button id="playBtn" aria-label="再生">▶</button>
+        <div class="player-status">
+          <div id="nowSection">再生前</div>
+          <div id="nowHint">Web Audio APIでその場で音を生成しています</div>
+        </div>
+      </div>
+      <div class="progress"><div id="progressBar"></div></div>
+      <p class="player-note">※ シンセ音源による簡易デモです。実際の制作では歌唱・生楽器でのアレンジを想定しています。フルバージョン（全曲・約3分20秒）はMIDIファイルでダウンロードできます。</p>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2 class="sec-title">Lyrics</h2>
+    <h3 class="sec-heading">歌詞</h3>
+
+    <div class="lyric-block" data-section="amero">
+      <div class="lyric-label"><span class="name">Aメロ</span><span class="chords">C → G → Am → F （×2）</span></div>
+      <p>明治の海に　灯りが灯る
+下関　富任の　潮の匂い
+祖父から父へ　父から僕へ
+受け継ぐ暖簾　百四十七年
+
+関門海峡　渡る風のように
+変わらないもの　変えていくもの
+両手いっぱい　抱えて歩く
+四代目の朝が　また始まる</p>
+    </div>
+
+    <div class="lyric-block" data-section="bmero">
+      <div class="lyric-label"><span class="name">Bメロ</span><span class="chords">F → G → Em → Am （×2）</span></div>
+      <p>古い言い伝え　大事にしながら
+新しい風も　恐れず呼び込む
+「ふぐ」じゃなくて「ふく」と呼ぶわけは
+不遇じゃなくて　福を届けたいから</p>
+    </div>
+
+    <div class="lyric-block" data-section="sabi">
+      <div class="lyric-label"><span class="name">サビ</span><span class="chords">F → G → Em → Am → F → G → Dm → G → C → C</span></div>
+      <p>海からのふく　今日もあなたに
+一匹一匹　心を込めて
+下関から　届けたいのは
+美味しさだけじゃない　幸せのかたち
+ふくと生きる　山西水産</p>
+    </div>
+
+    <div class="lyric-block">
+      <div class="lyric-label"><span class="name">2番 Aメロ</span><span class="chords">同じメロディ</span></div>
+      <p>パソコンひらいて　数字と向き合う
+四時起きの浜も　AIも両方
+古いやり方　手放さないけど
+止まってちゃだめだ　前を向いてる
+
+PTAの会議　消防団の夜も
+3人の子どもと　駆け回る休日
+一人じゃ無理だと　気づいたときから
+仲間を集めて　街ごと動かす</p>
+    </div>
+
+    <div class="lyric-block">
+      <div class="lyric-label"><span class="name">2番 Bメロ</span><span class="chords">同じメロディ</span></div>
+      <p>下関だけじゃ　もったいないから
+安岡の空に　シャボン玉飛ばして
+知らない誰かの　忘れない一日を
+つくるために　今日も種をまく</p>
+    </div>
+
+    <div class="lyric-block">
+      <div class="lyric-label"><span class="name">サビ（2回目）</span><span class="chords">同じメロディで繰り返し</span></div>
+      <p class="note">1番と同じ歌詞・メロディを繰り返します。</p>
+    </div>
+
+    <div class="lyric-block">
+      <div class="lyric-label"><span class="name">Cメロ（ブリッジ）</span><span class="chords">Dm → Am → Bb → F → C → G → Am → G</span></div>
+      <p>継ぐことは　守ることだけじゃない
+継ぐことは　つくり変える勇気だ
+百四十七年の続きを
+僕らが書いていく</p>
+    </div>
+
+    <div class="lyric-block">
+      <div class="lyric-label"><span class="name">ラストサビ</span><span class="chords">D major に転調（半音2つ上）</span></div>
+      <p>海からのふく　世界のどこかへ
+一匹一匹　想いを込めて
+下関から　届けたいのは
+今日を生きるための　小さな幸せ
+ふくと生きる　山西水産
+海が育てた　ふくと生きる</p>
+    </div>
+
+    <div class="lyric-block">
+      <div class="lyric-label"><span class="name">アウトロ</span><span class="chords">D → A → Bm → G → D</span></div>
+      <p>――山西水産　Yスタジオ＋</p>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <h2 class="sec-title">Composition Memo</h2>
+    <h3 class="sec-heading">作曲メモ／構成表</h3>
+    <table class="chart">
+      <tr><th>セクション</th><th>小節数</th><th>キー</th><th>コード進行</th></tr>
+      <tr><td>イントロ</td><td>4小節</td><td>C</td><td>C - G - Am - F</td></tr>
+      <tr><td>Aメロ</td><td>8小節</td><td>C</td><td>C - G - Am - F （×2）</td></tr>
+      <tr><td>Bメロ</td><td>8小節</td><td>C</td><td>F - G - Em - Am （×2）</td></tr>
+      <tr><td>サビ</td><td>10小節</td><td>C</td><td>F-G-Em-Am-F-G-Dm-G-C-C</td></tr>
+      <tr><td>（2番 A/B/サビ）</td><td>同上</td><td>C</td><td>同じ進行を繰り返し</td></tr>
+      <tr><td>Cメロ</td><td>8小節</td><td>C（経過的にBbを借用）</td><td>Dm-Am-Bb-F-C-G-Am-G</td></tr>
+      <tr><td>ラストサビ</td><td>10小節</td><td>D（転調）</td><td>サビと同進行を長2度上で</td></tr>
+      <tr><td>アウトロ</td><td>6小節</td><td>D</td><td>D-A-Bm-G-D（Aメロ冒頭モチーフを再現）</td></tr>
+    </table>
+    <p style="font-size:13px;color:var(--sub);margin-top:20px;">
+      王道進行（F→G→Em→Am）を軸にしたフォークポップ。サビは「海」「ふく」という言葉を強調するため高めの音域に跳躍させ、
+      アウトロではAメロ冒頭のモチーフを転調後に再提示することで、曲全体を「一つの物語」として閉じる構成にしています。
+      楽器はフルート（メロディ）、アコースティックギター（コード）、アコースティックベースを想定した打ち込みデモです。
+    </p>
+    <div class="download-row">
+      <a class="btn" href="fuku-to-ikiru.mid" download>⬇ フル尺MIDIをダウンロード（約3分20秒）</a>
+      <a class="btn ghost" href="index.html#contact">アレンジ・レコーディングのご相談</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 class="sec-title">Background</h2>
+    <h3 class="sec-heading">制作にあたって</h3>
+    <dl class="credits">
+      <dt>由来</dt>
+      <dd>下関では「ふぐ」を「不遇」に通じるのを避け、「福」に通じる「ふく」と呼びます。この曲は、明治12年（1878年）創業・147年続く老舗ふぐ問屋 山西水産株式会社が、4代目・山西伸典のもとで大切にしてきた「変わらないもの」と「変えていくもの」の両方を歌にしたテーマソングです。</dd>
+      <dt>用途</dt>
+      <dd>会社紹介動画、SNSショート動画、採用ページ、イベント（ナイトバブル／カオスやストリート等）のオープニングBGMなどでの活用を想定しています。</dd>
+      <dt>次のステップ</dt>
+      <dd>このページは作詞・作曲・打ち込みデモまでの「たたき台」です。実際のボーカル収録・生楽器アレンジ・ミックスは、方向性が固まった段階でご相談ください。</dd>
+    </dl>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <h2 class="sec-title">Related</h2>
+    <h3 class="sec-heading">関連事業・活動のご案内</h3>
+    <ul class="related">
+      <li><a href="index.html"><span class="t">Yスタジオ＋</span>AI・DX導入支援 / FDE</a></li>
+      <li><a href="https://lp.yamanisi.co.jp/"><span class="t">山西水産</span>下関のふぐ老舗問屋・会社のご案内</a></li>
+      <li><a href="training.html"><span class="t">AI・DX研修パッケージ</span>仕事で使えるAI活用を、社内研修に</a></li>
+      <li><a href="nightbubble.html"><span class="t">ナイトバブル事業部</span>地域イベントに、シャボン玉の体験を</a></li>
+      <li><a href="https://kaosuya.yamanisi.co.jp/"><span class="t">カオスやストリート</span>音楽・マルシェ・地域交流のイベント</a></li>
+    </ul>
+    <div class="copy">© 2021-2026 山西水産株式会社 Yスタジオ＋ / 山西伸典 · 山口県下関市富任町1-1-5 · <a href="privacy.html">プライバシーポリシー</a></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // Melody/chord data — matches the demo cycle (Intro + Aメロ + Bメロ + サビ) of the full composition.
+  var BEAT = 60/96;
+  var MAJ=[0,4,7], MIN=[0,3,7];
+
+  function chordTones(root, semitone, quality){
+    var triad = quality==='maj'?MAJ:MIN;
+    return triad.map(function(iv){ return root+semitone+iv; });
+  }
+
+  var introChords = [[0,'maj'],[7,'maj'],[9,'min'],[5,'maj']];
+  var ameroChords = [[0,'maj'],[7,'maj'],[9,'min'],[5,'maj'],[0,'maj'],[7,'maj'],[9,'min'],[5,'maj']];
+  var ameroMelody = [
+    4,4,7,4, 2,2,5,2, 0,0,4,0, -3,-3,0,-3,
+    4,7,4,2, 2,5,2,0, 0,4,0,-1, -3,0,2,4
+  ].map(function(s){return [s,1];});
+
+  var bmeroChords = [[5,'maj'],[7,'maj'],[4,'min'],[9,'min'],[5,'maj'],[7,'maj'],[4,'min'],[9,'min']];
+  var bmeroPhrase = [5,9,7,5, 7,11,9,7, 4,7,11,7, 9,7,5,4].map(function(s){return [s,1];});
+  var bmeroMelody = bmeroPhrase.concat(bmeroPhrase);
+
+  var sabiChords = [[5,'maj'],[7,'maj'],[4,'min'],[9,'min'],[5,'maj'],[7,'maj'],[2,'min'],[7,'maj'],[0,'maj'],[0,'maj']];
+  var sabiMelody = [
+    [9,1],[12,1],[12,1],[9,1],
+    [11,1],[14,1],[14,1],[11,1],
+    [7,1],[11,1],[7,1],[4,1],
+    [9,1],[12,1],[9,1],[4,1],
+    [9,1],[12,1],[12,1],[9,1],
+    [11,1],[14,1],[14,1],[11,1],
+    [14,1],[12,1],[9,1],[5,1],
+    [7,1],[9,1],[11,1],[14,1],
+    [16,1],[14,1],[12,2],
+    [12,4]
+  ];
+
+  var SECTIONS = [
+    {name:'intro', label:'イントロ', chords:introChords, melody:null},
+    {name:'amero', label:'Aメロ', chords:ameroChords, melody:ameroMelody},
+    {name:'bmero', label:'Bメロ', chords:bmeroChords, melody:bmeroMelody},
+    {name:'sabi', label:'サビ', chords:sabiChords, melody:sabiMelody}
+  ];
+
+  function midiToFreq(m){ return 440*Math.pow(2,(m-69)/12); }
+
+  var playBtn = document.getElementById('playBtn');
+  var nowSection = document.getElementById('nowSection');
+  var nowHint = document.getElementById('nowHint');
+  var progressBar = document.getElementById('progressBar');
+  var ctx = null;
+  var timers = [];
+  var playing = false;
+
+  function tone(freq, start, dur, type, peakGain){
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.type = type;
+    osc.frequency.value = freq;
+    var atk = 0.015, rel = Math.min(0.08, dur*0.3);
+    gain.gain.setValueAtTime(0, start);
+    gain.gain.linearRampToValueAtTime(peakGain, start+atk);
+    gain.gain.setValueAtTime(peakGain, Math.max(start+atk, start+dur-rel));
+    gain.gain.linearRampToValueAtTime(0, start+dur);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(start);
+    osc.stop(start+dur+0.02);
+  }
+
+  function scheduleSection(sec, startTime){
+    var t = startTime;
+    var barDur = 4*BEAT;
+    sec.chords.forEach(function(ch){
+      var tones = chordTones(48, ch[0], ch[1]);
+      tones.forEach(function(n){ tone(midiToFreq(n), t, barDur*0.95, 'triangle', 0.03); });
+      tone(midiToFreq(36+ch[0]), t, barDur*0.9, 'sine', 0.09);
+      t += barDur;
+    });
+    var totalBeats = sec.chords.length*4;
+    if(sec.melody){
+      var mt = startTime;
+      sec.melody.forEach(function(pair){
+        var semitone=pair[0], dur=pair[1]*BEAT;
+        if(semitone!==null){ tone(midiToFreq(60+semitone), mt, dur*0.92, 'square', 0.055); }
+        mt += dur;
+      });
+    }
+    return totalBeats*BEAT;
+  }
+
+  function clearTimers(){
+    timers.forEach(function(id){ clearTimeout(id); });
+    timers = [];
+  }
+
+  function stopPlayback(){
+    clearTimers();
+    playing = false;
+    playBtn.textContent = '▶';
+    playBtn.disabled = false;
+    nowSection.textContent = '再生前';
+    nowHint.textContent = 'Web Audio APIでその場で音を生成しています';
+    progressBar.style.width = '0%';
+    document.querySelectorAll('.lyric-block.playing').forEach(function(el){ el.classList.remove('playing'); });
+    if(ctx){ ctx.close(); ctx = null; }
+  }
+
+  playBtn.addEventListener('click', function(){
+    if(playing){ stopPlayback(); return; }
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    playing = true;
+    playBtn.textContent = '■';
+
+    var t0 = ctx.currentTime + 0.1;
+    var cursor = t0;
+    var totalDur = 0;
+    var offsets = [];
+    SECTIONS.forEach(function(sec){
+      offsets.push({sec:sec, offset: totalDur});
+      var dur = scheduleSection(sec, cursor);
+      cursor += dur;
+      totalDur += dur;
+    });
+
+    offsets.forEach(function(item){
+      var id = setTimeout(function(){
+        document.querySelectorAll('.lyric-block.playing').forEach(function(el){ el.classList.remove('playing'); });
+        var block = document.querySelector('.lyric-block[data-section="'+item.sec.name+'"]');
+        if(block){ block.classList.add('playing'); }
+        nowSection.textContent = '再生中: ' + item.sec.label;
+      }, item.offset*1000);
+      timers.push(id);
+    });
+
+    var start = performance.now();
+    (function tick(){
+      if(!playing) return;
+      var elapsed = (performance.now()-start)/1000;
+      var pct = Math.min(100, (elapsed/totalDur)*100);
+      progressBar.style.width = pct+'%';
+      if(elapsed < totalDur){
+        requestAnimationFrame(tick);
+      }
+    })();
+
+    var endId = setTimeout(stopPlayback, totalDur*1000 + 300);
+    timers.push(endId);
+  });
+})();
+</script>
+
+</body>
+</html>
