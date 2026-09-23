@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>山西水産 リール 35秒</title>
+<link href="fonts/fonts.css" rel="stylesheet">
+<!--
+  1080x1920 / 35秒のリール用フレーム。window.seek(t) で t秒目の絵を決定的に描く。
+  render.mjs がこれを30fpsでキャプチャし、bgm.py の音源と合成して mp4 にする。
+  テロップはすべて index.html / song.html / chamber.html / pv.html に公開済みのFACTのみ。
+-->
+<style>
+:root{
+  --navy:#0e1f4d;--navy2:#1a3a8f;--sea:#12418a;--gold:#c9973a;
+  --hi:#ffd43b;--ink:#0b1430;--white:#ffffff;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:1080px;height:1920px;overflow:hidden;background:var(--navy);}
+body{font-family:'Inter','Noto Sans JP','IPAGothic',sans-serif;color:var(--white);position:relative;}
+#bg{position:absolute;inset:0;background:linear-gradient(180deg,#0a1840 0%,#123a82 55%,#1d5aa8 100%);}
+#rays{position:absolute;inset:-200px;opacity:.18;
+  background:repeating-conic-gradient(from 0deg at 50% -10%,rgba(255,255,255,.55) 0deg 3deg,transparent 3deg 14deg);}
+.wave{position:absolute;left:-10%;width:120%;height:260px;border-radius:50% 50% 0 0;}
+#wave1{bottom:-80px;background:rgba(255,255,255,.07);}
+#wave2{bottom:-130px;background:rgba(255,255,255,.06);}
+.bubble{position:absolute;border-radius:50%;border:3px solid rgba(255,255,255,.45);
+  background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.55),rgba(255,255,255,.05) 45%,transparent 70%);}
+.scene{position:absolute;inset:0;opacity:0;}
+.center{position:absolute;left:0;right:0;text-align:center;}
+.tl{font-weight:900;letter-spacing:.02em;line-height:1.25;
+  paint-order:stroke fill;-webkit-text-stroke:14px var(--ink);
+  text-shadow:0 10px 0 rgba(11,20,48,.55);}
+.hi{color:var(--hi);}
+.gold{color:#f3c56b;}
+.small{font-weight:700;font-size:40px;color:rgba(255,255,255,.92);letter-spacing:.08em;paint-order:stroke fill;-webkit-text-stroke:8px var(--ink);}
+.chip{display:inline-block;padding:14px 34px;border-radius:999px;background:rgba(255,255,255,.14);
+  border:3px solid rgba(255,255,255,.4);font-weight:700;font-size:42px;letter-spacing:.06em;}
+.num{font-family:'Inter','Noto Sans JP',sans-serif;font-weight:900;}
+.card{position:absolute;border-radius:28px;background:#fff;color:var(--ink);
+  box-shadow:0 18px 40px rgba(0,0,0,.35);}
+.note{font-size:30px;font-weight:500;color:rgba(255,255,255,.7);}
+#fugu{position:absolute;width:260px;height:220px;}
+#bar{position:absolute;left:0;top:0;height:10px;background:var(--hi);}
+</style>
+</head>
+<body>
+<div id="bg"></div>
+<div id="rays"></div>
+<div class="wave" id="wave2"></div>
+<div class="wave" id="wave1"></div>
+<div id="bubbles"></div>
+
+<!-- S1 0–5s フック -->
+<div class="scene" id="s1">
+  <div class="center tl" id="s1a" style="top:520px;font-size:96px;">下関で<span class="hi">147年</span>。</div>
+  <div class="center tl" id="s1b" style="top:700px;font-size:84px;">ふぐ問屋の<span class="hi">4代目</span>が</div>
+  <div class="center tl" id="s1c" style="top:860px;font-size:104px;"><span class="hi">AI</span>と組むと、</div>
+  <div class="center tl" id="s1d" style="top:1040px;font-size:104px;">こうなる。</div>
+</div>
+
+<!-- S2 5–10s 創業 -->
+<div class="scene" id="s2">
+  <div class="center" id="s2chip" style="top:380px;"><span class="chip">山口県下関市 富任町</span></div>
+  <div class="center tl" style="top:560px;font-size:80px;">創業 <span class="hi">明治12年</span></div>
+  <div class="center tl num" style="top:680px;font-size:64px;">（1878年）</div>
+  <div class="center tl num" id="s2num" style="top:840px;font-size:300px;line-height:1;">0</div>
+  <div class="center tl" style="top:1150px;font-size:88px;">年、続く<span class="gold">ふぐ問屋</span>。</div>
+</div>
+
+<!-- S3 5代目ポートレート -->
+<div class="scene" id="s3">
+  <div id="s3photo" style="position:absolute;left:140px;top:360px;width:800px;height:800px;border-radius:40px;overflow:hidden;
+    border:10px solid #fff;box-shadow:0 30px 60px rgba(0,0,0,.4);">
+    <img src="../shinsuke.jpg" id="s3img" style="width:100%;height:100%;object-fit:cover;object-position:50% 20%;">
+  </div>
+  <div class="center" style="top:1190px;"><span class="chip">山西水産株式会社 代表取締役</span></div>
+  <div class="center tl" id="s3t" style="top:1290px;font-size:92px;"><span class="hi">4代目</span> 山西伸典</div>
+</div>
+
+<!-- S4 多店舗 -->
+<div class="scene" id="s4">
+  <div class="center tl" style="top:330px;font-size:80px;"><span class="hi">10モール</span>＋自社サイト</div>
+  <div id="s4grid" style="position:absolute;left:120px;top:560px;width:840px;height:620px;"></div>
+  <div class="center tl" id="s4t" style="top:1230px;font-size:120px;"><span class="hi">1人</span>で運営。</div>
+</div>
+
+<!-- S5 自動化 -->
+<div class="scene" id="s5">
+  <div class="center small" style="top:360px;">AIと自動化で</div>
+  <div class="center tl" style="top:440px;font-size:96px;">月<span class="hi num" id="s5num" style="font-size:260px;">0</span>時間</div>
+  <div class="center tl" style="top:790px;font-size:110px;">削減。</div>
+  <div id="s5gears" style="position:absolute;left:90px;top:1000px;width:900px;height:170px;"></div>
+  <div class="center tl" style="top:1200px;font-size:64px;"><span class="hi">6種</span>の自動化が、いまも稼働中</div>
+  <div class="center note" style="top:1330px;">※自社実証データ（2023〜2024年）</div>
+</div>
+
+<!-- S6 ふく -->
+<div class="scene" id="s6">
+  <div class="center small" style="top:380px;">下関では</div>
+  <div class="center tl" id="s6a" style="top:460px;font-size:100px;">「ふぐ」じゃなくて</div>
+  <div class="center tl" id="s6b" style="top:600px;font-size:150px;">「<span class="hi">ふく</span>」</div>
+  <div class="center tl" id="s6c" style="top:900px;font-size:76px;">不遇じゃなくて、</div>
+  <div class="center tl" id="s6d" style="top:1020px;font-size:96px;"><span class="hi">福</span>を届けたいから。</div>
+</div>
+
+<!-- S7 エンドカード -->
+<div class="scene" id="s7">
+  <div class="center tl" id="s7a" style="top:520px;font-size:110px;">ふくと生きる、</div>
+  <div class="center tl" id="s7b" style="top:680px;font-size:130px;"><span class="hi">山西水産</span>。</div>
+  <div class="center small" id="s7c" style="top:900px;">明治12年創業・下関のふぐ問屋</div>
+  <div class="center" id="s7d" style="top:1010px;"><span class="chip">▶ YouTube　@shimofugu</span></div>
+  <div class="center note" id="s7e" style="top:1130px;">lp.yamanisi.co.jp</div>
+  <div class="center note" id="s7f" style="top:1400px;font-size:26px;">BGM：潮風と、ふくと。（制作：Yスタジオ＋）</div>
+</div>
+
+<!-- マスコット ふく -->
+<svg id="fugu" viewBox="0 0 260 220">
+  <path d="M40 110 L0 70 L10 110 L0 150 Z" fill="#e9a23b" stroke="#0b1430" stroke-width="6" stroke-linejoin="round"/>
+  <ellipse cx="140" cy="112" rx="100" ry="92" fill="#f6d27a" stroke="#0b1430" stroke-width="7"/>
+  <ellipse cx="150" cy="150" rx="70" ry="45" fill="#fff6dd"/>
+  <g fill="#b9772a"><circle cx="100" cy="70" r="7"/><circle cx="130" cy="52" r="6"/><circle cx="160" cy="64" r="7"/><circle cx="92" cy="104" r="6"/><circle cx="120" cy="88" r="5"/></g>
+  <circle cx="196" cy="92" r="18" fill="#fff" stroke="#0b1430" stroke-width="5"/>
+  <circle cx="200" cy="94" r="9" fill="#0b1430"/>
+  <circle cx="203" cy="90" r="3" fill="#fff"/>
+  <ellipse cx="232" cy="124" rx="10" ry="8" fill="#e56b5a" stroke="#0b1430" stroke-width="5"/>
+  <path id="fin" d="M140 120 q-30 10 -40 40 q30 -4 45 -24 z" fill="#e9a23b" stroke="#0b1430" stroke-width="5" stroke-linejoin="round"/>
+  <ellipse cx="178" cy="126" rx="10" ry="6" fill="#f2a08f" opacity=".7"/>
+</svg>
+
+<div id="bar"></div>
+
+<script>
+var DUR = 35;
+var clamp=function(x,a,b){return Math.max(a,Math.min(b,x));};
+var lin=function(t,a,b){return clamp((t-a)/(b-a),0,1);};
+var easeOut=function(x){return 1-Math.pow(1-x,3);};
+var easeBack=function(x){var c1=1.70158,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2);};
+var $=function(id){return document.getElementById(id);};
+
+// 泡（位置は固定の擬似乱数）
+var rnd=(function(s){return function(){s=(s*9301+49297)%233280;return s/233280;};})(7);
+var bubbles=[];
+for(var i=0;i<22;i++){
+  var b=document.createElement('div');b.className='bubble';
+  var size=20+rnd()*70;b.style.width=b.style.height=size+'px';
+  $('bubbles').appendChild(b);
+  bubbles.push({el:b,x:rnd()*1080,speed:60+rnd()*120,phase:rnd()*2000,sway:20+rnd()*40,size:size});
+}
+
+// S4 ストア11枚（10モール＋自社サイト）
+var stores=[];
+for(var k=0;k<11;k++){
+  var c=document.createElement('div');c.className='card';
+  var col=k%4,row=Math.floor(k/4);
+  var own=(k===10);
+  var w=own?390:190,h=180;
+  var x=col*215, y=row*220;
+  if(own){x=430;}
+  c.style.left=x+'px';c.style.top=y+'px';c.style.width=w+'px';c.style.height=h+'px';
+  c.style.display='flex';c.style.flexDirection='column';c.style.alignItems='center';c.style.justifyContent='center';
+  c.innerHTML=own
+    ? '<div style="font-size:64px;line-height:1;">🏠</div><div style="font-weight:900;font-size:40px;margin-top:10px;color:#1a3a8f;">自社サイト</div>'
+    : '<div style="font-size:60px;line-height:1;">🛒</div><div class="num" style="font-weight:900;font-size:34px;margin-top:10px;color:#1a3a8f;">MALL '+(k+1)+'</div>';
+  if(own){c.style.background='#ffd43b';}
+  $('s4grid').appendChild(c);stores.push(c);
+}
+
+// S5 6つの歯車
+var gears=[];
+for(var g=0;g<6;g++){
+  var d=document.createElement('div');
+  d.style.cssText='position:absolute;top:0;width:130px;height:130px;left:'+(g*152)+'px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(255,212,59,.18);border:4px solid #ffd43b;font-size:74px;';
+  d.textContent='⚙️';
+  $('s5gears').appendChild(d);gears.push(d);
+}
+
+function sceneAlpha(t,a,b){ // フェードは各0.25秒
+  return Math.min(lin(t,a,a+0.25),1-lin(t,b-0.25,b));
+}
+function pop(el,t,start){ // バウンドで出現
+  var p=lin(t,start,start+0.45);
+  el.style.opacity=clamp(p*3,0,1);
+  el.style.transform='scale('+(0.4+0.6*easeBack(p))+')';
+}
+function slideUp(el,t,start){
+  var p=easeOut(lin(t,start,start+0.4));
+  el.style.opacity=p;el.style.transform='translateY('+((1-p)*60)+'px)';
+}
+
+window.seek=function(t){
+  // 背景
+  $('rays').style.transform='rotate('+(Math.sin(t*0.4)*4)+'deg)';
+  $('wave1').style.transform='translateX('+(Math.sin(t*1.2)*60)+'px)';
+  $('wave2').style.transform='translateX('+(Math.cos(t*0.9)*80)+'px)';
+  bubbles.forEach(function(b){
+    var y=1920+100-((t*b.speed+b.phase)%2200);
+    b.el.style.transform='translate('+(b.x+Math.sin(t*1.5+b.phase)*b.sway)+'px,'+y+'px)';
+  });
+  $('bar').style.width=(t/DUR*1080)+'px';
+
+  // シーン表示
+  var S=[['s1',0,5],['s2',5,10],['s3',10,15],['s4',15,20],['s5',20,25],['s6',25,30],['s7',30,DUR+1]];
+  S.forEach(function(s){$(s[0]).style.opacity=sceneAlpha(t,s[1],s[2]);});
+  if(t<0.25){$('s1').style.opacity=1;}
+
+  // S1
+  pop($('s1a'),t,0.1); slideUp($('s1b'),t,1.3); pop($('s1c'),t,2.5); pop($('s1d'),t,3.4);
+  // S2
+  var n=Math.round(147*easeOut(lin(t,5.6,8.2)));$('s2num').textContent=n;
+  slideUp($('s2chip'),t,5.1);
+  // S3
+  var zp=lin(t,10,15);$('s3img').style.transform='scale('+(1.02+0.08*zp)+')';
+  slideUp($('s3photo'),t,10.05); pop($('s3t'),t,11.2);
+  // S4
+  stores.forEach(function(c,i){pop(c,t,15.3+i*0.18);});
+  pop($('s4t'),t,17.8);
+  // S5
+  $('s5num').textContent=Math.round(30*easeOut(lin(t,20.3,22.2)));
+  gears.forEach(function(gd,i){pop(gd,t,22.2+i*0.12);gd.style.transform+=' rotate('+(t*90*(i%2?-1:1))+'deg)';});
+  // S6
+  slideUp($('s6a'),t,25.1); pop($('s6b'),t,25.9); slideUp($('s6c'),t,27.2); pop($('s6d'),t,27.9);
+  // S7
+  pop($('s7a'),t,30.1); pop($('s7b'),t,30.6); slideUp($('s7c'),t,31.4); slideUp($('s7d'),t,31.9); slideUp($('s7e'),t,32.3); slideUp($('s7f'),t,32.6);
+
+  // マスコット：シーンごとに位置を変えてふわふわ泳ぐ
+  var spots=[[760,1400],[90,1450],[760,1560],[60,1560],[780,1500],[720,1250],[410,1480]];
+  var si=clamp(Math.floor(t/5),0,6), sp=spots[si], prev=spots[Math.max(si-1,0)];
+  var m=easeOut(lin(t,si*5,si*5+0.8));
+  var fx=prev[0]+(sp[0]-prev[0])*m, fy=prev[1]+(sp[1]-prev[1])*m+Math.sin(t*3)*14;
+  var flip=(sp[0]<prev[0]&&m<1)?-1:1;
+  var puff=1+0.12*Math.max(0,Math.sin((t-25.9)*6))*(t>25.9&&t<26.5?1:0); // 「ふく」でぷくっと
+  $('fugu').style.transform='translate('+fx+'px,'+fy+'px) scale('+(flip*puff)+','+puff+') rotate('+(Math.sin(t*2)*5)+'deg)';
+  $('fin').style.transform='rotate('+(Math.sin(t*10)*8)+'deg)';$('fin').style.transformOrigin='140px 120px';
+};
+window.seek(0);
+</script>
+</body>
+</html>
