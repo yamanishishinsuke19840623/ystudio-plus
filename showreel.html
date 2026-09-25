@@ -23,6 +23,7 @@ header.top .wrap{display:flex;justify-content:space-between;align-items:center;}
 .back{font-size:12px;color:var(--sub);text-decoration:none;}
 .stage{position:relative;margin:20px auto 0;aspect-ratio:16/9;width:100%;background:#000;border-radius:10px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5);}
 .stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;}
+.vertical .stage{aspect-ratio:9/16;width:min(100%,calc(78vh * 9 / 16));}
 .play{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(8,10,22,.55);border:none;color:var(--text);cursor:pointer;font:inherit;transition:opacity .3s;}
 .play .circle{width:clamp(56px,14vw,88px);height:clamp(56px,14vw,88px);border-radius:50%;background:var(--gold);color:var(--ink);display:flex;align-items:center;justify-content:center;font-size:30px;padding-left:6px;}
 .play .lbl{font-size:clamp(10px,2.6vw,13px);letter-spacing:2px;color:var(--sub);}
@@ -55,7 +56,8 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:24px 0 40px;font
   </div>
   <div class="controls">
     <button class="btn" id="replayBtn" type="button">↺ もう一度</button>
-    <a class="btn" href="showreel.mp4">▶ MP4で見る</a>
+    <a class="btn" id="mp4Link" href="showreel.mp4">▶ MP4で見る</a>
+    <a class="btn" id="fmtLink" href="showreel.html?format=vertical">縦型（9:16）で見る</a>
     <span class="tc" id="tc">00:00:00:00</span>
   </div>
 
@@ -81,7 +83,10 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:24px 0 40px;font
 <script>
 (() => {
 'use strict';
-const W = 1920, H = 1080, FPS = 30, DUR = 15;
+// ?format=vertical → 1080x1920 (9:16) for phones / Reels / Shorts
+const V = new URLSearchParams(location.search).get('format') === 'vertical';
+const W = V ? 1080 : 1920, H = V ? 1920 : 1080, FPS = 30, DUR = 15;
+const OY = (H - 1080) / 2;                  // vertical offset that re-centres 16:9 layouts
 const BPM = 96, BEAT = 60 / BPM;            // 0.625s
 const C = { ink:'#0b0d1a', ink2:'#141a33', navy:'#1a3a8f', navy2:'#2952c4', gold:'#c9973a', gold2:'#e8c47a', white:'#f3f1ea' };
 const SERIF = "'Noto Serif JP', serif", SANS = "'Noto Sans JP', sans-serif", MONO = "'Inter', sans-serif";
@@ -91,6 +96,8 @@ const S = [0, 4, 7, 10, 13, 17, 20, 24].map(b => b * BEAT);
 const SCENE_NAMES = ['SINCE 1878', '147 YEARS', 'ふぐ → ふく', '4TH GENERATION', 'DX', '変わらない／変えていく', 'ふくと生きる'];
 
 const cv = document.getElementById('cv');
+cv.width = W; cv.height = H;
+if (V) document.documentElement.classList.add('vertical');
 const ctx = cv.getContext('2d');
 
 // ---------- math ----------
@@ -160,8 +167,9 @@ function scene1(t) {
   ctx.save();
   ctx.translate(W / 2, H / 2); ctx.scale(1 + out * .6, 1 + out * .6); ctx.translate(-W / 2, -H / 2);
   ctx.globalAlpha = 1 - out;
+  ctx.translate(0, OY);
   // horizon line
-  const hw = eOutExpo(prog(lt, .05, .9)) * 760;
+  const hw = eOutExpo(prog(lt, .05, .9)) * Math.min(760, W * .44);
   line(W / 2 - hw, 640, W / 2 + hw, 640, C.gold, 3);
   // tick marks on beats
   for (let b = 0; b < 4; b++) {
@@ -202,23 +210,26 @@ function scene2(t) {
   const sh = Math.max(0, 1 - lt / .35) * 18;
   ctx.translate(Math.sin(lt * 90) * sh, Math.cos(lt * 77) * sh);
   ctx.globalAlpha = 1 - out;
+  ctx.translate(0, OY - (V ? 140 : 0));
+  const nx = V ? W / 2 : W / 2 - 150;
   // gold block rising behind
   const bh = eOutExpo(prog(lt, 0, .5)) * 520;
-  ctx.fillStyle = C.navy; ctx.fillRect(0, H / 2 + 260 - bh, W, bh * .02 + 6);
+  ctx.fillStyle = C.navy; ctx.fillRect(0, 800 - bh, W, bh * .02 + 6);
   // outline echoes (parallax)
   for (let k = 3; k >= 1; k--) {
     const d = k * 26 * eOutExpo(prog(lt, .15, .9));
-    txt('147', W / 2 - 150 + d, H / 2 - 20 + d * .4, { size: 470, family: SERIF, stroke: C.gold, lw: 2, alpha: .35 / k });
+    txt('147', nx + d, 520 + d * .4, { size: 470, family: SERIF, stroke: C.gold, lw: 2, alpha: .35 / k });
   }
   const s = lerp(1.35, 1, slam);
-  ctx.save(); ctx.translate(W / 2 - 150, H / 2 - 20); ctx.scale(s, s);
+  ctx.save(); ctx.translate(nx, 520); ctx.scale(s, s);
   const rev = eOutExpo(prog(lt, 0, .35));
   withClip(-600, 260 - 560 * rev, 1200, 560 * rev, () => txt('147', 0, 0, { size: 470, family: SERIF, color: C.white }));
   ctx.restore();
   const ya = eOutExpo(prog(lt, BEAT, BEAT + .5));
-  txt('年', W / 2 + 330, H / 2 + 60 - (1 - ya) * 80, { size: 200, family: SERIF, color: C.gold, alpha: ya });
+  txt('年', V ? W / 2 : W / 2 + 330, (V ? 880 : 600) - (1 - ya) * 80, { size: 200, family: SERIF, color: C.gold, alpha: ya });
   const la = eOutExpo(prog(lt, BEAT * 2, BEAT * 2 + .45));
-  withClip(0, H / 2 + 200, W, 80, () => txt('147 YEARS OF FUGU WHOLESALE — SHIMONOSEKI', W / 2, H / 2 + 240 + (1 - la) * 70, { size: 26, family: MONO, weight: 600, ls: 10, color: C.white, alpha: .75 }));
+  const ly = V ? 1060 : 780;
+  withClip(0, ly - 40, W, 80, () => txt('147 YEARS OF FUGU WHOLESALE — SHIMONOSEKI', W / 2, ly + (1 - la) * 70, { size: V ? 19 : 26, family: MONO, weight: 600, ls: V ? 5 : 10, color: C.white, alpha: .75 }));
   ctx.restore();
 }
 
@@ -227,8 +238,9 @@ function scene3(t) {
   const lt = t - S[2], len = S[3] - S[2];
   const inA = eOutExpo(prog(lt, 0, .4));
   const pop = BEAT * 1;                       // dakuten leaves on beat 2 of scene
-  const size = 400, cx = W / 2, cy = H / 2 - 10;
+  const size = V ? 360 : 400, cx = W / 2, cy = 530;
   ctx.save();
+  ctx.translate(0, OY);
   // characters
   const fx = cx - size * .52, kx = cx + size * .52;
   ctx.save(); ctx.translate(0, (1 - inA) * 120); ctx.globalAlpha = inA;
@@ -277,7 +289,7 @@ function scene3(t) {
 // ---------- SCENE 4 : portrait / 4代目 ----------
 function scene4(t) {
   const lt = t - S[3], len = S[4] - S[3];
-  const px = 140, py = 110, pw = 820, ph = 860;
+  const px = V ? 160 : 140, py = V ? 200 : 110, pw = V ? 760 : 820, ph = V ? 760 : 860;
   // slices reveal
   const N = 6;
   for (let i = 0; i < N; i++) {
@@ -312,7 +324,8 @@ function scene4(t) {
   });
   ctx.restore();
   // type
-  const tx = 1090;
+  const tx = V ? 160 : 1090;
+  ctx.save(); ctx.translate(0, V ? 730 : 0);
   const a1 = eOutExpo(prog(lt, .2, .7));
   txt('4TH GENERATION', tx, 330, { size: 28, family: MONO, weight: 600, ls: 12, color: C.gold, align: 'left', alpha: a1 });
   const a2 = eOutExpo(prog(lt, BEAT, BEAT + .5));
@@ -327,6 +340,7 @@ function scene4(t) {
   line(tx, 800, tx + 560 * lw, 800, C.white, 2, .5);
   txt('山西伸典', tx, 860, { size: 40, family: SANS, weight: 700, ls: 12, align: 'left', alpha: lw });
   txt('山西水産株式会社 代表取締役', tx, 916, { size: 24, family: SANS, weight: 400, ls: 4, align: 'left', alpha: lw * .7 });
+  ctx.restore();
 }
 
 // ---------- SCENE 5 : numbers ----------
@@ -338,34 +352,39 @@ const CELLS = [
 ];
 function scene5(t) {
   const lt = t - S[4];
-  const gx = 120, gw = W - 240, cw = gw / 4, top = 250, bot = 830;
-  // grid lines draw in
+  const gx = V ? 90 : 120, gw = W - gx * 2, ch = 580;
+  const top = V ? 400 : 250, cols = V ? 2 : 4, cw = gw / cols;
+  const rects = CELLS.map((c, i) => ({ x: gx + cw * (i % cols), y: top + ch * Math.floor(i / cols), w: cw, h: ch }));
+  // cell edges draw in from their centres
   const gl = eOutExpo(prog(lt, 0, .5));
-  for (let i = 0; i <= 4; i++) line(gx + cw * i, top + (bot - top) * (1 - gl) / 2, gx + cw * i, bot - (bot - top) * (1 - gl) / 2, C.white, 1.5, .25);
-  line(gx, top, gx + gw * gl, top, C.white, 1.5, .25);
-  line(gx + gw * (1 - gl), bot, gx + gw, bot, C.white, 1.5, .25);
-  txt('AI × DX — 自社で動かしている仕組み', gx, 190, { size: 30, family: SANS, weight: 700, ls: 6, align: 'left', alpha: gl * .85 });
+  rects.forEach(r => {
+    const mx = r.x + r.w / 2, my = r.y + r.h / 2, hw = r.w / 2 * gl, hh = r.h / 2 * gl;
+    line(mx - hw, r.y, mx + hw, r.y, C.white, 1.5, .25); line(mx - hw, r.y + r.h, mx + hw, r.y + r.h, C.white, 1.5, .25);
+    line(r.x, my - hh, r.x, my + hh, C.white, 1.5, .25); line(r.x + r.w, my - hh, r.x + r.w, my + hh, C.white, 1.5, .25);
+  });
+  txt('AI × DX — 自社で動かしている仕組み', gx, top - 60, { size: V ? 34 : 30, family: SANS, weight: 700, ls: 6, align: 'left', alpha: gl * .85 });
   CELLS.forEach((c, i) => {
-    const bt = i * BEAT;
+    const bt = i * BEAT, r = rects[i];
     const p = prog(lt, bt, bt + .4);
     if (p <= 0) return;
     const e = eOutExpo(p);
-    const x = gx + cw * i, cxm = x + cw / 2;
+    const cxm = r.x + r.w / 2;
     // flash on the hit
     const fl = Math.max(0, 1 - (lt - bt) / .25);
-    ctx.save(); ctx.globalAlpha = fl * .9; ctx.fillStyle = C.gold; ctx.fillRect(x + 1, top + 1, cw - 2, bot - top - 2); ctx.restore();
-    ctx.save(); ctx.globalAlpha = .12 * e; ctx.fillStyle = C.navy2; ctx.fillRect(x + 1, top + (bot - top) * (1 - e), cw - 2, (bot - top) * e); ctx.restore();
+    ctx.save(); ctx.globalAlpha = fl * .9; ctx.fillStyle = C.gold; ctx.fillRect(r.x + 1, r.y + 1, r.w - 2, r.h - 2); ctx.restore();
+    ctx.save(); ctx.globalAlpha = .12 * e; ctx.fillStyle = C.navy2; ctx.fillRect(r.x + 1, r.y + r.h * (1 - e), r.w - 2, r.h * e); ctx.restore();
     const val = Math.round(c.n * eOutQuart(prog(lt, bt, bt + .35)));
     const active = lt < bt + BEAT;
     const col = active ? C.white : 'rgba(243,241,234,.78)';
-    ctx.save(); ctx.translate(cxm, 520); const s = lerp(1.5, 1, eOutBack(p, 2)); ctx.scale(s, s);
+    ctx.save(); ctx.translate(cxm, r.y + 270); const s = lerp(1.5, 1, eOutBack(p, 2)); ctx.scale(s, s);
     txt(String(val), 0, 0, { size: 230, family: MONO, color: col });
     ctx.restore();
-    txt(c.unit, cxm, 690, { size: 48, family: SANS, weight: 900, color: C.gold, alpha: e });
-    txt(c.label, cxm, 760, { size: 30, family: SANS, weight: 700, alpha: e * .85 });
-    txt('0' + (i + 1), x + 24, top + 34, { size: 20, family: MONO, weight: 600, align: 'left', color: C.gold, alpha: e });
+    txt(c.unit, cxm, r.y + 440, { size: 48, family: SANS, weight: 900, color: C.gold, alpha: e });
+    txt(c.label, cxm, r.y + 510, { size: 30, family: SANS, weight: 700, alpha: e * .85 });
+    txt('0' + (i + 1), r.x + 24, r.y + 34, { size: 20, family: MONO, weight: 600, align: 'left', color: C.gold, alpha: e });
   });
-  txt('※ 30時間・6種：自社実証データ（2023〜2024年）', W - 120, 890, { size: 20, family: SANS, weight: 400, align: 'right', alpha: gl * .5 });
+  const last = rects[rects.length - 1];
+  txt('※ 30時間・6種：自社実証データ（2023〜2024年）', W - gx, last.y + last.h + 60, { size: 20, family: SANS, weight: 400, align: 'right', alpha: gl * .5 });
 }
 
 // ---------- SCENE 6 : 変わらないもの／変えていくもの ----------
@@ -395,7 +414,7 @@ function scene6(t) {
   const vt = '変わらないもの';
   for (let i = 0; i < vt.length; i++) {
     const a = eOutExpo(clamp(va * vt.length - i));
-    txt(vt[i], 560, 190 + i * 104 - (1 - a) * 40, { size: 92, family: SERIF, color: C.gold, alpha: a });
+    txt(vt[i], V ? W / 4 : 560, 190 + OY + i * 104 - (1 - a) * 40, { size: 92, family: SERIF, color: C.gold, alpha: a });
   }
   // right: horizontal sans, typed on
   const ht = '変えていくもの';
@@ -403,16 +422,18 @@ function scene6(t) {
   const n = Math.floor(hp * ht.length + .001);
   const shown = ht.slice(0, n);
   ctx.save(); ctx.globalAlpha = split;
-  txt(shown, 1130, 540, { size: 92, family: SANS, align: 'left' });
+  const hx = V ? W / 2 + 60 : 1130, hy = 540 + OY, hs = V ? 62 : 92;
+  txt(shown, hx, hy, { size: hs, family: SANS, align: 'left' });
   // caret
-  ctx.font = `900 92px ${SANS}`; ctx.letterSpacing = '0px';
+  ctx.font = `900 ${hs}px ${SANS}`; ctx.letterSpacing = '0px';
   const cwid = ctx.measureText(shown).width;
-  if (lt < len - .1 && (Math.floor(lt * 5) % 2 === 0 || hp < 1)) { ctx.fillStyle = C.gold; ctx.fillRect(1136 + cwid, 490, 8, 100); }
-  txt('if (tradition) { keep(); } else { iterate(); }', 1130, 640, { size: 24, family: MONO, weight: 400, align: 'left', color: C.gold2, alpha: .7 * prog(lt, BEAT * 2, BEAT * 2 + .3) });
+  if (lt < len - .1 && (Math.floor(lt * 5) % 2 === 0 || hp < 1)) { ctx.fillStyle = C.gold; ctx.fillRect(hx + 6 + cwid, hy - hs * .55, 8, hs * 1.1); }
+  const code = V ? ['if (tradition) {', '  keep();', '} else {', '  iterate();', '}'] : ['if (tradition) { keep(); } else { iterate(); }'];
+  code.forEach((c, i) => txt(c, hx, hy + hs * 1.1 + i * 34, { size: V ? 22 : 24, family: MONO, weight: 400, align: 'left', color: C.gold2, alpha: .7 * prog(lt, BEAT * 2, BEAT * 2 + .3) }));
   ctx.restore();
   // fugu line-art that becomes a circuit when it crosses into the right panel
   const fp = eInOut(prog(lt, .1, len - .1));
-  const fx = lerp(-200, W + 260, fp), fy = 860 + Math.sin(lt * 5) * 14;
+  const fx = lerp(-200, W + 260, fp), fy = (V ? 1560 : 860) + Math.sin(lt * 5) * 14;
   ctx.save(); ctx.translate(fx, fy); ctx.scale(110, 110); ctx.rotate(Math.sin(lt * 4) * .05);
   ctx.lineWidth = 3 / 110; ctx.lineJoin = 'round'; ctx.strokeStyle = fx < dx ? C.white : C.gold2;
   ctx.stroke(fuguPath());
@@ -440,10 +461,11 @@ function scene7(t) {
   const r = rng(99);
   for (let i = 0; i < 70; i++) {
     const x = r() * W, sp = 40 + r() * 160, rad = 2 + r() * 9, ph = r() * 10;
-    const y = H + 40 - ((lt + ph) * sp) % (H + 80);
+    const y = H + 40 - ((lt + ph) * sp) % (H + 80) - OY;
     ctx.save(); ctx.globalAlpha = .18 + .25 * r(); ctx.strokeStyle = i % 4 ? C.white : C.gold; ctx.lineWidth = 1.5;
     ctx.beginPath(); ctx.arc(x + Math.sin(lt * 2 + ph) * 12, y, rad, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
   }
+  ctx.save(); ctx.translate(0, OY);
   waves(lt + 4, 900, 12, .22);
   const push = 1 + lt * .012;
   ctx.save(); ctx.translate(W / 2, H / 2); ctx.scale(push, push); ctx.translate(-W / 2, -H / 2);
@@ -457,18 +479,19 @@ function scene7(t) {
   const l2 = '山西水産', bt = BEAT;
   for (let i = 0; i < 4; i++) {
     const a = eOutExpo(prog(lt, bt + i * .07, bt + .55 + i * .07));
-    const x = W / 2 + (i - 1.5) * 250;
-    withClip(x - 130, 400, 260, 250, () => txt(l2[i], x, 525 + (1 - a) * 330, { size: 230, family: SERIF }));
+    const x = W / 2 + (i - 1.5) * (V ? 225 : 250);
+    withClip(x - 130, 400, 260, 250, () => txt(l2[i], x, 525 + (1 - a) * 330, { size: V ? 205 : 230, family: SERIF }));
   }
   // flash + gold rule
   const fl = Math.max(0, 1 - (lt - bt) / .35) * (lt > bt ? 1 : 0);
-  ctx.save(); ctx.globalAlpha = fl * .25; ctx.fillStyle = C.gold2; ctx.fillRect(0, 0, W, H); ctx.restore();
+  ctx.save(); ctx.globalAlpha = fl * .25; ctx.fillStyle = C.gold2; ctx.fillRect(0, -OY, W, H); ctx.restore();
   const rl = eOutExpo(prog(lt, bt * 2, bt * 2 + .6));
-  line(W / 2 - 480 * rl, 690, W / 2 + 480 * rl, 690, C.gold, 3);
+  line(W / 2 - Math.min(480, W * .42) * rl, 690, W / 2 + Math.min(480, W * .42) * rl, 690, C.gold, 3);
   const ta = eOutExpo(prog(lt, bt * 2 + .15, bt * 2 + .7));
   txt('SHIMONOSEKI  ·  SINCE 1878', W / 2, 745, { size: 30, family: MONO, weight: 600, ls: 16, color: C.gold, alpha: ta });
   const ca = eOutExpo(prog(lt, bt * 3, bt * 3 + .5));
   txt('山西水産株式会社 ／ Yスタジオ＋', W / 2, 820, { size: 26, family: SANS, weight: 400, ls: 6, alpha: ca * .75 });
+  ctx.restore();
   ctx.restore();
   // fade to black at the very end
   const fo = prog(lt, 2.2, 2.5);
@@ -480,11 +503,11 @@ function bandWipe(t, at, angle, cols) {
   const d = .42, p = prog(t, at - d / 2, at + d / 2);
   if (p <= 0 || p >= 1) return;
   ctx.save(); ctx.translate(W / 2, H / 2); ctx.rotate(angle);
-  const span = W * 1.6;
+  const D = Math.max(W, H), span = D * 1.6;
   cols.forEach((col, i) => {
     const q = clamp(p * 1.25 - i * .08);
     const x = lerp(-span, span, eInOut(q));
-    ctx.fillStyle = col; ctx.fillRect(x - span / 2 - 50, -H * 1.2, span / 2 + 100 - i * 110, H * 2.4);
+    ctx.fillStyle = col; ctx.fillRect(x - span / 2 - 50, -D * 1.2, span / 2 + 100 - i * 110, D * 2.4);
   });
   ctx.restore();
 }
@@ -503,7 +526,7 @@ function hud(t) {
   txt('SHOWREEL', 70, 88, { size: 18, family: MONO, weight: 400, ls: 6, align: 'left', color: C.gold });
   txt(tc(t), W - 70, 62, { size: 18, family: MONO, weight: 600, ls: 3, align: 'right' });
   txt(`${BPM} BPM`, W - 70, 88, { size: 18, family: MONO, weight: 400, ls: 3, align: 'right', color: C.gold });
-  txt(`0${si + 1} / 07  ${SCENE_NAMES[si]}`, 70, H - 62, { size: 18, family: MONO, weight: 600, ls: 3, align: 'left' });
+  txt(`0${si + 1} / 07  ${SCENE_NAMES[si]}`, 70, H - (V ? 110 : 62), { size: 18, family: MONO, weight: 600, ls: 3, align: 'left' });
   // beat bar
   const bx = W - 70 - 480, by = H - 66;
   for (let b = 0; b < 24; b++) {
@@ -541,7 +564,7 @@ function render(t) {
   ctx.translate((hash(Math.floor(t * FPS)) * 256) | 0, (hash(Math.floor(t * FPS) + 3) * 256) | 0);
   ctx.fillRect(-256, -256, W + 512, H + 512);
   ctx.restore();
-  const v = ctx.createRadialGradient(W / 2, H / 2, H * .45, W / 2, H / 2, W * .72);
+  const v = ctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * .45, W / 2, H / 2, V ? Math.hypot(W, H) * .6 : W * .72);
   v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,.55)');
   ctx.fillStyle = v; ctx.fillRect(0, 0, W, H);
   hud(t);
@@ -660,6 +683,7 @@ async function renderAudioWav() {
 }
 
 // ================= player =================
+if (V) { document.getElementById('mp4Link').href = 'showreel-vertical.mp4'; const f = document.getElementById('fmtLink'); f.href = 'showreel.html'; f.textContent = '横型（16:9）で見る'; }
 const playBtn = document.getElementById('playBtn'), replayBtn = document.getElementById('replayBtn'), tcEl = document.getElementById('tc');
 let ac = null, start = 0, raf = 0;
 function loop() {

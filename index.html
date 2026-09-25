@@ -1037,6 +1037,7 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
 .yt-caption{font-size:13px;color:var(--sub);text-align:center;}
 .yt-embed-wrap video{position:absolute;top:0;left:0;width:100%;height:100%;background:#0b0d1a;object-fit:cover;}
 .yt-caption+.yt-embed-wrap{margin-top:40px;}
+.yt-embed-wrap.is-vertical{padding-top:177.78%;max-width:min(100%,calc(78vh * 9 / 16));margin-left:auto;margin-right:auto;}
 
 
 /* ══ SCROLL PROGRESS BAR ══ */
@@ -1977,9 +1978,17 @@ footer .related-sites__arrow{width:18px;height:18px;flex:0 0 18px;color:var(--re
     <div class="sec-label reveal"><div class="sec-label-line"></div><span class="sec-label-text">Watch</span></div>
     <h2 class="sec-title reveal">動画で<br><span class="light">知ってもらう。</span></h2>
     <div style="max-width:760px;margin:0 auto;" class="reveal">
-      <div class="yt-embed-wrap">
-        <video src="showreel.mp4" poster="showreel-poster.jpg" controls playsinline preload="none" title="山西水産 Showreel（15秒）"></video>
+      <div class="yt-embed-wrap" id="reel-wrap">
+        <video id="reel-video" src="showreel.mp4" poster="showreel-poster.jpg" controls playsinline preload="none" title="山西水産 Showreel（15秒）"></video>
       </div>
+      <script>
+      (function(){ /* phones get the 9:16 cut */
+        if (!window.matchMedia('(max-width: 600px)').matches) return;
+        var v = document.getElementById('reel-video'), w = document.getElementById('reel-wrap');
+        v.src = 'showreel-vertical.mp4'; v.poster = 'showreel-vertical-poster.jpg';
+        w.classList.add('is-vertical');
+      })();
+      </script>
       <p class="yt-caption">山西水産 Showreel（15秒） · 映像も音もコードだけで生成 · <a href="showreel.html" style="color:var(--gold);">制作の裏側を見る</a></p>
       <div class="yt-embed-wrap">
         <iframe
