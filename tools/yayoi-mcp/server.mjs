@@ -8,7 +8,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import fs from "node:fs";
 import {
-  dataDir, readJournal, filterLines, summarizeByAccount, listAccounts, writeJournalCsv,
+  dataDir, readJournal, filterLines, summarizeByAccount, monthlySummary, findDuplicates, listAccounts, writeJournalCsv,
 } from "./yayoi.mjs";
 
 const server = new McpServer({ name: "yayoi-mcp", version: "0.1.0" });
@@ -48,6 +48,23 @@ server.tool(
   "仕訳CSVを勘定科目ごとに集計（借方合計・貸方合計・差額）する",
   { file: fileArg, ...filterArgs },
   async ({ file, ...f }) => json(summarizeByAccount(filterLines(readJournal(file), f))),
+);
+
+server.tool(
+  "monthly_summary",
+  "月ごと・勘定科目ごとの推移（借方−貸方）を返す。売上や経費の月次比較に使う",
+  { file: fileArg, ...filterArgs },
+  async ({ file, account, ...f }) => json(monthlySummary(filterLines(readJournal(file), f), account)),
+);
+
+server.tool(
+  "find_duplicates",
+  "二重計上の疑いがある仕訳（同じ借方・貸方科目と金額）を探す。windowDays で日付のずれを何日まで許容するか指定",
+  { file: fileArg, from: filterArgs.from, to: filterArgs.to, windowDays: z.number().int().min(0).max(31).default(0) },
+  async ({ file, windowDays, ...f }) => {
+    const pairs = findDuplicates(filterLines(readJournal(file), f), { windowDays });
+    return json({ count: pairs.length, pairs });
+  },
 );
 
 server.tool(

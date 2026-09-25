@@ -76,10 +76,17 @@ const num = (s) => {
   return Number.isFinite(n) ? n : 0;
 };
 
+// 和暦の元号記号 → 西暦に足す年数
+const ERA = { R: 2018, "令和": 2018, H: 1988, "平成": 1988 };
+
 export function normalizeDate(s) {
-  const m = String(s ?? "").trim().match(/^(\d{4})[\/\-.]?(\d{1,2})[\/\-.]?(\d{1,2})$/);
-  if (!m) return String(s ?? "").trim();
-  return `${m[1]}-${m[2].padStart(2, "0")}-${m[3].padStart(2, "0")}`;
+  const t = String(s ?? "").trim();
+  const fmt = (y, m, d) => `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+  let m = t.match(/^(\d{4})[\/\-.]?(\d{1,2})[\/\-.]?(\d{1,2})$/);
+  if (m) return fmt(m[1], m[2], m[3]);
+  m = t.match(/^(R|H|令和|平成)\.?\s*(\d{1,2})[\/\-.年](\d{1,2})[\/\-.月](\d{1,2})日?$/i);
+  if (m) return fmt(ERA[m[1].toUpperCase()] + Number(m[2]), m[3], m[4]);
+  return t;
 }
 
 /** 弥生インポート形式の行配列 → 仕訳行オブジェクト（1行=借方/貸方1組） */
@@ -131,6 +138,45 @@ export function summarizeByAccount(lines) {
   return [...map.values()]
     .map((s) => ({ ...s, net: s.debit - s.credit }))
     .sort((a, b) => a.account.localeCompare(b.account, "ja"));
+}
+
+/** 月ごと・勘定科目ごとの借方−貸方（account 指定でその科目だけ） */
+export function monthlySummary(lines, account) {
+  const map = new Map();
+  const add = (acc, month, amt) => {
+    if (!acc || (account && acc !== account)) return;
+    const key = `${month}\t${acc}`;
+    map.set(key, (map.get(key) ?? 0) + amt);
+  };
+  for (const l of lines) {
+    const month = l.date.slice(0, 7);
+    add(l.debit.account, month, l.debit.amount);
+    add(l.credit.account, month, -l.credit.amount);
+  }
+  return [...map.entries()]
+    .map(([k, net]) => { const [month, acc] = k.split("\t"); return { month, account: acc, net }; })
+    .sort((a, b) => a.month.localeCompare(b.month) || a.account.localeCompare(b.account, "ja"));
+}
+
+/** 二重計上の疑い：日付・科目・金額が同じ仕訳行（windowDays>0 なら日付のずれも許容） */
+export function findDuplicates(lines, { windowDays = 0 } = {}) {
+  const day = (d) => Date.parse(d) / 86400000;
+  const key = (l) => [l.debit.account, l.credit.account, l.debit.amount, l.credit.amount].join("|");
+  const groups = new Map();
+  for (const l of lines) {
+    if (!l.debit.amount && !l.credit.amount) continue;
+    const k = key(l);
+    groups.set(k, [...(groups.get(k) ?? []), l]);
+  }
+  const out = [];
+  for (const g of groups.values()) {
+    if (g.length < 2) continue;
+    g.sort((a, b) => a.date.localeCompare(b.date));
+    for (let i = 1; i < g.length; i++) {
+      if (Math.abs(day(g[i].date) - day(g[i - 1].date)) <= windowDays) out.push([g[i - 1], g[i]]);
+    }
+  }
+  return out;
 }
 
 export function listAccounts(lines) {

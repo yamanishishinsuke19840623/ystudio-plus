@@ -52,3 +52,20 @@ test("ヘッダー行つきUTF-8(BOM)も読める", () => {
   assert.equal(l.date, "2026-05-03");
   assert.equal(l.description, "摘要, カンマ");
 });
+
+test("和暦の日付を西暦に変換", () => {
+  assert.equal(y.normalizeDate("R.08/04/01"), "2026-04-01");
+  assert.equal(y.normalizeDate("令和8年4月1日"), "2026-04-01");
+  assert.equal(y.normalizeDate("H.31/4/30"), "2019-04-30");
+  assert.equal(y.normalizeDate("2026/4/1"), "2026-04-01");
+});
+
+test("月次推移と二重計上チェック", () => {
+  const mk = (date, amt) => ({ date, lines: [{ debit: { account: "消耗品費", amount: amt }, credit: { account: "現金", amount: amt } }] });
+  y.writeJournalCsv("dup.csv", [mk("2026-04-01", 500), mk("2026-04-02", 500), mk("2026-05-10", 500), mk("2026-05-10", 800)]);
+  const lines = y.readJournal("dup.csv");
+  const m = y.monthlySummary(lines, "消耗品費");
+  assert.deepEqual(m.map((r) => [r.month, r.net]), [["2026-04", 1000], ["2026-05", 1300]]);
+  assert.equal(y.findDuplicates(lines).length, 0);
+  assert.equal(y.findDuplicates(lines, { windowDays: 1 }).length, 1);
+});

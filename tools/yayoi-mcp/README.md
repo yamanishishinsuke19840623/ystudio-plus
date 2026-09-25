@@ -26,39 +26,30 @@
 | `list_files` | データフォルダにある CSV の一覧 |
 | `read_journal` | 仕訳 CSV を期間・勘定科目・キーワードで絞り込んで取得 |
 | `summarize_by_account` | 勘定科目ごとの借方合計・貸方合計・差額 |
+| `monthly_summary` | 月ごと・勘定科目ごとの推移（売上・経費の月次比較） |
+| `find_duplicates` | 二重計上の疑いがある仕訳を探す（日付のずれ許容日数を指定可） |
 | `list_accounts` | 使われている勘定科目・補助科目・税区分の一覧（新規仕訳の名称合わせ用） |
 | `create_import_csv` | 仕訳から弥生インポート形式の CSV を新規作成（貸借一致を検証、上書き禁止、既定は Shift_JIS） |
 
 ファイルアクセスは環境変数 `YAYOI_DATA_DIR` のフォルダ内に限定されます。
 
-## セットアップ
+## セットアップ（Windows・弥生会計デスクトップ版）
+
+1. [Node.js](https://nodejs.org/) の LTS 版をインストールする
+2. このフォルダ（`tools/yayoi-mcp`）を `C:\yayoi-mcp` などにコピーする
+3. **`setup.bat` をダブルクリックする**
+   - 必要なパッケージが入り、Claude Desktop の設定（`%APPDATA%\Claude\claude_desktop_config.json`）に `yayoi` が追加されます
+   - 既存の設定は残ります。変更前の設定は `.bak-日時` の名前でバックアップされます
+   - CSV の置き場として `ドキュメント\弥生CSV` フォルダが作られます（別の場所にしたいときは `setup.bat D:\経理\CSV` のように指定）
+4. Claude Desktop を完全に終了し（タスクトレイのアイコンからも「終了」）、起動し直す
+
+Claude Desktop の「設定 → 開発者」に `yayoi` が表示されていれば接続できています。
+
+### Mac / Claude Code の場合
 
 ```bash
-cd tools/yayoi-mcp
-npm install
-npm test
-```
-
-### Claude Desktop
-
-`claude_desktop_config.json` に追加します。
-
-```json
-{
-  "mcpServers": {
-    "yayoi": {
-      "command": "node",
-      "args": ["/絶対パス/ystudio-plus/tools/yayoi-mcp/server.mjs"],
-      "env": { "YAYOI_DATA_DIR": "/絶対パス/弥生CSV置き場" }
-    }
-  }
-}
-```
-
-### Claude Code
-
-```bash
-claude mcp add yayoi -e YAYOI_DATA_DIR=/絶対パス/弥生CSV置き場 -- node /絶対パス/ystudio-plus/tools/yayoi-mcp/server.mjs
+npm install && node setup.mjs            # Claude Desktop に登録
+claude mcp add yayoi -e YAYOI_DATA_DIR=/絶対パス/弥生CSV -- node /絶対パス/server.mjs   # Claude Code
 ```
 
 ## 使い方
@@ -67,6 +58,8 @@ claude mcp add yayoi -e YAYOI_DATA_DIR=/絶対パス/弥生CSV置き場 -- node 
 2. Claude に話しかける
    - 「4月の消耗品費を一覧にして」
    - 「今期の勘定科目別の合計を出して」
+   - 「売上高の月次推移を見せて。前月から大きく動いた月はある？」
+   - 「二重計上っぽい仕訳がないか、前後3日のずれまで含めてチェックして」
    - 「このレシートの内容で仕訳CSVを作って。科目名は既存のものに合わせて」
 3. 作成された CSV を確認し、弥生会計の「インポート」から取り込む
 
@@ -76,6 +69,7 @@ claude mcp add yayoi -e YAYOI_DATA_DIR=/絶対パス/弥生CSV置き場 -- node 
 
 - 列の並び順（25 列：識別フラグ, 伝票No, 決算, 取引日付, 借方勘定科目, 借方補助科目, 借方部門, 借方税区分, 借方金額, 借方税金額, 貸方勘定科目, 貸方補助科目, 貸方部門, 貸方税区分, 貸方金額, 貸方税金額, 摘要, 番号, 期日, タイプ, 生成元, 仕訳メモ, 付箋1, 付箋2, 調整）
 - 識別フラグの値：2000 = 1行の仕訳、2110 = 複合仕訳の先頭行、2100 = 中間行、2101 = 最終行
+- 和暦（`R.08/04/01` など）で書き出される場合にも対応しているが、実際の書き出し形式は未確認
 - 税金額を空欄にした場合の弥生側の扱い
 - 弥生会計 Next でも同じ形式でインポートできるか（Next には複合仕訳 100 行までの制限があるとの FAQ あり）
 
