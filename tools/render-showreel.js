@@ -52,7 +52,7 @@ const server = http.createServer((req, res) => {
     const wav = path.join(path.dirname(out), 'showreel-audio.wav');
     fs.writeFileSync(wav, Buffer.from(await page.evaluate(() => window.__showreel.renderAudioWav()), 'base64'));
     const ff = spawn(ffmpeg, ['-y', '-f', 'image2pipe', '-framerate', String(FPS), '-i', '-', '-i', wav,
-      '-c:v', 'libx264', '-preset', 'slow', '-crf', '20', '-maxrate', '10M', '-bufsize', '20M', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k',
+      '-c:v', 'libx264', '-preset', 'slow', '-crf', '21', '-maxrate', '5M', '-bufsize', '10M', '-profile:v', 'high', '-level', '4.1', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k',
       '-movflags', '+faststart', '-shortest', out], { stdio: ['pipe', 'inherit', 'inherit'] });
     const total = Math.round(DUR * FPS);
     for (let f = 0; f < total; f++) {
