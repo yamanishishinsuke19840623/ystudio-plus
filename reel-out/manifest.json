@@ -1,5 +1,5 @@
 {
-  "renderedAt": "2026-09-26T12:27:35.948Z",
+  "renderedAt": "2026-09-26T12:35:28.842Z",
   "reels": [
     {
       "slug": "gourmet",
@@ -8,7 +8,7 @@
       "video": "reel-out/gourmet.mp4",
       "cover": "reel-out/gourmet.jpg",
       "caption": "reel-out/gourmet.txt",
-      "fetchedAt": "2026-09-26T12:26:19.314Z",
+      "fetchedAt": "2026-09-26T12:34:11.278Z",
       "posts": [
         {
           "id": 47611,
@@ -21,9 +21,9 @@
           "link": "https://www.kanmonnote.com/202607yamanishi-suisan/"
         },
         {
-          "id": 47353,
-          "title": "【開店】唐揚げ専門店の新しい挑戦！新店舗にてカレー屋さんをプレオープン中です！！",
-          "link": "https://www.kanmonnote.com/2026raku_open/"
+          "id": 46270,
+          "title": "【門司駅付近】平日だけの特別ランチ「choi-nori(チョイノリ)」",
+          "link": "https://www.kanmonnote.com/choi-nori-lunch/"
         }
       ]
     }

@@ -1,7 +1,7 @@
 {
   "site": "https://www.kanmonnote.com",
   "source": "rest",
-  "fetchedAt": "2026-09-26T12:26:19.314Z",
+  "fetchedAt": "2026-09-26T12:34:11.278Z",
   "category": {
     "id": 5,
     "name": "グルメ",
@@ -27,15 +27,6 @@
       "localImage": "img/47488.jpg"
     },
     {
-      "id": 47353,
-      "title": "【開店】唐揚げ専門店の新しい挑戦！新店舗にてカレー屋さんをプレオープン中です！！",
-      "date": "2026-06-28T19:30:57",
-      "link": "https://www.kanmonnote.com/2026raku_open/",
-      "category": "グルメ",
-      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/06/IMG_3126-768x576.jpeg",
-      "localImage": "img/47353.jpg"
-    },
-    {
       "id": 46270,
       "title": "【門司駅付近】平日だけの特別ランチ「choi-nori(チョイノリ)」",
       "date": "2026-05-16T19:30:18",
@@ -52,6 +43,29 @@
       "category": "お店（飲食以外）",
       "image": "https://www.kanmonnote.com/wp-content/uploads/2026/04/69e0ed03b2e4c78b1ed3f5c8dcd79dcd-e1775976593398-768x715.jpg",
       "localImage": "img/46221.jpg"
+    },
+    {
+      "id": 46174,
+      "title": "【下関駅チカ】新店『関門麺まぜそばGANG』って？ランチにもシメの一杯にも！",
+      "date": "2026-04-10T19:30:04",
+      "link": "https://www.kanmonnote.com/kanmonmen_mazesoba_gang/",
+      "category": "グルメ",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/04/001-768x512.jpg",
+      "localImage": "img/46174.jpg"
+    }
+  ],
+  "excluded": [
+    {
+      "id": 47353,
+      "title": "【開店】唐揚げ専門店の新しい挑戦！新店舗にてカレー屋さんをプレオープン中です！！",
+      "date": "2026-06-28T19:30:57",
+      "reason": "キーワード「プレオープン」"
+    },
+    {
+      "id": 45473,
+      "title": "【2025年おせち情報】ホッとこころがあたたまる優しい家庭の味が自慢のお店が、今年もおせちのご予約開始です！",
+      "date": "2025-11-10T00:27:22",
+      "reason": "日付・期限の表記(2025年)"
     }
   ]
 }

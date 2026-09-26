@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-26T12:26:19.314Z",
+  "fetchedAt": "2026-09-26T12:34:11.278Z",
   "categories": [
     {
       "id": 5,
@@ -42,13 +42,6 @@
       "slug": "dish",
       "count": 177,
       "file": "cat-81.json"
-    },
-    {
-      "id": 13,
-      "name": "占い",
-      "slug": "fortune",
-      "count": 161,
-      "file": "cat-13.json"
     },
     {
       "id": 78,
