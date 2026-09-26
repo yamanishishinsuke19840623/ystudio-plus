@@ -1,0 +1,57 @@
+{
+  "site": "https://www.kanmonnote.com",
+  "source": "rest",
+  "fetchedAt": "2026-09-26T11:46:41.049Z",
+  "category": {
+    "id": 13,
+    "name": "占い",
+    "slug": "fortune"
+  },
+  "posts": [
+    {
+      "id": 43867,
+      "title": "「福関門占い」幸せになるならここを通るべし！10月3日(木)新月占い",
+      "date": "2024-10-03T16:55:50",
+      "link": "https://www.kanmonnote.com/20241003fortune/",
+      "category": "占い",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2024/10/IMG_0293-768x1024.jpeg",
+      "localImage": "img/43867.jpg"
+    },
+    {
+      "id": 43609,
+      "title": "「福関門占い」幸せになるならここを通るべし！9月3日(火)新月占い",
+      "date": "2024-09-03T19:54:39",
+      "link": "https://www.kanmonnote.com/20240903fortune/",
+      "category": "占い",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2024/09/IMG_9640-768x1024.jpeg",
+      "localImage": "img/43609.jpg"
+    },
+    {
+      "id": 43496,
+      "title": "「福関門占い」幸せになるならここを通るべし！7月6日(土)新月占い",
+      "date": "2024-07-11T00:57:32",
+      "link": "https://www.kanmonnote.com/20240706fortune/",
+      "category": "占い",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2024/07/uranai77-768x1024.jpg",
+      "localImage": "img/43496.jpg"
+    },
+    {
+      "id": 43394,
+      "title": "「福関門占い」幸せになるならここを通るべし！6月6日(木)新月占い",
+      "date": "2024-06-06T23:54:08",
+      "link": "https://www.kanmonnote.com/20240606fortune/",
+      "category": "占い",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2024/06/uranai246-768x1024.jpg",
+      "localImage": "img/43394.jpg"
+    },
+    {
+      "id": 43181,
+      "title": "「福関門占い」幸せになるならここを通るべし！5月8日(水)新月占い",
+      "date": "2024-05-08T12:00:11",
+      "link": "https://www.kanmonnote.com/20240508fortune/",
+      "category": "占い",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2024/05/7f2676735757793e18ce67267c8e350d-768x1024.jpg",
+      "localImage": "img/43181.jpg"
+    }
+  ]
+}

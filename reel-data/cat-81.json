@@ -1,0 +1,57 @@
+{
+  "site": "https://www.kanmonnote.com",
+  "source": "rest",
+  "fetchedAt": "2026-09-26T11:46:41.049Z",
+  "category": {
+    "id": 81,
+    "name": "食事",
+    "slug": "dish"
+  },
+  "posts": [
+    {
+      "id": 46174,
+      "title": "【下関駅チカ】新店『関門麺まぜそばGANG』って？ランチにもシメの一杯にも！",
+      "date": "2026-04-10T19:30:04",
+      "link": "https://www.kanmonnote.com/kanmonmen_mazesoba_gang/",
+      "category": "グルメ",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/04/001-768x512.jpg",
+      "localImage": "img/46174.jpg"
+    },
+    {
+      "id": 45583,
+      "title": "【まとめ】下関のお店、年末年始の営業日！",
+      "date": "2025-12-22T18:59:41",
+      "link": "https://www.kanmonnote.com/2026information/",
+      "category": "お店（飲食以外）",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2025/12/33979239_s.jpeg",
+      "localImage": "img/45583.jpg"
+    },
+    {
+      "id": 44350,
+      "title": "【城下町長府ひなまつり】お好み焼きひら田",
+      "date": "2025-02-13T00:37:04",
+      "link": "https://www.kanmonnote.com/hirata-chofu/",
+      "category": "グルメ",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2025/02/IMG_1973-768x576.jpeg",
+      "localImage": "img/44350.jpg"
+    },
+    {
+      "id": 44438,
+      "title": "【城下町長府ひなまつり】蕎麦処はしもと",
+      "date": "2025-02-12T23:55:05",
+      "link": "https://www.kanmonnote.com/hashimoto-chofu/",
+      "category": "グルメ",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2025/02/IMG_1202-768x622.jpg",
+      "localImage": "img/44438.jpg"
+    },
+    {
+      "id": 44477,
+      "title": "【城下町長府ひなまつり】三瓶珈琲",
+      "date": "2025-02-12T23:52:34",
+      "link": "https://www.kanmonnote.com/sanpei-chofu/",
+      "category": "お土産",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2025/02/IMG_4436.jpg",
+      "localImage": "img/44477.jpg"
+    }
+  ]
+}
