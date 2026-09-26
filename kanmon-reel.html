@@ -163,6 +163,14 @@ const stripTags = s => { const d = document.createElement('textarea'); d.innerHT
 function samplePosts() {
   return Array.from({ length: 5 }, (_, i) => ({ id: i + 1, title: '(サンプル)ここにWordPressの記事タイトルが入ります', category: 'カテゴリ', date: '', link: '', src: '' }));
 }
+// pre-render the blurred backdrop for tall posters once (a per-frame canvas blur is too slow while recording)
+function blurred(img) {
+  if (img.naturalHeight / img.naturalWidth <= 1.15) return null;
+  const c = document.createElement('canvas'); c.width = 440; c.height = 420; const x = c.getContext('2d');
+  const s = Math.max(440 / img.naturalWidth, 420 / img.naturalHeight) * 1.15, iw = img.naturalWidth * s, ih = img.naturalHeight * s;
+  x.filter = 'blur(14px) brightness(.85)'; x.drawImage(img, (440 - iw) / 2, (420 - ih) / 2, iw, ih);
+  return c;
+}
 function loadImage(src) {
   return new Promise(res => {
     if (!src) return res(null);
@@ -202,7 +210,7 @@ async function useData(d) {
   d.posts = d.posts.slice(0, 5);
   const chars = d.posts.map(p => (p.title || '') + (p.category || '')).join('');
   await Promise.all([
-    ...d.posts.map(async p => { p.img = await loadImage(p.src); }),
+    ...d.posts.map(async p => { p.img = await loadImage(p.src); p.blurBg = p.img ? blurred(p.img) : null; }),
     // titles contain arbitrary kanji: load those glyphs before measuring/drawing on canvas
     document.fonts ? Promise.race([Promise.all(['900 70px "Zen Kaku Gothic New"', '700 40px "Zen Kaku Gothic New"'].map(f => document.fonts.load(f, chars))), new Promise(r => setTimeout(r, 3000))]).catch(() => {}) : null
   ]);
@@ -240,12 +248,18 @@ function wrap(text, maxW) {
   if (cur) lines.push(cur);
   return lines;
 }
+// The category chip already shows e.g. 「イベント」, so a leading 【イベント】 in the title is dropped
+// (only when it matches the category exactly — the rest of the title is used verbatim).
+function displayTitle(p) {
+  const m = (p.title || '').match(/^【([^】]+)】\s*/);
+  return m && p.category && m[1] === p.category ? p.title.slice(m[0].length) : (p.title || '');
+}
 function titleLayout(i) {
   if (layoutCache.has(i)) return layoutCache.get(i);
-  const title = DATA.posts[i].title || '';
-  let fs = 70, lines;
-  for (; fs >= 46; fs -= 4) { font(fs, JP, 900); lines = wrap(title, 800); if (lines.length <= 3) break; }
-  if (lines.length > 3) { lines = lines.slice(0, 3); lines[2] = lines[2].slice(0, -1) + '…'; }
+  const title = displayTitle(DATA.posts[i]), MAX = 4;
+  let fs = 72, lines;
+  for (; fs >= 52; fs -= 4) { font(fs, JP, 900); lines = wrap(title, 800); if (lines.length <= MAX) break; }
+  if (lines.length > MAX) { lines = lines.slice(0, MAX); lines[MAX - 1] = lines[MAX - 1].slice(0, -1) + '…'; }
   const res = { fs, lines }; layoutCache.set(i, res); return res;
 }
 
@@ -335,7 +349,14 @@ function post(i, lt, d, t) {
   g.save(); g.shadowColor = 'rgba(0,20,70,.35)'; g.shadowBlur = 40; g.shadowOffsetY = 16;
   g.fillStyle = '#fff'; g.beginPath(); g.roundRect(-460, -440, 920, 880, 22); g.fill(); g.restore();
   g.save(); g.beginPath(); g.roundRect(-440, -420, 880, 840, 12); g.clip();
-  if (p.img) cover(p.img, -440, -420, 880, 840, lerp(1.12, 1, clamp(lt / d)));
+  if (p.img && p.img.naturalHeight / p.img.naturalWidth > 1.15) {
+    // tall flyers/posters: keep the whole image, backed by a blurred fill of itself
+    if (p.blurBg) g.drawImage(p.blurBg, -440, -420, 880, 840);
+    const k = lerp(1.04, 1, clamp(lt / d)), s = Math.min(880 / p.img.naturalWidth, 840 / p.img.naturalHeight) * k;
+    const iw = p.img.naturalWidth * s, ih = p.img.naturalHeight * s;
+    g.drawImage(p.img, -iw / 2, -ih / 2, iw, ih);
+  }
+  else if (p.img) cover(p.img, -440, -420, 880, 840, lerp(1.12, 1, clamp(lt / d)));
   else {
     g.fillStyle = C.mid; g.fillRect(-440, -420, 880, 840);
     g.strokeStyle = 'rgba(255,255,255,.35)'; g.lineWidth = 6;
@@ -349,15 +370,15 @@ function post(i, lt, d, t) {
   const up = (1 - E.outExpo(seg(lt, .12, .62))) * 800;
   g.save(); g.translate(shift, up);
   g.save(); g.shadowColor = 'rgba(0,20,70,.3)'; g.shadowBlur = 30; g.fillStyle = '#fff'; g.beginPath(); g.roundRect(70, 1230, 940, 470, 28); g.fill(); g.restore();
-  g.fillStyle = '#dbe9fb'; for (let y = 1330; y < 1680; y += 86) g.fillRect(110, y + 20, 860, 2);
+  g.fillStyle = '#dbe9fb'; for (let y = 1336; y < 1680; y += 84) g.fillRect(110, y + 18, 860, 2);
   g.fillStyle = C.sky; g.fillRect(132, 1250, 3, 430);
   const L = titleLayout(i); font(L.fs, JP, 900); g.fillStyle = C.deep; g.textAlign = 'left'; g.textBaseline = 'alphabetic';
   L.lines.forEach((ln, k) => {
     const rp = E.outCubic(seg(lt, .35 + k * .12, .8 + k * .12)); if (rp <= 0) return;
-    const y = 1340 + k * 86;
+    const y = 1336 + k * 84;
     g.save(); g.beginPath(); g.rect(150, y - L.fs - 10, 840 * rp, L.fs + 30); g.clip(); g.fillText(ln, 160, y); g.restore();
   });
-  if (p.date) { font(32, MONO, 700); g.fillStyle = C.blue; g.textAlign = 'left'; g.globalAlpha = seg(lt, .6, .9); g.fillText(fmtDate(p.date), 160, 1650); g.globalAlpha = 1; }
+  if (p.date) { font(32, MONO, 700); g.fillStyle = C.blue; g.textAlign = 'left'; g.globalAlpha = seg(lt, .6, .9); g.fillText(fmtDate(p.date), 160, 1668); g.globalAlpha = 1; }
   g.restore();
   // progress dots
   for (let k = 0; k < n; k++) {
@@ -492,7 +513,8 @@ function draw() {
 }
 function frame(now) {
   if (playing) {
-    t += Math.min(.1, (now - lastNow) / 1000); lastNow = now;
+    // while recording, follow the wall clock exactly so video time and audio stay in sync even if frames drop
+    const dt = (now - lastNow) / 1000; t += recording ? dt : Math.min(.1, dt); lastNow = now;
     if (t >= DUR) {
       if (recording) { t = DUR - 1e-4; draw(); stopRecording(); pause(); }
       else { t = 0; killAudio(); if (soundOn) ensureAudio(); resetSched(); }
