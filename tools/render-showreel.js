@@ -1,6 +1,7 @@
 // Renders showreel.html to showreel.mp4 (1920x1080, 30fps, with the page's own Web Audio track).
-// Usage: node tools/render-showreel.js [--vertical] [--frames 0,45,90] [--out showreel.mp4]
-//   --vertical  9:16 (1080x1920) version → showreel-vertical.mp4
+// Usage: node tools/render-showreel.js [--page showreel.html] [--vertical] [--frames 0,45,90] [--out showreel.mp4]
+//   --page      any reel page exposing window.__showreel (e.g. nightbubble-reel.html)
+//   --vertical  9:16 (1080x1920) version → <page>-vertical.mp4
 //   FFMPEG=/path/to/ffmpeg  (defaults to "ffmpeg" on PATH)
 //   PLAYWRIGHT=/path/to/playwright (defaults to require('playwright'))
 //   FONTS_VIA_CURL=1  (sandboxes where Chromium can't reach Google Fonts through the proxy: fetch them with curl instead)
@@ -14,7 +15,9 @@ const args = process.argv.slice(2);
 const opt = k => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : null; };
 const stills = opt('--frames');
 const vertical = args.includes('--vertical');
-const out = path.resolve(root, opt('--out') || (vertical ? 'showreel-vertical.mp4' : 'showreel.mp4'));
+const pageName = opt('--page') || 'showreel.html';
+const base = path.basename(pageName, '.html');
+const out = path.resolve(root, opt('--out') || `${base}${vertical ? '-vertical' : ''}.mp4`);
 const ffmpeg = process.env.FFMPEG || 'ffmpeg';
 const { chromium } = require(process.env.PLAYWRIGHT || 'playwright');
 
@@ -28,7 +31,7 @@ const server = http.createServer((req, res) => {
 
 (async () => {
   await new Promise(r => server.listen(0, r));
-  const url = `http://127.0.0.1:${server.address().port}/showreel.html${vertical ? '?format=vertical' : ''}`;
+  const url = `http://127.0.0.1:${server.address().port}/${pageName}${vertical ? '?format=vertical' : ''}`;
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: vertical ? { width: 1080, height: 1920 } : { width: 1920, height: 1080 }});
   if (process.env.FONTS_VIA_CURL) {

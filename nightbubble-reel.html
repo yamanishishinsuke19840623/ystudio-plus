@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ナイトバブル Showreel｜15秒ムービー</title>
+<meta name="description" content="Yスタジオ＋ ナイトバブル事業部の15秒ムービー。下関の学校・PTA・地域イベントに、夜空いっぱいのシャボン玉を。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Noto+Serif+JP:wght@500;700;900&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070b22;--navy:#0f1a44;--gold:#d8b25a;
+  --text:#f4f1e8;--sub:rgba(244,241,232,.62);--line:rgba(244,241,232,.14);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino Sans',sans-serif;line-height:1.8;}
+a{color:inherit;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px;}
+header.top{padding:16px 0;border-bottom:1px solid var(--line);}
+header.top .wrap{display:flex;justify-content:space-between;align-items:center;}
+.brand{font-weight:700;font-size:14px;text-decoration:none;color:var(--gold);letter-spacing:.5px;}
+.back{font-size:12px;color:var(--sub);text-decoration:none;}
+.stage{position:relative;margin:20px auto 0;aspect-ratio:16/9;width:100%;background:#000;border-radius:10px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5);}
+.vertical .stage{aspect-ratio:9/16;width:min(100%,calc(78vh * 9 / 16));}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;}
+.play{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(7,11,34,.5);border:none;color:var(--text);cursor:pointer;font:inherit;transition:opacity .3s;}
+.play .circle{width:clamp(56px,14vw,88px);height:clamp(56px,14vw,88px);border-radius:50%;background:var(--gold);color:var(--bg);display:flex;align-items:center;justify-content:center;font-size:30px;padding-left:6px;}
+.play .lbl{font-size:clamp(10px,2.6vw,13px);letter-spacing:2px;color:var(--sub);}
+.play.hidden{opacity:0;pointer-events:none;}
+.controls{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;align-items:center;}
+.btn{border:1px solid var(--line);background:none;color:var(--text);font:inherit;font-size:13px;padding:8px 16px;border-radius:6px;cursor:pointer;text-decoration:none;}
+.btn:hover{border-color:var(--gold);color:var(--gold);}
+.tc{margin-left:auto;font-family:'Cinzel',serif;font-size:12px;color:var(--sub);}
+section{padding:40px 0 16px;}
+h2{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
+.facts{list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;}
+.facts li{border-left:2px solid var(--gold);padding:2px 0 2px 12px;font-size:13px;}
+.facts .src{display:block;font-size:11px;color:var(--sub);}
+footer{border-top:1px solid var(--line);margin-top:40px;padding:24px 0 40px;font-size:11px;color:var(--sub);}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="nightbubble.html">ナイトバブル事業部</a>
+  <a class="back" href="showreel.html">山西水産 Showreel →</a>
+</div></header>
+
+<main class="wrap">
+  <div class="stage" id="stage">
+    <canvas id="cv" width="1920" height="1080"></canvas>
+    <button class="play" id="playBtn" type="button" aria-label="音ありで再生">
+      <span class="circle">▶</span><span class="lbl">NIGHT BUBBLE · 15s · SOUND ON</span>
+    </button>
+  </div>
+  <div class="controls">
+    <button class="btn" id="replayBtn" type="button">↺ もう一度</button>
+    <a class="btn" id="mp4Link" href="nightbubble-reel.mp4">▶ MP4で見る</a>
+    <a class="btn" id="fmtLink" href="nightbubble-reel.html?format=vertical">縦型（9:16）で見る</a>
+    <span class="tc" id="tc">00:00:00:00</span>
+  </div>
+
+  <section>
+    <h2>Facts used</h2>
+    <ul class="facts">
+      <li>ロゴ・タグライン「はじめての夜になる」<span class="src">nightbubble-logo.png</span></li>
+      <li>夜空に無数のシャボン玉を飛ばすナイトショー<span class="src">nightbubble.html</span></li>
+      <li>学校・PTA・地域イベント／夜も昼も対応<span class="src">nightbubble.html</span></li>
+      <li>13会場・イベントで開催（会場名はサイトの開催実績より）<span class="src">nightbubble.html</span></li>
+      <li>延べ来場者数 5,000人以上<span class="src">nightbubble.html</span></li>
+      <li>機材・設営・撤収まで一人で完結<span class="src">nightbubble.html</span></li>
+      <li>シャボン玉おじさん やまちゃん（山西伸典）<span class="src">nightbubble.html</span></li>
+      <li>「その夜を、きっとずっと覚えてる。」<span class="src">nightbubble.html</span></li>
+    </ul>
+  </section>
+</main>
+<footer><div class="wrap">© 2025–2026 山西水産株式会社 Yスタジオ＋ ナイトバブル事業部 · <a href="privacy.html">プライバシーポリシー</a></div></footer>
+
+<script>
+(() => {
+'use strict';
+// ?format=vertical → 1080x1920 (9:16)
+const V = new URLSearchParams(location.search).get('format') === 'vertical';
+const W = V ? 1080 : 1920, H = V ? 1920 : 1080, FPS = 30, DUR = 15;
+const CX = W / 2, CY = H / 2;
+const BPM = 96, BEAT = 60 / BPM;
+const C = { bg0: '#070b22', bg1: '#111c4a', navy: '#0f1a44', gold: '#d8b25a', gold2: '#f3dc9a', white: '#f4f1e8', day0: '#8fc8f2', day1: '#fdf1d2', dayInk: '#12204f' };
+const SERIF = "'Noto Serif JP', serif", SANS = "'Noto Sans JP', sans-serif", ROMAN = "'Cinzel', serif";
+
+const S = [0, 4, 7, 11, 15, 18, 20, 24].map(b => b * BEAT);
+const SCENE_NAMES = ['NIGHT', 'BURST', 'SCENES', 'VENUES', 'DAY & NIGHT', 'YAMACHAN', 'NIGHT BUBBLE'];
+
+const cv = document.getElementById('cv');
+cv.width = W; cv.height = H;
+if (V) document.documentElement.classList.add('vertical');
+const ctx = cv.getContext('2d');
+
+// ---------- math ----------
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const eOutExpo = x => x >= 1 ? 1 : 1 - Math.pow(2, -10 * x);
+const eInExpo = x => x <= 0 ? 0 : Math.pow(2, 10 * x - 10);
+const eInOut = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const eOutBack = (x, s = 1.9) => 1 + (s + 1) * Math.pow(x - 1, 3) + s * Math.pow(x - 1, 2);
+function rng(seed) { let s = seed >>> 0; return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
+const hash = n => { const x = Math.sin(n * 127.1) * 43758.5453; return x - Math.floor(x); };
+const mixHex = (a, b, t) => { const p = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)); const A = p(a), B = p(b); return `rgb(${A.map((v, i) => Math.round(lerp(v, B[i], t))).join(',')})`; };
+
+// ---------- drawing helpers ----------
+function txt(s, x, y, o = {}) {
+  ctx.save();
+  let size = o.size || 80;
+  const font = sz => `${o.weight || 700} ${sz}px ${o.family || SERIF}`;
+  ctx.font = font(size); ctx.letterSpacing = (o.ls || 0) + 'px';
+  if (o.maxW) { const w = ctx.measureText(s).width; if (w > o.maxW) { size *= o.maxW / w; ctx.font = font(size); } }
+  ctx.fillStyle = o.color || C.white;
+  ctx.textAlign = o.align || 'center'; ctx.textBaseline = o.base || 'middle';
+  ctx.globalAlpha *= (o.alpha == null ? 1 : o.alpha);
+  if (o.glow) { ctx.shadowColor = o.glow; ctx.shadowBlur = o.blur || 24; }
+  ctx.fillText(s, x, y);
+  ctx.restore();
+}
+function withClip(x, y, w, h, fn) { ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip(); fn(); ctx.restore(); }
+function cover(img, x, y, w, h, fx = .5, fy = .5, zoom = 1) {
+  if (!img.complete || !img.naturalWidth) return;
+  const s = Math.max(w / img.naturalWidth, h / img.naturalHeight) * zoom;
+  const dw = img.naturalWidth * s, dh = img.naturalHeight * s;
+  ctx.drawImage(img, x + (w - dw) * fx, y + (h - dh) * fy, dw, dh);
+}
+
+// iridescent soap bubble
+function bubble(x, y, r, a = 1, spin = 0, rimOnly = false) {
+  if (r < 1 || a <= 0) return;
+  ctx.save(); ctx.globalAlpha *= a;
+  if (r < 16) {
+    ctx.strokeStyle = `hsla(${(x * .3 + y * .2 + spin * 60) % 360},90%,80%,.75)`; ctx.lineWidth = Math.max(1, r * .16);
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.beginPath(); ctx.arc(x - r * .35, y - r * .4, r * .18, 0, Math.PI * 2); ctx.fill();
+    ctx.restore(); return;
+  }
+  const body = ctx.createRadialGradient(x, y, r * .55, x, y, r);
+  body.addColorStop(0, 'rgba(255,255,255,0)'); body.addColorStop(.85, 'rgba(180,220,255,.06)'); body.addColorStop(1, 'rgba(255,255,255,.22)');
+  ctx.fillStyle = body; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+  const rim = ctx.createConicGradient(spin, x, y);
+  ['#7fe7ff', '#b98cff', '#ff8ad8', '#ffd58a', '#9dffb8', '#7fe7ff'].forEach((c, i, arr) => rim.addColorStop(i / (arr.length - 1), c));
+  ctx.strokeStyle = rim; ctx.globalAlpha *= .75; ctx.lineWidth = Math.max(1.5, r * .045);
+  ctx.beginPath(); ctx.arc(x, y, r * .985, 0, Math.PI * 2); ctx.stroke();
+  ctx.globalAlpha /= .75;
+  if (rimOnly) { ctx.restore(); return; }
+  const hl = ctx.createRadialGradient(x - r * .38, y - r * .42, 0, x - r * .38, y - r * .42, r * .32);
+  hl.addColorStop(0, 'rgba(255,255,255,.9)'); hl.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = hl; ctx.beginPath(); ctx.ellipse(x - r * .38, y - r * .42, r * .3, r * .18, -.6, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = Math.max(1, r * .03);
+  ctx.beginPath(); ctx.arc(x, y, r * .8, .15 * Math.PI, .45 * Math.PI); ctx.stroke();
+  ctx.restore();
+}
+function pop(x, y, r, p) {           // p: 0..1 after the pop
+  if (p <= 0 || p >= 1) return;
+  ctx.save(); ctx.globalAlpha = (1 - p);
+  ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.lineWidth = 3 * (1 - p) + 1;
+  ctx.beginPath(); ctx.arc(x, y, r * (1 + eOutExpo(p) * .6), 0, Math.PI * 2); ctx.stroke();
+  for (let i = 0; i < 12; i++) {
+    const a = i / 12 * Math.PI * 2 + r, d = r * (1 + eOutExpo(p) * 1.1);
+    ctx.fillStyle = `hsla(${i * 30},90%,80%,1)`;
+    ctx.beginPath(); ctx.arc(x + Math.cos(a) * d, y + Math.sin(a) * d + p * p * 60, 4 * (1 - p) + 1, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.restore();
+}
+function sparkle(x, y, s, a) {       // 4-point star like the logo
+  ctx.save(); ctx.globalAlpha *= a; ctx.fillStyle = C.gold2; ctx.translate(x, y);
+  ctx.beginPath(); ctx.moveTo(0, -s); ctx.quadraticCurveTo(0, 0, s, 0); ctx.quadraticCurveTo(0, 0, 0, s); ctx.quadraticCurveTo(0, 0, -s, 0); ctx.quadraticCurveTo(0, 0, 0, -s); ctx.fill();
+  ctx.restore();
+}
+function moon(x, y, r, p) {          // gold crescent, grows in with p
+  if (p <= 0) return;
+  ctx.save(); ctx.translate(x, y); ctx.rotate(-.35 + (1 - p) * -.6); ctx.scale(p, p);
+  ctx.shadowColor = 'rgba(243,220,154,.6)'; ctx.shadowBlur = 40;
+  ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.clip();
+  ctx.beginPath(); ctx.rect(-r * 2, -r * 2, r * 4, r * 4); ctx.arc(r * .42, -r * .18, r * .86, 0, Math.PI * 2, true);
+  const g = ctx.createLinearGradient(-r, -r, r, r); g.addColorStop(0, '#f7e3a4'); g.addColorStop(.6, C.gold); g.addColorStop(1, '#a8802e');
+  ctx.fillStyle = g; ctx.fill('evenodd');
+  ctx.restore();
+}
+
+// pre-rendered grain
+const grain = [];
+(() => { const r = rng(7); for (let k = 0; k < 6; k++) { const g = document.createElement('canvas'); g.width = g.height = 256; const gx = g.getContext('2d'); const id = gx.createImageData(256, 256); for (let i = 0; i < id.data.length; i += 4) { const v = r() * 255; id.data[i] = id.data[i + 1] = id.data[i + 2] = v; id.data[i + 3] = 18; } gx.putImageData(id, 0, 0); grain.push(g); } })();
+
+const load = src => { const i = new Image(); i.src = src; return i; };
+const IMG = {
+  logo: load('nightbubble-logo.png'),
+  p1: load('kaosuya-nightbubble-01.jpg'), p2: load('kaosuya-nightbubble-09.jpg'),
+  p3: load('otsukimi-2.jpg'), p4: load('kaosuya-nightbubble-ex.jpg'),
+  me: load('shabon-ojisan.jpeg'),
+};
+
+// deterministic fields
+const STARS = (() => { const r = rng(11); return Array.from({ length: 140 }, () => ({ x: r() * W, y: r() * H * .8, s: .6 + r() * 1.8, ph: r() * 6 })); })();
+const FLOAT = (() => { const r = rng(21); return Array.from({ length: 60 }, () => ({ x: r() * W, y: r() * H, r: 6 + Math.pow(r(), 3) * 60, v: 30 + r() * 60, w: r() * 6, sp: r() * 6 })); })();
+const BURST = (() => { const r = rng(33); return Array.from({ length: 220 }, () => { const a = r() * Math.PI * 2, v = 300 + r() * 1500; return { vx: Math.cos(a) * v, vy: Math.sin(a) * v * .8, r: 4 + Math.pow(r(), 2.5) * 70, w: r() * 6, sp: r() * 6, life: .8 + r() * 3 }; }); })();
+
+// ---------- background ----------
+function sky(t, day = 0) {
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, mixHex(C.bg0, C.day0, day)); g.addColorStop(1, mixHex(C.bg1, C.day1, day));
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  if (day < 1) STARS.forEach(s => {
+    const tw = .45 + .55 * Math.sin(t * 3 + s.ph);
+    ctx.fillStyle = `rgba(255,248,225,${tw * (1 - day) * .9})`;
+    ctx.fillRect(s.x, s.y, s.s, s.s);
+  });
+}
+function floaters(t, a = 1) {
+  FLOAT.forEach(b => {
+    const y = ((b.y - t * b.v) % (H + 160) + H + 160) % (H + 160) - 80;
+    bubble(b.x + Math.sin(t * 1.3 + b.w) * 24, y, b.r, a * .8, b.sp + t * .4);
+  });
+}
+
+// ---------- SCENE 0 : night, moon, one bubble ----------
+function scene0(t) {
+  sky(t);
+  const mp = eOutBack(prog(t, .1, 1.3), 1.4);
+  moon(V ? W * .72 : W * .78, V ? H * .2 : H * .24, V ? 110 : 120, mp);
+  [[.62, .16, 18, .5], [.88, .36, 14, .8], [.12, .22, 12, 1.1], [.3, .1, 10, 1.4]].forEach(([x, y, s, d]) =>
+    sparkle(W * x, H * y, s, eOutExpo(prog(t, d, d + .5)) * (.6 + .4 * Math.sin(t * 5 + d * 9))));
+  // a single bubble rises and swells to the beat
+  const rise = eInOut(prog(t, 0, S[1]));
+  const by = lerp(H + 120, CY, rise), br = lerp(40, V ? 260 : 230, eInExpo(prog(t, .6, S[1])) * .7 + rise * .3);
+  bubble(CX + Math.sin(t * 2) * 20, by, br, 1, t * .8);
+  const la = eOutExpo(prog(t, BEAT, BEAT + .6));
+  txt('NIGHT BUBBLE', CX, V ? H * .36 : H * .3, { family: ROMAN, weight: 700, size: V ? 64 : 72, ls: 18, color: C.gold2, alpha: la * (1 - prog(t, S[1] - .3, S[1])), glow: 'rgba(243,220,154,.5)', maxW: W - 120 });
+  const ta = eOutExpo(prog(t, BEAT * 2, BEAT * 2 + .6));
+  txt('夜空に、無数のシャボン玉を。', CX, V ? H * .72 : H * .8, { size: V ? 48 : 46, ls: 8, alpha: ta * (1 - prog(t, S[1] - .3, S[1])), maxW: W - 120 });
+}
+
+// ---------- SCENE 1 : burst ----------
+function scene1(t) {
+  const lt = t - S[1];
+  sky(t);
+  moon(V ? W * .72 : W * .78, V ? H * .2 : H * .24, V ? 110 : 120, 1);
+  pop(CX, CY, V ? 260 : 230, prog(lt, 0, .5));
+  BURST.forEach(b => {
+    if (lt > b.life + 1) return;
+    const k = 2.2, d = (1 - Math.exp(-k * lt)) / k;
+    const x = CX + b.vx * d + Math.sin(lt * 2 + b.w) * 18, y = CY + b.vy * d - lt * 40;
+    bubble(x, y, b.r * eOutExpo(prog(lt, 0, .25)), 1 - prog(lt, b.life, b.life + 1), b.sp + lt);
+  });
+  const a1 = eOutExpo(prog(lt, .15, .7));
+  const scale = lerp(1.25, 1, eOutExpo(prog(lt, .1, .9)));
+  ctx.save(); ctx.translate(CX, CY); ctx.scale(scale, scale);
+  txt('はじめての夜に、', 0, V ? -70 : -60, { size: V ? 92 : 104, weight: 900, alpha: a1, glow: 'rgba(160,200,255,.6)', maxW: W - 100 });
+  const a2 = eOutExpo(prog(lt, BEAT, BEAT + .5));
+  txt('なる。', 0, V ? 70 : 80, { size: V ? 92 : 104, weight: 900, color: C.gold2, alpha: a2, glow: 'rgba(243,220,154,.6)' });
+  ctx.restore();
+}
+
+// ---------- SCENE 2 : real photos, one per beat, revealed through a bubble ----------
+const SHOTS = [
+  { img: 'p1', ox: .30, oy: .62, fx: .5 }, { img: 'p2', ox: .70, oy: .38, fx: .35 },
+  { img: 'p3', ox: .40, oy: .40, fx: .5 }, { img: 'p4', ox: .62, oy: .55, fx: .55 },
+];
+function scene2(t) {
+  const lt = t - S[2];
+  sky(t);
+  SHOTS.forEach((s, i) => {
+    const st = i * BEAT;
+    if (lt < st) return;
+    const p = eOutExpo(prog(lt, st, st + .55));
+    const ox = W * s.ox, oy = H * s.oy, R = Math.hypot(W, H) * p;
+    ctx.save(); ctx.beginPath(); ctx.arc(ox, oy, Math.max(1, R), 0, Math.PI * 2); ctx.clip();
+    cover(IMG[s.img], 0, 0, W, H, s.fx, .5, 1.12 - (lt - st) * .03);
+    ctx.fillStyle = 'rgba(7,11,34,.25)'; ctx.fillRect(0, 0, W, H);
+    ctx.restore();
+    if (p < 1) { ctx.save(); ctx.globalAlpha = 1 - p; bubble(ox, oy, R, 1, lt * 2); ctx.restore(); }
+  });
+  floaters(t, .6);
+  const ca = eOutExpo(prog(lt, .3, .8));
+  ctx.save(); const g = ctx.createLinearGradient(0, H * .62, 0, H); g.addColorStop(0, 'rgba(7,11,34,0)'); g.addColorStop(1, 'rgba(7,11,34,.85)'); ctx.fillStyle = g; ctx.fillRect(0, H * .6, W, H * .4); ctx.restore();
+  txt('学校・PTA・地域イベントへ', CX, H - (V ? 330 : 150), { size: V ? 54 : 56, ls: 6, alpha: ca, maxW: W - 120 });
+  txt('下関の夜空を、シャボン玉でいっぱいに。', CX, H - (V ? 250 : 80), { size: V ? 30 : 30, weight: 500, ls: 4, color: C.gold2, alpha: eOutExpo(prog(lt, BEAT, BEAT + .6)), maxW: W - 120 });
+}
+
+// ---------- SCENE 3 : numbers + venue roll ----------
+const VENUES = ['安岡小学校', '垢田小学校', '山の田小学校', '清末小学校', '東部中学校', '向井小学校', '本村小学校', '泉幼稚園', 'みそら保育園', 'カオスやストリート', '彦島老の山公園', '下関駅前 エキマチ広場', '山口県セミナーパーク'];
+function scene3(t) {
+  const lt = t - S[3];
+  sky(t);
+  // venue names drifting upward like bubbles
+  VENUES.forEach((v, i) => {
+    const col = i % (V ? 2 : 3), n = V ? 2 : 3;
+    const x = W * (col + .5) / n + (hash(i) - .5) * 120;
+    const y = H + 60 - ((lt * 150 + i * (H / VENUES.length) * 1.4) % (H + 120));
+    txt(v, x, y, { size: V ? 30 : 30, weight: 500, color: C.white, alpha: .22, maxW: W / n - 20 });
+  });
+  floaters(t, .5);
+  const items = [{ n: 13, unit: '会場・イベントで開催', b: 0 }, { n: 5000, unit: '人以上 ・ 延べ来場者数', b: 2 }];
+  items.forEach((it, i) => {
+    const bt = it.b * BEAT, p = prog(lt, bt, bt + .5);
+    if (p <= 0) return;
+    const bx = V ? CX : W * (i ? .7 : .3), byy = V ? H * (i ? .64 : .34) : CY, R = V ? 300 : 330;
+    const popAt = S[4] - S[3] - .35;
+    const alive = lt < popAt;
+    if (alive) bubble(bx, byy + Math.sin(lt * 2 + i) * 10, R * eOutBack(p, 1.6), 1, lt + i);
+    else pop(bx, byy, R, prog(lt, popAt, popAt + .4));
+    const val = Math.round(it.n * eOutExpo(prog(lt, bt, bt + .8)));
+    const a = eOutExpo(p) * (alive ? 1 : 1 - prog(lt, popAt, popAt + .2));
+    txt(val.toLocaleString('en-US') + (it.n === 5000 ? '+' : ''), bx, byy - 30, { family: ROMAN, weight: 700, size: 170, color: C.gold2, alpha: a, glow: 'rgba(243,220,154,.45)', maxW: R * 1.6 });
+    txt(it.unit, bx, byy + 100, { size: 32, weight: 700, alpha: a, maxW: R * 1.6 });
+  });
+  txt('開催実績', CX, V ? H * .12 : H * .12, { family: SANS, weight: 700, size: 30, ls: 12, color: C.gold2, alpha: eOutExpo(prog(lt, 0, .5)) });
+}
+
+// ---------- SCENE 4 : night → day ----------
+function scene4(t) {
+  const lt = t - S[4];
+  const day = eInOut(prog(lt, BEAT * .9, BEAT * 1.6));
+  sky(t, day);
+  // moon sinks, sun rises
+  moon(V ? W * .72 : W * .78, lerp(V ? H * .2 : H * .24, -200, day), V ? 110 : 120, 1 - day * .3);
+  const sy = lerp(H + 200, V ? H * .2 : H * .24, day);
+  ctx.save(); const sg = ctx.createRadialGradient(W * .22, sy, 0, W * .22, sy, 220); sg.addColorStop(0, 'rgba(255,240,190,1)'); sg.addColorStop(.35, 'rgba(255,220,140,.9)'); sg.addColorStop(1, 'rgba(255,220,140,0)'); ctx.fillStyle = sg; ctx.fillRect(0, 0, W, H); ctx.restore();
+  floaters(t, .7);
+  const ink = day > .5 ? C.dayInk : C.white;
+  const a1 = eOutExpo(prog(lt, .05, .5));
+  txt('夜も、', V ? CX : CX - 200, V ? CY - 170 : CY - 40, { size: V ? 150 : 160, weight: 900, color: day > .5 ? '#a8791f' : C.gold2, alpha: a1, glow: day < .5 ? 'rgba(243,220,154,.5)' : null });
+  const a2 = eOutExpo(prog(lt, BEAT * 1.2, BEAT * 1.2 + .5));
+  txt('昼も。', V ? CX : CX + 220, V ? CY + 20 : CY - 40, { size: V ? 150 : 160, weight: 900, color: ink, alpha: a2 });
+  const a3 = eOutExpo(prog(lt, BEAT * 2, BEAT * 2 + .5));
+  txt('機材・設営・撤収まで、一人で完結。', CX, V ? CY + 220 : CY + 140, { family: SANS, size: V ? 36 : 36, weight: 700, ls: 4, color: ink, alpha: a3, maxW: W - 120 });
+}
+
+// ---------- SCENE 5 : やまちゃん ----------
+function scene5(t) {
+  const lt = t - S[5];
+  sky(t);
+  const p = eOutExpo(prog(lt, 0, .5));
+  const R = (V ? 380 : 400) * p, bx = V ? CX : W * .34, byy = V ? H * .36 : CY;
+  ctx.save(); ctx.beginPath(); ctx.arc(bx, byy, Math.max(1, R), 0, Math.PI * 2); ctx.clip();
+  cover(IMG.me, bx - R, byy - R, R * 2, R * 2, .3, .45, 1.05 + lt * .03);
+  ctx.restore();
+  bubble(bx, byy, R, .9, lt);
+  const tx = V ? CX : W * .62, al = V ? 'center' : 'left';
+  const a1 = eOutExpo(prog(lt, .2, .7));
+  txt('シャボン玉おじさん', tx, V ? H * .66 : CY - 80, { size: 40, weight: 700, color: C.gold2, align: al, alpha: a1 });
+  txt('やまちゃん', tx, V ? H * .66 + 110 : CY + 20, { size: 120, weight: 900, align: al, alpha: eOutExpo(prog(lt, BEAT * .5, BEAT * .5 + .5)), glow: 'rgba(160,200,255,.5)' });
+  txt('山西 伸典', tx, V ? H * .66 + 210 : CY + 120, { family: SANS, size: 30, weight: 400, ls: 10, align: al, alpha: eOutExpo(prog(lt, BEAT, BEAT + .5)) * .8 });
+}
+
+// ---------- SCENE 6 : その夜を、きっとずっと覚えてる。 + logo ----------
+const logoCut = document.createElement('canvas');
+function buildLogo() {           // crop the main mark from the logo sheet and feather its edges
+  const img = IMG.logo; if (!img.naturalWidth) return;
+  const k = img.naturalWidth / 1254, sx = 250 * k, sy = 40 * k, sw = 754 * k, sh = 730 * k;
+  logoCut.width = 754; logoCut.height = 730;
+  const g = logoCut.getContext('2d');
+  g.drawImage(img, sx, sy, sw, sh, 0, 0, 754, 730);
+  g.globalCompositeOperation = 'destination-out';          // fade each edge so the navy plate melts into the sky
+  const F = 60;
+  [[0, 0, F, 0, 0, 0, F, 730], [754, 0, 754 - F, 0, 754 - F, 0, F, 730], [0, 0, 0, F, 0, 0, 754, F], [0, 730, 0, 730 - F, 0, 730 - F, 754, F]]
+    .forEach(([x0, y0, x1, y1, rx, ry, rw, rh]) => { const m = g.createLinearGradient(x0, y0, x1, y1); m.addColorStop(0, 'rgba(0,0,0,1)'); m.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = m; g.fillRect(rx, ry, rw, rh); });
+}
+function scene6(t) {
+  const lt = t - S[6];
+  sky(t);
+  floaters(t, .5);
+  const l1 = eOutExpo(prog(lt, .05, .6)), l2 = eOutExpo(prog(lt, BEAT * .8, BEAT * .8 + .6));
+  const outq = eInExpo(prog(lt, BEAT * 1.7, BEAT * 2));
+  ctx.save(); ctx.globalAlpha = 1 - outq;
+  txt('その夜を、', CX, CY - (V ? 70 : 60), { size: V ? 80 : 88, weight: 700, alpha: l1 });
+  txt('きっとずっと覚えてる。', CX, CY + (V ? 70 : 60), { size: V ? 80 : 88, weight: 700, color: C.gold2, alpha: l2, maxW: W - 100 });
+  ctx.restore();
+  const lp = eOutExpo(prog(lt, BEAT * 2, BEAT * 2 + .8));
+  if (lp > 0 && logoCut.width) {
+    const s = (V ? 1.25 : 1.05) * lerp(.9, 1, lp) * (1 + (lt - BEAT * 2) * .015);
+    ctx.save(); ctx.globalAlpha = lp; ctx.globalCompositeOperation = 'lighten';   // the logo's navy plate vanishes into the sky
+    ctx.translate(CX, CY - (V ? 60 : 30)); ctx.scale(s, s);
+    ctx.drawImage(logoCut, -377, -365);
+    ctx.restore();
+    txt('Yスタジオ＋ ナイトバブル事業部 ・ 下関', CX, CY + (V ? 440 : 420), { family: SANS, size: V ? 28 : 26, weight: 400, ls: 6, alpha: eOutExpo(prog(lt, BEAT * 3, BEAT * 3 + .5)) * .8, maxW: W - 120 });
+  }
+  // shimmer burst on the logo hit
+  pop(CX, CY - 60, V ? 300 : 260, prog(lt, BEAT * 2, BEAT * 2 + .7));
+}
+
+// ---------- transitions / overlay ----------
+function flash(t, at, dur = .3, col = '255,255,255', max = .85) {
+  const p = (t - at) / dur; if (p < 0 || p > 1) return;
+  ctx.save(); ctx.globalAlpha = (1 - p) * max; ctx.fillStyle = `rgb(${col})`; ctx.fillRect(0, 0, W, H); ctx.restore();
+}
+function iris(t, at) {           // a bubble wipes the frame to dark
+  const d = .4, p = prog(t, at - d / 2, at + d / 2); if (p <= 0 || p >= 1) return;
+  const R = Math.hypot(W, H) * (p < .5 ? eInOut(p * 2) : eInOut((1 - p) * 2));
+  ctx.save(); ctx.fillStyle = C.bg0; ctx.beginPath(); ctx.arc(CX, CY, R * .55, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+  bubble(CX, CY, R * .55, 1, t * 3, true);
+}
+function tc(t) { const f = Math.floor(t * FPS + 1e-6); return `00:00:${String(Math.floor(f / FPS)).padStart(2, '0')}:${String(f % FPS).padStart(2, '0')}`; }
+function sceneIndex(t) { for (let i = S.length - 2; i >= 0; i--) if (t >= S[i]) return i; return 0; }
+function hud(t) {
+  const si = sceneIndex(t);
+  ctx.save(); ctx.globalAlpha = .7;
+  txt('NIGHT BUBBLE', 64, 58, { family: ROMAN, size: 18, weight: 700, ls: 6, align: 'left', color: C.gold2 });
+  txt(tc(t), W - 64, 58, { family: ROMAN, size: 18, weight: 500, ls: 3, align: 'right' });
+  txt(`0${si + 1} / 07  ${SCENE_NAMES[si]}`, 64, H - (V ? 110 : 58), { family: ROMAN, size: 16, weight: 500, ls: 3, align: 'left' });
+  const bx = W - 64 - 24 * 18, by = H - 62;
+  for (let b = 0; b < 24; b++) {
+    const on = t >= b * BEAT, hit = on ? Math.max(0, 1 - (t - b * BEAT) / .25) : 0;
+    ctx.fillStyle = on ? C.gold2 : 'rgba(244,241,232,.25)';
+    ctx.beginPath(); ctx.arc(bx + b * 18, by, 3 + hit * 4, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.restore();
+}
+
+const SCENES = [scene0, scene1, scene2, scene3, scene4, scene5, scene6];
+function render(t) {
+  t = clamp(t, 0, DUR);
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.filter = 'none';
+  SCENES[sceneIndex(t)](t);
+  flash(t, S[1], .35, '220,235,255');
+  iris(t, S[2]);
+  flash(t, S[3], .25, '243,220,154', .6);
+  iris(t, S[4]);
+  flash(t, S[5], .25, '255,255,255', .7);
+  iris(t, S[6]);
+  ctx.save();
+  const f = Math.floor(t * FPS);
+  ctx.fillStyle = ctx.createPattern(grain[f % grain.length], 'repeat');
+  ctx.translate((hash(f) * 256) | 0, (hash(f + 3) * 256) | 0); ctx.fillRect(-256, -256, W + 512, H + 512);
+  ctx.restore();
+  const v = ctx.createRadialGradient(CX, CY, Math.min(W, H) * .45, CX, CY, Math.hypot(W, H) * .6);
+  v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,.5)');
+  ctx.fillStyle = v; ctx.fillRect(0, 0, W, H);
+  hud(t);
+}
+
+// ================= AUDIO =================
+const NOTE = n => 440 * Math.pow(2, (n - 69) / 12);
+// Fmaj7 | Em7 | Dm7 | Cmaj7 ... dreamy, then Bb → C → F
+const CHORDS = { 0: [41, 57, 60, 64, 69], 4: [40, 55, 59, 62, 67], 7: [38, 57, 60, 65, 69], 11: [36, 55, 59, 64, 67], 15: [46, 58, 62, 65, 69], 18: [48, 55, 60, 64, 67], 20: [41, 57, 60, 64, 69, 72] };
+function buildAudio(ac, t0, dest) {
+  const r = rng(2026);
+  const master = ac.createGain(); master.gain.value = .55;
+  const comp = ac.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 4;
+  master.connect(comp).connect(dest);
+  const irLen = ac.sampleRate * 3.2, ir = ac.createBuffer(2, irLen, ac.sampleRate);
+  for (let ch = 0; ch < 2; ch++) { const d = ir.getChannelData(ch); for (let i = 0; i < irLen; i++) d[i] = (r() * 2 - 1) * Math.pow(1 - i / irLen, 2.5); }
+  const verb = ac.createConvolver(); verb.buffer = ir; const vg = ac.createGain(); vg.gain.value = .5; verb.connect(vg).connect(master);
+  const noiseBuf = ac.createBuffer(1, ac.sampleRate * 2, ac.sampleRate);
+  { const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = r() * 2 - 1; }
+  const send = (node, amt) => { const g = ac.createGain(); g.gain.value = amt; node.connect(g).connect(verb); };
+  const osc = (at, dur, type, f0, f1, gain, rv = 0, attack = .005) => {
+    const o = ac.createOscillator(); o.type = type; o.frequency.setValueAtTime(f0, at); if (f1 !== f0) o.frequency.exponentialRampToValueAtTime(f1, at + dur);
+    const g = ac.createGain(); g.gain.setValueAtTime(0.0001, at); g.gain.exponentialRampToValueAtTime(gain, at + attack); g.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+    o.connect(g).connect(master); if (rv) send(g, rv); o.start(at); o.stop(at + dur + .05);
+  };
+  const noise = (at, dur, type, f0, f1, gain, q = 1, rv = 0) => {
+    const s = ac.createBufferSource(); s.buffer = noiseBuf;
+    const f = ac.createBiquadFilter(); f.type = type; f.Q.value = q; f.frequency.setValueAtTime(f0, at); f.frequency.exponentialRampToValueAtTime(f1, at + dur);
+    const g = ac.createGain(); g.gain.setValueAtTime(0.0001, at); g.gain.exponentialRampToValueAtTime(gain, at + Math.min(.01, dur * .3)); g.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+    s.connect(f).connect(g).connect(master); if (rv) send(g, rv); s.start(at, r() * .5); s.stop(at + dur + .05);
+  };
+  const bell = (at, n, g = .1) => { osc(at, 1.4, 'sine', NOTE(n), NOTE(n), g, .6); osc(at, .6, 'sine', NOTE(n) * 3.01, NOTE(n) * 3.01, g * .25, .6); osc(at, .3, 'sine', NOTE(n) * 5.4, NOTE(n) * 5.4, g * .08, .6); };
+  const blip = (at, n, g = .12) => osc(at, .12, 'sine', NOTE(n) * 1.6, NOTE(n), g, .4, .002);      // bubble pop
+  const pad = (at, dur, notes, g = .035) => notes.forEach(n => [-7, 7].forEach(det => {
+    const o = ac.createOscillator(); o.type = 'triangle'; o.frequency.value = NOTE(n); o.detune.value = det;
+    const f = ac.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 1800;
+    const gg = ac.createGain(); gg.gain.setValueAtTime(0.0001, at); gg.gain.exponentialRampToValueAtTime(g, at + .3); gg.gain.setValueAtTime(g, at + dur - .15); gg.gain.exponentialRampToValueAtTime(0.0001, at + dur + .5);
+    o.connect(f).connect(gg); gg.connect(master); send(gg, .6); o.start(at); o.stop(at + dur + .6);
+  }));
+  const kick = (at, g = .8) => osc(at, .35, 'sine', 120, 40, g);
+  const B = b => t0 + b * BEAT;
+  const keys = Object.keys(CHORDS).map(Number).sort((a, b) => a - b);
+  keys.forEach((k, i) => {
+    const end = i < keys.length - 1 ? keys[i + 1] : 26, ch = CHORDS[k];
+    pad(B(k), (end - k) * BEAT, ch.slice(1), k === 20 ? .045 : .03);
+    if (k >= 4) for (let b = k; b < Math.min(end, 24); b++) osc(B(b), BEAT * .9, 'sine', NOTE(ch[0]), NOTE(ch[0]), .35, 0, .02);
+    // music-box arpeggio in 8ths
+    const arp = [ch[1] + 12, ch[2] + 12, ch[3] + 12, ch[4] + 12, ch[3] + 12, ch[2] + 12];
+    for (let b = k, j = 0; b < Math.min(end, 20); b += .5, j++) bell(B(b), arp[j % arp.length], k < 4 ? .05 : .07);
+  });
+  // rising shimmer into the burst
+  for (let i = 0; i < 16; i++) bell(B(2) + i * BEAT * 2 / 16, 72 + i * 2, .03);
+  // the burst
+  noise(B(4), 1.6, 'lowpass', 6000, 300, .5, .7, .6); osc(B(4), 1.4, 'sine', 80, 30, .9, .3);
+  for (let i = 0; i < 26; i++) blip(B(4) + r() * 1.4, 84 + Math.floor(r() * 24), .05 + r() * .05);
+  // soft groove
+  for (let b = 7; b < 20; b++) { if (b !== 15) kick(B(b), .55); noise(B(b + .5), .06, 'highpass', 7000, 6000, .1); if (b >= 11) noise(B(b + .25), .04, 'highpass', 8000, 7000, .05); }
+  // photo reveals: one pop per beat
+  for (let i = 0; i < 4; i++) { blip(B(7 + i), 88 + [0, 4, 7, 12][i], .14); noise(B(7 + i) - .1, .25, 'bandpass', 800, 5000, .15, 2, .3); }
+  // numbers
+  blip(B(11), 91, .16); blip(B(13), 95, .16);
+  for (let i = 0; i < 2; i++) blip(B(15) - .35 + i * .08, 100 - i * 5, .15);
+  // day break: bright chime
+  bell(B(16), 84, .12); bell(B(16) + .08, 88, .1); bell(B(16) + .16, 91, .1);
+  // やまちゃん
+  noise(B(18), .3, 'highpass', 3000, 9000, .12, 1, .4);
+  // ending: swell, logo hit, long bell
+  noise(B(21), BEAT, 'bandpass', 400, 6000, .2, 3);
+  kick(B(22), .7); osc(B(22), 2.2, 'sine', 70, 35, .6, .4);
+  [72, 76, 79, 84, 88].forEach((n, i) => bell(B(22) + i * .06, n, .09));
+  for (let i = 0; i < 12; i++) blip(B(22) + .1 + r() * 1.2, 90 + Math.floor(r() * 18), .04);
+}
+async function renderAudioWav() {
+  const sr = 48000, len = Math.ceil(sr * (DUR + .01));
+  const oac = new OfflineAudioContext(2, len, sr);
+  buildAudio(oac, 0, oac.destination);
+  const buf = await oac.startRendering();
+  const n = buf.length, out = new DataView(new ArrayBuffer(44 + n * 4));
+  const ws = (o, s) => { for (let i = 0; i < s.length; i++) out.setUint8(o + i, s.charCodeAt(i)); };
+  ws(0, 'RIFF'); out.setUint32(4, 36 + n * 4, true); ws(8, 'WAVE'); ws(12, 'fmt '); out.setUint32(16, 16, true);
+  out.setUint16(20, 1, true); out.setUint16(22, 2, true); out.setUint32(24, sr, true); out.setUint32(28, sr * 4, true); out.setUint16(32, 4, true); out.setUint16(34, 16, true);
+  ws(36, 'data'); out.setUint32(40, n * 4, true);
+  const L = buf.getChannelData(0), R = buf.getChannelData(1), fade = Math.floor(sr * .5);
+  for (let i = 0; i < n; i++) {
+    const f = i > n - fade ? (n - i) / fade : 1;
+    out.setInt16(44 + i * 4, clamp(L[i] * f, -1, 1) * 32767, true);
+    out.setInt16(46 + i * 4, clamp(R[i] * f, -1, 1) * 32767, true);
+  }
+  const bytes = new Uint8Array(out.buffer); let s = '';
+  for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  return btoa(s);
+}
+
+// ================= player =================
+if (V) { document.getElementById('mp4Link').href = 'nightbubble-reel-vertical.mp4'; const f = document.getElementById('fmtLink'); f.href = 'nightbubble-reel.html'; f.textContent = '横型（16:9）で見る'; }
+const playBtn = document.getElementById('playBtn'), replayBtn = document.getElementById('replayBtn'), tcEl = document.getElementById('tc');
+let ac = null, start = 0, raf = 0;
+function loop() {
+  const t = ac.currentTime - start;
+  render(Math.max(0, t)); tcEl.textContent = tc(clamp(t, 0, DUR));
+  if (t < DUR) raf = requestAnimationFrame(loop);
+  else { playBtn.classList.remove('hidden'); playBtn.querySelector('.lbl').textContent = 'REPLAY'; }
+}
+function play() {
+  cancelAnimationFrame(raf);
+  if (ac) ac.close();
+  // iPhone: play Web Audio even when the ringer switch is on silent (Safari 16.4+)
+  try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
+  ac = new (window.AudioContext || window.webkitAudioContext)();
+  start = ac.currentTime + .12;
+  buildAudio(ac, start, ac.destination);
+  playBtn.classList.add('hidden');
+  raf = requestAnimationFrame(loop);
+}
+playBtn.addEventListener('click', play);
+replayBtn.addEventListener('click', play);
+
+const GLYPHS = 'NIGHTBUBLE夜空に無数のシャボン玉を。はじめての、なる学校・PTA地域イベントへ下関いっぱい開催実績会場人以上延べ来場者数も昼機材設営撤収まで一人で完結おじさんやまちゃん山西伸典その夜をきっとずっと覚えてるYスタジオ＋ナイトバブル事業部安岡小垢田山の田清末東部中向井本村泉幼稚園みそら保育園カオスやストリート彦島老公園駅前エキマ広場口県セミナーパーク0123456789+ /';
+const fontsReady = Promise.all([`700 100px Cinzel`, `500 100px Cinzel`, `900 100px 'Noto Serif JP'`, `700 100px 'Noto Serif JP'`, `500 100px 'Noto Serif JP'`, `700 100px 'Noto Sans JP'`, `400 100px 'Noto Sans JP'`]
+  .map(f => document.fonts.load(f, GLYPHS))).catch(() => {});
+const imgsReady = Promise.all(Object.values(IMG).map(i => new Promise(res => { if (i.complete) res(); else { i.onload = res; i.onerror = res; } })));
+Promise.all([fontsReady, imgsReady]).then(() => { buildLogo(); render(S[6] + BEAT * 3.5); });
+
+window.__showreel = { render, renderAudioWav, ready: Promise.all([fontsReady, imgsReady, document.fonts.ready]).then(buildLogo), DUR, FPS };
+})();
+</script>
+</body>
+</html>
