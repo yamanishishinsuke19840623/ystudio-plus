@@ -206,6 +206,41 @@ function photo(key, zoom = 1, dim = .18, dx = 0) {
   const p = P[key]; cover(p.img, dx, 0, W, H, p.fx, p.fy, zoom);
   if (dim) { ctx.fillStyle = `rgba(7,11,34,${dim})`; ctx.fillRect(0, 0, W, H); }
 }
+// a photo with camera motion: zoom, offset, roll
+function shot(key, o = {}) {
+  const p = P[key], z = o.zoom || 1;
+  ctx.save(); ctx.translate(CX + (o.dx || 0), CY + (o.dy || 0)); ctx.rotate(o.rot || 0); ctx.translate(-CX, -CY);
+  if (o.alpha != null) ctx.globalAlpha *= o.alpha;
+  cover(p.img, -W * .05, -H * .05, W * 1.1, H * 1.1, p.fx, p.fy, z);
+  ctx.fillStyle = `rgba(7,11,34,${o.dim == null ? .2 : o.dim})`; ctx.fillRect(-W, -H, W * 3, H * 3);
+  ctx.restore();
+}
+// per-character type that drops in, spins and bounces into place
+function kinetic(str, x, y, t0, t, o = {}) {
+  const chars = [...str], size = o.size || 90;
+  ctx.save(); ctx.font = `${o.weight || 900} ${size}px ${SERIF}`; ctx.letterSpacing = '0px';
+  const ws = chars.map(c => ctx.measureText(c).width), total = ws.reduce((a, b) => a + b, 0);
+  ctx.restore();
+  const sc = Math.min(1, (o.maxW || 1e9) / total);
+  let cx = x - total * sc / 2;
+  chars.forEach((c, k) => {
+    const st = t0 + k * .045, p = prog(t, st, st + .42), w = ws[k] * sc;
+    if (p > 0) {
+      const e = eOutBack(p, 2.6), f = 1 - eOutExpo(p);
+      ctx.save(); ctx.translate(cx + w / 2, y - f * 90); ctx.rotate(f * (k % 2 ? .5 : -.5)); ctx.scale(sc * e, sc * e);
+      txt(c, 0, 0, { size, weight: o.weight || 900, color: o.color, glow: o.glow, alpha: (o.alpha == null ? 1 : o.alpha) * clamp(p * 3) });
+      ctx.restore();
+    }
+    cx += w;
+  });
+}
+function lightLeak(ft, dur = .7) {       // warm sweep across a new shot
+  const p = prog(ft, 0, dur); if (p <= 0 || p >= 1) return;
+  const x = lerp(-W * .6, W * 1.6, eInOut(p));
+  const g = ctx.createLinearGradient(x - 380, 0, x + 380, H);
+  g.addColorStop(0, 'rgba(255,190,120,0)'); g.addColorStop(.5, 'rgba(255,200,140,.42)'); g.addColorStop(1, 'rgba(255,190,120,0)');
+  ctx.save(); ctx.globalCompositeOperation = 'screen'; ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); ctx.restore();
+}
 function burst(t0, t, x, y, a = 1) {
   const lt = t - t0; if (lt < 0 || lt > 2.4) return;
   BURST.forEach(b => {
@@ -347,48 +382,69 @@ function render(t) {
     heroBubble(t, 1 + inflate * .22, 1, .012 + inflate * .035);
     ctx.restore();
   } else if (t < T.fastEnd) {                         // POP → one photo per beat
-    const i = Math.min(FAST.length - 1, Math.floor((t - T.pop) / BEAT)), lt = t - T.pop - i * BEAT;
-    const z = i === 0 ? lerp(HERO.zoom, 1.14, eOutExpo(prog(lt, 0, .45))) : 1.14 - lt * .12, whip = i ? (1 - eOutExpo(prog(lt, 0, .18))) * (i % 2 ? 1 : -1) * 140 : 0;
+    const i = Math.min(FAST.length - 1, Math.floor((t - T.pop) / BEAT)), lt = t - T.pop - i * BEAT, dir = i % 2 ? 1 : -1;
+    const punch = eOutBack(prog(lt, 0, .3), 2.2);                                   // zoom punch on every beat
+    const z = (i === 0 ? lerp(HERO.zoom, 1.1, eOutExpo(prog(lt, 0, .45))) : lerp(1.34, 1.08, punch)) + lt * .1;
+    const rot = i ? (1 - eOutExpo(prog(lt, 0, .32))) * dir * .06 : 0;
+    const whip = i ? (1 - eOutExpo(prog(lt, 0, .22))) * dir * 300 : 0;
+    const sh = Math.max(0, 1 - lt / .22) * 16;                                         // hit shake
+    ctx.save(); ctx.translate(Math.sin(t * 93) * sh, Math.cos(t * 71) * sh);
     if (i % 2 === 0 && i > 0 && lt < .3) {           // every other cut: the new photo grows out of a bubble over the previous one
-      photo(FAST[i - 1], 1.14 - (BEAT + lt) * .12, .22);
+      const pl = BEAT + lt;
+      shot(FAST[i - 1], { zoom: lerp(1.34, 1.08, 1) + pl * .1 });
       const R = Math.hypot(W, H) * .5 * eOutExpo(prog(lt, 0, .3));
-      ctx.save(); ctx.beginPath(); ctx.arc(CX, CY, Math.max(1, R), 0, Math.PI * 2); ctx.clip(); photo(FAST[i], z, .22); ctx.restore();
+      ctx.save(); ctx.beginPath(); ctx.arc(CX, CY, Math.max(1, R), 0, Math.PI * 2); ctx.clip(); shot(FAST[i], { zoom: z, rot }); ctx.restore();
       bubble(CX, CY, R, 1 - prog(lt, .15, .3), t * 3, true);
-    } else photo(FAST[i], z, .22, whip);
+    } else {
+      if (Math.abs(whip) > 40) for (let k = 3; k >= 1; k--) shot(FAST[i], { zoom: z, rot, dx: whip + dir * k * 70, alpha: .22 });   // motion smear
+      shot(FAST[i], { zoom: z, rot, dx: whip });
+    }
+    ctx.restore();
+    const cf = Math.max(0, 1 - lt / .1) * (i ? .35 : 0);
+    if (cf) { ctx.save(); ctx.globalAlpha = cf; ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H); ctx.restore(); }
+    frontBokeh(t * 1.8, .9);
     floaters(t, .75);
     burst(T.pop, t, CX, CY - 40, 1);
     shatter(t - T.pop);
     // COPY 1
-    const a = eOutExpo(prog(t, 2.5, 3.0)) * (1 - prog(t, 5.1, 5.5));
-    if (a > 0) {
-      scrim(CY - 260, CY + 260, .75 * a);
-      const s = lerp(1.15, 1, eOutExpo(prog(t, 2.5, 3.1)));
-      ctx.save(); ctx.translate(CX - 45, CY); ctx.scale(s, s);
-      txt('はじめての夜に、', 0, -70, { size: 92, weight: 900, alpha: a, glow: 'rgba(160,200,255,.6)', maxW: SAFE.x1 - SAFE.x0 });
-      txt('なる。', 0, 70, { size: 92, weight: 900, color: C.gold2, alpha: eOutExpo(prog(t, 3.0, 3.5)) * (1 - prog(t, 5.1, 5.5)), glow: 'rgba(243,220,154,.6)' });
+    const out1 = 1 - prog(t, 5.1, 5.5);
+    if (t > 2.4) {
+      scrim(CY - 280, CY + 260, .75 * eOutExpo(prog(t, 2.4, 2.9)) * out1);
+      const drift = Math.sin(t * 3) * 6;
+      kinetic('はじめての夜に、', CX - 45, CY - 70 + drift, 2.5, t, { size: 92, glow: 'rgba(160,200,255,.6)', alpha: out1, maxW: SAFE.x1 - SAFE.x0 });
+      const nb = eOutBack(prog(t, 3.0, 3.35), 3.2);
+      ctx.save(); ctx.translate(CX - 45, CY + 75 + drift); ctx.scale(lerp(2.2, 1, nb), lerp(2.2, 1, nb));
+      txt('なる。', 0, 0, { size: 104, weight: 900, color: C.gold2, alpha: clamp(prog(t, 3.0, 3.15)) * out1, glow: 'rgba(243,220,154,.8)', blur: 40 });
       ctx.restore();
+      pop(CX - 45, CY + 75, 170, prog(t, 3.0, 3.5));
     }
   } else if (t < T.approachEnd) {                     // PATCHIN: a bubble drifts to the camera and pops
     nightBase(t);
     floaters(t, .5);
     const p = prog(t, T.fastEnd, T.approachEnd), e = eInExpo(p) * .85 + p * .15;
-    const r = lerp(90, Math.hypot(W, H) * .6, e), x = lerp(W * .35, CX, e), y = lerp(H * .7, CY, e) + Math.sin(t * 3) * 20 * (1 - e);
+    const r = lerp(90, Math.hypot(W, H) * .6, e), sw = (1 - e);
+    const x = lerp(W * .3, CX, e) + Math.sin(p * 9) * 170 * sw, y = lerp(H * .74, CY, e) + Math.cos(p * 7) * 110 * sw;
+    for (let k = 1; k <= 14; k++) {                    // sparkle trail
+      const q = Math.max(0, p - k * .018), ee = eInExpo(q) * .85 + q * .15, sww = 1 - ee;
+      sparkle(lerp(W * .3, CX, ee) + Math.sin(q * 9) * 170 * sww, lerp(H * .74, CY, ee) + Math.cos(q * 7) * 110 * sww, 14 - k * .7, (1 - k / 15) * .9);
+    }
     ctx.save(); ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.clip(); photo('n015', 1.3 - e * .3, .05); ctx.restore();
     bubble(x, y, r, 1, t);
   } else if (t < T.slowEnd) {                         // slow, warm montage: two beats per photo
     const lt = t - T.approachEnd, i = Math.min(SLOW.length - 1, Math.floor(lt / (BEAT * 2))), ft = lt - i * BEAT * 2;
-    if (i > 0 && ft < .35) { photo(SLOW[i - 1], 1.04 + (BEAT * 2 + ft) * .04, .2); ctx.globalAlpha = eInOut(ft / .35); }
-    photo(SLOW[i], 1.04 + ft * .04, .2);
-    ctx.globalAlpha = 1;
+    const mv = (k, f) => { const d = k % 2 ? 1 : -1; return { zoom: 1.1 + f * .08, dx: d * lerp(-70, 70, f / (BEAT * 2)), dy: -f * 30, rot: d * .015 * (f - .5) }; };
+    if (i > 0 && ft < .4) { shot(SLOW[i - 1], mv(i - 1, BEAT * 2 + ft)); shot(SLOW[i], { ...mv(i, ft), alpha: eInOut(ft / .4) }); }
+    else shot(SLOW[i], mv(i, ft));
+    lightLeak(ft);
     floaters(t, .8);
     pop(CX, CY, Math.hypot(W, H) * .6, prog(t, T.approachEnd, T.approachEnd + .5));
     burst(T.approachEnd, t, CX, CY, .9);
     // COPY 2
-    const a1 = eOutExpo(prog(t, 10.0, 10.5)), a2 = eOutExpo(prog(t, 10.5, 11.0)), out = prog(t, 12.2, 12.5);
-    if (a1 > 0) {
-      scrim(CY - 240, CY + 240, .8 * a1 * (1 - out));
-      txt('その夜を、', CX - 45, CY - 60, { size: 84, weight: 700, alpha: a1 * (1 - out), maxW: SAFE.x1 - SAFE.x0 });
-      txt('きっとずっと覚えてる。', CX - 45, CY + 60, { size: 84, weight: 700, color: C.gold2, alpha: a2 * (1 - out), maxW: SAFE.x1 - SAFE.x0 });
+    const out = 1 - prog(t, 12.2, 12.5);
+    if (t > 9.9) {
+      scrim(CY - 250, CY + 250, .8 * eOutExpo(prog(t, 9.9, 10.4)) * out);
+      kinetic('その夜を、', CX - 45, CY - 60, 10.0, t, { size: 84, weight: 700, alpha: out, maxW: SAFE.x1 - SAFE.x0 });
+      kinetic('きっとずっと覚えてる。', CX - 45, CY + 60, 10.45, t, { size: 84, weight: 700, color: C.gold2, alpha: out, glow: 'rgba(243,220,154,.5)', maxW: SAFE.x1 - SAFE.x0 });
     }
   } else {                                            // LOGO, then back to the hook for a seamless loop
     const u = t - DUR;                                   // ambient time runs up to 0 so frame 15.0 == frame 0.0
@@ -404,6 +460,10 @@ function render(t) {
       ctx.restore();
     }
     pop(CX - 45, CY - 60, 320, prog(t, T.slowEnd, T.slowEnd + .7));
+    for (let k = 0; k < 9; k++) {                     // bubbles orbit the logo
+      const ang = t * (1.1 + k * .05) + k * .7, rr = 360 + (k % 3) * 60;
+      bubble(CX - 45 + Math.cos(ang) * rr, CY - 60 + Math.sin(ang) * rr * .55, 16 + (k % 4) * 10, lp * .9, t + k);
+    }
     if (hp > 0) heroBubble(u, hp, Math.min(1, hp * 1.4));
   }
 
