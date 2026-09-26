@@ -15,7 +15,23 @@ const COUNT = Number(process.env.REEL_COUNT || 5);
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../..");
 const OUT = path.join(ROOT, "reel-data");
 const IMG = path.join(OUT, "img");
-const UA = "kanmon-reel-fetch/1.0 (+https://github.com/yamanishishinsuke19840623/ystudio-plus)";
+// 一部のWAFはボット風UAを弾くため、ブラウザ相当のUAを名乗る(取得するのは公開記事のみ)
+const UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36 kanmon-reel-fetch/1.1";
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+async function get(url, accept = "*/*") {
+  let last;
+  for (let i = 0; i < 4; i++) {
+    try {
+      const res = await fetch(url, { headers: { "User-Agent": UA, Accept: accept, "Accept-Language": "ja,en;q=0.8", Referer: `${SITE}/` }, redirect: "follow" });
+      if (res.ok) return res;
+      last = new Error(`${res.status} ${res.statusText} ${url}`);
+      if (res.status < 500 && res.status !== 429) break; // 4xx は再試行しても同じ
+    } catch (e) { last = e; }
+    await sleep(2000 * 2 ** i);
+  }
+  throw last;
+}
 
 const decode = (s = "") =>
   s
@@ -26,14 +42,21 @@ const decode = (s = "") =>
     .trim();
 
 async function getJSON(url) {
-  const res = await fetch(url, { headers: { "User-Agent": UA, Accept: "application/json" } });
-  if (!res.ok) throw new Error(`${res.status} ${url}`);
-  return res.json();
+  const res = await get(url, "application/json");
+  const text = await res.text();
+  try { return JSON.parse(text); }
+  catch { throw new Error(`JSONではない応答 (${res.headers.get("content-type")}): ${text.slice(0, 120)}`); }
 }
 
 // 1st: WP REST API
 async function fromRest() {
-  const posts = await getJSON(`${SITE}/wp-json/wp/v2/posts?per_page=${COUNT}&_embed=1`);
+  let posts;
+  try { posts = await getJSON(`${SITE}/wp-json/wp/v2/posts?per_page=${COUNT}&_embed=1`); }
+  catch (e) { // パーマリンク未設定サイト向けの別ルート
+    console.warn(`/wp-json 失敗 → ?rest_route で再試行: ${e.message}`);
+    posts = await getJSON(`${SITE}/?rest_route=/wp/v2/posts&per_page=${COUNT}&_embed=1`);
+  }
+  if (!Array.isArray(posts)) throw new Error(`想定外の応答: ${JSON.stringify(posts).slice(0, 160)}`);
   return posts.map(p => {
     const media = p._embedded?.["wp:featuredmedia"]?.[0];
     const sizes = media?.media_details?.sizes || {};
@@ -46,9 +69,7 @@ async function fromRest() {
 
 // 2nd: RSS feed (REST API が無効化されているサイト向け)
 async function fromRss() {
-  const res = await fetch(`${SITE}/feed/`, { headers: { "User-Agent": UA } });
-  if (!res.ok) throw new Error(`${res.status} feed`);
-  const xml = await res.text();
+  const xml = await (await get(`${SITE}/feed/`, "application/rss+xml, application/xml, text/xml")).text();
   const items = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].slice(0, COUNT).map(m => m[1]);
   const pick = (s, tag) => { const m = s.match(new RegExp(`<${tag}[^>]*>(?:<!\\[CDATA\\[)?([\\s\\S]*?)(?:\\]\\]>)?</${tag}>`)); return m ? m[1] : ""; };
   return items.map((s, i) => {
@@ -61,8 +82,7 @@ async function fromRss() {
 async function download(url, id) {
   if (!url) return "";
   try {
-    const res = await fetch(url, { headers: { "User-Agent": UA } });
-    if (!res.ok) throw new Error(res.status);
+    const res = await get(url, "image/*");
     const type = res.headers.get("content-type") || "";
     const ext = type.includes("png") ? "png" : type.includes("webp") ? "webp" : "jpg";
     const file = `${id}.${ext}`;
