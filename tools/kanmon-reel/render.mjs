@@ -1,7 +1,8 @@
 // kanmon-reel.html を1コマずつ描画して MP4 と投稿文を作る(ブラウザ録画より確実・なめらか)。
 //   node tools/kanmon-reel/render.mjs
 // 環境変数:
-//   REEL_FEEDS  作るリール。"データファイル:本数" をカンマ区切り (既定: posts.json:3)
+//   REEL_FEEDS  作るリール。"カテゴリのスラッグ:本数" をカンマ区切り (既定: gourmet:3)
+//               new = 新着(全カテゴリ)。データファイル名(cat-5.json など)も指定可
 //   REEL_FPS    フレームレート (既定: 30)
 //   FFMPEG      ffmpeg のパス (既定: ffmpeg)
 // 出力: reel-out/<slug>.mp4 / <slug>.jpg(カバー) / <slug>.txt(投稿文) / manifest.json
@@ -18,7 +19,7 @@ const OUT = path.join(ROOT, "reel-out");
 const FPS = Number(process.env.REEL_FPS || 30);
 const DUR = 15;
 const FFMPEG = process.env.FFMPEG || "ffmpeg";
-const FEEDS = (process.env.REEL_FEEDS || "posts.json:3").split(",").map(s => s.trim()).filter(Boolean).map(s => {
+const FEEDS = (process.env.REEL_FEEDS || "gourmet:3").split(",").map(s => s.trim()).filter(Boolean).map(s => {
   const [file, count = "3"] = s.split(":"); return { file, count: Number(count) };
 });
 
@@ -50,7 +51,18 @@ export function buildCaption(data, n) {
   return `${head}\n\n${body}\n\n記事の続きは kanmonnote.com で公開中です。\n\n${tags}\n`;
 }
 
-async function renderFeed(page, base, { file, count }) {
+// "gourmet" → reel-data/categories.json から cat-<id>.json を引く / "new" → posts.json
+async function resolveFeed(name) {
+  if (name === "new") return "posts.json";
+  if (/^(posts|cat-\d+)\.json$/.test(name)) return name;
+  const { categories } = JSON.parse(await readFile(path.join(ROOT, "reel-data", "categories.json"), "utf8"));
+  const c = categories.find(c => c.slug === name || c.name === name);
+  if (!c) throw new Error(`カテゴリ「${name}」が reel-data/categories.json にありません(あるもの: ${categories.map(c => c.slug).join(", ")})`);
+  return c.file;
+}
+
+async function renderFeed(page, base, feed) {
+  const file = await resolveFeed(feed.file), count = feed.count;
   const data = JSON.parse(await readFile(path.join(ROOT, "reel-data", file), "utf8"));
   const slug = data.category ? data.category.slug : "new";
   await page.goto(`${base}/kanmon-reel.html?feed=${file}&count=${count}`, { waitUntil: "domcontentloaded" });

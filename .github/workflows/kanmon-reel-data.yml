@@ -11,9 +11,9 @@ on:
         type: boolean
         default: false
       feeds:
-        description: "作るリール(データファイル:本数 をカンマ区切り)"
+        description: "作るリール(カテゴリのスラッグ:本数 をカンマ区切り。new=新着全カテゴリ)"
         type: string
-        default: "posts.json:3"
+        default: "gourmet:3"
   # 取得・生成スクリプト/このワークフローを変更したら、そのブランチで作り直す(投稿はしない)
   push:
     paths:
@@ -31,7 +31,8 @@ jobs:
     permissions:
       contents: write
     env:
-      REEL_FEEDS: ${{ inputs.feeds || vars.REEL_FEEDS || 'posts.json:3' }}
+      # 定番はグルメ。イベント記事は開催日が過ぎると告知として古くなるため既定から外している
+      REEL_FEEDS: ${{ inputs.feeds || vars.REEL_FEEDS || 'gourmet:3' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
