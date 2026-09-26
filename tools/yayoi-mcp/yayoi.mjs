@@ -35,11 +35,16 @@ export function resolveInDataDir(file) {
 
 // ---------- CSV ----------
 
-export function decode(buf) {
-  if (buf[0] === 0xef && buf[1] === 0xbb && buf[2] === 0xbf) return buf.subarray(3).toString("utf8");
-  const utf8 = buf.toString("utf8");
+export function detectEncoding(buf) {
+  if (buf[0] === 0xef && buf[1] === 0xbb && buf[2] === 0xbf) return "UTF-8(BOM)";
   // 不正なUTF-8バイト列が含まれていれば Shift_JIS（弥生の標準）とみなす
-  return utf8.includes("�") ? iconv.decode(buf, "Shift_JIS") : utf8;
+  return buf.toString("utf8").includes("\uFFFD") ? "Shift_JIS" : "UTF-8";
+}
+
+export function decode(buf) {
+  const enc = detectEncoding(buf);
+  if (enc === "UTF-8(BOM)") return buf.subarray(3).toString("utf8");
+  return enc === "Shift_JIS" ? iconv.decode(buf, "Shift_JIS") : buf.toString("utf8");
 }
 
 export function parseCsv(text) {
@@ -111,6 +116,60 @@ export function rowsToLines(rows) {
 export function readJournal(file) {
   const buf = fs.readFileSync(resolveInDataDir(file));
   return rowsToLines(parseCsv(decode(buf)));
+}
+
+/**
+ * CSVが弥生インポート形式として読めているかを点検する。
+ * 列数・識別フラグ・日付・貸借一致をチェックし、先頭行を項目名つきで返す。
+ */
+export function inspectJournal(file, { sample = 3 } = {}) {
+  const buf = fs.readFileSync(resolveInDataDir(file));
+  const rows = parseCsv(decode(buf));
+  const hasHeader = rows.length > 0 && !/^\d+$/.test(rows[0][0]?.trim());
+  const body = hasHeader ? rows.slice(1) : rows;
+  const lines = rowsToLines(rows);
+  const warnings = [];
+  const warn = (msg) => { if (warnings.length < 30) warnings.push(msg); };
+
+  const colCounts = {};
+  body.forEach((r) => { colCounts[r.length] = (colCounts[r.length] ?? 0) + 1; });
+  for (const n of Object.keys(colCounts)) {
+    if (n !== "25" && n !== "27") warn(`列数が ${n} の行が ${colCounts[n]} 行あります（弥生インポート形式は25列、取引先のインボイス情報つきは27列）`);
+  }
+
+  const known = new Set(Object.values(FLAG));
+  let open = null;
+  const closeEntry = (endRow) => {
+    if (open && open.debit !== open.credit) warn(`${open.start}〜${endRow}行目の複合仕訳: 借方 ${open.debit} と貸方 ${open.credit} が一致しません`);
+    open = null;
+  };
+  for (const l of lines) {
+    if (!known.has(l.flag)) warn(`${l.row}行目: 識別フラグ「${l.flag}」は想定外です`);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(l.date)) warn(`${l.row}行目: 日付「${l.date}」を解釈できません`);
+    if (l.flag === FLAG.SINGLE) {
+      if (l.debit.amount !== l.credit.amount) warn(`${l.row}行目: 借方 ${l.debit.amount} と貸方 ${l.credit.amount} が一致しません`);
+      continue;
+    }
+    if (l.flag === FLAG.FIRST) { closeEntry(l.row - 1); open = { start: l.row, debit: 0, credit: 0 }; }
+    if (open) {
+      open.debit += l.debit.amount;
+      open.credit += l.credit.amount;
+      if (l.flag === FLAG.LAST) closeEntry(l.row);
+    }
+  }
+  closeEntry(lines.length);
+
+  const dates = lines.map((l) => l.date).filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d)).sort();
+  return {
+    encoding: detectEncoding(buf),
+    hasHeader,
+    rowCount: lines.length,
+    columnCounts: colCounts,
+    period: dates.length ? { from: dates[0], to: dates.at(-1) } : null,
+    ok: warnings.length === 0,
+    warnings,
+    sample: body.slice(0, sample).map((r) => Object.fromEntries(COLUMNS.map((c, i) => [c, r[i] ?? ""]))),
+  };
 }
 
 export function filterLines(lines, { from, to, account, keyword } = {}) {
@@ -224,6 +283,14 @@ export function entriesToRows(entries) {
     e.lines.forEach((l, i) => {
       if (!l.debit?.account || !l.credit?.account) {
         throw new Error(`${label} ${i + 1}行目: 借方・貸方の両方に科目を指定してください（例: 手数料330円なら 借方 支払手数料 330／貸方 売掛金 330）`);
+      }
+    });
+    // 税区分は弥生の必須項目。表記は環境で変わるため既定値は置かない
+    e.lines.forEach((l, i) => {
+      for (const [name, sd] of [["借方", l.debit], ["貸方", l.credit]]) {
+        if (!sd.taxCategory) {
+          throw new Error(`${label} ${i + 1}行目の${name}「${sd.account}」: 税区分は必須です（課税対象外の科目も「対象外」などの表記が必要）。list_accounts で既存の表記を確認してください`);
+        }
       }
     });
     const dt = e.lines.reduce((s, l) => s + (l.debit?.amount ?? 0), 0);

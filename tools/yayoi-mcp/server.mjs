@@ -8,7 +8,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import fs from "node:fs";
 import {
-  dataDir, readJournal, filterLines, summarizeByAccount, monthlySummary, findDuplicates, listAccounts, writeJournalCsv,
+  dataDir, inspectJournal, readJournal, filterLines, summarizeByAccount, monthlySummary, findDuplicates, listAccounts, writeJournalCsv,
 } from "./yayoi.mjs";
 
 const server = new McpServer({ name: "yayoi-mcp", version: "0.1.0" });
@@ -31,6 +31,13 @@ server.tool(
     dataDir: dataDir(),
     files: fs.readdirSync(dataDir()).filter((f) => /\.(csv|txt)$/i.test(f)),
   }),
+);
+
+server.tool(
+  "inspect_csv",
+  "CSVが弥生インポート形式として正しく読めているか点検する（文字コード・列数・識別フラグ・日付・貸借一致）。初めて扱うファイルは他のツールより先にこれを使う",
+  { file: fileArg, sample: z.number().int().min(0).max(20).default(3).describe("項目名つきで表示する先頭行数") },
+  async ({ file, sample }) => json(inspectJournal(file, { sample })),
 );
 
 server.tool(
@@ -78,7 +85,7 @@ const side = z.object({
   account: z.string().describe("勘定科目（弥生に登録済みの名称と完全一致させる）"),
   subAccount: z.string().optional(),
   department: z.string().optional(),
-  taxCategory: z.string().optional().describe("税区分（例: 課対仕入10%）。list_accounts で既存の表記を確認"),
+  taxCategory: z.string().optional().describe("税区分（弥生では必須）。表記は税区分・税率・入力方式の組み合わせで環境により異なるため、list_accounts で既存の表記を確認してそのまま使う"),
   amount: z.number().int().nonnegative(),
   tax: z.number().int().nonnegative().optional(),
 });
