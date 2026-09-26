@@ -221,7 +221,7 @@ function scrim(y0, y1, a = .7) {   // darkens behind copy so it stays readable o
 }
 
 // ---------- HERO BUBBLE: the hook frame (also the last frame, so the reel loops seamlessly) ----------
-const HERO = { key: 'n09', r: 470, zoom: 1.35 };
+const HERO = { key: 'n09', r: 360, zoom: 1.3 };
 const film = document.createElement('canvas'); film.width = film.height = 1100;
 function wobPath(x, y, r, u, amp) {
   const p = new Path2D();
@@ -233,7 +233,7 @@ function wobPath(x, y, r, u, amp) {
   }
   p.closePath(); return p;
 }
-function heroBubble(u, scale = 1, a = 1, amp = .012) {
+function heroBubble(u, scale = 1, a = 1, amp = .012, withPhoto = false) {
   const r = HERO.r * scale, x = CX + Math.sin(u * 1.7) * 10, y = CY - 40 + Math.sin(u * 2.4) * 14;
   const path = wobPath(x, y, r, u, amp);
   ctx.save(); ctx.globalAlpha = a;
@@ -243,23 +243,29 @@ function heroBubble(u, scale = 1, a = 1, amp = .012) {
   ctx.fillStyle = halo; ctx.fillRect(x - r * 1.5, y - r * 1.5, r * 3, r * 3);
   // the world inside, refracted: full-frame photo (same framing as the frame after the pop) + a magnified core
   ctx.save(); ctx.clip(path);
-  cover(P[HERO.key].img, 0, 0, W, H, P[HERO.key].fx, .5, HERO.zoom);
-  ctx.save(); ctx.beginPath(); ctx.arc(x, y, r * .7, 0, Math.PI * 2); ctx.clip(); ctx.globalAlpha *= .5;
-  cover(P[HERO.key].img, 0, 0, W, H, P[HERO.key].fx, .5, HERO.zoom * 1.14); ctx.restore();
+  if (withPhoto) {
+    cover(P[HERO.key].img, 0, 0, W, H, P[HERO.key].fx, .5, HERO.zoom);
+    ctx.save(); ctx.beginPath(); ctx.arc(x, y, r * .7, 0, Math.PI * 2); ctx.clip(); ctx.globalAlpha *= .5;
+    cover(P[HERO.key].img, 0, 0, W, H, P[HERO.key].fx, .5, HERO.zoom * 1.14); ctx.restore();
+  } else {
+    // a clear bubble: the upside-down moon and a few stars refracted inside it
+    ctx.save(); ctx.translate(x - r * .3, y + r * .38); ctx.scale(1, -1); ctx.globalAlpha *= .55; moon(0, 0, r * .13, 1); ctx.restore();
+    for (let i = 0; i < 9; i++) sparkle(x + Math.cos(i * 2.4) * r * .6, y + Math.sin(i * 1.7) * r * .55, 5 + (i % 3) * 3, .35 + .35 * Math.sin(u * 4 + i));
+  }
   const edge = ctx.createRadialGradient(x, y, r * .55, x, y, r * 1.02);
-  edge.addColorStop(0, 'rgba(7,11,34,0)'); edge.addColorStop(1, 'rgba(7,11,34,.6)');
+  edge.addColorStop(0, 'rgba(7,11,34,0)'); edge.addColorStop(1, withPhoto ? 'rgba(7,11,34,.6)' : 'rgba(120,160,255,.18)');
   ctx.fillStyle = edge; ctx.fillRect(x - r * 1.1, y - r * 1.1, r * 2.2, r * 2.2);
   // soap film: two counter-rotating iridescent swirls, strongest near the rim
   const fg = film.getContext('2d'), F = film.width, fc = F / 2, fr = F / 2 - 10;
   fg.globalCompositeOperation = 'source-over'; fg.clearRect(0, 0, F, F);
-  [[-.22, .12, u * .7, .5], [.25, -.16, -u * 1.1, .38]].forEach(([ox, oy, ang, al]) => {
+  [[-.22, .12, u * .7, withPhoto ? .5 : .75], [.25, -.16, -u * 1.1, withPhoto ? .38 : .6]].forEach(([ox, oy, ang, al]) => {
     const cg = fg.createConicGradient(ang, fc + ox * fr, fc + oy * fr);
     ['#ff6ad5', '#6ae3ff', '#fff38a', '#8a7dff', '#6affc2', '#ff9a6a', '#ff6ad5'].forEach((c, i, arr) => cg.addColorStop(i / (arr.length - 1), c));
     fg.globalAlpha = al; fg.fillStyle = cg; fg.fillRect(0, 0, F, F);
   });
   fg.globalAlpha = 1; fg.globalCompositeOperation = 'destination-in';
   const m = fg.createRadialGradient(fc, fc, fr * .35, fc, fc, fr);
-  m.addColorStop(0, 'rgba(0,0,0,.05)'); m.addColorStop(.75, 'rgba(0,0,0,.35)'); m.addColorStop(1, 'rgba(0,0,0,.95)');
+  m.addColorStop(0, `rgba(0,0,0,${withPhoto ? .05 : .12})`); m.addColorStop(.75, `rgba(0,0,0,${withPhoto ? .35 : .5})`); m.addColorStop(1, 'rgba(0,0,0,.95)');
   fg.fillStyle = m; fg.fillRect(0, 0, F, F);
   ctx.globalCompositeOperation = 'screen'; ctx.drawImage(film, x - r, y - r, r * 2, r * 2);
   ctx.restore();
@@ -283,6 +289,20 @@ function heroBubble(u, scale = 1, a = 1, amp = .012) {
   ctx.restore();
   ctx.restore();
   return { x, y, r };
+}
+// crisp bubbles flying out of the night toward the camera — periodic in u, so the loop is seamless
+const TUNNEL = (() => { const r = rng(91); return Array.from({ length: 150 }, () => ({ x: (r() - .5) * 3.2, y: (r() - .5) * 4.2, z: r() * 6, r: 26 + r() * 64, sp: r() * 6 })); })();
+function tunnel(u) {
+  const list = TUNNEL.map(b => {
+    const z = ((b.z - u * 1.8) % 6 + 6) % 6 + .2;
+    return { b, z };
+  }).sort((a, c) => c.z - a.z);
+  list.forEach(({ b, z }) => {
+    const px = CX + b.x * W * .5 / z, py = CY - 40 + b.y * W * .5 / z, rr = b.r / z;
+    const a = clamp((6 - z) / 1.5) * clamp((rr > 260 ? 1 - (rr - 260) / 320 : 1));
+    if (a <= 0 || px < -rr || px > W + rr || py < -rr || py > H + rr) return;
+    bubble(px, py, rr, a, b.sp + u);
+  });
 }
 // out-of-focus bubbles drifting in front of the lens (depth)
 const FRONT = (() => { const r = rng(55); return Array.from({ length: 6 }, (_, i) => ({ y: 200 + r() * (H - 400), r: 70 + r() * 110, v: (i % 2 ? 1 : -1) * (160 + r() * 200), ph: r() * W })); })();
@@ -318,13 +338,14 @@ function render(t) {
 
   if (t < T.pop) {                                   // HOOK: a bubble with the night inside
     nightBase(t);
-    floaters(t, .45);
+    moon(W * .74, H * .15, 130, 1);
+    const warp = t + 3.2 * eInExpo(prog(t, .7, T.pop));                                  // the tunnel rushes in before the pop
+    tunnel(warp);
     const beatKick = Math.exp(-((t % BEAT) / BEAT) * 5) * (t < T.pop - .45 ? 1 : 0);      // squash on every beat
     const inflate = eInExpo(prog(t, T.pop - .45, T.pop));                                  // tension right before the pop
     ctx.save(); ctx.translate(CX, CY - 40); ctx.scale(1 + beatKick * .025, 1 - beatKick * .025); ctx.translate(-CX, -(CY - 40));
-    heroBubble(t, 1 + inflate * .16, 1, .012 + inflate * .03);
+    heroBubble(t, 1 + inflate * .22, 1, .012 + inflate * .035);
     ctx.restore();
-    frontBokeh(t);
   } else if (t < T.fastEnd) {                         // POP → one photo per beat
     const i = Math.min(FAST.length - 1, Math.floor((t - T.pop) / BEAT)), lt = t - T.pop - i * BEAT;
     const z = i === 0 ? lerp(HERO.zoom, 1.14, eOutExpo(prog(lt, 0, .45))) : 1.14 - lt * .12, whip = i ? (1 - eOutExpo(prog(lt, 0, .18))) * (i % 2 ? 1 : -1) * 140 : 0;
@@ -372,7 +393,10 @@ function render(t) {
   } else {                                            // LOGO, then back to the hook for a seamless loop
     const u = t - DUR;                                   // ambient time runs up to 0 so frame 15.0 == frame 0.0
     nightBase(u);
-    floaters(u, .45);
+    const hp = eOutExpo(prog(t, T.logoEnd, DUR));
+    moon(W * .74, H * .15, 130, hp);
+    if (hp > 0) { ctx.save(); ctx.globalAlpha = hp; tunnel(u); ctx.restore(); }
+    floaters(u, .45 * (1 - hp));
     const lp = eOutExpo(prog(t, T.slowEnd, T.slowEnd + .6)) * (1 - eInOut(prog(t, T.logoEnd - .2, T.logoEnd + .4)));
     if (lp > 0 && logoCut.width) {
       ctx.save(); ctx.globalAlpha = lp; ctx.globalCompositeOperation = 'lighten';
@@ -380,8 +404,7 @@ function render(t) {
       ctx.restore();
     }
     pop(CX - 45, CY - 60, 320, prog(t, T.slowEnd, T.slowEnd + .7));
-    const hp = eOutExpo(prog(t, T.logoEnd, DUR));
-    if (hp > 0) { heroBubble(u, hp, Math.min(1, hp * 1.4)); frontBokeh(u, hp); }
+    if (hp > 0) heroBubble(u, hp, Math.min(1, hp * 1.4));
   }
 
   // transitions
