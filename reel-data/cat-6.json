@@ -1,0 +1,57 @@
+{
+  "site": "https://www.kanmonnote.com",
+  "source": "rest",
+  "fetchedAt": "2026-09-26T11:46:41.049Z",
+  "category": {
+    "id": 6,
+    "name": "イベント",
+    "slug": "event"
+  },
+  "posts": [
+    {
+      "id": 47719,
+      "title": "【イベント】9月19日子どもの「できた！」「たのしい！」があふれる体験型イベントが開催されます",
+      "date": "2026-09-17T14:34:29",
+      "link": "https://www.kanmonnote.com/0919miyell/",
+      "category": "イベント",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/09/IMG_5453-768x1086.jpeg",
+      "localImage": "img/47719.jpg"
+    },
+    {
+      "id": 47685,
+      "title": "【イベント】かつて服を仕立てた洋裁店が、まちの未来をつくる新拠点に！オープニングイベント開催",
+      "date": "2026-09-13T12:00:13",
+      "link": "https://www.kanmonnote.com/tailors-open/",
+      "category": "イベント",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/09/IMG_5364-768x576.jpeg",
+      "localImage": "img/47685.jpg"
+    },
+    {
+      "id": 47588,
+      "title": "【イベント】県内外からプロのハンドメイドクリエイターが2日間で延べ160店舗が集まる下関最大級のマルシェイベント開催！",
+      "date": "2026-08-09T18:24:21",
+      "link": "https://www.kanmonnote.com/kaikyomarche2026/",
+      "category": "イベント",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/08/IMG_3810-768x1086.jpg",
+      "localImage": "img/47588.jpg"
+    },
+    {
+      "id": 47270,
+      "title": "【イベント】6月27日、子どもの「できた！」「たのしい！」があふれる体験型イベントが開催されます",
+      "date": "2026-06-22T19:30:58",
+      "link": "https://www.kanmonnote.com/20260627miyell/",
+      "category": "イベント",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/06/IMG_2967-768x1086.jpeg",
+      "localImage": "img/47270.jpg"
+    },
+    {
+      "id": 45945,
+      "title": "【イベント】国際女性DAYに合わせ、3月7日、8日は街を彩る「街角ミモザプロジェクト」開催！",
+      "date": "2026-03-05T11:30:20",
+      "link": "https://www.kanmonnote.com/202603mimoza/",
+      "category": "イベント",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/03/IMG_0842-768x577.jpeg",
+      "localImage": "img/45945.jpg"
+    }
+  ]
+}

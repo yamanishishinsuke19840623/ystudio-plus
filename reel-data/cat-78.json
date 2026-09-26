@@ -1,0 +1,57 @@
+{
+  "site": "https://www.kanmonnote.com",
+  "source": "rest",
+  "fetchedAt": "2026-09-26T11:46:41.049Z",
+  "category": {
+    "id": 78,
+    "name": "カフェ",
+    "slug": "cafe"
+  },
+  "posts": [
+    {
+      "id": 45583,
+      "title": "【まとめ】下関のお店、年末年始の営業日！",
+      "date": "2025-12-22T18:59:41",
+      "link": "https://www.kanmonnote.com/2026information/",
+      "category": "お店（飲食以外）",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2025/12/33979239_s.jpeg",
+      "localImage": "img/45583.jpg"
+    },
+    {
+      "id": 44464,
+      "title": "【城下町長府ひなまつり】 The Little Coffee Stand",
+      "date": "2025-02-13T00:27:20",
+      "link": "https://www.kanmonnote.com/%e3%80%90%e5%9f%8e%e4%b8%8b%e7%94%ba%e9%95%b7%e5%ba%9c%e3%81%b2%e3%81%aa%e3%81%be%e3%81%a4%e3%82%8a%e3%80%91-the-little-coffee-stand/",
+      "category": "カフェ",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2025/02/TheLittleCoffeeStand-768x576.jpg",
+      "localImage": "img/44464.jpg"
+    },
+    {
+      "id": 44477,
+      "title": "【城下町長府ひなまつり】三瓶珈琲",
+      "date": "2025-02-12T23:52:34",
+      "link": "https://www.kanmonnote.com/sanpei-chofu/",
+      "category": "お土産",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2025/02/IMG_4436.jpg",
+      "localImage": "img/44477.jpg"
+    },
+    {
+      "id": 44484,
+      "title": "【城下町長府ひなまつり】リエーヴルブラン",
+      "date": "2025-02-12T23:51:30",
+      "link": "https://www.kanmonnote.com/lievreblanc-chofu/",
+      "category": "カフェ",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2025/02/IMG_1384.jpg",
+      "localImage": "img/44484.jpg"
+    },
+    {
+      "id": 44491,
+      "title": "【城下町長府ひなまつり】ホンキートンク2",
+      "date": "2025-02-12T23:51:00",
+      "link": "https://www.kanmonnote.com/honky-chofu/",
+      "category": "カフェ",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2025/02/IMG_2002.jpg",
+      "localImage": "img/44491.jpg"
+    }
+  ]
+}

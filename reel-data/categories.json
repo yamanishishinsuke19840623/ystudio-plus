@@ -1,0 +1,61 @@
+{
+  "fetchedAt": "2026-09-26T11:46:41.049Z",
+  "categories": [
+    {
+      "id": 5,
+      "name": "グルメ",
+      "slug": "gourmet",
+      "count": 502,
+      "file": "cat-5.json"
+    },
+    {
+      "id": 6,
+      "name": "イベント",
+      "slug": "event",
+      "count": 263,
+      "file": "cat-6.json"
+    },
+    {
+      "id": 1,
+      "name": "お店（飲食以外）",
+      "slug": "shop",
+      "count": 262,
+      "file": "cat-1.json"
+    },
+    {
+      "id": 84,
+      "name": "観光",
+      "slug": "tourism",
+      "count": 256,
+      "file": "cat-84.json"
+    },
+    {
+      "id": 82,
+      "name": "生活",
+      "slug": "life",
+      "count": 193,
+      "file": "cat-82.json"
+    },
+    {
+      "id": 81,
+      "name": "食事",
+      "slug": "dish",
+      "count": 177,
+      "file": "cat-81.json"
+    },
+    {
+      "id": 13,
+      "name": "占い",
+      "slug": "fortune",
+      "count": 161,
+      "file": "cat-13.json"
+    },
+    {
+      "id": 78,
+      "name": "カフェ",
+      "slug": "cafe",
+      "count": 161,
+      "file": "cat-78.json"
+    }
+  ]
+}
