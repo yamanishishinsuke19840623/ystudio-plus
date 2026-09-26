@@ -2,7 +2,9 @@
 //   node tools/kanmon-reel/publish-instagram.mjs new
 // 必要な環境変数(GitHub の Secrets に登録):
 //   IG_USER_ID       Instagram プロアカウント(ビジネス/クリエイター)の ID
-//   IG_ACCESS_TOKEN  instagram_content_publish 権限つきの長期アクセストークン
+//   IG_ACCESS_TOKEN  投稿権限つきの長期アクセストークン。次のどちらでもよい(自動で判別)
+//                    - Instagramログイン版(IGAA… で始まる / 権限 instagram_business_content_publish)→ graph.instagram.com
+//                    - Facebookログイン版(EAA… で始まる / 権限 instagram_content_publish)→ graph.facebook.com
 // 任意:
 //   PUBLIC_BASE      動画を公開しているサイト (既定: https://ystudio.yamanisi.co.jp)
 //   GRAPH_VERSION    Graph API のバージョン (既定: v23.0)
@@ -17,7 +19,8 @@ const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../.
 const slug = process.argv[2] || "new";
 const { IG_USER_ID, IG_ACCESS_TOKEN } = process.env;
 const BASE = (process.env.PUBLIC_BASE || "https://ystudio.yamanisi.co.jp").replace(/\/+$/, "");
-const GRAPH = `https://graph.facebook.com/${process.env.GRAPH_VERSION || "v23.0"}`;
+const HOST = (IG_ACCESS_TOKEN || "").startsWith("IG") ? "graph.instagram.com" : "graph.facebook.com";
+const GRAPH = `https://${HOST}/${process.env.GRAPH_VERSION || "v23.0"}`;
 const DRY = process.env.DRY_RUN === "1";
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
@@ -54,6 +57,7 @@ async function main() {
     console.log("公開URLへの反映待ち…"); await sleep(20000);
   }
 
+  console.log(`API: ${HOST}`);
   const { id: creation } = await graph("POST", `${IG_USER_ID}/media`, { media_type: "REELS", video_url: videoUrl, cover_url: coverUrl, caption, share_to_feed: "true" });
   console.log(`コンテナ作成: ${creation}`);
   for (let i = 0; ; i++) {
