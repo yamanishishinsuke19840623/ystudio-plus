@@ -41,6 +41,11 @@ h1{font-family:var(--f-disp);font-weight:400;font-size:clamp(30px,5.4vw,56px);li
 
 .stage{position:relative;width:100%;aspect-ratio:16/9;max-width:100%;background:#000;border-radius:6px;overflow:hidden;border:1px solid var(--line);}
 .stage canvas{display:block;width:100%;height:100%;}
+.stage.vert{aspect-ratio:9/16;width:auto;height:min(78vh,760px);margin-inline:auto;}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;}
+.seg button{appearance:none;border:0;background:var(--panel);color:var(--sub);font:inherit;font-size:13px;padding:8px 12px;cursor:pointer;min-height:38px;}
+.seg button[aria-pressed="true"]{background:var(--panel2);color:var(--acc);}
+.seg button:disabled{opacity:.4;cursor:not-allowed;}
 .rec-badge{position:absolute;top:12px;left:12px;font-family:var(--f-mono);font-size:12px;background:#d8281b;color:#fff;padding:3px 8px;border-radius:3px;letter-spacing:.1em;}
 
 .transport{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding-block:12px 4px;}
@@ -123,6 +128,7 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-fa
     <button class="btn" id="restart">↺ 頭から</button>
     <button class="btn" id="sound" aria-pressed="false">♪ 音 OFF</button>
     <span class="tc" id="tc">00:00:00:00 <small>/ 00:00:15:00</small></span>
+    <span class="seg" role="group" aria-label="画面の向き"><button id="ar169" aria-pressed="true">16:9</button><button id="ar916" aria-pressed="false" title="縦型はパターンBのみ">9:16</button></span>
     <span class="spacer"></span>
     <button class="btn" id="full">⛶ 全画面</button>
     <button class="btn" id="rec">● WebM書き出し</button>
@@ -175,7 +181,8 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-fa
 const SCRIPT_SRC=document.currentScript?document.currentScript.textContent.replace(/[\x00-\x7F]/g,''):'';
 (()=>{
 'use strict';
-const W=1920,H=1080,CX=W/2,CY=H/2,DUR=15,FPS=30;
+let W=1920,H=1080,CX=W/2,CY=H/2;const DUR=15,FPS=30;
+function setSize(w,h){W=w;H=h;CX=w/2;CY=h/2;cv.width=w;cv.height=h;}
 const cv=document.getElementById('cv');
 const X=cv.getContext('2d');
 
@@ -450,10 +457,10 @@ const B=(()=>{
   function hud(t,c){
     if(!c)return;
     font(400,20,F.mono);
-    text('KANMON KAIGI — SHOWREEL',60,52,{c,a:.85,align:'left',track:3});
+    text(H>W?'KANMON KAIGI':'KANMON KAIGI — SHOWREEL',60,H>W?90:52,{c,a:.85,align:'left',track:3});
     const beat=Math.min(30,Math.floor(t*2)+1);
-    text(`BEAT ${String(beat).padStart(2,'0')}/30  ·  120 BPM`,W-60,52,{c,a:.85,align:'right',track:3});
-    X.save();X.globalAlpha=.85;X.fillStyle=c;X.fillRect(60,H-60,(W-120)*(t/DUR),4);X.restore();
+    text(H>W?`BEAT ${String(beat).padStart(2,'0')}/30`:`BEAT ${String(beat).padStart(2,'0')}/30  ·  120 BPM`,W-60,H>W?90:52,{c,a:.85,align:'right',track:3});
+    X.save();X.globalAlpha=.85;X.fillStyle=c;X.fillRect(60,H-(H>W?110:60),(W-120)*(t/DUR),4);X.restore();
   }
   const WORDS=[['ひと','HITO',C.blue,C.paper],['まち','MACHI',C.paper,C.red],['まなび','MANABI',C.ink,C.paper],['想い','OMOI',C.red,C.ink]];
   const CELLS=[['circle',C.red],['#1',C.ink],['square',C.ink],['tri',C.blue],['10分',C.red],['ring',C.ink],['#9',C.blue],['bars',C.red],['想い',C.ink],['half',C.blue],['交流',C.red],['dot',C.ink]];
@@ -469,57 +476,57 @@ const B=(()=>{
       case'bars':for(let i=0;i<5;i++){const h=40+Math.abs(Math.sin(t*6+i*.9))*170;X.fillRect(-120+i*50,R-h,34,h);}break;
       case'half':X.rotate(t*2);X.beginPath();X.arc(0,0,R,0,Math.PI);X.fill();break;
       case'dot':{const y=-Math.abs(Math.sin(Math.PI*t*2))*80;X.beginPath();X.arc(0,y+30,46,0,Math.PI*2);X.fill();X.fillRect(-90,82,180,8);break;}
-      default:{font(400,type.length>2?130:175,F.dela);text(type,0,10,{c:col});}
+      default:{font(400,(type.length>2?130:175)*(H>W?.82:1),F.dela);text(type,0,10,{c:col});}
     }
     X.restore();
   }
   function render(t){
-    let hudC=null;
+    let hudC=null;const V=H>W,M=Math.min(W,H)/1080;
     if(t<1.0){
       fill(C.paper);hudC=C.ink;
       const r=E.oExpo(seg(t,.15,.95))*1250;X.fillStyle=C.red;X.beginPath();X.arc(CX,CY,r,0,Math.PI*2);X.fill();
       const d=E.oBack(seg(t,0,.25))*(1-seg(t,.25,.6));X.fillStyle=C.ink;X.beginPath();X.arc(CX,CY,60*d,0,Math.PI*2);X.fill();
       if(t>.5){font(400,34,F.mono);text('15 SEC.',CX,CY,{c:C.ink,a:seg(t,.5,.6),track:14});}
     }else if(t<1.5){
-      fill(C.ink);hudC=C.paper;big('関',CX,CY,840,C.paper,{s:lerp(1.35,1,E.oExpo(seg(t,1.0,1.3)))});
+      fill(C.ink);hudC=C.paper;big('関',CX,CY,V?860:840,C.paper,{s:lerp(1.35,1,E.oExpo(seg(t,1.0,1.3)))});
     }else if(t<2.0){
-      fill(C.red);hudC=C.ink;big('門',CX,CY,840,C.ink,{s:lerp(1.35,1,E.oExpo(seg(t,1.5,1.8))),r:lerp(-.14,0,E.oExpo(seg(t,1.5,1.8)))});
+      fill(C.red);hudC=C.ink;big('門',CX,CY,V?860:840,C.ink,{s:lerp(1.35,1,E.oExpo(seg(t,1.5,1.8))),r:lerp(-.14,0,E.oExpo(seg(t,1.5,1.8)))});
     }else if(t<3.0){
       fill(C.paper);hudC=C.ink;
       const p=E.oExpo(seg(t,2.0,2.25));const [sx,sy]=shake(t,2.25,70);
-      const drawPair=c=>{big('関',lerp(-W*.4,CX-300,p)+sx,CY+sy,580,c);big('門',lerp(W*1.4,CX+300,p)+sx,CY+sy,580,c);};
+      const drawPair=c=>{if(V){big('関',CX+sx,lerp(-H*.4,CY-300,p)+sy,580,c);big('門',CX+sx,lerp(H*1.4,CY+300,p)+sy,580,c);}else{big('関',lerp(-W*.4,CX-300,p)+sx,CY+sy,580,c);big('門',lerp(W*1.4,CX+300,p)+sx,CY+sy,580,c);}};
       drawPair(C.ink);
-      const le=E.io3(seg(t,2.5,2.78))*W,te=E.io3(seg(t,2.72,3.0))*W;
-      if(le>te){X.save();X.fillStyle=C.red;X.fillRect(te,CY-210,le-te,420);X.beginPath();X.rect(te,CY-210,le-te,420);X.clip();drawPair(C.paper);X.restore();}
+      const le=E.io3(seg(t,2.5,2.78))*W,te=E.io3(seg(t,2.72,3.0))*W,bhh=V?1040:420;
+      if(le>te){X.save();X.fillStyle=C.red;X.fillRect(te,CY-bhh/2,le-te,bhh);X.beginPath();X.rect(te,CY-bhh/2,le-te,bhh);X.clip();drawPair(C.paper);X.restore();}
     }else if(t<5.0){
       const i=Math.min(3,Math.floor((t-3)/.5)),lt=(t-3)-i*.5;const [w,jp,bg,fg]=WORDS[i];
       fill(bg);hudC=fg;
       const dy=(1-E.oExpo(seg(lt,0,.2)))*H*.95;
-      font(400,w.length>2?500:640,F.dela);text(w,CX,CY+30+dy,{c:fg,track:10});
-      font(400,20,F.mono);text(`0${i+1} / 04`,60,H-100,{c:fg,align:'left',track:4});
-      font(400,90,F.anton);text(jp,W-80,H-140,{c:fg,align:'right',track:6,a:E.o3(seg(lt,.08,.22))});
+      font(400,V?(w.length>2?320:460):(w.length>2?500:640),F.dela);text(w,CX,CY+30+dy,{c:fg,track:10});
+      font(400,20,F.mono);text(`0${i+1} / 04`,60,H-(V?170:100),{c:fg,align:'left',track:4});
+      font(400,90,F.anton);text(jp,W-80,H-(V?210:140),{c:fg,align:'right',track:6,a:E.o3(seg(lt,.08,.22))});
     }else if(t<8.0){
       fill(C.paper);hudC=C.ink;
-      const cw=W/4,ch=H/3;
+      const COLS=V?3:4,ROWS=V?4:3,cw=W/COLS,ch=H/ROWS;
       // red flash cell on the beat
       const beat=Math.floor(t*2);
-      if(t>6&&t<7.6){const k=Math.floor(hash(beat*1.7)*12);X.fillStyle=C.red;X.globalAlpha=1-frac(t*2)*.6;X.fillRect((k%4)*cw,Math.floor(k/4)*ch,cw,ch);X.globalAlpha=1;}
+      if(t>6&&t<7.6){const k=Math.floor(hash(beat*1.7)*12);X.fillStyle=C.red;X.globalAlpha=1-frac(t*2)*.6;X.fillRect((k%COLS)*cw,Math.floor(k/COLS)*ch,cw,ch);X.globalAlpha=1;}
       const gIn=E.io3(seg(t,5.0,5.35)),gOut=E.io3(seg(t,7.7,8.0));
       X.fillStyle=C.ink;
-      for(let r=1;r<3;r++){const w=W*gIn*(1-gOut);X.fillRect(r%2?0:W-w,r*ch-2,w,4);}
-      for(let c=1;c<4;c++){const h=H*E.io3(seg(t,5.1,5.45))*(1-gOut);X.fillRect(c*cw-2,c%2?0:H-h,4,h);}
+      for(let r=1;r<ROWS;r++){const w=W*gIn*(1-gOut);X.fillRect(r%2?0:W-w,r*ch-2,w,4);}
+      for(let c=1;c<COLS;c++){const h=H*E.io3(seg(t,5.1,5.45))*(1-gOut);X.fillRect(c*cw-2,c%2?0:H-h,4,h);}
       CELLS.forEach((cl,idx)=>{
         const o=ORDER.indexOf(idx);const a0=5.25+o*.1;
         const sIn=E.oBack(seg(t,a0,a0+.35)),sOut=1-E.io3(seg(t,7.35+(11-o)*.025,7.6+(11-o)*.025));
         const s=sIn*sOut;if(s<=.001)return;
-        X.save();X.translate((idx%4)*cw+cw/2,Math.floor(idx/4)*ch+ch/2);cellShape(cl[0],cl[1],t,s);X.restore();
+        X.save();X.translate((idx%COLS)*cw+cw/2,Math.floor(idx/COLS)*ch+ch/2);cellShape(cl[0],cl[1],t,s);X.restore();
       });
     }else if(t<10.5){
       fill(C.ink);
       X.save();X.translate(CX,CY);const zoom=1+E.iExpo(seg(t,10.15,10.5))*2.4;X.scale(zoom,zoom);X.rotate(-.18);
       const bands=[[C.ink,C.paper,'dela'],[C.red,C.ink,'anton'],[C.paper,C.ink,'dela'],[C.blue,C.paper,'anton'],[C.ink,C.red,'dela'],[C.red,C.paper,'anton'],[C.paper,C.red,'dela']];
-      const bh=250,y0=-bh*bands.length/2;
-      bands.forEach(([bg,fg,ff],k)=>{
+      const bh=250,NB=V?10:bands.length,y0=-bh*NB/2;
+      [...Array(NB)].map((_,k)=>bands[k%bands.length]).forEach(([bg,fg,ff],k)=>{
         const dir=k%2?1:-1;
         const ent=(1-E.oExpo(seg(t,8.0+k*.05,8.5+k*.05)))*dir*3200;
         X.save();X.translate(ent,y0+k*bh);X.fillStyle=bg;X.fillRect(-1700,0,3400,bh);
@@ -536,27 +543,34 @@ const B=(()=>{
       fill(C.paper);hudC=C.paper;
       const inL=1-E.oExpo(seg(t,10.5,10.85)),inR=1-E.oExpo(seg(t,10.58,10.93));
       const outL=E.iExpo(seg(t,12.15,12.5)),outR=E.iExpo(seg(t,12.2,12.5));
+      if(V){
+        const xl=(-inL-outL)*W,xr=(inR+outR)*W;
+        X.fillStyle=C.ink;X.fillRect(xl,0,W,CY);X.fillStyle=C.red;X.fillRect(xr,CY,W,CY);
+        font(400,300,F.dela);text('山口',CX+xl,CY/2-30,{c:C.paper});text('福岡',CX+xr,CY+CY/2-30,{c:C.ink});
+        font(400,26,F.mono);text('YAMAGUCHI',CX+xl,CY/2+160,{c:C.paper,track:8});text('FUKUOKA',CX+xr,CY+CY/2+160,{c:C.ink,track:8});
+      }else{
       const yl=(-inL-outL)*H,yr=(inR+outR)*H;
       X.fillStyle=C.ink;X.fillRect(0,yl,CX,H);X.fillStyle=C.red;X.fillRect(CX,yr,CX,H);
       font(400,300,F.dela);text('山口',CX/2,CY-40+yl,{c:C.paper});text('福岡',CX+CX/2,CY-40+yr,{c:C.ink});
       font(400,24,F.mono);text('YAMAGUCHI',CX/2,CY+170+yl,{c:C.paper,track:8});text('FUKUOKA',CX+CX/2,CY+170+yr,{c:C.ink,track:8});
+      }
       // link line + shuttle
       const lp=E.io3(seg(t,11.0,11.4))*(1-E.io3(seg(t,12.05,12.25)));
-      if(lp>0){const y=H*.82,x0=W*.18,x1=W*.82,len=(x1-x0)*lp;
+      if(lp>0){const y=V?CY:H*.82,x0=W*.18,x1=W*.82,len=(x1-x0)*lp;
         X.fillStyle=C.paper;X.fillRect(CX-len/2,y-3,len,6);
         const k=.5+.5*Math.sin((t-11.4)*Math.PI*1.4-Math.PI/2);if(t>11.4){X.beginPath();X.arc(lerp(x0,x1,k),y,26,0,Math.PI*2);X.fill();}
         font(400,22,F.mono);text('⇄  関門エリア  ⇄',CX,y-52,{c:C.paper,a:lp,track:6});}
     }else{
       fill(C.paper);hudC=C.ink;
-      font(400,230,F.dela);
+      font(400,V?170:230,F.dela);
       const tw=chars('関門カイギ',CX-30,CY-40,6,i=>{const p=seg(t,12.55+i*.07,13.0+i*.07);return{a:clamp(p*4),dy:-(1-E.oBack(p))*420,c:C.ink};});
       const pulse=t>14?1+.18*Math.exp(-frac((t-14)*2)*6):1;
       const ds=E.oBack(seg(t,13.1,13.45))*pulse;
-      if(ds>0){X.fillStyle=C.red;X.beginPath();X.arc(CX-30+tw/2+70,CY+50,34*ds,0,Math.PI*2);X.fill();}
+      if(ds>0){X.fillStyle=C.red;X.beginPath();X.arc(CX-30+tw/2+(V?50:70),CY+(V?25:50),(V?26:34)*ds,0,Math.PI*2);X.fill();}
       const wp=E.io3(seg(t,13.2,13.7));
-      X.save();X.beginPath();X.rect(0,CY+100,W*wp,140);X.clip();font(400,72,F.anton);text('KANMON KAIGI COMMUNITY',CX,CY+168,{c:C.ink,track:10});X.restore();
-      X.fillStyle=C.red;const bw=E.oExpo(seg(t,13.4,13.9))*760;X.fillRect(CX-bw/2,CY+232,bw,10);
-      font(400,22,F.mono);text('GUEST × 10 MIN  ·  #1 → #9  ·  しものせき市民活動センター',CX,CY+300,{c:C.ink,a:seg(t,13.9,14.2)*.8,track:4});
+      X.save();X.beginPath();X.rect(0,CY+100,W*wp,140);X.clip();font(400,V?54:72,F.anton);text('KANMON KAIGI COMMUNITY',CX,CY+168,{c:C.ink,track:V?6:10});X.restore();
+      X.fillStyle=C.red;const bw=E.oExpo(seg(t,13.4,13.9))*(V?640:760);X.fillRect(CX-bw/2,CY+232,bw,10);
+      font(400,22,F.mono);if(V){text('GUEST × 10 MIN  ·  #1 → #9',CX,CY+300,{c:C.ink,a:seg(t,13.9,14.2)*.8,track:4});text('しものせき市民活動センター',CX,CY+340,{c:C.ink,a:seg(t,13.9,14.2)*.8,track:4});}else text('GUEST × 10 MIN  ·  #1 → #9  ·  しものせき市民活動センター',CX,CY+300,{c:C.ink,a:seg(t,13.9,14.2)*.8,track:4});
     }
     hud(t,hudC);
   }
@@ -852,11 +866,11 @@ function ensureAC(){
   noiseBuf=AC.createBuffer(1,AC.sampleRate,AC.sampleRate);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
   return AC;
 }
-function makeSynth(off){
+function makeSynth(off,lead=.06){
   const c=AC,out=AC.createGain();out.gain.value=.9;
   const comp=AC.createDynamicsCompressor();comp.threshold.value=-14;comp.ratio.value=4;
   out.connect(comp);comp.connect(AC.destination);if(recDest)comp.connect(recDest);
-  const base=c.currentTime+.06;
+  const base=c.currentTime+lead;
   const at=pt=>base+pt-off;
   const env=(g,t0,a,peak,dec)=>{g.gain.setValueAtTime(.0001,t0);g.gain.exponentialRampToValueAtTime(Math.max(peak,.0002),t0+a);g.gain.exponentialRampToValueAtTime(.0001,t0+a+dec);};
   const S={
@@ -895,6 +909,8 @@ function buildMarks(){
 }
 function selectPattern(k,push=true){
   if(!PAT[k])return;key=k;cur=PAT[k];
+  if(k!=='B'&&H>W)setAspect(false);
+  $('ar916').disabled=k!=='B';
   document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.p===k)));
   buildMarks();jump(reduce?13.9:0);
   if(push){try{history.replaceState(null,'','#'+k);}catch(e){}}
@@ -976,8 +992,38 @@ Promise.all([ready.catch(()=>{}),D.load()]).then(()=>{
   selectPattern(PAT[initial]?initial:'A',false);
   setPlay(playing);
   requestAnimationFrame(loop);
+  window.__reelReady=true;
 });
-window.__reel={set:(k,tt)=>{selectPattern(k,false);setPlay(false);jump(tt);}};
+function setAspect(vert){
+  if(vert&&key!=='B')return;
+  setSize(vert?1080:1920,vert?1920:1080);
+  $('stage').classList.toggle('vert',vert);
+  $('ar169').setAttribute('aria-pressed',String(!vert));$('ar916').setAttribute('aria-pressed',String(vert));
+  draw();
+}
+$('ar169').addEventListener('click',()=>{if(!recorder)setAspect(false);});
+$('ar916').addEventListener('click',()=>{if(!recorder)setAspect(true);});
+// offline render hooks (used to export MP4 frame by frame)
+async function renderAudioWav(k){
+  const sr=48000,OC=window.OfflineAudioContext||window.webkitOfflineAudioContext;
+  const oc=new OC(2,sr*DUR,sr);const saveAC=AC,saveNB=noiseBuf,saveRD=recDest;
+  AC=oc;recDest=null;noiseBuf=oc.createBuffer(1,sr,sr);const nd=noiseBuf.getChannelData(0);for(let i=0;i<nd.length;i++)nd[i]=hash(i*.0137)*2-1;
+  const syn=makeSynth(0,0);PAT[k].audio(syn.S);
+  const buf=await oc.startRendering();AC=saveAC;noiseBuf=saveNB;recDest=saveRD;
+  const n=buf.length,ch=[buf.getChannelData(0),buf.getChannelData(1)],out=new DataView(new ArrayBuffer(44+n*4));
+  const wr=(o,str)=>{for(let i=0;i<str.length;i++)out.setUint8(o+i,str.charCodeAt(i));};
+  wr(0,'RIFF');out.setUint32(4,36+n*4,true);wr(8,'WAVE');wr(12,'fmt ');out.setUint32(16,16,true);out.setUint16(20,1,true);out.setUint16(22,2,true);
+  out.setUint32(24,sr,true);out.setUint32(28,sr*4,true);out.setUint16(32,4,true);out.setUint16(34,16,true);wr(36,'data');out.setUint32(40,n*4,true);
+  for(let i=0,o=44;i<n;i++)for(let c=0;c<2;c++,o+=2){const v=Math.max(-1,Math.min(1,ch[c][i]));out.setInt16(o,v*32767,true);}
+  let bin='';const u8=new Uint8Array(out.buffer);for(let i=0;i<u8.length;i+=0x8000)bin+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000));
+  return btoa(bin);
+}
+window.__reel={
+  set:(k,tt)=>{selectPattern(k,false);setPlay(false);jump(tt);},
+  aspect:v=>setAspect(v),
+  frame:(k,tt,q=.92)=>{if(key!==k)selectPattern(k,false);setPlay(false);t=tt;draw();return cv.toDataURL('image/jpeg',q);},
+  audio:k=>renderAudioWav(k),
+};
 })();
 </script>
 </body>
