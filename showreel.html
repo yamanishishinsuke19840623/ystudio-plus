@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>かんもんノート Showreel</title>
+<meta name="description" content="関門海峡エリアの情報メディア「かんもんノート」の15秒モーショングラフィックス・ショーリール。青を基調に、昼の海峡ノート／夜の海峡の2パターン。ブラウザだけで再生・動画書き出しができます。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@700&family=Noto+Sans+JP:wght@400;700&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#06112b;--panel:#0d1f4a;--ink:#f3f8ff;--sub:rgba(220,235,255,.68);--line:rgba(143,208,255,.2);--accent:#2f7bff;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--ink);font-family:'Noto Sans JP',sans-serif;line-height:1.7;}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px;}
+header{padding:28px 0 18px;}
+header h1{font-family:'Anton',sans-serif;font-weight:400;font-size:clamp(34px,6vw,64px);letter-spacing:1px;line-height:1.05;}
+header p{color:var(--sub);font-size:14px;margin-top:8px;}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0;}
+.tab{flex:1 1 180px;background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:10px 14px;text-align:left;cursor:pointer;font:inherit;transition:border-color .2s,background .2s;}
+.tab b{display:block;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:1px;}
+.tab span{font-size:12px;color:var(--sub);}
+.tab[aria-selected="true"]{border-color:#8fd0ff;background:#123a85;}
+.tabs .sep{flex-basis:100%;font-size:12px;color:var(--sub);margin-top:4px;}
+.stage{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5);}
+canvas{display:block;width:100%;height:100%;}
+.big-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);border:0;color:#fff;cursor:pointer;font:700 18px 'JetBrains Mono',monospace;letter-spacing:2px;}
+.big-play[hidden]{display:none;}
+.big-play i{display:inline-flex;align-items:center;justify-content:center;width:84px;height:84px;border-radius:50%;background:var(--accent);margin-right:16px;font-style:normal;font-size:30px;}
+.controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0 6px;}
+.controls button{background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:8px 14px;font:600 13px 'Noto Sans JP',sans-serif;cursor:pointer;}
+.controls button:hover{border-color:var(--sub);}
+.controls button.rec{border-color:var(--accent);color:#bfe0ff;}
+.controls button.rec.on{background:var(--accent);color:#fff;}
+#scrub{flex:1 1 200px;accent-color:var(--accent);}
+#time{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--sub);min-width:92px;}
+.note{font-size:12px;color:var(--sub);margin-bottom:24px;}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin:18px 0 40px;}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;}
+.card h3{font-family:'JetBrains Mono',monospace;font-size:14px;letter-spacing:1px;margin-bottom:6px;}
+.card p,.card li{font-size:13px;color:var(--sub);}
+.card ol{padding-left:18px;margin-top:6px;}
+footer{border-top:1px solid var(--line);padding:18px 0 40px;font-size:12px;color:var(--sub);}
+footer a{color:var(--sub);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>KANMON NOTE<br>— 15 SEC SHOWREEL</h1>
+    <p>関門海峡エリアの情報メディア「かんもんノート」の15秒ショーリール。青を基調に、海峡・関門橋・ノートをモチーフにしています。素材ファイルなし・ブラウザのCanvasとWeb Audioだけで描画と音を生成しています。</p>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" data-p="0" aria-selected="true"><b>01 / 海峡ノート</b><span>昼・青×白。ノートの線が海になり、橋が架かる</span></button>
+    <button class="tab" role="tab" data-p="1" aria-selected="false"><b>02 / 夜の海峡</b><span>紺×光。関門橋の灯りと両岸の街あかり</span></button>
+    <span class="sep">参考:前回の汎用パターン</span>
+    <button class="tab" role="tab" data-p="2" aria-selected="false"><b>A / KINETIC TYPE</b><span>白黒赤のタイポ</span></button>
+    <button class="tab" role="tab" data-p="3" aria-selected="false"><b>B / PARTICLE FLOW</b><span>粒子の変形</span></button>
+    <button class="tab" role="tab" data-p="4" aria-selected="false"><b>C / BAUHAUS POP</b><span>原色の図形</span></button>
+  </div>
+
+  <div class="stage">
+    <canvas id="c" width="1920" height="1080" aria-label="モーショングラフィックス再生エリア"></canvas>
+    <button class="big-play" id="bigPlay"><i>▶</i>PLAY 15 SEC</button>
+  </div>
+
+  <div class="controls">
+    <button id="play">▶ 再生</button>
+    <span id="time">00.00 / 15.00</span>
+    <input id="scrub" type="range" min="0" max="15" step="0.01" value="0" aria-label="シーク">
+    <button id="sound">🔊 音あり</button>
+    <button id="loop">🔁 ループ ON</button>
+    <button id="rec" class="rec">● 動画に書き出す</button>
+  </div>
+  <p class="note">「動画に書き出す」を押すと頭から15秒を再生しながら録画し、WebM(Safariでは MP4)でダウンロードします。書き出し中はタブを前面に表示したままにしてください。</p>
+
+  <div class="cards">
+    <div class="card"><h3>01 / 海峡ノート</h3><p>青と白。「ノートに書いた一本の線が関門海峡になる」という流れ。</p>
+      <ol><li>罫線が引かれ、ペンが波線を描く</li><li>波線が海になり、下関・門司の陸がせり上がる</li><li>主塔→橋桁→ケーブル→ハンガーの順に橋が架かる</li><li>船が海峡を渡り、「関門海峡」</li><li>ノートカード:お店/イベント/事業者</li><li>かんもんノート ロックアップ → 1コマ目へループ</li></ol></div>
+    <div class="card"><h3>02 / 夜の海峡</h3><p>紺と光。灯りが一つずつ点いていく夜景演出。</p>
+      <ol><li>ケーブルの灯りが左から右へ点灯、水面に反射</li><li>橋を走る車の光、両岸の街あかり</li><li>縦書き「関門海峡」</li><li>お店/イベント/地域の事業者/情報 がNOTEにつながる</li><li>かんもんノート ロックアップ</li></ol></div>
+    <div class="card"><h3>A / KINETIC TYPE</h3><p>120BPM。1拍＝0.5秒に合わせて単語を叩きつけるタイポグラフィ。</p>
+      <ol><li>線が走り、赤が画面を割る</li><li>MOVE / SHAPE / TIME / FEEL / FLOW を毎拍スラム</li><li>横スクロールする7段の文字帯</li><li>赤い円＋回転する文字リング</li><li>0.25秒カットの高速カウントダウン</li><li>SHOWREEL 2026 ロックアップ</li></ol></div>
+    <div class="card"><h3>B / PARTICLE FLOW</h3><p>すべての粒子の位置を「時刻の関数」で計算しているので、シークしても同じ絵になります。</p>
+      <ol><li>26本の光の弦がうねる</li><li>弦がほどけて “FLOW” を形成</li><li>爆散して回転する球体へ</li><li>奥へ吸い込まれるトンネル</li><li>“SHOWREEL” に再集結し、上昇して消える</li></ol></div>
+    <div class="card"><h3>C / BAUHAUS POP</h3><p>クリーム地に赤・青・黄・墨。図形のバウンドとワイプ転換で見せるポップ系。</p>
+      <ol><li>9つの図形が跳ねながらグリッドに着地</li><li>毎拍90°スナップ回転＋色替え</li><li>斜めストライプのワイプ → 黄色い円と波形</li><li>12個の振り子ウェーブが丸→四角に変形</li><li>MAKE IT MOVE. でフィニッシュ</li></ol></div>
+  </div>
+
+  <footer>ystudio-plus / motion showreel experiment · 描画: Canvas 2D · 音: Web Audio API(すべてその場で合成) · <a href="index.html">トップへ戻る</a></footer>
+</div>
+
+<script>
+(() => {
+'use strict';
+const W = 1920, H = 1080, DUR = 15;
+const cv = document.getElementById('c');
+const g = cv.getContext('2d');
+
+/* ---------- utilities ---------- */
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const seg = (t, a, b) => clamp((t - a) / (b - a));
+const lerp = (a, b, t) => a + (b - a) * t;
+const fract = x => x - Math.floor(x);
+const mod = (a, n) => ((a % n) + n) % n;
+const TAU = Math.PI * 2;
+const E = {
+  outExpo: t => t >= 1 ? 1 : 1 - Math.pow(2, -10 * t),
+  inExpo: t => t <= 0 ? 0 : Math.pow(2, 10 * t - 10),
+  inOutExpo: t => t <= 0 ? 0 : t >= 1 ? 1 : t < .5 ? Math.pow(2, 20 * t - 10) / 2 : (2 - Math.pow(2, -20 * t + 10)) / 2,
+  inOutCubic: t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+  outCubic: t => 1 - Math.pow(1 - t, 3),
+  outBack: t => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); },
+  inBack: t => { const c1 = 1.70158, c3 = c1 + 1; return c3 * t * t * t - c1 * t * t; },
+  outElastic: t => t <= 0 ? 0 : t >= 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - .75) * (TAU / 3)) + 1,
+  outBounce: t => {
+    const n = 7.5625, d = 2.75;
+    if (t < 1 / d) return n * t * t;
+    if (t < 2 / d) return n * (t -= 1.5 / d) * t + .75;
+    if (t < 2.5 / d) return n * (t -= 2.25 / d) * t + .9375;
+    return n * (t -= 2.625 / d) * t + .984375;
+  }
+};
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const F = {
+  anton: "'Anton', Impact, sans-serif",
+  archivo: "'Archivo Black', 'Arial Black', sans-serif",
+  grotesk: "'Space Grotesk', 'Helvetica Neue', sans-serif",
+  mono: "'JetBrains Mono', ui-monospace, monospace"
+};
+function font(px, fam, weight = '') { g.font = `${weight} ${px}px ${fam}`; }
+function fill(c) { g.fillStyle = c; g.fillRect(0, 0, W, H); }
+function textC(s, x, y) { g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(s, x, y); }
+function tracked(s, x, y, track) { // centered text with manual letter spacing
+  let total = 0; const ws = [...s].map(ch => { const w = g.measureText(ch).width; total += w; return w; });
+  total += track * (s.length - 1);
+  let cx = x - total / 2; g.textAlign = 'left'; g.textBaseline = 'middle';
+  [...s].forEach((ch, i) => { g.fillText(ch, cx, y); cx += ws[i] + track; });
+}
+
+/* HUD: drawn with 'difference' so it reads on any background */
+function hud(t, label, left = 'SHOWREEL — 2026') {
+  g.save();
+  g.globalCompositeOperation = 'difference';
+  g.fillStyle = '#fff'; g.strokeStyle = '#fff'; g.lineWidth = 2;
+  font(22, F.mono, 700); g.textBaseline = 'top';
+  g.textAlign = 'left'; g.fillText(left, 56, 44);
+  g.textAlign = 'right'; g.fillText(label, W - 56, 44);
+  g.textBaseline = 'bottom';
+  const s = Math.floor(t), f = Math.floor((t - s) * 30);
+  g.textAlign = 'left'; g.fillText(`00:${String(s).padStart(2, '0')}:${String(f).padStart(2, '0')}`, 56, H - 44);
+  const beat = Math.floor(t / 0.5) % 4;
+  for (let i = 0; i < 4; i++) {
+    const x = W - 56 - (3 - i) * 26 - 16, y = H - 44 - 16;
+    if (i === beat) g.fillRect(x, y, 16, 16); else g.strokeRect(x + 1, y + 1, 14, 14);
+  }
+  g.fillRect(56, H - 30, (W - 112) * clamp(t / DUR), 2);
+  g.restore();
+}
+
+/* =========================================================
+   PATTERN A — KINETIC TYPE
+   ========================================================= */
+const A = (() => {
+  const bk = '#0b0b0b', wh = '#f3efe6', red = '#ff3b1f';
+
+  function s1(t) {
+    fill(bk);
+    const p = E.outExpo(seg(t, .15, .9));
+    g.fillStyle = wh;
+    g.fillRect(W / 2 - W / 2 * p, H / 2 - 2, W * p, 4);
+    for (let i = 0; i <= 24; i++) {
+      const x = W / 2 + (i - 12) * 70 * p, h = i % 6 ? 14 : 34;
+      g.fillRect(x - 1, H / 2 - h / 2, 2, h);
+    }
+    if (t > .3 && t < 1.05 && Math.floor(t * 18) % 4 !== 0) {
+      font(28, F.mono, 700); g.fillStyle = wh; tracked('A MOTION SHOWREEL — 15 SEC', W / 2, H / 2 - 70, 6);
+    }
+    const q = E.inOutExpo(seg(t, 1.0, 1.5));
+    if (q > 0) { g.fillStyle = red; const h = H * q; g.fillRect(0, H / 2 - h / 2, W, h); }
+  }
+
+  const words = ['MOVE', 'SHAPE', 'TIME', 'FEEL', 'FLOW'];
+  const pals = [[red, bk], [wh, bk], [bk, wh], [wh, red], [bk, red]];
+  function s2(t) {
+    const k = Math.min(4, Math.floor((t - 1.5) / .5)), lt = t - 1.5 - k * .5;
+    const [bg, fg] = pals[k]; fill(bg);
+    const p = E.outExpo(clamp(lt / .3));
+    font(440, F.anton);
+    const w = g.measureText(words[k]).width, fit = Math.min(1.1, W * .84 / w);
+    let s = lerp(1.4, 1, p) * fit;
+    if (k === 4) s *= 1 + E.inExpo(seg(lt, .3, .5)) * 9; // zoom through the last word
+    g.save(); g.translate(W / 2, H / 2 + 20); g.scale(s, s); g.transform(1, 0, -.14 * (1 - p), 1, 0, 0);
+    g.fillStyle = fg;
+    for (let j = 3; j >= 1; j--) { g.globalAlpha = .18 * (1 - p); textC(words[k], -j * 70 * (1 - p), 0); }
+    g.globalAlpha = 1; textC(words[k], 0, 0);
+    g.restore();
+    g.fillStyle = fg;
+    g.fillRect(W / 2 - 300, H - 170, 600 * E.outExpo(clamp(lt / .5)), 6);
+    font(26, F.mono, 700); textC(`0${k + 1} / 05`, W / 2, H - 130);
+  }
+
+  const phrase = 'MOTION DESIGN — ';
+  function s3(t) {
+    fill(t < 6.4 ? wh : bk);
+    const rows = 7, rh = H / rows;
+    font(rh * .92, F.anton);
+    const pw = g.measureText(phrase).width;
+    for (let r = 0; r < rows; r++) {
+      const inP = E.outExpo(seg(t, 4 + r * .06, 4.7 + r * .06));
+      const outP = E.inExpo(seg(t, 6.35 + r * .05, 6.85 + r * .05));
+      const h = rh * (1 - outP); if (h < .5 || inP <= 0) continue;
+      const y0 = r * rh + (rh - h) / 2, dir = r % 2 ? 1 : -1;
+      const isRed = r === 3;
+      const bg = isRed ? red : (r % 2 ? bk : wh), fg = isRed ? bk : (r % 2 ? wh : bk);
+      g.save();
+      g.beginPath();
+      const cw = W * inP;
+      g.rect(dir > 0 ? 0 : W - cw, y0, cw, h); g.clip();
+      g.fillStyle = bg; g.fillRect(0, y0, W, h);
+      g.translate(0, y0 + h / 2); g.scale(1, h / rh);
+      g.fillStyle = fg; g.textAlign = 'left'; g.textBaseline = 'middle';
+      const off = dir * (t - 4) * 300 * (1 + (r % 3) * .35);
+      for (let x = mod(off + r * 211, pw) - pw; x < W; x += pw) g.fillText(phrase, x, rh * .04);
+      g.restore();
+    }
+  }
+
+  const ring = 'MOTION • DESIGN • RHYTHM • TIMING • CONTRAST • ';
+  function s4(t) {
+    fill(bk);
+    const cx = W / 2, cy = H / 2;
+    const pulse = Math.exp(-mod(t - 7, .5) * 9);
+    let R = 330 * E.outBack(seg(t, 7.0, 7.45)) * (1 + .035 * pulse);
+    R = lerp(R, 1250, E.inExpo(seg(t, 9.2, 9.75)));
+    const ringA = seg(t, 7.1, 7.5) * (1 - seg(t, 9.15, 9.45));
+    if (ringA > 0) {
+      g.save(); g.translate(cx, cy); g.globalAlpha = ringA;
+      g.rotate(t * .45 - 2 * (1 - E.outExpo(seg(t, 7, 8.2))));
+      font(34, F.mono, 700); g.fillStyle = wh; g.textAlign = 'center'; g.textBaseline = 'middle';
+      const chars = [...ring], n = chars.length;
+      chars.forEach((ch, i) => { g.save(); g.rotate(i / n * TAU); g.fillText(ch, 0, -450); g.restore(); });
+      // orbiting dot + ticks
+      g.rotate(-t * 1.8);
+      g.fillStyle = red; g.beginPath(); g.arc(0, -520, 12, 0, TAU); g.fill();
+      g.restore();
+    }
+    g.fillStyle = red; g.beginPath(); g.arc(cx, cy, Math.max(0, R), 0, TAU); g.fill();
+    // stacked words inside the circle
+    g.save(); g.beginPath(); g.arc(cx, cy, Math.max(0, R), 0, TAU); g.clip();
+    const lines = ['DESIGN', 'IN', 'MOTION'];
+    font(150, F.anton);
+    lines.forEach((ln, i) => {
+      const y = cy + (i - 1) * 150;
+      const p = E.outExpo(seg(t, 7.35 + i * .14, 7.95 + i * .14));
+      g.save(); g.beginPath(); g.rect(0, y - 75, W, 150); g.clip();
+      const sc = lerp(1, 1.6, E.inExpo(seg(t, 9.2, 9.75)));
+      g.translate(cx, y + (1 - p) * 170); g.scale(sc, sc);
+      if (i === 1) { g.strokeStyle = bk; g.lineWidth = 5; g.textAlign = 'center'; g.textBaseline = 'middle'; g.strokeText(ln, 0, 6); }
+      else { g.fillStyle = bk; textC(ln, 0, 6); }
+      g.restore();
+    });
+    g.restore();
+  }
+
+  const cpals = [[bk, wh], [red, bk], [wh, bk], [bk, red], [wh, red]];
+  function s5(t) {
+    const k = Math.min(9, Math.floor((t - 10) / .25)), lt = t - 10 - k * .25;
+    const [bg, fg] = cpals[k % cpals.length]; fill(bg);
+    const r = rng(k * 97 + 13);
+    const ox = (r() - .5) * 500, oy = (r() - .5) * 160;
+    g.save(); g.strokeStyle = fg; g.fillStyle = fg; g.globalAlpha = .9;
+    // stripe field
+    const sp = 26, count = 22;
+    for (let i = 0; i < count; i++) {
+      const y = H / 2 - count * sp / 2 + i * sp;
+      g.fillRect(k % 2 ? 0 : W / 2, y, W / 2 * E.outExpo(clamp(lt / .2)), 6);
+    }
+    g.translate(W / 2 + ox, H / 2 + oy); g.rotate(k * .5 + lt * 2.5);
+    g.lineWidth = 16; const sq = 520 * (1 + .15 * E.outExpo(clamp(lt / .25)));
+    g.globalAlpha = 1; g.strokeRect(-sq / 2, -sq / 2, sq, sq);
+    g.restore();
+    g.save(); g.translate(W / 2 + ox * .3, H / 2 + 40);
+    const s = lerp(1.25, 1, E.outExpo(clamp(lt / .15)));
+    g.scale(s, s); font(760, F.anton); g.fillStyle = fg; textC(String(9 - k), 0, 0);
+    g.restore();
+    font(24, F.mono, 700); g.fillStyle = fg; g.textAlign = 'left'; g.textBaseline = 'middle';
+    g.fillText(`CUT ${String(k + 1).padStart(2, '0')}  /  0.25s`, 56, H / 2);
+  }
+
+  function s6(t) {
+    fill(bk);
+    const p = E.outExpo(seg(t, 12.5, 13.1));
+    g.fillStyle = wh;
+    g.fillRect(W / 2 - W * .4 * p, H / 2 - 150, W * .8 * p, 3);
+    g.fillRect(W / 2 - W * .4 * p, H / 2 + 150, W * .8 * p, 3);
+    const word = 'SHOWREEL';
+    font(250, F.anton);
+    const ws = [...word].map(c => g.measureText(c).width), total = ws.reduce((a, b) => a + b, 0) + 14 * (word.length - 1);
+    g.save(); g.beginPath(); g.rect(0, H / 2 - 148, W, 296); g.clip();
+    let x = W / 2 - total / 2; g.textAlign = 'left'; g.textBaseline = 'middle';
+    [...word].forEach((c, i) => {
+      const lp = E.outExpo(seg(t, 12.6 + i * .045, 13.25 + i * .045));
+      g.fillStyle = wh; g.fillText(c, x, H / 2 + 12 + (1 - lp) * 300);
+      x += ws[i] + 14;
+    });
+    g.restore();
+    const yr = '2026', n = Math.floor(seg(t, 13.25, 13.6) * 4.99);
+    font(44, F.mono, 700); g.fillStyle = red; g.textAlign = 'right'; g.textBaseline = 'top';
+    g.fillText(yr.slice(0, n) + (n < 4 && Math.floor(t * 10) % 2 ? '_' : ''), W / 2 + W * .4, H / 2 + 172);
+    font(26, F.mono, 700); g.fillStyle = wh; g.globalAlpha = seg(t, 13.4, 13.8);
+    tracked('MOTION · TYPE · RHYTHM', W / 2, H / 2 - 200, lerp(0, 18, E.outExpo(seg(t, 13.4, 14.4))));
+    g.globalAlpha = 1;
+    // little red square punctuation
+    const d = E.outBack(seg(t, 13.5, 13.9));
+    g.fillStyle = red; g.fillRect(W / 2 - W * .4, H / 2 + 172, 44 * d, 44 * d);
+    const out = seg(t, 14.55, 15);
+    if (out > 0) { g.fillStyle = `rgba(11,11,11,${out})`; g.fillRect(0, 0, W, H); }
+  }
+
+  return {
+    label: 'A / KINETIC TYPE',
+    render(t) {
+      if (t < 1.5) s1(t); else if (t < 4) s2(t); else if (t < 7) s3(t);
+      else if (t < 10) s4(t); else if (t < 12.5) s5(t); else s6(t);
+      hud(t, this.label);
+    },
+    events() {
+      const e = [[.15, 'riser', 1.3]];
+      for (let b = 3; b < 25; b++) e.push([b * .5, 'kick']);
+      for (let k = 0; k < 5; k++) e.push([1.5 + k * .5, 'snare']);
+      e.push([3.6, 'riser', .4]);
+      for (let x = 4; x < 6.5; x += .125) e.push([x, 'hat', .18]);
+      e.push([6.35, 'whoosh', .5]);
+      e.push([7.0, 'impact']);
+      for (let x = 7.5; x < 9.1; x += .5) e.push([x, 'snare']);
+      e.push([9.1, 'riser', .6]);
+      for (let k = 0; k < 10; k++) { e.push([10 + k * .25, 'click']); e.push([10 + k * .25, 'blip', 880 - k * 60, .08, 'square', .12]); }
+      e.push([12.5, 'impact']);
+      for (let i = 0; i < 8; i++) e.push([12.6 + i * .045 + .1, 'hat', .12]);
+      e.push([13.5, 'blip', 1320, .25, 'sine', .25]);
+      e.push([13.6, 'blip', 1760, .4, 'sine', .2]);
+      return e;
+    }
+  };
+})();
+
+/* =========================================================
+   PATTERN B — PARTICLE FLOW
+   ========================================================= */
+const B = (() => {
+  const N = 2600, STR = 26, RINGS = 52;
+  const cols = ['#27e0ff', '#4f7bff', '#b44dff', '#ff4fd8', '#ffffff'];
+  const r = rng(2026);
+  const P = Array.from({ length: N }, (_, i) => ({ r1: r(), r2: r(), r3: r(), u: r(), s: i % STR, c: i % 5 }));
+  let tFlow = null, tReel = null;
+  function sample(txt, px, fam) {
+    const c = document.createElement('canvas'); c.width = W; c.height = H;
+    const x = c.getContext('2d');
+    x.fillStyle = '#fff'; x.font = `700 ${px}px ${fam}`; x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.fillText(txt, W / 2, H / 2);
+    const d = x.getImageData(0, 0, W, H).data, pts = [];
+    for (let y = 0; y < H; y += 5) for (let xx = 0; xx < W; xx += 5) if (d[(y * W + xx) * 4 + 3] > 128) pts.push([xx, y]);
+    const rr = rng(7); for (let i = pts.length - 1; i > 0; i--) { const j = Math.floor(rr() * (i + 1)); [pts[i], pts[j]] = [pts[j], pts[i]]; }
+    return pts.length ? pts : [[W / 2, H / 2]];
+  }
+  function prep() { tFlow = sample('FLOW', 560, F.grotesk); tReel = sample('SHOWREEL', 300, F.grotesk); }
+  const tgt = (arr, i) => arr[Math.floor(i * arr.length / N) % arr.length];
+
+  function strand(p, i, t) {
+    const u = fract(p.u + t * .035 * (.6 + p.r1 * .8));
+    const x = u * (W + 240) - 120, s = p.s;
+    const amp = (150 + s * 9) * (.65 + .35 * Math.sin(t * .7 + s * .12));
+    const y = H / 2 + Math.sin(x * .0042 + t * 1.3 + s * .23) * amp + (s - STR / 2) * 5;
+    return [x, y, 1];
+  }
+  function text(arr, p, i, t) {
+    const q = tgt(arr, i);
+    return [q[0] + Math.sin(t * 2.2 + p.r2 * 9) * 1.8, q[1] + Math.cos(t * 1.9 + p.r3 * 9) * 1.8, 1];
+  }
+  function sphere(p, i, t, pulse) {
+    const k = i + .5, phi = Math.acos(1 - 2 * k / N), th = Math.PI * (1 + Math.sqrt(5)) * k;
+    let x = Math.sin(phi) * Math.cos(th), y = Math.cos(phi), z = Math.sin(phi) * Math.sin(th);
+    const a = t * .9, b = .35 + Math.sin(t * .6) * .25;
+    [x, z] = [x * Math.cos(a) - z * Math.sin(a), x * Math.sin(a) + z * Math.cos(a)];
+    [y, z] = [y * Math.cos(b) - z * Math.sin(b), y * Math.sin(b) + z * Math.cos(b)];
+    const R = 370 * (1 + .09 * pulse) * (1 + .04 * Math.sin(th * 3 + t * 4) * pulse);
+    const f = 1100 / (1100 + z * R);
+    return [W / 2 + x * R * f, H / 2 + y * R * f, f * (z < 0 ? 1.25 : .7)];
+  }
+  function tunnel(p, i, t) {
+    const k = i % RINGS, j = Math.floor(i / RINGS), per = Math.ceil(N / RINGS);
+    const z = fract(k / RINGS - t * .3);
+    const ang = j / per * TAU + t * .6 + z * 3.2;
+    const rad = 140 / (z + .12);
+    const cx = W / 2 + Math.sin(t * 1.1) * 120 * z, cy = H / 2 + Math.cos(t * .9) * 70 * z;
+    const a = clamp(z * 6) * clamp((1 - z) * 3);
+    return [cx + Math.cos(ang) * rad, cy + Math.sin(ang) * rad * .92, .5 + (1 - z) * 1.8, a];
+  }
+  const mix = (a, b, q) => [lerp(a[0], b[0], q), lerp(a[1], b[1], q), lerp(a[2], b[2], q), lerp(a[3] ?? 1, b[3] ?? 1, q)];
+  const qOf = (p, pr) => E.inOutCubic(clamp((pr - p.r1 * .35) / .65));
+
+  function pos(p, i, t) {
+    if (t < 2.5) {
+      const s = strand(p, i, t), rev = W * 1.1 * E.outExpo(seg(t, 0, 1.5)) - 60;
+      return [s[0], s[1], 1, clamp((rev - s[0]) / 120)];
+    }
+    if (t < 3.6) return mix(strand(p, i, t), text(tFlow, p, i, t), qOf(p, seg(t, 2.5, 3.6)));
+    if (t < 5.0) return text(tFlow, p, i, t);
+    if (t < 5.9) {
+      const q = qOf(p, seg(t, 5.0, 5.9)), m = mix(text(tFlow, p, i, t), sphere(p, i, t, 0), q);
+      const dx = m[0] - W / 2, dy = m[1] - H / 2, d = Math.hypot(dx, dy) || 1, burst = Math.sin(Math.PI * q) * (250 + p.r2 * 500);
+      m[0] += dx / d * burst; m[1] += dy / d * burst; return m;
+    }
+    const pulse = Math.exp(-mod(t - 5.9, .6) * 7);
+    if (t < 8.5) return sphere(p, i, t, pulse);
+    if (t < 9.4) return mix(sphere(p, i, t, pulse), tunnel(p, i, t), qOf(p, seg(t, 8.5, 9.4)));
+    if (t < 11.8) return tunnel(p, i, t);
+    if (t < 12.9) return mix(tunnel(p, i, t), text(tReel, p, i, t), qOf(p, seg(t, 11.8, 12.9)));
+    const m = text(tReel, p, i, t);
+    const up = E.inExpo(seg(t, 14.2 + p.r1 * .3, 15));
+    m[1] -= up * (250 + p.r2 * 600); m[0] += Math.sin(t * 3 + p.r3 * 9) * up * 60;
+    m[3] = 1 - seg(t, 14.4 + p.r1 * .3, 15);
+    return m;
+  }
+
+  const chapters = [[0, 'CH.01  STRINGS'], [2.5, 'CH.02  FLOW'], [5.0, 'CH.03  ORBIT'], [8.5, 'CH.04  DEPTH'], [11.8, 'CH.05  REEL']];
+  return {
+    label: 'B / PARTICLE FLOW',
+    render(t, trail) {
+      if (!tFlow) prep();
+      g.globalCompositeOperation = 'source-over';
+      g.fillStyle = `rgba(5,6,15,${trail})`; g.fillRect(0, 0, W, H);
+      const hue = 220 + Math.sin(t * .6) * 40;
+      const gr = g.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, 900);
+      gr.addColorStop(0, `hsla(${hue},80%,35%,${.10 * trail + .02})`); gr.addColorStop(1, 'rgba(0,0,0,0)');
+      g.fillStyle = gr; g.fillRect(0, 0, W, H);
+      g.globalCompositeOperation = 'lighter';
+      const buckets = cols.map(() => []);
+      for (let i = 0; i < N; i++) { const p = P[i]; buckets[p.c].push([pos(p, i, t), p]); }
+      buckets.forEach((b, ci) => {
+        g.fillStyle = cols[ci];
+        for (const [q, p] of b) {
+          const a = q[3] ?? 1; if (a <= .01) continue;
+          const s = 3 * q[2] * (.7 + p.r3 * .7);
+          g.globalAlpha = a * .85; g.fillRect(q[0] - s / 2, q[1] - s / 2, s, s);
+        }
+      });
+      g.globalAlpha = 1;
+      // shockwaves
+      [[5.0, '#ffffff'], [11.8, '#27e0ff']].forEach(([st, c]) => {
+        const k = seg(t, st, st + .8); if (k <= 0 || k >= 1) return;
+        g.strokeStyle = c; g.globalAlpha = 1 - k; g.lineWidth = 6 * (1 - k) + 1;
+        g.beginPath(); g.arc(W / 2, H / 2, E.outExpo(k) * 1100, 0, TAU); g.stroke();
+      });
+      g.globalAlpha = 1; g.globalCompositeOperation = 'source-over';
+      // chapter label
+      let ch = chapters[0]; for (const c of chapters) if (t >= c[0]) ch = c;
+      const lt = t - ch[0], n = Math.floor(clamp(lt / .4) * ch[1].length);
+      font(26, F.mono, 700); g.fillStyle = 'rgba(210,230,255,.85)';
+      tracked(ch[1].slice(0, n), W / 2, H - 110, 6);
+      if (t > 3.6 && t < 5.0) { g.globalAlpha = seg(t, 3.7, 4.0) * (1 - seg(t, 4.8, 5)); font(22, F.mono, 500); tracked('GENERATIVE · 2,600 PARTICLES', W / 2, H / 2 + 330, 8); g.globalAlpha = 1; }
+      if (t > 12.9) { g.globalAlpha = seg(t, 13.0, 13.4) * (1 - seg(t, 14.3, 14.8)); font(34, F.mono, 700); g.fillStyle = '#ff4fd8'; tracked('— 2026 —', W / 2, H / 2 + 200, 12); g.globalAlpha = 1; }
+      hud(t, this.label);
+    },
+    events() {
+      const e = [[0, 'pad', 15]];
+      e.push([2.3, 'whoosh', 1.3]);
+      for (let k = 0; k < 7; k++) e.push([3.6 + k * .2, 'blip', [1318, 1568, 1760, 2093, 2349, 2637, 3136][k], .5, 'sine', .07]);
+      e.push([4.6, 'riser', .4]);
+      e.push([5.0, 'impact']);
+      for (let x = 5.9; x < 8.5; x += .6) e.push([x, 'kick']);
+      for (let x = 6.2; x < 8.5; x += .6) e.push([x, 'hat', .15]);
+      e.push([8.4, 'whoosh', 1.0]);
+      for (let x = 9.4; x < 11.8; x += .15) e.push([x, 'hat', .1 + .08 * seg(x, 9.4, 11.8)]);
+      for (let x = 9.4; x < 11.8; x += .6) e.push([x, 'kick']);
+      e.push([11.3, 'riser', .5]);
+      e.push([11.8, 'impact']);
+      e.push([12.9, 'chord', [523.25, 659.25, 783.99, 987.77], 2.2]);
+      e.push([14.2, 'whoosh', .8]);
+      return e;
+    }
+  };
+})();
+
+/* =========================================================
+   PATTERN C — BAUHAUS POP
+   ========================================================= */
+const C = (() => {
+  const cream = '#efe6d2', red = '#e63b2e', blue = '#1f4bd8', yel = '#f5b700', ink = '#161616';
+  const pal = [red, blue, yel, ink];
+  const types = [0, 1, 2, 3, 4, 5, 2, 0, 1];
+  const cell = 280, sz = 210;
+
+  function shape(type, x, y, s, rot, col) {
+    g.save(); g.translate(x, y); g.rotate(rot); g.fillStyle = col; g.beginPath();
+    const h = s / 2;
+    switch (type) {
+      case 0: g.arc(0, 0, h, 0, TAU); break;
+      case 1: g.rect(-h, -h, s, s); break;
+      case 2: g.moveTo(0, -h); g.lineTo(h, h * .8); g.lineTo(-h, h * .8); g.closePath(); break;
+      case 3: g.moveTo(-h, h / 2); g.arc(0, h / 2, h, Math.PI, 0); g.closePath(); break;
+      case 4: g.moveTo(-h, h); g.arc(-h, h, s, -Math.PI / 2, 0); g.closePath(); break;
+      case 5: g.rect(-h, -s / 6, s, s / 3); g.rect(-s / 6, -h, s / 3, s); break;
+    }
+    g.fill(); g.restore();
+  }
+  const cellPos = k => [((k % 3) - 1) * cell, (Math.floor(k / 3) - 1) * cell];
+
+  function grid(t) {
+    fill(cream);
+    const cx = W / 2, cy = H / 2 + 20;
+    // faint guides
+    g.save(); g.strokeStyle = 'rgba(22,22,22,.12)'; g.lineWidth = 2;
+    for (let i = -2; i <= 2; i += 1) {
+      const o = (i - .5) * cell + cell / 2;
+      g.beginPath(); g.moveTo(cx + o - cell / 2, 0); g.lineTo(cx + o - cell / 2, H); g.stroke();
+    }
+    g.restore();
+    let gridRot = 0, b = -1, lt = 0;
+    if (t >= 3) { b = Math.min(5, Math.floor((t - 3) / .5)); lt = t - 3 - b * .5; gridRot = (b + E.outBack(clamp(lt / .32))) * Math.PI / 2; }
+    // big backing ring
+    g.save(); g.translate(cx, cy); g.rotate(-gridRot * .5);
+    g.strokeStyle = ink; g.lineWidth = 3; g.setLineDash([4, 18]);
+    g.beginPath(); g.arc(0, 0, 470 * E.outExpo(seg(t, .2, 1.2)), 0, TAU); g.stroke(); g.setLineDash([]);
+    g.restore();
+    for (let k = 0; k < 9; k++) {
+      let [x, y] = cellPos(k);
+      const st = .15 + k * .28, p = seg(t, st, st + .65);
+      if (p <= 0) continue;
+      y = lerp(-cy - 300, y, E.outBounce(p));
+      let rot = (1 - E.outExpo(p)) * Math.PI;
+      const c = Math.cos(gridRot), s = Math.sin(gridRot);
+      const rx = x * c - y * s, ry = x * s + y * c;
+      let scale = 1;
+      if (b >= 0) scale = 1 + .2 * (1 - E.outExpo(clamp(lt / .35)));
+      const col = pal[(k + (b + 1)) % 4];
+      shape(types[k], cx + rx, cy + ry, sz * scale, rot - gridRot * (k % 2 ? 1 : 0), col);
+    }
+    font(28, F.mono, 700); g.fillStyle = ink; g.textAlign = 'left'; g.textBaseline = 'middle';
+    g.globalAlpha = seg(t, 1, 1.4); g.fillText('9 SHAPES', 56, H / 2 - 20);
+    g.fillText('4 COLORS', 56, H / 2 + 20); g.fillText('120 BPM', 56, H / 2 + 60);
+    g.globalAlpha = 1;
+  }
+
+  function orbit(t) {
+    fill(ink);
+    const cx = W / 2, cy = H / 2;
+    const R = 360 * E.outElastic(seg(t, 6.25, 7.3));
+    // dotted ring
+    for (let i = 0; i < 28; i++) {
+      const a = i / 28 * TAU + t * .4, pu = Math.exp(-mod(t - 6, .5) * 8);
+      const rr = 7 + (i % 4 === Math.floor(t * 2) % 4 ? 8 * pu : 0);
+      g.fillStyle = cream; g.beginPath(); g.arc(cx + Math.cos(a) * (R + 210), cy + Math.sin(a) * (R + 210), rr, 0, TAU); g.fill();
+    }
+    g.fillStyle = yel; g.beginPath(); g.arc(cx, cy, Math.max(0, R), 0, TAU); g.fill();
+    // sine drawn into the circle
+    g.save(); g.beginPath(); g.arc(cx, cy, Math.max(0, R), 0, TAU); g.clip();
+    const dp = E.outCubic(seg(t, 6.6, 7.5));
+    g.strokeStyle = ink; g.lineWidth = 16; g.lineCap = 'round'; g.beginPath();
+    for (let x = -R; x <= -R + 2 * R * dp; x += 6) {
+      const y = Math.sin(x * .018 - t * 7) * 90 * Math.cos(x / R * Math.PI / 2);
+      x === -R ? g.moveTo(cx + x, cy + y) : g.lineTo(cx + x, cy + y);
+    }
+    g.stroke();
+    g.fillStyle = red; g.fillRect(cx - R, cy + R * .55, 2 * R, R);
+    g.restore();
+    const a = t * 2.2;
+    const op = E.outBack(seg(t, 6.8, 7.2));
+    shape(1, cx + Math.cos(a) * (R + 110), cy + Math.sin(a) * (R + 110), 90 * op, t * 3, blue);
+    shape(3, cx + Math.cos(a + Math.PI) * (R + 110), cy + Math.sin(a + Math.PI) * (R + 110), 110 * op, a + Math.PI / 2, red);
+    shape(2, cx + Math.cos(-a * .7) * (R + 300), cy + Math.sin(-a * .7) * (R + 180), 70 * op, -t * 2, cream);
+  }
+
+  function wave(t) {
+    fill(blue);
+    const amp = 220 * E.outCubic(seg(t, 9.15, 9.8));
+    const morph = E.inOutCubic(seg(t, 10.6, 11.2));
+    g.fillStyle = cream; g.fillRect(0, H / 2 - 2, W, 4);
+    const cs = [cream, yel, red];
+    for (let i = 0; i < 12; i++) {
+      const x = W / 2 + (i - 5.5) * 132;
+      const y = H / 2 + Math.sin(t * 4.2 - i * .55) * amp;
+      g.fillStyle = cream; g.fillRect(x - 2, Math.min(y, H / 2), 4, Math.abs(y - H / 2));
+      g.save(); g.translate(x, y); g.rotate(morph * Math.PI / 4 + (t > 11.2 ? (t - 11.2) * 3 : 0));
+      g.fillStyle = cs[i % 3]; const s = 76, rad = lerp(s / 2, 4, morph);
+      g.beginPath(); g.roundRect(-s / 2, -s / 2, s, s, rad); g.fill();
+      g.restore();
+    }
+    font(30, F.mono, 700); g.fillStyle = cream; g.globalAlpha = seg(t, 9.5, 9.8);
+    tracked(morph < .5 ? 'CIRCLE' : 'SQUARE', W / 2, 150, 14); g.globalAlpha = 1;
+  }
+
+  function finale(t) {
+    fill(cream);
+    const cx = W / 2, cy = H / 2;
+    const out = E.inBack(seg(t, 14.4, 14.9));
+    g.save(); g.translate(cx, cy); g.scale(1 - out, 1 - out); g.translate(-cx, -cy);
+    // orbiting shapes
+    const op = E.outBack(seg(t, 12.8, 13.2));
+    [[0, yel], [2, red], [1, blue]].forEach(([ty, col], k) => {
+      const a = t * 1.1 + k * TAU / 3;
+      shape(ty, cx + Math.cos(a) * 760, cy + Math.sin(a) * 400, 120 * op, t * 2 + k, col);
+    });
+    const lines = [['MAKE', ink, 12.35], ['IT', red, 12.6], ['MOVE.', blue, 12.8]];
+    font(210, F.archivo);
+    lines.forEach(([w, col, st], li) => {
+      const y = cy + (li - 1) * 215 + 10;
+      const ws = [...w].map(c => g.measureText(c).width), tot = ws.reduce((a, b) => a + b, 0);
+      let x = cx - tot / 2;
+      [...w].forEach((c, j) => {
+        const p = E.outBack(seg(t, st + j * .05, st + j * .05 + .4));
+        g.save(); g.translate(x + ws[j] / 2, y); g.rotate((1 - p) * .6); g.scale(p, p);
+        g.fillStyle = col; textC(c, 0, 0); g.restore();
+        x += ws[j];
+      });
+    });
+    g.restore();
+    if (out > 0.98) { g.fillStyle = ink; g.beginPath(); g.arc(cx, cy, 10 * (1 - seg(t, 14.9, 15)), 0, TAU); g.fill(); }
+  }
+
+  function render(t) {
+    if (t < 6) grid(t);
+    else if (t < 6.8) {
+      // diagonal stripe wipe: grid → orbit
+      grid(t);
+      const e = lerp(-700, W + 700, E.inOutCubic(seg(t, 6.0, 6.75)));
+      g.save(); g.beginPath(); g.moveTo(-2000, 0); g.lineTo(e + 300, 0); g.lineTo(e - 300, H); g.lineTo(-2000, H); g.closePath(); g.clip();
+      orbit(t); g.restore();
+      [red, yel, blue, ink].forEach((c, k) => {
+        const o = e - k * 110 + 110 * 2;
+        g.fillStyle = c; g.beginPath(); g.moveTo(o + 300, 0); g.lineTo(o + 400, 0); g.lineTo(o - 200, H); g.lineTo(o - 300, H); g.closePath(); g.fill();
+      });
+    }
+    else if (t < 9) orbit(t);
+    else if (t < 9.5) {
+      orbit(t);
+      const p = E.inOutExpo(seg(t, 9.0, 9.45));
+      g.save(); g.beginPath(); g.rect(0, H * (1 - p), W, H * p); g.clip(); wave(t); g.restore();
+      g.fillStyle = yel; g.fillRect(0, H * (1 - p) - 18, W, p > 0 && p < 1 ? 18 : 0);
+    }
+    else if (t < 12) wave(t);
+    else if (t < 12.7) {
+      wave(t);
+      const p1 = E.inOutCubic(seg(t, 12.0, 12.45)), p2 = E.inOutCubic(seg(t, 12.15, 12.65));
+      const Rm = Math.hypot(W, H);
+      g.fillStyle = red; g.beginPath(); g.arc(W, H, Rm * p1, 0, TAU); g.fill();
+      g.save(); g.beginPath(); g.arc(W, H, Rm * p2, 0, TAU); g.clip(); finale(t); g.restore();
+    }
+    else finale(t);
+    hud(t, 'C / BAUHAUS POP');
+  }
+
+  return {
+    label: 'C / BAUHAUS POP',
+    render,
+    events() {
+      const penta = [392, 440, 523.25, 587.33, 659.25, 783.99, 880, 1046.5, 1174.66];
+      const e = [];
+      for (let k = 0; k < 9; k++) e.push([.15 + k * .28 + .24, 'boing', penta[k]]);
+      for (let b = 6; b < 24; b++) e.push([b * .5, 'kick']);
+      for (let b = 6; b < 24; b++) e.push([b * .5 + .25, 'clap']);
+      e.push([5.95, 'whoosh', .8]);
+      for (let b = 0; b < 6; b++) e.push([6.5 + b * .5, 'marimba', [523.25, 659.25, 783.99, 659.25, 587.33, 783.99][b]]);
+      e.push([8.95, 'riser', .5]);
+      for (let k = 0; k < 11; k++) e.push([9.3 + k * .25, 'marimba', penta[(k * 3) % 9]]);
+      e.push([12.0, 'whoosh', .6]);
+      [['MAKE', 12.35], ['IT', 12.6], ['MOVE.', 12.8]].forEach(([w, st], li) => [...w].forEach((c, j) => e.push([st + j * .05 + .08, 'boing', penta[li * 2 + j] || 1046.5])));
+      e.push([12.8, 'kick']); e.push([13.3, 'chord', [392, 523.25, 659.25, 783.99], 1.4]);
+      e.push([14.45, 'boing', 220]);
+      return e;
+    }
+  };
+})();
+
+/* =========================================================
+   KANMON NOTE — shared helpers (strait / bridge / note motifs)
+   ========================================================= */
+const JP = "'Zen Kaku Gothic New', 'Noto Sans JP', sans-serif";
+// Official logo: drop the file next to this page as kanmonnote-logo.png (transparent PNG recommended).
+// Until it exists, the lockups fall back to the typeset name.
+const LOGO = new Image();
+let logoReady = false;
+LOGO.onload = () => { logoReady = true; dirty = true; };
+LOGO.src = 'kanmonnote-logo.png';
+function drawLogo(cx, cy, maxW, maxH, p, plate) { // p: 0→1 reveal
+  if (p <= 0) return;
+  const s = Math.min(maxW / LOGO.naturalWidth, maxH / LOGO.naturalHeight);
+  const w = LOGO.naturalWidth * s, h = LOGO.naturalHeight * s, k = lerp(.86, 1, E.outBack(clamp(p)));
+  g.save(); g.translate(cx, cy); g.scale(k, k); g.globalAlpha = clamp(p * 1.5);
+  if (plate) {
+    g.save(); g.shadowColor = plate; g.shadowBlur = 50;
+    g.fillStyle = '#fff'; g.beginPath(); g.roundRect(-w / 2 - 60, -h / 2 - 44, w + 120, h + 88, 36); g.fill(); g.restore();
+  }
+  g.beginPath(); g.rect(-w / 2, -h / 2, w * E.inOutCubic(clamp(p * 1.4)), h); g.clip();
+  g.drawImage(LOGO, -w / 2, -h / 2, w, h);
+  g.restore();
+}
+// suspension-bridge cable: anchor → tower → sag → tower → anchor
+function cableY(G, x) {
+  if (x <= G.tx1) { const u = (x - G.ax1) / (G.tx1 - G.ax1); return lerp(G.deckY, G.topY, u) + G.side * Math.sin(Math.PI * u); }
+  if (x >= G.tx2) { const u = (x - G.tx2) / (G.ax2 - G.tx2); return lerp(G.topY, G.deckY, u) + G.side * Math.sin(Math.PI * u); }
+  const mid = (G.tx1 + G.tx2) / 2, d = (x - mid) / ((G.tx2 - G.tx1) / 2);
+  return G.topY + G.sag * (1 - d * d);
+}
+function strokeCable(G, p) {
+  if (p <= 0) return;
+  const end = lerp(G.ax1, G.ax2, p);
+  g.beginPath();
+  for (let x = G.ax1; x <= end; x += 6) { const y = cableY(G, x); x === G.ax1 ? g.moveTo(x, y) : g.lineTo(x, y); }
+  g.stroke();
+}
+const penWave = (x, t, amp = 26) => Math.sin(x * .011 + t * 1.6) * amp + Math.sin(x * .004 - t * .9) * amp * .6;
+function letters(str, cx, y, each) { // centered row of glyphs, callback per glyph
+  const ch = [...str], ws = ch.map(c => g.measureText(c).width), tot = ws.reduce((a, b) => a + b, 0);
+  let x = cx - tot / 2;
+  ch.forEach((c, i) => { each(c, x + ws[i] / 2, y, i); x += ws[i]; });
+}
+
+/* =========================================================
+   K1 — KANMON NOTE / 海峡ノート(昼・青×白)
+   ========================================================= */
+const K1 = (() => {
+  const paper = '#f7fbff', rule = '#cfe0f7', blue = '#1a5fd1', mid = '#2f78e6', deep = '#0a2a66', sky = '#7cc0ff', pale = '#e4f0ff';
+  const G = { ax1: 330, tx1: 610, tx2: W - 610, ax2: W - 330, topY: H * .2, deckY: H * .47, sag: H * .19, side: 26 };
+
+  function note(t) {
+    fill(paper);
+    g.fillStyle = rule;
+    for (let i = 0; i < 12; i++) g.fillRect(0, 110 + i * 80, W * E.outExpo(seg(t, .05 + i * .035, .8 + i * .035)), 2);
+    g.fillStyle = sky; g.fillRect(180, 0, 3, H * E.outExpo(seg(t, .2, 1.0)));
+    font(26, F.mono, 700); g.fillStyle = blue; g.globalAlpha = seg(t, .5, .9);
+    g.textAlign = 'left'; g.textBaseline = 'middle'; g.fillText('NOTE — KANMON STRAIT', 214, 270);
+    g.globalAlpha = 1;
+    const p = E.inOutCubic(seg(t, .6, 1.9)), end = lerp(180, W + 10, p);
+    if (p > 0) {
+      g.strokeStyle = blue; g.lineWidth = 10; g.lineCap = 'round'; g.lineJoin = 'round'; g.beginPath();
+      for (let x = 180; x <= end; x += 5) { const y = H / 2 + penWave(x, t); x === 180 ? g.moveTo(x, y) : g.lineTo(x, y); }
+      g.stroke();
+      if (p < 1) { g.fillStyle = deep; g.beginPath(); g.arc(end, H / 2 + penWave(end, t), 14, 0, TAU); g.fill(); }
+    }
+  }
+
+  function land(side, SL, t) {
+    const up = (1 - E.outExpo(seg(t, 2.6 + side * .12, 3.3 + side * .12))) * 520;
+    g.save(); g.translate(side ? W : 0, up); g.scale(side ? -1 : 1, 1);
+    g.fillStyle = deep; g.beginPath(); g.moveTo(0, H); g.lineTo(0, SL - 160);
+    g.lineTo(110, SL - 200); g.lineTo(240, SL - 165); g.lineTo(360, SL - 110); g.lineTo(480, SL - 10); g.lineTo(520, H); g.closePath(); g.fill();
+    g.fillStyle = '#123f93';
+    [[40, 60], [100, 90], [170, 50], [230, 75], [300, 40]].forEach(([x, h], k) => g.fillRect(x, SL - 200 + (x > 220 ? 30 : 0) - h + 8 + (k === 0 ? 30 : 0), 44, h));
+    g.restore();
+    font(52, JP, 900); g.fillStyle = '#fff'; g.globalAlpha = seg(t, 3.3, 3.7);
+    textC(side ? '門司' : '下関', side ? W - 190 : 190, SL - 70 + up);
+    g.globalAlpha = 1;
+  }
+
+  function ship(x, y, t) {
+    g.save(); g.translate(x, y + Math.sin(t * 3) * 4); g.rotate(Math.sin(t * 2.4) * .025);
+    g.fillStyle = '#fff'; g.beginPath(); g.moveTo(-130, -30); g.lineTo(130, -30); g.lineTo(100, 16); g.lineTo(-110, 16); g.closePath(); g.fill();
+    g.fillStyle = deep; g.fillRect(-120, -18, 236, 8);
+    g.fillStyle = '#fff'; g.fillRect(-60, -80, 110, 50);
+    g.fillStyle = sky; for (let i = 0; i < 4; i++) g.fillRect(-50 + i * 26, -68, 16, 14);
+    g.fillStyle = blue; g.fillRect(10, -118, 26, 38);
+    g.restore();
+    g.strokeStyle = 'rgba(255,255,255,.8)'; g.lineWidth = 4; g.lineCap = 'round';
+    for (let k = 1; k <= 3; k++) { g.beginPath(); g.moveTo(x - 130 - k * 50, y + 6 + k * 3); g.lineTo(x - 150 - k * 50 - 20, y + 6 + k * 3); g.stroke(); }
+  }
+
+  function sea(t) {
+    const rise = E.inOutCubic(seg(t, 2.2, 2.9)), SL = lerp(H / 2, H * .6, rise);
+    fill(paper);
+    g.fillStyle = pale; g.globalAlpha = rise; g.fillRect(0, 0, W, H); g.globalAlpha = 1;
+    g.fillStyle = rule; g.globalAlpha = 1 - rise; for (let i = 0; i < 12; i++) g.fillRect(0, 110 + i * 80, W, 2); g.globalAlpha = 1;
+    // sun
+    g.fillStyle = '#fff'; g.globalAlpha = .9 * seg(t, 2.6, 3.2); g.beginPath(); g.arc(W * .8, H * .2, 70, 0, TAU); g.fill(); g.globalAlpha = 1;
+    land(0, SL, t); land(1, SL, t);
+    // bridge
+    g.fillStyle = deep; g.strokeStyle = deep;
+    const tp = E.outExpo(seg(t, 3.3, 3.8));
+    [G.tx1, G.tx2].forEach(tx => {
+      const top = lerp(SL, G.topY - 24, tp);
+      g.fillRect(tx - 16, top, 9, SL - top); g.fillRect(tx + 7, top, 9, SL - top);
+      if (tp > .95) { g.fillRect(tx - 16, G.topY - 24, 32, 9); g.fillRect(tx - 16, (G.topY + G.deckY) / 2, 32, 7); }
+    });
+    g.lineCap = 'butt';
+    g.lineWidth = 12; const dp = E.inOutCubic(seg(t, 3.6, 4.3));
+    if (dp > 0) { g.beginPath(); g.moveTo(G.ax1, G.deckY); g.lineTo(lerp(G.ax1, G.ax2, dp), G.deckY); g.stroke(); }
+    g.lineWidth = 5; strokeCable(G, E.inOutCubic(seg(t, 3.8, 4.6)));
+    g.lineWidth = 2;
+    for (let x = G.ax1 + 36; x < G.ax2; x += 36) {
+      const hp = E.outCubic(seg(t, 4.2 + (x - G.ax1) / (G.ax2 - G.ax1) * .6, 4.5 + (x - G.ax1) / (G.ax2 - G.ax1) * .6));
+      if (hp <= 0) continue; const cy = cableY(G, x);
+      g.beginPath(); g.moveTo(x, cy); g.lineTo(x, lerp(cy, G.deckY, hp)); g.stroke();
+    }
+    // sea layers (the first one is the pen line turned into water)
+    const wave = (c, off, sp, amp, k) => {
+      g.fillStyle = c; g.beginPath(); g.moveTo(0, H);
+      for (let x = 0; x <= W + 20; x += 20) g.lineTo(x, SL + off * rise + penWave(x + k * 300, t * sp, amp));
+      g.lineTo(W, H); g.closePath(); g.fill();
+    };
+    wave(blue, 0, 1, 26, 0);
+    const sp = seg(t, 4.8, 7.6);
+    if (sp > 0 && sp < 1) { const x = lerp(-280, W + 280, sp); ship(x, SL + penWave(x, t) - 8, t); }
+    wave(mid, 44, 1.3, 20, 1);
+    wave(deep, 120, 1.7, 16, 2);
+    // title
+    font(170, JP, 900);
+    letters('関門海峡', W / 2, H * .79, (c, x, y, i) => {
+      const p = E.outBack(seg(t, 5.3 + i * .09, 5.85 + i * .09)); if (p <= 0) return;
+      g.save(); g.globalAlpha = clamp(p); g.translate(x, y + (1 - p) * 90); g.fillStyle = '#fff'; textC(c, 0, 0); g.restore();
+    });
+    font(28, F.mono, 700); g.fillStyle = sky; g.globalAlpha = seg(t, 5.9, 6.3);
+    tracked('KANMON STRAIT', W / 2, H * .79 + 120, lerp(30, 12, E.outExpo(seg(t, 5.9, 6.8)))); g.globalAlpha = 1;
+  }
+
+  function icon(k) {
+    if (k === 0) { // shop: awning + door
+      g.fillStyle = blue; g.fillRect(-75, -20, 150, 95);
+      g.fillStyle = '#fff'; g.fillRect(-22, 15, 44, 60); g.fillRect(-62, 0, 30, 28); g.fillRect(32, 0, 30, 28);
+      for (let i = 0; i < 5; i++) {
+        g.fillStyle = i % 2 ? '#fff' : sky; g.fillRect(-90 + i * 36, -75, 36, 48);
+        g.beginPath(); g.arc(-72 + i * 36, -27, 18, 0, Math.PI); g.fill();
+      }
+      g.strokeStyle = deep; g.lineWidth = 3; g.strokeRect(-90, -75, 180, 48);
+    } else if (k === 1) { // event: bunting
+      g.strokeStyle = deep; g.lineWidth = 4; g.beginPath(); g.moveTo(-100, -70); g.quadraticCurveTo(0, -20, 100, -70); g.stroke();
+      for (let i = 0; i < 5; i++) {
+        const x = -80 + i * 40, y = -70 + 50 * (1 - Math.pow((x / 100), 2)) * .5 + 4;
+        g.fillStyle = i % 2 ? sky : blue; g.beginPath(); g.moveTo(x - 16, y); g.lineTo(x + 16, y); g.lineTo(x, y + 44); g.closePath(); g.fill();
+      }
+      g.fillStyle = blue; g.beginPath();
+      for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, r = i % 2 ? 18 : 42; g.lineTo(Math.cos(a) * r, 45 + Math.sin(a) * r); }
+      g.closePath(); g.fill();
+    } else { // business: buildings
+      g.fillStyle = sky; g.fillRect(20, -30, 70, 110);
+      g.fillStyle = deep; g.fillRect(-80, -85, 110, 165);
+      g.fillStyle = '#fff';
+      for (let r = 0; r < 5; r++) for (let c = 0; c < 3; c++) g.fillRect(-66 + c * 32, -70 + r * 30, 18, 16);
+      g.fillStyle = blue; for (let r = 0; r < 3; r++) g.fillRect(36, -15 + r * 30, 38, 14);
+    }
+  }
+
+  function cards(t) {
+    fill(blue);
+    g.fillStyle = 'rgba(255,255,255,.08)'; for (let i = 0; i < 12; i++) g.fillRect(0, 110 + i * 80, W, 2);
+    const hl = '地域の事業者・お店・イベント情報', n = Math.floor(seg(t, 7.8, 8.5) * [...hl].length);
+    font(54, JP, 700); g.fillStyle = '#fff'; g.globalAlpha = 1 - seg(t, 10.5, 10.9);
+    textC([...hl].slice(0, n).join(''), W / 2, 175); g.globalAlpha = 1;
+    [['お店', 'SHOP'], ['イベント', 'EVENT'], ['事業者', 'BUSINESS']].forEach(([jp, en], i) => {
+      const st = 8.0 + i * .45, p = E.outBack(seg(t, st, st + .55)); if (p <= 0) return;
+      const out = E.inBack(seg(t, 10.45 + i * .1, 11.05 + i * .1));
+      const cx = W / 2 + (i - 1) * 540, cy = H / 2 + 80 + (1 - E.outExpo(seg(t, st, st + .55))) * 200 - out * 1400 + Math.sin(t * 2 + i) * 8;
+      g.save(); g.translate(cx, cy); g.rotate((i - 1) * .045 + (1 - p) * .3); g.scale(Math.max(.001, p), 1);
+      g.fillStyle = 'rgba(0,20,70,.28)'; g.beginPath(); g.roundRect(-206, -254, 440, 540, 26); g.fill();
+      g.fillStyle = '#fff'; g.beginPath(); g.roundRect(-220, -270, 440, 540, 26); g.fill();
+      g.fillStyle = '#dbe9fb'; for (let y = -150; y <= 230; y += 50) g.fillRect(-190, y, 380, 2);
+      g.fillStyle = sky; g.fillRect(-170, -250, 2, 500);
+      g.save(); g.translate(0, -272); g.rotate(-.08); g.fillStyle = 'rgba(124,192,255,.75)'; g.fillRect(-75, -22, 150, 44); g.restore();
+      g.save(); g.translate(0, -105); icon(i); g.restore();
+      font(80, JP, 900); g.fillStyle = deep; textC(jp, 0, 105);
+      font(24, F.mono, 700); g.fillStyle = blue; tracked(en, 0, 185, 8);
+      g.restore();
+    });
+  }
+
+  function lockup(t) {
+    const gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, blue); gr.addColorStop(1, deep);
+    g.fillStyle = gr; g.fillRect(0, 0, W, H);
+    const lineY = H / 2 + 80;
+    const G2 = { ax1: W / 2 - 430, tx1: W / 2 - 270, tx2: W / 2 + 270, ax2: W / 2 + 430, topY: 150, deckY: 290, sag: 95, side: 12 };
+    g.strokeStyle = 'rgba(124,192,255,.7)'; g.fillStyle = 'rgba(124,192,255,.7)'; g.lineWidth = 3;
+    const bp = E.inOutCubic(seg(t, 12.1, 13.1));
+    if (bp > 0) {
+      [G2.tx1, G2.tx2].forEach(tx => { const h = (G2.deckY + 40 - G2.topY) * E.outExpo(seg(t, 12.1, 12.5)); g.fillRect(tx - 4, G2.deckY + 40 - h, 8, h); });
+      g.beginPath(); g.moveTo(G2.ax1, G2.deckY); g.lineTo(lerp(G2.ax1, G2.ax2, bp), G2.deckY); g.stroke();
+      strokeCable(G2, bp);
+    }
+    const wp = E.inOutCubic(seg(t, 11.2, 11.9));
+    g.strokeStyle = '#fff'; g.lineWidth = 8; g.lineCap = 'round'; g.beginPath();
+    const x0 = W / 2 - 640, x1 = lerp(x0, W / 2 + 640, wp);
+    for (let x = x0; x <= x1; x += 5) { const y = lineY + penWave(x, t, 12); x === x0 ? g.moveTo(x, y) : g.lineTo(x, y); }
+    if (wp > 0) g.stroke();
+    if (logoReady) drawLogo(W / 2, lineY - 170, 1000, 170, seg(t, 11.5, 12.3), 'rgba(0,20,70,.35)');
+    else {
+      g.save(); g.beginPath(); g.rect(0, 0, W, lineY - 22); g.clip();
+      font(190, JP, 900); g.fillStyle = '#fff';
+      letters('かんもんノート', W / 2, lineY - 125, (c, x, y, i) => {
+        const p = E.outExpo(seg(t, 11.5 + i * .07, 12.2 + i * .07));
+        textC(c, x, y + (1 - p) * 240);
+      });
+      g.restore();
+    }
+    font(44, JP, 700); g.fillStyle = '#fff'; g.globalAlpha = seg(t, 12.6, 13.0);
+    tracked('関門海峡エリアの情報メディア', W / 2, lineY + 95, lerp(30, 8, E.outExpo(seg(t, 12.6, 13.6))));
+    const url = 'kanmonnote.com', n = Math.floor(seg(t, 13.1, 13.7) * url.length);
+    font(34, F.mono, 700); g.fillStyle = sky; g.globalAlpha = 1;
+    textC(url.slice(0, n) + (n < url.length && n > 0 ? '_' : ''), W / 2, lineY + 180);
+    // wave-edged paper wipe back to the first frame (seamless loop)
+    const e = E.inOutCubic(seg(t, 14.45, 15));
+    if (e > 0) {
+      g.fillStyle = paper; g.beginPath(); g.moveTo(0, 0);
+      for (let x = 0; x <= W + 20; x += 20) g.lineTo(x, (H + 80) * e - 40 + penWave(x, t, 20 * (1 - e)));
+      g.lineTo(W, 0); g.closePath(); g.fill();
+    }
+  }
+
+  return {
+    label: '01 / 海峡ノート',
+    render(t) {
+      if (t < 2.2) note(t);
+      else if (t < 7.5) sea(t);
+      else if (t < 7.95) {
+        sea(t); const p = E.inOutCubic(seg(t, 7.5, 7.95));
+        g.save(); g.beginPath(); g.moveTo(0, H); g.lineTo(0, H - H * 1.15 * p + 60); g.lineTo(W, H - H * 1.15 * p - 60); g.lineTo(W, H); g.closePath(); g.clip(); cards(t); g.restore();
+      }
+      else if (t < 11.2) cards(t);
+      else lockup(t);
+      hud(t, this.label, 'KANMON NOTE');
+    },
+    events() {
+      const pen = [523.25, 587.33, 659.25, 783.99, 880, 1046.5, 1174.66, 1318.5];
+      const e = [];
+      for (let k = 0; k < 4; k++) e.push([.1 + k * .12, 'blip', pen[k * 2], .5, 'sine', .12]);
+      e.push([.6, 'whoosh', 1.3]);
+      e.push([2.15, 'whoosh', .9]);
+      for (let b = 5; b < 15; b++) e.push([b * .5, 'marimba', pen[[0, 2, 4, 3, 5, 4, 2, 1, 3, 0][b - 5]]]);
+      for (let b = 8; b < 22; b++) e.push([b * .5, 'kick']);
+      for (let b = 8; b < 22; b++) e.push([b * .5 + .25, 'hat', .12]);
+      e.push([2.7, 'boing', 330]); e.push([2.82, 'boing', 392]);
+      for (let k = 0; k < 8; k++) e.push([4.2 + k * .08, 'blip', pen[k], .12, 'triangle', .1]);
+      e.push([5.1, 'horn']);
+      for (let k = 0; k < 4; k++) e.push([5.3 + k * .09 + .1, 'boing', pen[k + 2]]);
+      e.push([7.45, 'whoosh', .6]);
+      for (let i = 0; i < 3; i++) { e.push([8.0 + i * .45 + .15, 'boing', [523.25, 659.25, 783.99][i]]); e.push([8.0 + i * .45, 'click']); }
+      e.push([10.45, 'whoosh', .7]);
+      e.push([11.2, 'riser', .45]);
+      e.push([11.6, 'impact']);
+      e.push([12.2, 'chord', [523.25, 659.25, 783.99, 1046.5], 2]);
+      e.push([13.1, 'blip', 1568, .3, 'sine', .15]);
+      e.push([14.45, 'whoosh', .6]);
+      return e;
+    }
+  };
+})();
+
+/* =========================================================
+   K2 — KANMON NOTE / 夜の海峡(紺×光)
+   ========================================================= */
+const K2 = (() => {
+  const night = '#030a1c', nv = '#0b1d4a', glow = '#8fd0ff', blue = '#2f7bff', warm = '#ffd98a';
+  const HZ = H * .64;
+  const G = { ax1: 260, tx1: 560, tx2: W - 560, ax2: W - 260, topY: H * .24, deckY: H * .5, sag: H * .19, side: 24 };
+  const cable = Array.from({ length: 111 }, (_, k) => { const x = lerp(G.ax1, G.ax2, k / 110); return [x, cableY(G, x)]; });
+  const deck = Array.from({ length: 71 }, (_, k) => [lerp(G.ax1, G.ax2, k / 70), G.deckY]);
+  const r = rng(1868);
+  const stars = Array.from({ length: 140 }, () => [r() * W, r() * HZ * .8, r() * 1.8 + .4, r() * TAU]);
+  const shore = Array.from({ length: 280 }, () => {
+    const side = r() < .5 ? 0 : 1, d = Math.pow(r(), .8) * 520;
+    const x = side ? W - d : d, y = HZ - 6 - r() * (150 * (1 - d / 560)) - r() * 10;
+    const c = r(); return { x, y, d, c: c < .55 ? warm : c < .85 ? '#ffffff' : glow, ph: r() * TAU, s: r() * 2 + 1.2 };
+  });
+  const cars = Array.from({ length: 8 }, (_, i) => ({ o: r(), sp: .05 + r() * .04, dir: i % 2 ? 1 : -1, c: i % 2 ? warm : '#fff' }));
+
+  function dot(x, y, s, col, a) {
+    g.fillStyle = col; g.globalAlpha = a * .22; g.beginPath(); g.arc(x, y, s * 3.2, 0, TAU); g.fill();
+    g.globalAlpha = a; g.beginPath(); g.arc(x, y, s, 0, TAU); g.fill();
+  }
+  function scene(t, dim) {
+    const gr = g.createLinearGradient(0, 0, 0, HZ); gr.addColorStop(0, night); gr.addColorStop(1, nv);
+    g.fillStyle = gr; g.fillRect(0, 0, W, HZ); g.fillStyle = '#020714'; g.fillRect(0, HZ, W, H - HZ);
+    const push = 1 + .07 * E.inOutCubic(seg(t, 0, 10));
+    g.save(); g.translate(W / 2, HZ); g.scale(push, push); g.translate(-W / 2, -HZ);
+    g.globalCompositeOperation = 'lighter';
+    stars.forEach(([x, y, s, ph]) => { g.fillStyle = '#fff'; g.globalAlpha = (.25 + .25 * Math.sin(t * 2 + ph)) * seg(t, 0, 1) * dim; g.fillRect(x, y, s, s); });
+    // tower silhouettes
+    g.globalAlpha = .35 * dim * seg(t, .1, .8); g.fillStyle = '#3b6fd6';
+    [G.tx1, G.tx2].forEach(tx => { g.fillRect(tx - 14, G.topY - 20, 6, HZ - G.topY + 20); g.fillRect(tx + 8, G.topY - 20, 6, HZ - G.topY + 20); });
+    const refl = (x, y, col, a, k) => {
+      const ry = HZ + (HZ - y) * .55; if (ry > H) return;
+      g.fillStyle = col; g.globalAlpha = a * .28; g.fillRect(x + Math.sin(t * 3 + k) * 4 - 1.5, ry, 3, 16 + 6 * Math.sin(t * 5 + k));
+    };
+    cable.forEach(([x, y], k) => {
+      const st = .3 + k * .022; if (t < st) return;
+      const a = dim * Math.min(1, .75 + 1.5 * Math.exp(-(t - st) * 7));
+      dot(x, y, 3.2, k % 10 === 0 ? '#fff' : glow, a); refl(x, y, glow, a, k);
+    });
+    deck.forEach(([x, y], k) => {
+      const st = 1.2 + k * .018; if (t < st) return;
+      dot(x, y, 2.6, warm, dim * .9); refl(x, y, warm, dim, k + 50);
+    });
+    if (t > 2.8) cars.forEach((c, i) => {
+      const u = fract(c.o + t * c.sp * c.dir), x = lerp(G.ax1 + 20, G.ax2 - 20, u);
+      g.strokeStyle = c.c; g.globalAlpha = .5 * dim * seg(t, 2.8, 3.3); g.lineWidth = 3;
+      g.beginPath(); g.moveTo(x, G.deckY - 6); g.lineTo(x - c.dir * 60, G.deckY - 6); g.stroke();
+      dot(x, G.deckY - 6, 3, c.c, dim * seg(t, 2.8, 3.3));
+    });
+    shore.forEach((s, k) => {
+      const st = 3.3 + (s.d / 520) * 1.3; if (t < st) return;
+      const a = dim * clamp((t - st) * 4) * (.7 + .3 * Math.sin(t * 3 + s.ph));
+      dot(s.x, s.y, s.s, s.c, a); refl(s.x, s.y, s.c, a * .8, k);
+    });
+    g.restore();
+    g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1;
+    g.fillStyle = 'rgba(143,208,255,.25)'; g.fillRect(0, HZ, W, 1);
+  }
+
+  function glowText(s, x, y, blur = 30) {
+    g.save(); g.shadowColor = blue; g.shadowBlur = blur; g.fillText(s, x, y); g.shadowBlur = blur / 3; g.fillText(s, x, y); g.restore();
+  }
+
+  return {
+    label: '02 / 夜の海峡',
+    render(t) {
+      const dim = 1 - .72 * seg(t, 6.3, 6.9);
+      scene(t, dim);
+      // shore labels
+      const la = seg(t, 3.9, 4.4) * (1 - seg(t, 6.2, 6.6));
+      if (la > 0) {
+        g.globalAlpha = la; g.fillStyle = '#fff';
+        font(44, JP, 700); textC('下関', 250, HZ + 90); textC('門司', W - 250, HZ + 90);
+        font(22, F.mono, 700); g.fillStyle = glow;
+        tracked('SHIMONOSEKI', 250, HZ + 145, 8); tracked('MOJI', W - 250, HZ + 145, 8);
+        g.globalAlpha = 1;
+      }
+      // vertical title
+      if (t > 6.5 && t < 9.7) {
+        const out = seg(t, 9.25, 9.65);
+        font(150, JP, 900); g.textAlign = 'center'; g.textBaseline = 'middle';
+        [...'関門海峡'].forEach((c, i) => {
+          const p = E.outExpo(seg(t, 6.7 + i * .15, 7.4 + i * .15)); if (p <= 0) return;
+          g.globalAlpha = p * (1 - out); g.fillStyle = '#fff';
+          glowText(c, W / 2, H / 2 - 255 + i * 170 + (1 - p) * 60, 40 * p);
+        });
+        g.globalAlpha = (1 - out) * seg(t, 7.2, 7.6);
+        g.fillStyle = glow; g.fillRect(W / 2 + 130, H / 2 - 330, 2, 660 * E.outExpo(seg(t, 7.2, 8.2)));
+        g.save(); g.translate(W / 2 + 170, H / 2); g.rotate(Math.PI / 2); font(24, F.mono, 700); tracked('KANMON STRAIT', 0, 0, 14); g.restore();
+        g.globalAlpha = 1;
+      }
+      // tags network
+      if (t > 9.6 && t < 12.4) {
+        const conv = E.inExpo(seg(t, 11.9, 12.35)), cx = W / 2, cy = H / 2 - 20;
+        const tags = [['お店', -560, -210], ['イベント', 560, -190], ['地域の事業者', -500, 230], ['情報', 520, 240]];
+        tags.forEach(([s, dx, dy], i) => {
+          const p = E.outExpo(seg(t, 9.8 + i * .25, 10.5 + i * .25)); if (p <= 0) return;
+          const x = cx + lerp(dx * 2.3, dx, p) * (1 - conv), y = cy + lerp(dy * 2.3, dy, p) * (1 - conv);
+          g.strokeStyle = glow; g.globalAlpha = .6 * p * (1 - conv); g.lineWidth = 2; g.setLineDash([8, 12]); g.lineDashOffset = -t * 80;
+          g.beginPath(); g.moveTo(cx, cy); g.lineTo(x, y); g.stroke(); g.setLineDash([]);
+          font(50, JP, 700); const w = g.measureText(s).width + 80;
+          g.globalAlpha = p * (1 - conv);
+          g.fillStyle = 'rgba(47,123,255,.28)'; g.beginPath(); g.roundRect(x - w / 2, y - 45, w, 90, 45); g.fill();
+          g.strokeStyle = glow; g.lineWidth = 3; g.stroke();
+          g.fillStyle = '#fff'; textC(s, x, y + 2);
+        });
+        const np = E.outBack(seg(t, 9.6, 10.1)) * (1 - conv * .6);
+        g.globalAlpha = 1; g.strokeStyle = glow; g.lineWidth = 4;
+        g.save(); g.shadowColor = blue; g.shadowBlur = 30;
+        g.beginPath(); g.arc(cx, cy, 80 * np, 0, TAU); g.stroke(); g.restore();
+        font(28, F.mono, 700); g.fillStyle = '#fff'; g.globalAlpha = clamp(np); textC('NOTE', cx, cy + 2); g.globalAlpha = 1;
+      }
+      // lockup
+      if (t >= 12.2) {
+        if (logoReady) drawLogo(W / 2, H / 2 - 100, 1000, 170, seg(t, 12.35, 13.2), blue);
+        else {
+          font(170, JP, 900); g.fillStyle = '#fff';
+          letters('かんもんノート', W / 2, H / 2 - 40, (c, x, y, i) => {
+            const p = E.outExpo(seg(t, 12.35 + i * .07, 13.0 + i * .07)); if (p <= 0) return;
+            g.globalAlpha = p; g.textAlign = 'center'; g.textBaseline = 'middle'; glowText(c, x, y + (1 - p) * 50, 36);
+          });
+        }
+        g.globalAlpha = seg(t, 13.1, 13.5);
+        font(42, JP, 700); g.fillStyle = '#dbeeff'; tracked('関門海峡エリアの情報メディア', W / 2, H / 2 + 110, lerp(28, 8, E.outExpo(seg(t, 13.1, 14))));
+        g.fillStyle = glow; g.fillRect(W / 2 - 300 * E.outExpo(seg(t, 13.2, 13.9)), H / 2 + 165, 600 * E.outExpo(seg(t, 13.2, 13.9)), 2);
+        font(32, F.mono, 700); g.fillStyle = glow; textC('kanmonnote.com', W / 2, H / 2 + 215);
+        g.globalAlpha = 1;
+      }
+      const out = seg(t, 14.5, 15);
+      if (out > 0) { g.fillStyle = `rgba(3,10,28,${out})`; g.fillRect(0, 0, W, H); }
+      hud(t, this.label, 'KANMON NOTE');
+    },
+    events() {
+      const e = [[0, 'pad', 15]];
+      for (let k = 0; k <= 110; k += 10) e.push([.3 + k * .022, 'blip', [1046.5, 1174.66, 1318.5, 1568, 1760, 2093][(k / 10) % 6], .6, 'sine', .08]);
+      for (let k = 0; k <= 70; k += 7) e.push([1.2 + k * .018, 'hat', .06]);
+      e.push([3.1, 'riser', 1.0]);
+      e.push([4.1, 'chord', [440, 554.37, 659.25], 1.8]);
+      for (let x = 4.5; x < 6.4; x += .5) e.push([x, 'hat', .08]);
+      e.push([6.4, 'whoosh', .6]);
+      e.push([6.7, 'impact']);
+      for (let i = 0; i < 4; i++) e.push([6.7 + i * .15, 'blip', [880, 1046.5, 1318.5, 1760][i], .8, 'sine', .1]);
+      for (let x = 7.2; x < 12; x += .5) e.push([x, 'kick']);
+      for (let x = 7.45; x < 12; x += .5) e.push([x, 'hat', .1]);
+      for (let i = 0; i < 4; i++) e.push([9.8 + i * .25 + .1, 'marimba', [659.25, 783.99, 880, 1046.5][i]]);
+      e.push([11.9, 'riser', .45]);
+      e.push([12.35, 'impact']);
+      e.push([12.5, 'chord', [440, 554.37, 659.25, 880], 2.4]);
+      e.push([14.3, 'whoosh', .7]);
+      return e;
+    }
+  };
+})();
+
+/* =========================================================
+   AUDIO (all synthesized)
+   ========================================================= */
+let AC = null, comp = null, master = null, recDest = null, noiseBuf = null;
+function ensureAudio() {
+  if (!AC) {
+    AC = new (window.AudioContext || window.webkitAudioContext)();
+    comp = AC.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 4;
+    comp.connect(AC.destination);
+    if (AC.createMediaStreamDestination) { recDest = AC.createMediaStreamDestination(); comp.connect(recDest); }
+    noiseBuf = AC.createBuffer(1, AC.sampleRate * 2, AC.sampleRate);
+    const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  }
+  if (AC.state === 'suspended') AC.resume();
+  if (!master) { master = AC.createGain(); master.gain.value = .8; master.connect(comp); }
+}
+function killAudio() { if (master) { try { master.gain.setValueAtTime(0, AC.currentTime); master.disconnect(); } catch (e) {} master = null; } }
+function env(node, at, peak, attack, decay) {
+  node.gain.setValueAtTime(0.0001, at); node.gain.exponentialRampToValueAtTime(peak, at + attack); node.gain.exponentialRampToValueAtTime(0.0001, at + attack + decay);
+}
+function osc(type, f, at, dur) { const o = AC.createOscillator(); o.type = type; o.frequency.setValueAtTime(f, at); o.start(at); o.stop(at + dur + .05); return o; }
+function noise(at, dur) { const s = AC.createBufferSource(); s.buffer = noiseBuf; s.start(at, Math.random()); s.stop(at + dur + .05); return s; }
+function chain(...n) { for (let i = 0; i < n.length - 1; i++) n[i].connect(n[i + 1]); return n[n.length - 1]; }
+const SFX = {
+  kick(at) { const o = osc('sine', 150, at, .4); o.frequency.exponentialRampToValueAtTime(42, at + .16); const gg = AC.createGain(); env(gg, at, .9, .004, .35); chain(o, gg, master); },
+  snare(at) {
+    const n = noise(at, .2), f = AC.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = 1400;
+    const gg = AC.createGain(); env(gg, at, .45, .002, .18); chain(n, f, gg, master);
+    const o = osc('triangle', 190, at, .12), g2 = AC.createGain(); env(g2, at, .3, .002, .1); chain(o, g2, master);
+  },
+  clap(at) { const n = noise(at, .15), f = AC.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 1500; f.Q.value = 1.2; const gg = AC.createGain(); env(gg, at, .35, .003, .12); chain(n, f, gg, master); },
+  hat(at, v = .2) { const n = noise(at, .06), f = AC.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = 7500; const gg = AC.createGain(); env(gg, at, v, .001, .045); chain(n, f, gg, master); },
+  click(at) { const o = osc('square', 2400, at, .03), gg = AC.createGain(); env(gg, at, .15, .001, .02); chain(o, gg, master); },
+  blip(at, f, dur = .15, type = 'sine', v = .2) { const o = osc(type, f, at, dur), gg = AC.createGain(); env(gg, at, v, .004, dur); chain(o, gg, master); },
+  boing(at, f) { const o = osc('sine', f * 2, at, .3); o.frequency.exponentialRampToValueAtTime(f, at + .12); const gg = AC.createGain(); env(gg, at, .28, .003, .25); chain(o, gg, master); },
+  marimba(at, f) {
+    const o = osc('sine', f, at, .6), o2 = osc('sine', f * 4, at, .2);
+    const gg = AC.createGain(); env(gg, at, .3, .002, .5); const g2 = AC.createGain(); env(g2, at, .08, .001, .12);
+    chain(o, gg, master); chain(o2, g2, master);
+  },
+  riser(at, dur) {
+    const n = noise(at, dur), f = AC.createBiquadFilter(); f.type = 'bandpass'; f.Q.value = 4;
+    f.frequency.setValueAtTime(400, at); f.frequency.exponentialRampToValueAtTime(7000, at + dur);
+    const gg = AC.createGain(); gg.gain.setValueAtTime(.0001, at); gg.gain.exponentialRampToValueAtTime(.45, at + dur); gg.gain.linearRampToValueAtTime(0, at + dur + .02);
+    chain(n, f, gg, master);
+  },
+  whoosh(at, dur) {
+    const n = noise(at, dur), f = AC.createBiquadFilter(); f.type = 'bandpass'; f.Q.value = 1.5;
+    f.frequency.setValueAtTime(3500, at); f.frequency.exponentialRampToValueAtTime(250, at + dur);
+    const gg = AC.createGain(); gg.gain.setValueAtTime(.0001, at); gg.gain.exponentialRampToValueAtTime(.4, at + dur * .4); gg.gain.exponentialRampToValueAtTime(.0001, at + dur);
+    chain(n, f, gg, master);
+  },
+  impact(at) {
+    SFX.kick(at);
+    const o = osc('sine', 55, at, 1.2), gg = AC.createGain(); env(gg, at, .6, .01, 1.1); chain(o, gg, master);
+    const n = noise(at, .9), f = AC.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 900;
+    const g2 = AC.createGain(); env(g2, at, .5, .003, .8); chain(n, f, g2, master);
+  },
+  horn(at) {
+    const f = AC.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 700;
+    const gg = AC.createGain(); gg.gain.setValueAtTime(.0001, at); gg.gain.exponentialRampToValueAtTime(.2, at + .08); gg.gain.setValueAtTime(.2, at + .9); gg.gain.exponentialRampToValueAtTime(.0001, at + 1.3);
+    [98, 147].forEach(fr => osc('sawtooth', fr, at, 1.3).connect(f)); chain(f, gg, master);
+  },
+  chord(at, fs, dur) { fs.forEach((fr, i) => { const o = osc('triangle', fr, at + i * .03, dur), gg = AC.createGain(); env(gg, at + i * .03, .12, .02, dur); chain(o, gg, master); }); },
+  pad(at, dur, offset = 0) {
+    const f = AC.createBiquadFilter(); f.type = 'lowpass'; f.frequency.setValueAtTime(500, at); f.frequency.linearRampToValueAtTime(1600, at + dur * .6);
+    const gg = AC.createGain(); const rem = dur - offset;
+    gg.gain.setValueAtTime(offset > 0 ? .08 : .0001, at); gg.gain.linearRampToValueAtTime(.09, at + Math.min(1.2, rem * .2)); gg.gain.setValueAtTime(.09, at + rem - 1); gg.gain.linearRampToValueAtTime(0, at + rem);
+    [110, 164.81, 220, 277.18].forEach((fr, i) => { [-6, 6].forEach(dt => { const o = osc('sawtooth', fr, at, rem); o.detune.value = dt + i; o.connect(f); }); });
+    chain(f, gg, master);
+  }
+};
+
+/* =========================================================
+   PLAYER
+   ========================================================= */
+const patterns = [K1, K2, A, B, C];
+const fileIds = ['kanmon-day', 'kanmon-night', 'a', 'b', 'c'];
+let cur = 0, t = 0, playing = false, loop = true, soundOn = true, recording = false, recorder = null;
+let events = patterns[cur].events().sort((a, b) => a[0] - b[0]);
+let schedFrom = 0, audioT0 = 0, lastNow = 0, dirty = true;
+
+const $ = id => document.getElementById(id);
+const playBtn = $('play'), scrub = $('scrub'), timeEl = $('time'), bigPlay = $('bigPlay');
+
+function resetSched() {
+  schedFrom = t;
+  if (AC) audioT0 = AC.currentTime - t;
+  // long events already underway (pad) restart from the current offset
+  if (AC && soundOn && master && playing) events.forEach(ev => { if (ev[1] === 'pad' && ev[0] < t && ev[0] + ev[2] > t) SFX.pad(AC.currentTime, ev[2], t - ev[0]); });
+}
+function schedule() {
+  if (!AC || !soundOn || !master) return;
+  const until = t + .15;
+  for (const ev of events) {
+    if (ev[0] >= schedFrom && ev[0] < until) {
+      const at = Math.max(AC.currentTime, audioT0 + ev[0]);
+      try { SFX[ev[1]](at, ...ev.slice(2)); } catch (e) {}
+    }
+  }
+  schedFrom = Math.max(schedFrom, until);
+}
+
+function setPattern(i) {
+  cur = i; t = 0; events = patterns[cur].events().sort((a, b) => a[0] - b[0]);
+  document.querySelectorAll('.tab').forEach(b => b.setAttribute('aria-selected', String(+b.dataset.p === i)));
+  killAudio(); if (playing && soundOn) ensureAudio(); resetSched(); dirty = true;
+}
+function play() {
+  if (soundOn) ensureAudio();
+  if (t >= DUR) t = 0;
+  playing = true; lastNow = performance.now(); resetSched();
+  playBtn.textContent = '❚❚ 一時停止'; bigPlay.hidden = true;
+}
+function pause() { playing = false; killAudio(); playBtn.textContent = '▶ 再生'; dirty = true; }
+
+function frame(now) {
+  if (playing) {
+    const dt = Math.min(.1, (now - lastNow) / 1000); lastNow = now;
+    t += dt;
+    if (t >= DUR) {
+      if (recording) { t = DUR - 1e-4; draw(1); stopRecording(); pause(); }
+      else if (loop) { t = 0; killAudio(); if (soundOn) ensureAudio(); resetSched(); }
+      else { t = DUR - 1e-4; pause(); }
+    }
+    schedule();
+    draw(.3);
+  } else if (dirty) { draw(1); dirty = false; }
+  requestAnimationFrame(frame);
+}
+function draw(trail) {
+  g.save(); g.globalAlpha = 1; g.globalCompositeOperation = 'source-over';
+  patterns[cur].render(t, trail); g.restore();
+  scrub.value = t.toFixed(2);
+  timeEl.textContent = `${t.toFixed(2).padStart(5, '0')} / 15.00`;
+}
+
+function startRecording() {
+  if (!cv.captureStream || !window.MediaRecorder) { alert('このブラウザは録画(MediaRecorder)に対応していません。Chrome / Edge / Firefox / Safari 最新版でお試しください。'); return; }
+  pause(); t = 0; if (soundOn) ensureAudio();
+  const stream = cv.captureStream(60);
+  if (soundOn && recDest) recDest.stream.getAudioTracks().forEach(tr => stream.addTrack(tr));
+  const types = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm', 'video/mp4'];
+  const mime = types.find(m => MediaRecorder.isTypeSupported(m)) || '';
+  const chunks = [];
+  recorder = new MediaRecorder(stream, mime ? { mimeType: mime, videoBitsPerSecond: 16e6 } : {});
+  recorder.ondataavailable = e => e.data.size && chunks.push(e.data);
+  recorder.onstop = () => {
+    const type = recorder.mimeType || mime || 'video/webm';
+    const blob = new Blob(chunks, { type });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = `showreel-${fileIds[cur]}.${type.includes('mp4') ? 'mp4' : 'webm'}`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  };
+  recorder.start(); recording = true;
+  $('rec').classList.add('on'); $('rec').textContent = '● 録画中…';
+  play();
+}
+function stopRecording() {
+  recording = false; if (recorder && recorder.state !== 'inactive') recorder.stop();
+  $('rec').classList.remove('on'); $('rec').textContent = '● 動画に書き出す';
+}
+
+document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => { if (recording) return; setPattern(+b.dataset.p); }));
+playBtn.addEventListener('click', () => { if (recording) return; playing ? pause() : play(); });
+bigPlay.addEventListener('click', play);
+scrub.addEventListener('input', () => { if (recording) return; t = +scrub.value; killAudio(); if (playing && soundOn) ensureAudio(); resetSched(); dirty = true; });
+$('sound').addEventListener('click', e => { if (recording) return; soundOn = !soundOn; e.target.textContent = soundOn ? '🔊 音あり' : '🔇 音なし'; if (!soundOn) killAudio(); else if (playing) { ensureAudio(); resetSched(); } });
+$('loop').addEventListener('click', e => { loop = !loop; e.target.textContent = loop ? '🔁 ループ ON' : '➡ ループ OFF'; });
+$('rec').addEventListener('click', () => recording ? (stopRecording(), pause()) : startRecording());
+document.addEventListener('keydown', e => { if (e.code === 'Space' && e.target === document.body) { e.preventDefault(); playing ? pause() : play(); } });
+
+const fontsReady = document.fonts ? Promise.race([
+  Promise.all(['440px Anton', '210px "Archivo Black"', '700 300px "Space Grotesk"', '700 26px "JetBrains Mono"'].map(f => document.fonts.load(f)).concat(['900 100px "Zen Kaku Gothic New"', '700 100px "Zen Kaku Gothic New"'].map(f => document.fonts.load(f, 'かんもんノート関門海峡下関門司地域の事業者・お店・イベント情報エリアメディア')))),
+  new Promise(r => setTimeout(r, 2500))
+]) : Promise.resolve();
+fontsReady.then(() => { dirty = true; requestAnimationFrame(frame); });
+// frame-accurate access for offline rendering: showreel.renderAt(patternIndex, seconds)
+window.showreel = { renderAt(i, sec) { if (i !== cur) setPattern(i); pause(); t = clamp(sec, 0, DUR - 1e-4); draw(1); } };
+})();
+</script>
+</body>
+</html>

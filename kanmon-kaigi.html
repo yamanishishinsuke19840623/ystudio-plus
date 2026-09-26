@@ -147,7 +147,7 @@ footer small{font-family:var(--f-mono);font-size:12px;color:rgba(247,247,243,.6)
 
 <header class="top">
   <div class="wrap">
-    <a class="brand" href="#top"><img src="kanmon-reel/logo-circle.png" alt="" width="40" height="40">関門カイギ</a>
+    <a class="brand" href="#top"><img src="kanmon-kaigi/logo-circle.png" alt="" width="40" height="40">関門カイギ</a>
     <nav class="nav" aria-label="ページ内">
       <a href="#about">ABOUT</a><a href="#format">FORMAT</a><a href="#archive">ARCHIVE</a><a href="#venue">VENUE</a><a href="#team">TEAM</a>
     </nav>
@@ -306,7 +306,7 @@ footer small{font-family:var(--f-mono);font-size:12px;color:rgba(247,247,243,.6)
 
   // hero video: vertical on phones, horizontal elsewhere
   const v=document.getElementById('reel'),mq=matchMedia('(max-width:760px)');
-  const pick=()=>{const src='kanmon-reel/video/kanmon-kaigi-D-'+(mq.matches?'9x16':'16x9')+'.mp4';if(!v.src.endsWith(src)){v.src=src;v.play().catch(()=>{});}};
+  const pick=()=>{const src='kanmon-kaigi/video/kanmon-kaigi-D-'+(mq.matches?'9x16':'16x9')+'.mp4';if(!v.src.endsWith(src)){v.src=src;v.play().catch(()=>{});}};
   pick();mq.addEventListener?mq.addEventListener('change',pick):mq.addListener(pick);
   if(matchMedia('(prefers-reduced-motion: reduce)').matches){v.removeAttribute('autoplay');v.pause();}
   const b=document.getElementById('snd');

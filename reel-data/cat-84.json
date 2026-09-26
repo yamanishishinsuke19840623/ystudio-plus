@@ -1,0 +1,65 @@
+{
+  "site": "https://www.kanmonnote.com",
+  "source": "rest",
+  "fetchedAt": "2026-09-26T12:36:43.488Z",
+  "category": {
+    "id": 84,
+    "name": "観光",
+    "slug": "tourism"
+  },
+  "posts": [
+    {
+      "id": 47414,
+      "title": "BTSファンで賑わう、釜山へ行ってきました！⑦終",
+      "date": "2026-07-08T19:30:05",
+      "link": "https://www.kanmonnote.com/bts-busan7/",
+      "category": "お店（飲食以外）",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/07/IMG_1223-768x576.jpeg",
+      "localImage": "img/47414.jpg"
+    },
+    {
+      "id": 47385,
+      "title": "BTSファンで賑わう、釜山へ行ってきました！⑥",
+      "date": "2026-07-07T19:30:30",
+      "link": "https://www.kanmonnote.com/bts-busan6/",
+      "category": "観光",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/06/IMG_1115-1-768x1024.jpeg",
+      "localImage": "img/47385.jpg"
+    },
+    {
+      "id": 47279,
+      "title": "BTSファンで賑わう、釜山へ行ってきました！④",
+      "date": "2026-06-30T19:30:22",
+      "link": "https://www.kanmonnote.com/bts-busan4/",
+      "category": "観光",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/06/IMG_1094-scaled.jpeg",
+      "localImage": "img/47279.jpg"
+    },
+    {
+      "id": 47169,
+      "title": "BTSファンで賑わう、釜山に行ってきました！③",
+      "date": "2026-06-28T19:30:48",
+      "link": "https://www.kanmonnote.com/bts-busan3/",
+      "category": "観光",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/06/IMG_0134-768x1027.jpeg",
+      "localImage": "img/47169.jpg"
+    },
+    {
+      "id": 47166,
+      "title": "BTSファンで賑わう、釜山へ行ってきました！②",
+      "date": "2026-06-25T19:30:49",
+      "link": "https://www.kanmonnote.com/busan-bts2/",
+      "category": "お店（飲食以外）",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/06/370D7C0D-BC8D-401D-A8F8-9FB09B5277E7-768x1024.jpeg",
+      "localImage": "img/47166.jpg"
+    }
+  ],
+  "excluded": [
+    {
+      "id": 23551,
+      "title": "【202６年改訂版】「関門海峡花火大会」駐車場情報",
+      "date": "2026-08-11T11:00:12",
+      "reason": "キーワード「改訂版」"
+    }
+  ]
+}

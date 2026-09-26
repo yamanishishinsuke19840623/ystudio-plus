@@ -1,0 +1,113 @@
+{
+  "site": "https://www.kanmonnote.com",
+  "source": "rest",
+  "fetchedAt": "2026-09-26T12:36:43.488Z",
+  "category": {
+    "id": 81,
+    "name": "食事",
+    "slug": "dish"
+  },
+  "posts": [
+    {
+      "id": 46174,
+      "title": "【下関駅チカ】新店『関門麺まぜそばGANG』って？ランチにもシメの一杯にも！",
+      "date": "2026-04-10T19:30:04",
+      "link": "https://www.kanmonnote.com/kanmonmen_mazesoba_gang/",
+      "category": "グルメ",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/04/001-768x512.jpg",
+      "localImage": "img/46174.jpg"
+    },
+    {
+      "id": 45583,
+      "title": "【まとめ】下関のお店、年末年始の営業日！",
+      "date": "2025-12-22T18:59:41",
+      "link": "https://www.kanmonnote.com/2026information/",
+      "category": "お店（飲食以外）",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2025/12/33979239_s.jpeg",
+      "localImage": "img/45583.jpg"
+    },
+    {
+      "id": 44350,
+      "title": "【城下町長府ひなまつり】お好み焼きひら田",
+      "date": "2025-02-13T00:37:04",
+      "link": "https://www.kanmonnote.com/hirata-chofu/",
+      "category": "グルメ",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2025/02/IMG_1973-768x576.jpeg",
+      "localImage": "img/44350.jpg"
+    },
+    {
+      "id": 44438,
+      "title": "【城下町長府ひなまつり】蕎麦処はしもと",
+      "date": "2025-02-12T23:55:05",
+      "link": "https://www.kanmonnote.com/hashimoto-chofu/",
+      "category": "グルメ",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2025/02/IMG_1202-768x622.jpg",
+      "localImage": "img/44438.jpg"
+    },
+    {
+      "id": 44477,
+      "title": "【城下町長府ひなまつり】三瓶珈琲",
+      "date": "2025-02-12T23:52:34",
+      "link": "https://www.kanmonnote.com/sanpei-chofu/",
+      "category": "お土産",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2025/02/IMG_4436.jpg",
+      "localImage": "img/44477.jpg"
+    }
+  ],
+  "excluded": [
+    {
+      "id": 18669,
+      "title": "【2023年更新】本日はスパイシーなお食事はいかが？頑張り屋のインドシェフ達が作る、本格インド料理レストラン",
+      "date": "2023-10-15T19:30:03",
+      "reason": "キーワード「本日」"
+    },
+    {
+      "id": 16116,
+      "title": "【2023年更新】老若男女問わずみんな大好き！柔らかくてジューシーなお肉がいただけるお店",
+      "date": "2023-09-24T19:30:07",
+      "reason": "日付・期限の表記(2023年)"
+    },
+    {
+      "id": 8324,
+      "title": "【2023年更新】下関の地元の食材を活かした絶品イタリアン料理と、気さくな店長さんが魅力のお店",
+      "date": "2023-08-14T19:30:25",
+      "reason": "日付・期限の表記(2023年)"
+    },
+    {
+      "id": 40511,
+      "title": "【求人】店長さん（候補）を募集！「ふぐ懐石 garden（ガーデン）」",
+      "date": "2023-07-16T19:30:19",
+      "reason": "キーワード「募集」"
+    },
+    {
+      "id": 38610,
+      "title": "【イベント】今年最後のマルシェ「雪月市（ゆきつきいち）」が門司港で開催！",
+      "date": "2022-12-17T23:57:30",
+      "reason": "キーワード「【イベント】」"
+    },
+    {
+      "id": 37759,
+      "title": "【イベント】月に1度のマルシェ。10月は豊前がテーマの「豊前乃市（ぶぜんのいち）」が門司港で開催！",
+      "date": "2022-10-20T11:30:06",
+      "reason": "キーワード「【イベント】」"
+    },
+    {
+      "id": 37349,
+      "title": "【イベント】月に1度のマルシェ。9月は門司がテーマの「門司マルクト」が門司港で開催！",
+      "date": "2022-09-15T10:16:15",
+      "reason": "キーワード「【イベント】」"
+    },
+    {
+      "id": 37178,
+      "title": "【イベント】月に1度のマルクト。8月はお子様と一緒に楽しむ「こどもマルクト」が門司港で開催！",
+      "date": "2022-08-17T15:17:40",
+      "reason": "キーワード「【イベント】」"
+    },
+    {
+      "id": 36901,
+      "title": "【イベント】月に1度のマルクト。7月はスパイスとハーブ、そして沖縄がテーマの「Spice & Herb Fes!（スパイス＆ハーブフェス！）MARKT（マルクト）的おきなわ展」が門司港で開催！",
+      "date": "2022-07-15T11:36:15",
+      "reason": "キーワード「【イベント】」"
+    }
+  ]
+}

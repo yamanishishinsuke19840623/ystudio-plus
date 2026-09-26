@@ -1,0 +1,58 @@
+{
+  "site": "https://www.kanmonnote.com",
+  "source": "rest",
+  "fetchedAt": "2026-09-26T12:36:43.488Z",
+  "category": {
+    "id": 82,
+    "name": "生活",
+    "slug": "life"
+  },
+  "posts": [
+    {
+      "id": 46042,
+      "title": "発見！お買い物ついでの「宝探し」。植物園のようなお花屋さん！",
+      "date": "2026-03-26T19:30:55",
+      "link": "https://www.kanmonnote.com/yumemall-flower/",
+      "category": "お店（飲食以外）",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/03/fa1dbc50369a7f1fb036d3bfbf723042-scaled-e1774324001715-768x776.jpg",
+      "localImage": "img/46042.jpg"
+    },
+    {
+      "id": 45954,
+      "title": "まるで温泉旅館？「理想のケア」を形にした、アットホームなデイサービス「ウェリナ」がオープン！",
+      "date": "2026-03-06T13:11:34",
+      "link": "https://www.kanmonnote.com/welina/",
+      "category": "お店（飲食以外）",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/03/c83110b2126b9c486c30b06e1b981515-scaled-e1772594811638-768x702.jpg",
+      "localImage": "img/45954.jpg"
+    },
+    {
+      "id": 44429,
+      "title": "【城下町長府ひなまつり】焼き菓子UCO",
+      "date": "2025-02-13T00:40:02",
+      "link": "https://www.kanmonnote.com/uco-chofu/",
+      "category": "お土産",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2025/02/E8896576-9C55-48C0-97DA-021A79521A50.jpeg",
+      "localImage": "img/44429.jpg"
+    },
+    {
+      "id": 44419,
+      "title": "【城下町長府ひなまつり】ハマノサイクル",
+      "date": "2025-02-13T00:34:42",
+      "link": "https://www.kanmonnote.com/hamano-chofu/",
+      "category": "お店（飲食以外）",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2025/02/IMG_1869-768x576.jpeg",
+      "localImage": "img/44419.jpg"
+    },
+    {
+      "id": 44411,
+      "title": "【城下町長府ひなまつり】ぶんぐの岩田屋",
+      "date": "2025-02-13T00:31:26",
+      "link": "https://www.kanmonnote.com/iwataya-chofu/",
+      "category": "お店（飲食以外）",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2025/02/IMG_1904-768x576.jpeg",
+      "localImage": "img/44411.jpg"
+    }
+  ],
+  "excluded": []
+}

@@ -1,0 +1,88 @@
+name: かんもんノート リール(記事取得・動画生成・Instagram投稿)
+
+on:
+  schedule:
+    # 毎週月曜 06:00 JST (日曜 21:00 UTC)
+    - cron: "0 21 * * 0"
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "生成したリールを Instagram に投稿する"
+        type: boolean
+        default: false
+      feeds:
+        description: "作るリール(カテゴリのスラッグ:本数 をカンマ区切り。new=新着全カテゴリ)"
+        type: string
+        default: "gourmet:3"
+  # 取得・生成スクリプト/このワークフローを変更したら、そのブランチで作り直す(投稿はしない)
+  push:
+    paths:
+      - "tools/kanmon-reel/**"
+      - ".github/workflows/kanmon-reel-data.yml"
+      - "kanmon-reel.html"
+
+concurrency:
+  group: kanmon-reel-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  reel:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      # 定番はグルメ。イベント記事は開催日が過ぎると告知として古くなるため既定から外している
+      REEL_FEEDS: ${{ inputs.feeds || vars.REEL_FEEDS || 'gourmet:3' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Fetch latest posts from WordPress
+        run: node tools/kanmon-reel/fetch.mjs
+
+      - name: Install renderer (Playwright + fonts)
+        working-directory: tools/kanmon-reel
+        run: |
+          npm install
+          npx playwright install --with-deps chromium
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-noto-cjk >/dev/null
+          ffmpeg -version | head -1
+
+      - name: Render reel video + caption
+        run: node tools/kanmon-reel/render.mjs
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A reel-data reel-out
+          if ! git diff --cached --quiet; then
+            git commit -m "かんもんノート リール用データと動画を更新"
+            git push
+          else
+            echo "変更なし（新しい記事がなかった）"
+          fi
+
+      # 投稿は master のみ。手動実行で publish にチェック、または
+      # リポジトリ変数 IG_AUTO_PUBLISH=true のときの定期実行で行う。
+      - name: Publish to Instagram Reels
+        if: >-
+          github.ref == 'refs/heads/master' &&
+          (inputs.publish == true || (github.event_name == 'schedule' && vars.IG_AUTO_PUBLISH == 'true'))
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+        run: |
+          slug=$(node -e "console.log(require('./reel-out/manifest.json').reels[0].slug)")
+          node tools/kanmon-reel/publish-instagram.mjs "$slug"
+          git add reel-out/posted.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Instagram 投稿記録を更新"
+            git pull --rebase && git push
+          fi
