@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Motion Showreel — 3 Patterns</title>
-<meta name="description" content="15秒のモーショングラフィックス・ショーリールを3つの異なるスタイル(キネティック・タイポ／パーティクル／バウハウス・ポップ)で。ブラウザだけで再生・WebM書き出しができます。">
+<title>かんもんノート Showreel</title>
+<meta name="description" content="関門海峡エリアの情報メディア「かんもんノート」の15秒モーショングラフィックス・ショーリール。青を基調に、昼の海峡ノート／夜の海峡の2パターン。ブラウザだけで再生・動画書き出しができます。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@700&family=Noto+Sans+JP:wght@400;700&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0c0c0e;--panel:#17171b;--ink:#f1efe9;--sub:rgba(241,239,233,.6);--line:rgba(241,239,233,.14);--accent:#ff3b1f;}
+:root{--bg:#06112b;--panel:#0d1f4a;--ink:#f3f8ff;--sub:rgba(220,235,255,.68);--line:rgba(143,208,255,.2);--accent:#2f7bff;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--ink);font-family:'Noto Sans JP',sans-serif;line-height:1.7;}
 .wrap{max-width:1100px;margin:0 auto;padding:0 16px;}
@@ -20,7 +20,8 @@ header p{color:var(--sub);font-size:14px;margin-top:8px;}
 .tab{flex:1 1 180px;background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:10px 14px;text-align:left;cursor:pointer;font:inherit;transition:border-color .2s,background .2s;}
 .tab b{display:block;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:1px;}
 .tab span{font-size:12px;color:var(--sub);}
-.tab[aria-selected="true"]{border-color:var(--accent);background:#221613;}
+.tab[aria-selected="true"]{border-color:#8fd0ff;background:#123a85;}
+.tabs .sep{flex-basis:100%;font-size:12px;color:var(--sub);margin-top:4px;}
 .stage{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5);}
 canvas{display:block;width:100%;height:100%;}
 .big-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);border:0;color:#fff;cursor:pointer;font:700 18px 'JetBrains Mono',monospace;letter-spacing:2px;}
@@ -29,7 +30,7 @@ canvas{display:block;width:100%;height:100%;}
 .controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0 6px;}
 .controls button{background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:8px 14px;font:600 13px 'Noto Sans JP',sans-serif;cursor:pointer;}
 .controls button:hover{border-color:var(--sub);}
-.controls button.rec{border-color:var(--accent);color:#ffb3a6;}
+.controls button.rec{border-color:var(--accent);color:#bfe0ff;}
 .controls button.rec.on{background:var(--accent);color:#fff;}
 #scrub{flex:1 1 200px;accent-color:var(--accent);}
 #time{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--sub);min-width:92px;}
@@ -46,14 +47,17 @@ footer a{color:var(--sub);}
 <body>
 <div class="wrap">
   <header>
-    <h1>MOTION SHOWREEL<br>— 3 PATTERNS</h1>
-    <p>15秒のモーショングラフィックス・ショーリールを、まったく違う3つの演出で。素材ファイルなし・ブラウザのCanvasとWeb Audioだけで描画と音を生成しています。</p>
+    <h1>KANMON NOTE<br>— 15 SEC SHOWREEL</h1>
+    <p>関門海峡エリアの情報メディア「かんもんノート」の15秒ショーリール。青を基調に、海峡・関門橋・ノートをモチーフにしています。素材ファイルなし・ブラウザのCanvasとWeb Audioだけで描画と音を生成しています。</p>
   </header>
 
   <div class="tabs" role="tablist">
-    <button class="tab" role="tab" data-p="0" aria-selected="true"><b>A / KINETIC TYPE</b><span>文字が主役。白黒赤・ビートで叩くタイポ</span></button>
-    <button class="tab" role="tab" data-p="1" aria-selected="false"><b>B / PARTICLE FLOW</b><span>2,600粒の粒子が文字→球体→トンネルへ変形</span></button>
-    <button class="tab" role="tab" data-p="2" aria-selected="false"><b>C / BAUHAUS POP</b><span>丸・四角・三角が跳ねる、原色のリズム</span></button>
+    <button class="tab" role="tab" data-p="0" aria-selected="true"><b>01 / 海峡ノート</b><span>昼・青×白。ノートの線が海になり、橋が架かる</span></button>
+    <button class="tab" role="tab" data-p="1" aria-selected="false"><b>02 / 夜の海峡</b><span>紺×光。関門橋の灯りと両岸の街あかり</span></button>
+    <span class="sep">参考:前回の汎用パターン</span>
+    <button class="tab" role="tab" data-p="2" aria-selected="false"><b>A / KINETIC TYPE</b><span>白黒赤のタイポ</span></button>
+    <button class="tab" role="tab" data-p="3" aria-selected="false"><b>B / PARTICLE FLOW</b><span>粒子の変形</span></button>
+    <button class="tab" role="tab" data-p="4" aria-selected="false"><b>C / BAUHAUS POP</b><span>原色の図形</span></button>
   </div>
 
   <div class="stage">
@@ -72,6 +76,10 @@ footer a{color:var(--sub);}
   <p class="note">「動画に書き出す」を押すと頭から15秒を再生しながら録画し、WebM(Safariでは MP4)でダウンロードします。書き出し中はタブを前面に表示したままにしてください。</p>
 
   <div class="cards">
+    <div class="card"><h3>01 / 海峡ノート</h3><p>青と白。「ノートに書いた一本の線が関門海峡になる」という流れ。</p>
+      <ol><li>罫線が引かれ、ペンが波線を描く</li><li>波線が海になり、下関・門司の陸がせり上がる</li><li>主塔→橋桁→ケーブル→ハンガーの順に橋が架かる</li><li>船が海峡を渡り、「関門海峡」</li><li>ノートカード:お店/イベント/事業者</li><li>かんもんノート ロックアップ → 1コマ目へループ</li></ol></div>
+    <div class="card"><h3>02 / 夜の海峡</h3><p>紺と光。灯りが一つずつ点いていく夜景演出。</p>
+      <ol><li>ケーブルの灯りが左から右へ点灯、水面に反射</li><li>橋を走る車の光、両岸の街あかり</li><li>縦書き「関門海峡」</li><li>お店/イベント/地域の事業者/情報 がNOTEにつながる</li><li>かんもんノート ロックアップ</li></ol></div>
     <div class="card"><h3>A / KINETIC TYPE</h3><p>120BPM。1拍＝0.5秒に合わせて単語を叩きつけるタイポグラフィ。</p>
       <ol><li>線が走り、赤が画面を割る</li><li>MOVE / SHAPE / TIME / FEEL / FLOW を毎拍スラム</li><li>横スクロールする7段の文字帯</li><li>赤い円＋回転する文字リング</li><li>0.25秒カットの高速カウントダウン</li><li>SHOWREEL 2026 ロックアップ</li></ol></div>
     <div class="card"><h3>B / PARTICLE FLOW</h3><p>すべての粒子の位置を「時刻の関数」で計算しているので、シークしても同じ絵になります。</p>
@@ -132,12 +140,12 @@ function tracked(s, x, y, track) { // centered text with manual letter spacing
 }
 
 /* HUD: drawn with 'difference' so it reads on any background */
-function hud(t, label) {
+function hud(t, label, left = 'SHOWREEL — 2026') {
   g.save();
   g.globalCompositeOperation = 'difference';
   g.fillStyle = '#fff'; g.strokeStyle = '#fff'; g.lineWidth = 2;
   font(22, F.mono, 700); g.textBaseline = 'top';
-  g.textAlign = 'left'; g.fillText('SHOWREEL — 2026', 56, 44);
+  g.textAlign = 'left'; g.fillText(left, 56, 44);
   g.textAlign = 'right'; g.fillText(label, W - 56, 44);
   g.textBaseline = 'bottom';
   const s = Math.floor(t), f = Math.floor((t - s) * 30);
@@ -667,6 +675,407 @@ const C = (() => {
 })();
 
 /* =========================================================
+   KANMON NOTE — shared helpers (strait / bridge / note motifs)
+   ========================================================= */
+const JP = "'Zen Kaku Gothic New', 'Noto Sans JP', sans-serif";
+// suspension-bridge cable: anchor → tower → sag → tower → anchor
+function cableY(G, x) {
+  if (x <= G.tx1) { const u = (x - G.ax1) / (G.tx1 - G.ax1); return lerp(G.deckY, G.topY, u) + G.side * Math.sin(Math.PI * u); }
+  if (x >= G.tx2) { const u = (x - G.tx2) / (G.ax2 - G.tx2); return lerp(G.topY, G.deckY, u) + G.side * Math.sin(Math.PI * u); }
+  const mid = (G.tx1 + G.tx2) / 2, d = (x - mid) / ((G.tx2 - G.tx1) / 2);
+  return G.topY + G.sag * (1 - d * d);
+}
+function strokeCable(G, p) {
+  if (p <= 0) return;
+  const end = lerp(G.ax1, G.ax2, p);
+  g.beginPath();
+  for (let x = G.ax1; x <= end; x += 6) { const y = cableY(G, x); x === G.ax1 ? g.moveTo(x, y) : g.lineTo(x, y); }
+  g.stroke();
+}
+const penWave = (x, t, amp = 26) => Math.sin(x * .011 + t * 1.6) * amp + Math.sin(x * .004 - t * .9) * amp * .6;
+function letters(str, cx, y, each) { // centered row of glyphs, callback per glyph
+  const ch = [...str], ws = ch.map(c => g.measureText(c).width), tot = ws.reduce((a, b) => a + b, 0);
+  let x = cx - tot / 2;
+  ch.forEach((c, i) => { each(c, x + ws[i] / 2, y, i); x += ws[i]; });
+}
+
+/* =========================================================
+   K1 — KANMON NOTE / 海峡ノート(昼・青×白)
+   ========================================================= */
+const K1 = (() => {
+  const paper = '#f7fbff', rule = '#cfe0f7', blue = '#1a5fd1', mid = '#2f78e6', deep = '#0a2a66', sky = '#7cc0ff', pale = '#e4f0ff';
+  const G = { ax1: 330, tx1: 610, tx2: W - 610, ax2: W - 330, topY: H * .2, deckY: H * .47, sag: H * .19, side: 26 };
+
+  function note(t) {
+    fill(paper);
+    g.fillStyle = rule;
+    for (let i = 0; i < 12; i++) g.fillRect(0, 110 + i * 80, W * E.outExpo(seg(t, .05 + i * .035, .8 + i * .035)), 2);
+    g.fillStyle = sky; g.fillRect(180, 0, 3, H * E.outExpo(seg(t, .2, 1.0)));
+    font(26, F.mono, 700); g.fillStyle = blue; g.globalAlpha = seg(t, .5, .9);
+    g.textAlign = 'left'; g.textBaseline = 'middle'; g.fillText('NOTE — KANMON STRAIT', 214, 270);
+    g.globalAlpha = 1;
+    const p = E.inOutCubic(seg(t, .6, 1.9)), end = lerp(180, W + 10, p);
+    if (p > 0) {
+      g.strokeStyle = blue; g.lineWidth = 10; g.lineCap = 'round'; g.lineJoin = 'round'; g.beginPath();
+      for (let x = 180; x <= end; x += 5) { const y = H / 2 + penWave(x, t); x === 180 ? g.moveTo(x, y) : g.lineTo(x, y); }
+      g.stroke();
+      if (p < 1) { g.fillStyle = deep; g.beginPath(); g.arc(end, H / 2 + penWave(end, t), 14, 0, TAU); g.fill(); }
+    }
+  }
+
+  function land(side, SL, t) {
+    const up = (1 - E.outExpo(seg(t, 2.6 + side * .12, 3.3 + side * .12))) * 520;
+    g.save(); g.translate(side ? W : 0, up); g.scale(side ? -1 : 1, 1);
+    g.fillStyle = deep; g.beginPath(); g.moveTo(0, H); g.lineTo(0, SL - 160);
+    g.lineTo(110, SL - 200); g.lineTo(240, SL - 165); g.lineTo(360, SL - 110); g.lineTo(480, SL - 10); g.lineTo(520, H); g.closePath(); g.fill();
+    g.fillStyle = '#123f93';
+    [[40, 60], [100, 90], [170, 50], [230, 75], [300, 40]].forEach(([x, h], k) => g.fillRect(x, SL - 200 + (x > 220 ? 30 : 0) - h + 8 + (k === 0 ? 30 : 0), 44, h));
+    g.restore();
+    font(52, JP, 900); g.fillStyle = '#fff'; g.globalAlpha = seg(t, 3.3, 3.7);
+    textC(side ? '門司' : '下関', side ? W - 190 : 190, SL - 70 + up);
+    g.globalAlpha = 1;
+  }
+
+  function ship(x, y, t) {
+    g.save(); g.translate(x, y + Math.sin(t * 3) * 4); g.rotate(Math.sin(t * 2.4) * .025);
+    g.fillStyle = '#fff'; g.beginPath(); g.moveTo(-130, -30); g.lineTo(130, -30); g.lineTo(100, 16); g.lineTo(-110, 16); g.closePath(); g.fill();
+    g.fillStyle = deep; g.fillRect(-120, -18, 236, 8);
+    g.fillStyle = '#fff'; g.fillRect(-60, -80, 110, 50);
+    g.fillStyle = sky; for (let i = 0; i < 4; i++) g.fillRect(-50 + i * 26, -68, 16, 14);
+    g.fillStyle = blue; g.fillRect(10, -118, 26, 38);
+    g.restore();
+    g.strokeStyle = 'rgba(255,255,255,.8)'; g.lineWidth = 4; g.lineCap = 'round';
+    for (let k = 1; k <= 3; k++) { g.beginPath(); g.moveTo(x - 130 - k * 50, y + 6 + k * 3); g.lineTo(x - 150 - k * 50 - 20, y + 6 + k * 3); g.stroke(); }
+  }
+
+  function sea(t) {
+    const rise = E.inOutCubic(seg(t, 2.2, 2.9)), SL = lerp(H / 2, H * .6, rise);
+    fill(paper);
+    g.fillStyle = pale; g.globalAlpha = rise; g.fillRect(0, 0, W, H); g.globalAlpha = 1;
+    g.fillStyle = rule; g.globalAlpha = 1 - rise; for (let i = 0; i < 12; i++) g.fillRect(0, 110 + i * 80, W, 2); g.globalAlpha = 1;
+    // sun
+    g.fillStyle = '#fff'; g.globalAlpha = .9 * seg(t, 2.6, 3.2); g.beginPath(); g.arc(W * .8, H * .2, 70, 0, TAU); g.fill(); g.globalAlpha = 1;
+    land(0, SL, t); land(1, SL, t);
+    // bridge
+    g.fillStyle = deep; g.strokeStyle = deep;
+    const tp = E.outExpo(seg(t, 3.3, 3.8));
+    [G.tx1, G.tx2].forEach(tx => {
+      const top = lerp(SL, G.topY - 24, tp);
+      g.fillRect(tx - 16, top, 9, SL - top); g.fillRect(tx + 7, top, 9, SL - top);
+      if (tp > .95) { g.fillRect(tx - 16, G.topY - 24, 32, 9); g.fillRect(tx - 16, (G.topY + G.deckY) / 2, 32, 7); }
+    });
+    g.lineCap = 'butt';
+    g.lineWidth = 12; const dp = E.inOutCubic(seg(t, 3.6, 4.3));
+    if (dp > 0) { g.beginPath(); g.moveTo(G.ax1, G.deckY); g.lineTo(lerp(G.ax1, G.ax2, dp), G.deckY); g.stroke(); }
+    g.lineWidth = 5; strokeCable(G, E.inOutCubic(seg(t, 3.8, 4.6)));
+    g.lineWidth = 2;
+    for (let x = G.ax1 + 36; x < G.ax2; x += 36) {
+      const hp = E.outCubic(seg(t, 4.2 + (x - G.ax1) / (G.ax2 - G.ax1) * .6, 4.5 + (x - G.ax1) / (G.ax2 - G.ax1) * .6));
+      if (hp <= 0) continue; const cy = cableY(G, x);
+      g.beginPath(); g.moveTo(x, cy); g.lineTo(x, lerp(cy, G.deckY, hp)); g.stroke();
+    }
+    // sea layers (the first one is the pen line turned into water)
+    const wave = (c, off, sp, amp, k) => {
+      g.fillStyle = c; g.beginPath(); g.moveTo(0, H);
+      for (let x = 0; x <= W + 20; x += 20) g.lineTo(x, SL + off * rise + penWave(x + k * 300, t * sp, amp));
+      g.lineTo(W, H); g.closePath(); g.fill();
+    };
+    wave(blue, 0, 1, 26, 0);
+    const sp = seg(t, 4.8, 7.6);
+    if (sp > 0 && sp < 1) { const x = lerp(-280, W + 280, sp); ship(x, SL + penWave(x, t) - 8, t); }
+    wave(mid, 44, 1.3, 20, 1);
+    wave(deep, 120, 1.7, 16, 2);
+    // title
+    font(170, JP, 900);
+    letters('関門海峡', W / 2, H * .79, (c, x, y, i) => {
+      const p = E.outBack(seg(t, 5.3 + i * .09, 5.85 + i * .09)); if (p <= 0) return;
+      g.save(); g.globalAlpha = clamp(p); g.translate(x, y + (1 - p) * 90); g.fillStyle = '#fff'; textC(c, 0, 0); g.restore();
+    });
+    font(28, F.mono, 700); g.fillStyle = sky; g.globalAlpha = seg(t, 5.9, 6.3);
+    tracked('KANMON STRAIT', W / 2, H * .79 + 120, lerp(30, 12, E.outExpo(seg(t, 5.9, 6.8)))); g.globalAlpha = 1;
+  }
+
+  function icon(k) {
+    if (k === 0) { // shop: awning + door
+      g.fillStyle = blue; g.fillRect(-75, -20, 150, 95);
+      g.fillStyle = '#fff'; g.fillRect(-22, 15, 44, 60); g.fillRect(-62, 0, 30, 28); g.fillRect(32, 0, 30, 28);
+      for (let i = 0; i < 5; i++) {
+        g.fillStyle = i % 2 ? '#fff' : sky; g.fillRect(-90 + i * 36, -75, 36, 48);
+        g.beginPath(); g.arc(-72 + i * 36, -27, 18, 0, Math.PI); g.fill();
+      }
+      g.strokeStyle = deep; g.lineWidth = 3; g.strokeRect(-90, -75, 180, 48);
+    } else if (k === 1) { // event: bunting
+      g.strokeStyle = deep; g.lineWidth = 4; g.beginPath(); g.moveTo(-100, -70); g.quadraticCurveTo(0, -20, 100, -70); g.stroke();
+      for (let i = 0; i < 5; i++) {
+        const x = -80 + i * 40, y = -70 + 50 * (1 - Math.pow((x / 100), 2)) * .5 + 4;
+        g.fillStyle = i % 2 ? sky : blue; g.beginPath(); g.moveTo(x - 16, y); g.lineTo(x + 16, y); g.lineTo(x, y + 44); g.closePath(); g.fill();
+      }
+      g.fillStyle = blue; g.beginPath();
+      for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, r = i % 2 ? 18 : 42; g.lineTo(Math.cos(a) * r, 45 + Math.sin(a) * r); }
+      g.closePath(); g.fill();
+    } else { // business: buildings
+      g.fillStyle = sky; g.fillRect(20, -30, 70, 110);
+      g.fillStyle = deep; g.fillRect(-80, -85, 110, 165);
+      g.fillStyle = '#fff';
+      for (let r = 0; r < 5; r++) for (let c = 0; c < 3; c++) g.fillRect(-66 + c * 32, -70 + r * 30, 18, 16);
+      g.fillStyle = blue; for (let r = 0; r < 3; r++) g.fillRect(36, -15 + r * 30, 38, 14);
+    }
+  }
+
+  function cards(t) {
+    fill(blue);
+    g.fillStyle = 'rgba(255,255,255,.08)'; for (let i = 0; i < 12; i++) g.fillRect(0, 110 + i * 80, W, 2);
+    const hl = '地域の事業者・お店・イベント情報', n = Math.floor(seg(t, 7.8, 8.5) * [...hl].length);
+    font(54, JP, 700); g.fillStyle = '#fff'; g.globalAlpha = 1 - seg(t, 10.5, 10.9);
+    textC([...hl].slice(0, n).join(''), W / 2, 175); g.globalAlpha = 1;
+    [['お店', 'SHOP'], ['イベント', 'EVENT'], ['事業者', 'BUSINESS']].forEach(([jp, en], i) => {
+      const st = 8.0 + i * .45, p = E.outBack(seg(t, st, st + .55)); if (p <= 0) return;
+      const out = E.inBack(seg(t, 10.45 + i * .1, 11.05 + i * .1));
+      const cx = W / 2 + (i - 1) * 540, cy = H / 2 + 80 + (1 - E.outExpo(seg(t, st, st + .55))) * 200 - out * 1400 + Math.sin(t * 2 + i) * 8;
+      g.save(); g.translate(cx, cy); g.rotate((i - 1) * .045 + (1 - p) * .3); g.scale(Math.max(.001, p), 1);
+      g.fillStyle = 'rgba(0,20,70,.28)'; g.beginPath(); g.roundRect(-206, -254, 440, 540, 26); g.fill();
+      g.fillStyle = '#fff'; g.beginPath(); g.roundRect(-220, -270, 440, 540, 26); g.fill();
+      g.fillStyle = '#dbe9fb'; for (let y = -150; y <= 230; y += 50) g.fillRect(-190, y, 380, 2);
+      g.fillStyle = sky; g.fillRect(-170, -250, 2, 500);
+      g.save(); g.translate(0, -272); g.rotate(-.08); g.fillStyle = 'rgba(124,192,255,.75)'; g.fillRect(-75, -22, 150, 44); g.restore();
+      g.save(); g.translate(0, -105); icon(i); g.restore();
+      font(80, JP, 900); g.fillStyle = deep; textC(jp, 0, 105);
+      font(24, F.mono, 700); g.fillStyle = blue; tracked(en, 0, 185, 8);
+      g.restore();
+    });
+  }
+
+  function lockup(t) {
+    const gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, blue); gr.addColorStop(1, deep);
+    g.fillStyle = gr; g.fillRect(0, 0, W, H);
+    const lineY = H / 2 + 80;
+    const G2 = { ax1: W / 2 - 430, tx1: W / 2 - 270, tx2: W / 2 + 270, ax2: W / 2 + 430, topY: 150, deckY: 290, sag: 95, side: 12 };
+    g.strokeStyle = 'rgba(124,192,255,.7)'; g.fillStyle = 'rgba(124,192,255,.7)'; g.lineWidth = 3;
+    const bp = E.inOutCubic(seg(t, 12.1, 13.1));
+    if (bp > 0) {
+      [G2.tx1, G2.tx2].forEach(tx => { const h = (G2.deckY + 40 - G2.topY) * E.outExpo(seg(t, 12.1, 12.5)); g.fillRect(tx - 4, G2.deckY + 40 - h, 8, h); });
+      g.beginPath(); g.moveTo(G2.ax1, G2.deckY); g.lineTo(lerp(G2.ax1, G2.ax2, bp), G2.deckY); g.stroke();
+      strokeCable(G2, bp);
+    }
+    const wp = E.inOutCubic(seg(t, 11.2, 11.9));
+    g.strokeStyle = '#fff'; g.lineWidth = 8; g.lineCap = 'round'; g.beginPath();
+    const x0 = W / 2 - 640, x1 = lerp(x0, W / 2 + 640, wp);
+    for (let x = x0; x <= x1; x += 5) { const y = lineY + penWave(x, t, 12); x === x0 ? g.moveTo(x, y) : g.lineTo(x, y); }
+    if (wp > 0) g.stroke();
+    g.save(); g.beginPath(); g.rect(0, 0, W, lineY - 22); g.clip();
+    font(190, JP, 900); g.fillStyle = '#fff';
+    letters('かんもんノート', W / 2, lineY - 125, (c, x, y, i) => {
+      const p = E.outExpo(seg(t, 11.5 + i * .07, 12.2 + i * .07));
+      textC(c, x, y + (1 - p) * 240);
+    });
+    g.restore();
+    font(44, JP, 700); g.fillStyle = '#fff'; g.globalAlpha = seg(t, 12.6, 13.0);
+    tracked('関門海峡エリアの情報メディア', W / 2, lineY + 95, lerp(30, 8, E.outExpo(seg(t, 12.6, 13.6))));
+    const url = 'kanmonnote.com', n = Math.floor(seg(t, 13.1, 13.7) * url.length);
+    font(34, F.mono, 700); g.fillStyle = sky; g.globalAlpha = 1;
+    textC(url.slice(0, n) + (n < url.length && n > 0 ? '_' : ''), W / 2, lineY + 180);
+    // wave-edged paper wipe back to the first frame (seamless loop)
+    const e = E.inOutCubic(seg(t, 14.45, 15));
+    if (e > 0) {
+      g.fillStyle = paper; g.beginPath(); g.moveTo(0, 0);
+      for (let x = 0; x <= W + 20; x += 20) g.lineTo(x, (H + 80) * e - 40 + penWave(x, t, 20 * (1 - e)));
+      g.lineTo(W, 0); g.closePath(); g.fill();
+    }
+  }
+
+  return {
+    label: '01 / 海峡ノート',
+    render(t) {
+      if (t < 2.2) note(t);
+      else if (t < 7.5) sea(t);
+      else if (t < 7.95) {
+        sea(t); const p = E.inOutCubic(seg(t, 7.5, 7.95));
+        g.save(); g.beginPath(); g.moveTo(0, H); g.lineTo(0, H - H * 1.15 * p + 60); g.lineTo(W, H - H * 1.15 * p - 60); g.lineTo(W, H); g.closePath(); g.clip(); cards(t); g.restore();
+      }
+      else if (t < 11.2) cards(t);
+      else lockup(t);
+      hud(t, this.label, 'KANMON NOTE');
+    },
+    events() {
+      const pen = [523.25, 587.33, 659.25, 783.99, 880, 1046.5, 1174.66, 1318.5];
+      const e = [];
+      for (let k = 0; k < 4; k++) e.push([.1 + k * .12, 'blip', pen[k * 2], .5, 'sine', .12]);
+      e.push([.6, 'whoosh', 1.3]);
+      e.push([2.15, 'whoosh', .9]);
+      for (let b = 5; b < 15; b++) e.push([b * .5, 'marimba', pen[[0, 2, 4, 3, 5, 4, 2, 1, 3, 0][b - 5]]]);
+      for (let b = 8; b < 22; b++) e.push([b * .5, 'kick']);
+      for (let b = 8; b < 22; b++) e.push([b * .5 + .25, 'hat', .12]);
+      e.push([2.7, 'boing', 330]); e.push([2.82, 'boing', 392]);
+      for (let k = 0; k < 8; k++) e.push([4.2 + k * .08, 'blip', pen[k], .12, 'triangle', .1]);
+      e.push([5.1, 'horn']);
+      for (let k = 0; k < 4; k++) e.push([5.3 + k * .09 + .1, 'boing', pen[k + 2]]);
+      e.push([7.45, 'whoosh', .6]);
+      for (let i = 0; i < 3; i++) { e.push([8.0 + i * .45 + .15, 'boing', [523.25, 659.25, 783.99][i]]); e.push([8.0 + i * .45, 'click']); }
+      e.push([10.45, 'whoosh', .7]);
+      e.push([11.2, 'riser', .45]);
+      e.push([11.6, 'impact']);
+      e.push([12.2, 'chord', [523.25, 659.25, 783.99, 1046.5], 2]);
+      e.push([13.1, 'blip', 1568, .3, 'sine', .15]);
+      e.push([14.45, 'whoosh', .6]);
+      return e;
+    }
+  };
+})();
+
+/* =========================================================
+   K2 — KANMON NOTE / 夜の海峡(紺×光)
+   ========================================================= */
+const K2 = (() => {
+  const night = '#030a1c', nv = '#0b1d4a', glow = '#8fd0ff', blue = '#2f7bff', warm = '#ffd98a';
+  const HZ = H * .64;
+  const G = { ax1: 260, tx1: 560, tx2: W - 560, ax2: W - 260, topY: H * .24, deckY: H * .5, sag: H * .19, side: 24 };
+  const cable = Array.from({ length: 111 }, (_, k) => { const x = lerp(G.ax1, G.ax2, k / 110); return [x, cableY(G, x)]; });
+  const deck = Array.from({ length: 71 }, (_, k) => [lerp(G.ax1, G.ax2, k / 70), G.deckY]);
+  const r = rng(1868);
+  const stars = Array.from({ length: 140 }, () => [r() * W, r() * HZ * .8, r() * 1.8 + .4, r() * TAU]);
+  const shore = Array.from({ length: 280 }, () => {
+    const side = r() < .5 ? 0 : 1, d = Math.pow(r(), .8) * 520;
+    const x = side ? W - d : d, y = HZ - 6 - r() * (150 * (1 - d / 560)) - r() * 10;
+    const c = r(); return { x, y, d, c: c < .55 ? warm : c < .85 ? '#ffffff' : glow, ph: r() * TAU, s: r() * 2 + 1.2 };
+  });
+  const cars = Array.from({ length: 8 }, (_, i) => ({ o: r(), sp: .05 + r() * .04, dir: i % 2 ? 1 : -1, c: i % 2 ? warm : '#fff' }));
+
+  function dot(x, y, s, col, a) {
+    g.fillStyle = col; g.globalAlpha = a * .22; g.beginPath(); g.arc(x, y, s * 3.2, 0, TAU); g.fill();
+    g.globalAlpha = a; g.beginPath(); g.arc(x, y, s, 0, TAU); g.fill();
+  }
+  function scene(t, dim) {
+    const gr = g.createLinearGradient(0, 0, 0, HZ); gr.addColorStop(0, night); gr.addColorStop(1, nv);
+    g.fillStyle = gr; g.fillRect(0, 0, W, HZ); g.fillStyle = '#020714'; g.fillRect(0, HZ, W, H - HZ);
+    const push = 1 + .07 * E.inOutCubic(seg(t, 0, 10));
+    g.save(); g.translate(W / 2, HZ); g.scale(push, push); g.translate(-W / 2, -HZ);
+    g.globalCompositeOperation = 'lighter';
+    stars.forEach(([x, y, s, ph]) => { g.fillStyle = '#fff'; g.globalAlpha = (.25 + .25 * Math.sin(t * 2 + ph)) * seg(t, 0, 1) * dim; g.fillRect(x, y, s, s); });
+    // tower silhouettes
+    g.globalAlpha = .35 * dim * seg(t, .1, .8); g.fillStyle = '#3b6fd6';
+    [G.tx1, G.tx2].forEach(tx => { g.fillRect(tx - 14, G.topY - 20, 6, HZ - G.topY + 20); g.fillRect(tx + 8, G.topY - 20, 6, HZ - G.topY + 20); });
+    const refl = (x, y, col, a, k) => {
+      const ry = HZ + (HZ - y) * .55; if (ry > H) return;
+      g.fillStyle = col; g.globalAlpha = a * .28; g.fillRect(x + Math.sin(t * 3 + k) * 4 - 1.5, ry, 3, 16 + 6 * Math.sin(t * 5 + k));
+    };
+    cable.forEach(([x, y], k) => {
+      const st = .3 + k * .022; if (t < st) return;
+      const a = dim * Math.min(1, .75 + 1.5 * Math.exp(-(t - st) * 7));
+      dot(x, y, 3.2, k % 10 === 0 ? '#fff' : glow, a); refl(x, y, glow, a, k);
+    });
+    deck.forEach(([x, y], k) => {
+      const st = 1.2 + k * .018; if (t < st) return;
+      dot(x, y, 2.6, warm, dim * .9); refl(x, y, warm, dim, k + 50);
+    });
+    if (t > 2.8) cars.forEach((c, i) => {
+      const u = fract(c.o + t * c.sp * c.dir), x = lerp(G.ax1 + 20, G.ax2 - 20, u);
+      g.strokeStyle = c.c; g.globalAlpha = .5 * dim * seg(t, 2.8, 3.3); g.lineWidth = 3;
+      g.beginPath(); g.moveTo(x, G.deckY - 6); g.lineTo(x - c.dir * 60, G.deckY - 6); g.stroke();
+      dot(x, G.deckY - 6, 3, c.c, dim * seg(t, 2.8, 3.3));
+    });
+    shore.forEach((s, k) => {
+      const st = 3.3 + (s.d / 520) * 1.3; if (t < st) return;
+      const a = dim * clamp((t - st) * 4) * (.7 + .3 * Math.sin(t * 3 + s.ph));
+      dot(s.x, s.y, s.s, s.c, a); refl(s.x, s.y, s.c, a * .8, k);
+    });
+    g.restore();
+    g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1;
+    g.fillStyle = 'rgba(143,208,255,.25)'; g.fillRect(0, HZ, W, 1);
+  }
+
+  function glowText(s, x, y, blur = 30) {
+    g.save(); g.shadowColor = blue; g.shadowBlur = blur; g.fillText(s, x, y); g.shadowBlur = blur / 3; g.fillText(s, x, y); g.restore();
+  }
+
+  return {
+    label: '02 / 夜の海峡',
+    render(t) {
+      const dim = 1 - .72 * seg(t, 6.3, 6.9);
+      scene(t, dim);
+      // shore labels
+      const la = seg(t, 3.9, 4.4) * (1 - seg(t, 6.2, 6.6));
+      if (la > 0) {
+        g.globalAlpha = la; g.fillStyle = '#fff';
+        font(44, JP, 700); textC('下関', 250, HZ + 90); textC('門司', W - 250, HZ + 90);
+        font(22, F.mono, 700); g.fillStyle = glow;
+        tracked('SHIMONOSEKI', 250, HZ + 145, 8); tracked('MOJI', W - 250, HZ + 145, 8);
+        g.globalAlpha = 1;
+      }
+      // vertical title
+      if (t > 6.5 && t < 9.7) {
+        const out = seg(t, 9.25, 9.65);
+        font(150, JP, 900); g.textAlign = 'center'; g.textBaseline = 'middle';
+        [...'関門海峡'].forEach((c, i) => {
+          const p = E.outExpo(seg(t, 6.7 + i * .15, 7.4 + i * .15)); if (p <= 0) return;
+          g.globalAlpha = p * (1 - out); g.fillStyle = '#fff';
+          glowText(c, W / 2, H / 2 - 255 + i * 170 + (1 - p) * 60, 40 * p);
+        });
+        g.globalAlpha = (1 - out) * seg(t, 7.2, 7.6);
+        g.fillStyle = glow; g.fillRect(W / 2 + 130, H / 2 - 330, 2, 660 * E.outExpo(seg(t, 7.2, 8.2)));
+        g.save(); g.translate(W / 2 + 170, H / 2); g.rotate(Math.PI / 2); font(24, F.mono, 700); tracked('KANMON STRAIT', 0, 0, 14); g.restore();
+        g.globalAlpha = 1;
+      }
+      // tags network
+      if (t > 9.6 && t < 12.4) {
+        const conv = E.inExpo(seg(t, 11.9, 12.35)), cx = W / 2, cy = H / 2 - 20;
+        const tags = [['お店', -560, -210], ['イベント', 560, -190], ['地域の事業者', -500, 230], ['情報', 520, 240]];
+        tags.forEach(([s, dx, dy], i) => {
+          const p = E.outExpo(seg(t, 9.8 + i * .25, 10.5 + i * .25)); if (p <= 0) return;
+          const x = cx + lerp(dx * 2.3, dx, p) * (1 - conv), y = cy + lerp(dy * 2.3, dy, p) * (1 - conv);
+          g.strokeStyle = glow; g.globalAlpha = .6 * p * (1 - conv); g.lineWidth = 2; g.setLineDash([8, 12]); g.lineDashOffset = -t * 80;
+          g.beginPath(); g.moveTo(cx, cy); g.lineTo(x, y); g.stroke(); g.setLineDash([]);
+          font(50, JP, 700); const w = g.measureText(s).width + 80;
+          g.globalAlpha = p * (1 - conv);
+          g.fillStyle = 'rgba(47,123,255,.28)'; g.beginPath(); g.roundRect(x - w / 2, y - 45, w, 90, 45); g.fill();
+          g.strokeStyle = glow; g.lineWidth = 3; g.stroke();
+          g.fillStyle = '#fff'; textC(s, x, y + 2);
+        });
+        const np = E.outBack(seg(t, 9.6, 10.1)) * (1 - conv * .6);
+        g.globalAlpha = 1; g.strokeStyle = glow; g.lineWidth = 4;
+        g.save(); g.shadowColor = blue; g.shadowBlur = 30;
+        g.beginPath(); g.arc(cx, cy, 80 * np, 0, TAU); g.stroke(); g.restore();
+        font(28, F.mono, 700); g.fillStyle = '#fff'; g.globalAlpha = clamp(np); textC('NOTE', cx, cy + 2); g.globalAlpha = 1;
+      }
+      // lockup
+      if (t >= 12.2) {
+        font(170, JP, 900); g.fillStyle = '#fff';
+        letters('かんもんノート', W / 2, H / 2 - 40, (c, x, y, i) => {
+          const p = E.outExpo(seg(t, 12.35 + i * .07, 13.0 + i * .07)); if (p <= 0) return;
+          g.globalAlpha = p; g.textAlign = 'center'; g.textBaseline = 'middle'; glowText(c, x, y + (1 - p) * 50, 36);
+        });
+        g.globalAlpha = seg(t, 13.1, 13.5);
+        font(42, JP, 700); g.fillStyle = '#dbeeff'; tracked('関門海峡エリアの情報メディア', W / 2, H / 2 + 110, lerp(28, 8, E.outExpo(seg(t, 13.1, 14))));
+        g.fillStyle = glow; g.fillRect(W / 2 - 300 * E.outExpo(seg(t, 13.2, 13.9)), H / 2 + 165, 600 * E.outExpo(seg(t, 13.2, 13.9)), 2);
+        font(32, F.mono, 700); g.fillStyle = glow; textC('kanmonnote.com', W / 2, H / 2 + 215);
+        g.globalAlpha = 1;
+      }
+      const out = seg(t, 14.5, 15);
+      if (out > 0) { g.fillStyle = `rgba(3,10,28,${out})`; g.fillRect(0, 0, W, H); }
+      hud(t, this.label, 'KANMON NOTE');
+    },
+    events() {
+      const e = [[0, 'pad', 15]];
+      for (let k = 0; k <= 110; k += 10) e.push([.3 + k * .022, 'blip', [1046.5, 1174.66, 1318.5, 1568, 1760, 2093][(k / 10) % 6], .6, 'sine', .08]);
+      for (let k = 0; k <= 70; k += 7) e.push([1.2 + k * .018, 'hat', .06]);
+      e.push([3.1, 'riser', 1.0]);
+      e.push([4.1, 'chord', [440, 554.37, 659.25], 1.8]);
+      for (let x = 4.5; x < 6.4; x += .5) e.push([x, 'hat', .08]);
+      e.push([6.4, 'whoosh', .6]);
+      e.push([6.7, 'impact']);
+      for (let i = 0; i < 4; i++) e.push([6.7 + i * .15, 'blip', [880, 1046.5, 1318.5, 1760][i], .8, 'sine', .1]);
+      for (let x = 7.2; x < 12; x += .5) e.push([x, 'kick']);
+      for (let x = 7.45; x < 12; x += .5) e.push([x, 'hat', .1]);
+      for (let i = 0; i < 4; i++) e.push([9.8 + i * .25 + .1, 'marimba', [659.25, 783.99, 880, 1046.5][i]]);
+      e.push([11.9, 'riser', .45]);
+      e.push([12.35, 'impact']);
+      e.push([12.5, 'chord', [440, 554.37, 659.25, 880], 2.4]);
+      e.push([14.3, 'whoosh', .7]);
+      return e;
+    }
+  };
+})();
+
+/* =========================================================
    AUDIO (all synthesized)
    ========================================================= */
 let AC = null, comp = null, master = null, recDest = null, noiseBuf = null;
@@ -724,6 +1133,11 @@ const SFX = {
     const n = noise(at, .9), f = AC.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 900;
     const g2 = AC.createGain(); env(g2, at, .5, .003, .8); chain(n, f, g2, master);
   },
+  horn(at) {
+    const f = AC.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 700;
+    const gg = AC.createGain(); gg.gain.setValueAtTime(.0001, at); gg.gain.exponentialRampToValueAtTime(.2, at + .08); gg.gain.setValueAtTime(.2, at + .9); gg.gain.exponentialRampToValueAtTime(.0001, at + 1.3);
+    [98, 147].forEach(fr => osc('sawtooth', fr, at, 1.3).connect(f)); chain(f, gg, master);
+  },
   chord(at, fs, dur) { fs.forEach((fr, i) => { const o = osc('triangle', fr, at + i * .03, dur), gg = AC.createGain(); env(gg, at + i * .03, .12, .02, dur); chain(o, gg, master); }); },
   pad(at, dur, offset = 0) {
     const f = AC.createBiquadFilter(); f.type = 'lowpass'; f.frequency.setValueAtTime(500, at); f.frequency.linearRampToValueAtTime(1600, at + dur * .6);
@@ -737,7 +1151,8 @@ const SFX = {
 /* =========================================================
    PLAYER
    ========================================================= */
-const patterns = [A, B, C];
+const patterns = [K1, K2, A, B, C];
+const fileIds = ['kanmon-day', 'kanmon-night', 'a', 'b', 'c'];
 let cur = 0, t = 0, playing = false, loop = true, soundOn = true, recording = false, recorder = null;
 let events = patterns[cur].events().sort((a, b) => a[0] - b[0]);
 let schedFrom = 0, audioT0 = 0, lastNow = 0, dirty = true;
@@ -811,7 +1226,7 @@ function startRecording() {
     const type = recorder.mimeType || mime || 'video/webm';
     const blob = new Blob(chunks, { type });
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-    a.download = `showreel-${'abc'[cur]}.${type.includes('mp4') ? 'mp4' : 'webm'}`;
+    a.download = `showreel-${fileIds[cur]}.${type.includes('mp4') ? 'mp4' : 'webm'}`;
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 5000);
   };
@@ -834,7 +1249,7 @@ $('rec').addEventListener('click', () => recording ? (stopRecording(), pause()) 
 document.addEventListener('keydown', e => { if (e.code === 'Space' && e.target === document.body) { e.preventDefault(); playing ? pause() : play(); } });
 
 const fontsReady = document.fonts ? Promise.race([
-  Promise.all(['440px Anton', '210px "Archivo Black"', '700 300px "Space Grotesk"', '700 26px "JetBrains Mono"'].map(f => document.fonts.load(f))),
+  Promise.all(['440px Anton', '210px "Archivo Black"', '700 300px "Space Grotesk"', '700 26px "JetBrains Mono"'].map(f => document.fonts.load(f)).concat(['900 100px "Zen Kaku Gothic New"', '700 100px "Zen Kaku Gothic New"'].map(f => document.fonts.load(f, 'かんもんノート関門海峡下関門司地域の事業者・お店・イベント情報エリアメディア')))),
   new Promise(r => setTimeout(r, 2500))
 ]) : Promise.resolve();
 fontsReady.then(() => { dirty = true; requestAnimationFrame(frame); });
