@@ -678,6 +678,25 @@ const C = (() => {
    KANMON NOTE — shared helpers (strait / bridge / note motifs)
    ========================================================= */
 const JP = "'Zen Kaku Gothic New', 'Noto Sans JP', sans-serif";
+// Official logo: drop the file next to this page as kanmonnote-logo.png (transparent PNG recommended).
+// Until it exists, the lockups fall back to the typeset name.
+const LOGO = new Image();
+let logoReady = false;
+LOGO.onload = () => { logoReady = true; dirty = true; };
+LOGO.src = 'kanmonnote-logo.png';
+function drawLogo(cx, cy, maxW, maxH, p, plate) { // p: 0→1 reveal
+  if (p <= 0) return;
+  const s = Math.min(maxW / LOGO.naturalWidth, maxH / LOGO.naturalHeight);
+  const w = LOGO.naturalWidth * s, h = LOGO.naturalHeight * s, k = lerp(.86, 1, E.outBack(clamp(p)));
+  g.save(); g.translate(cx, cy); g.scale(k, k); g.globalAlpha = clamp(p * 1.5);
+  if (plate) {
+    g.save(); g.shadowColor = plate; g.shadowBlur = 50;
+    g.fillStyle = '#fff'; g.beginPath(); g.roundRect(-w / 2 - 60, -h / 2 - 44, w + 120, h + 88, 36); g.fill(); g.restore();
+  }
+  g.beginPath(); g.rect(-w / 2, -h / 2, w * E.inOutCubic(clamp(p * 1.4)), h); g.clip();
+  g.drawImage(LOGO, -w / 2, -h / 2, w, h);
+  g.restore();
+}
 // suspension-bridge cable: anchor → tower → sag → tower → anchor
 function cableY(G, x) {
   if (x <= G.tx1) { const u = (x - G.ax1) / (G.tx1 - G.ax1); return lerp(G.deckY, G.topY, u) + G.side * Math.sin(Math.PI * u); }
@@ -862,13 +881,16 @@ const K1 = (() => {
     const x0 = W / 2 - 640, x1 = lerp(x0, W / 2 + 640, wp);
     for (let x = x0; x <= x1; x += 5) { const y = lineY + penWave(x, t, 12); x === x0 ? g.moveTo(x, y) : g.lineTo(x, y); }
     if (wp > 0) g.stroke();
-    g.save(); g.beginPath(); g.rect(0, 0, W, lineY - 22); g.clip();
-    font(190, JP, 900); g.fillStyle = '#fff';
-    letters('かんもんノート', W / 2, lineY - 125, (c, x, y, i) => {
-      const p = E.outExpo(seg(t, 11.5 + i * .07, 12.2 + i * .07));
-      textC(c, x, y + (1 - p) * 240);
-    });
-    g.restore();
+    if (logoReady) drawLogo(W / 2, lineY - 170, 1000, 170, seg(t, 11.5, 12.3), 'rgba(0,20,70,.35)');
+    else {
+      g.save(); g.beginPath(); g.rect(0, 0, W, lineY - 22); g.clip();
+      font(190, JP, 900); g.fillStyle = '#fff';
+      letters('かんもんノート', W / 2, lineY - 125, (c, x, y, i) => {
+        const p = E.outExpo(seg(t, 11.5 + i * .07, 12.2 + i * .07));
+        textC(c, x, y + (1 - p) * 240);
+      });
+      g.restore();
+    }
     font(44, JP, 700); g.fillStyle = '#fff'; g.globalAlpha = seg(t, 12.6, 13.0);
     tracked('関門海峡エリアの情報メディア', W / 2, lineY + 95, lerp(30, 8, E.outExpo(seg(t, 12.6, 13.6))));
     const url = 'kanmonnote.com', n = Math.floor(seg(t, 13.1, 13.7) * url.length);
@@ -1038,11 +1060,14 @@ const K2 = (() => {
       }
       // lockup
       if (t >= 12.2) {
-        font(170, JP, 900); g.fillStyle = '#fff';
-        letters('かんもんノート', W / 2, H / 2 - 40, (c, x, y, i) => {
-          const p = E.outExpo(seg(t, 12.35 + i * .07, 13.0 + i * .07)); if (p <= 0) return;
-          g.globalAlpha = p; g.textAlign = 'center'; g.textBaseline = 'middle'; glowText(c, x, y + (1 - p) * 50, 36);
-        });
+        if (logoReady) drawLogo(W / 2, H / 2 - 100, 1000, 170, seg(t, 12.35, 13.2), blue);
+        else {
+          font(170, JP, 900); g.fillStyle = '#fff';
+          letters('かんもんノート', W / 2, H / 2 - 40, (c, x, y, i) => {
+            const p = E.outExpo(seg(t, 12.35 + i * .07, 13.0 + i * .07)); if (p <= 0) return;
+            g.globalAlpha = p; g.textAlign = 'center'; g.textBaseline = 'middle'; glowText(c, x, y + (1 - p) * 50, 36);
+          });
+        }
         g.globalAlpha = seg(t, 13.1, 13.5);
         font(42, JP, 700); g.fillStyle = '#dbeeff'; tracked('関門海峡エリアの情報メディア', W / 2, H / 2 + 110, lerp(28, 8, E.outExpo(seg(t, 13.1, 14))));
         g.fillStyle = glow; g.fillRect(W / 2 - 300 * E.outExpo(seg(t, 13.2, 13.9)), H / 2 + 165, 600 * E.outExpo(seg(t, 13.2, 13.9)), 2);
