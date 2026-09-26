@@ -1036,6 +1036,25 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
 }
 .yt-caption{font-size:13px;color:var(--sub);text-align:center;}
 
+/* ══ MOTION (かんもんノート リール / ショーリール) ══ */
+.mo-sec{background:var(--dark);}
+.mo-grid{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:40px;align-items:start;}
+@media(max-width:860px){.mo-grid{grid-template-columns:1fr;}}
+.mo-card{border:1px solid var(--line);background:var(--black);border-radius:6px;overflow:hidden;}
+.mo-media{position:relative;background:#0a2a44;}
+.mo-media video{display:block;width:100%;height:100%;object-fit:cover;}
+.mo-media.v{aspect-ratio:9/16;}
+.mo-media.h{aspect-ratio:16/9;}
+.mo-body{padding:18px 20px 22px;}
+.mo-tag{font-family:'Inter',sans-serif;font-size:10px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;}
+.mo-title{font-size:18px;font-weight:900;margin:6px 0 8px;}
+.mo-text{font-size:13px;color:var(--sub);line-height:1.85;}
+.mo-flow{list-style:none;display:grid;gap:8px;margin:14px 0 16px;padding:0;}
+.mo-flow li{font-size:13px;display:flex;gap:10px;align-items:baseline;}
+.mo-flow b{font-family:'Inter',sans-serif;font-size:11px;color:var(--gold);min-width:22px;}
+.mo-link{display:inline-block;font-size:13px;font-weight:700;color:var(--gold);text-decoration:none;border-bottom:1px solid currentColor;margin-right:18px;}
+.mo-side{display:grid;gap:24px;}
+
 
 /* ══ SCROLL PROGRESS BAR ══ */
 #scroll-bar{
@@ -1476,6 +1495,7 @@ footer .related-sites__arrow{width:18px;height:18px;flex:0 0 18px;color:var(--re
   <nav class="hd-nav">
     <a href="#fde">APPROACH</a>
     <a href="#results">RESULTS</a>
+    <a href="#motion">MOTION</a>
     <a href="#plans">PLAN</a>
     <a href="#profile">PROFILE</a>
     <a href="#faq">FAQ</a>
@@ -1984,6 +2004,54 @@ footer .related-sites__arrow{width:18px;height:18px;flex:0 0 18px;color:var(--re
         </iframe>
       </div>
       <p class="yt-caption">Yスタジオ＋ 創設発表ライブ（2021年4月1日） · <a href="https://www.youtube.com/@shimofugu" target="_blank" style="color:var(--gold);">@shimofugu</a></p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- MOTION -->
+<section class="sec mo-sec" id="motion">
+  <div class="container">
+    <div class="sec-label reveal"><div class="sec-label-line"></div><span class="sec-label-text">Motion</span></div>
+    <h2 class="sec-title reveal">動画も、<br><span class="light">つくって回す。</span></h2>
+    <p class="sec-desc reveal">関門海峡エリアの情報メディア「<a href="https://www.kanmonnote.com/" target="_blank" rel="noopener" style="color:var(--gold);">かんもんノート</a>」の新着記事から、15秒の縦型リールを毎週自動で生成しています。記事の取得から動画の書き出し、投稿文づくりまで、仕組みごと動かしています。</p>
+    <div class="mo-grid">
+      <div class="mo-card reveal">
+        <div class="mo-media v">
+          <video src="reel-out/new.mp4" poster="reel-out/new.jpg" autoplay muted loop playsinline preload="metadata" aria-label="かんもんノート 新着リール"></video>
+        </div>
+        <div class="mo-body">
+          <div class="mo-tag">Weekly Reel · 1080×1920 · 15s</div>
+          <div class="mo-title">かんもんノート 新着リール</div>
+          <p class="mo-text">WordPressの最新記事(タイトル・カテゴリ・日付・アイキャッチ)をそのまま使って組み立てています。</p>
+        </div>
+      </div>
+      <div class="mo-side">
+        <div class="mo-card reveal">
+          <div class="mo-media h">
+            <video src="media/showreel-kanmon.mp4" poster="media/showreel-kanmon.jpg" autoplay muted loop playsinline preload="metadata" aria-label="かんもんノート ショーリール"></video>
+          </div>
+          <div class="mo-body">
+            <div class="mo-tag">Showreel · 16:9 · 15s</div>
+            <div class="mo-title">かんもんノート ショーリール</div>
+            <p class="mo-text">ノートに引いた一本の線が関門海峡になり、橋が架かる。素材ファイルを使わず、コードだけで描いたモーショングラフィックスです。</p>
+          </div>
+        </div>
+        <div class="mo-card reveal">
+          <div class="mo-body">
+            <div class="mo-tag">How it works</div>
+            <div class="mo-title">毎週月曜、自動で更新</div>
+            <ol class="mo-flow">
+              <li><b>01</b>WordPressから新着記事とカテゴリ別の記事を取得</li>
+              <li><b>02</b>記事データから15秒のリール動画を書き出し</li>
+              <li><b>03</b>記事タイトルとハッシュタグから投稿文を作成</li>
+            </ol>
+            <a class="mo-link" href="kanmon-reel.html">リールを作る →</a>
+            <a class="mo-link" href="showreel.html">ショーリールを見る →</a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
