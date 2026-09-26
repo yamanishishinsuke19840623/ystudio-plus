@@ -38,17 +38,23 @@ function serve() {
   });
 }
 
-const md = iso => { const d = new Date(iso); return `${d.getMonth() + 1}/${d.getDate()}`; };
-const tag = s => "#" + s.replace(/[\s　（）()・/／、。!！?？「」【】]/g, "");
+const tag = s => "#" + s.replace(/（[^）]*）|\([^)]*\)/g, "").replace(/[\s　（）()・/／、。!！?？「」【】]/g, "");
+// タイトルに地名が出てくるときだけ地域タグを付ける(記事に書かれていない地名は足さない)
+const PLACES = ["下関", "門司", "小倉", "長府", "唐戸", "彦島", "豊浦", "菊川", "豊北"];
+const NUM = ["①", "②", "③", "④", "⑤"];
 export function buildCaption(data, n) {
   const posts = data.posts.slice(0, n);
-  const dates = posts.map(p => p.date).filter(Boolean).sort();
-  const range = dates.length ? (md(dates[0]) === md(dates.at(-1)) ? md(dates[0]) : `${md(dates[0])}〜${md(dates.at(-1))}`) : "";
-  const head = `かんもんノート｜${data.category ? `${data.category.name}の` : ""}新着記事${range ? `(${range})` : ""}`;
-  const body = posts.map(p => `▼${p.title}`).join("\n\n");
-  const cats = data.category ? [data.category.name] : [...new Set(posts.map(p => p.category).filter(Boolean))];
-  const tags = [...new Set(["#かんもんノート", "#関門海峡", "#下関", ...cats.map(tag)])].join(" ");
-  return `${head}\n\n${body}\n\n記事の続きは kanmonnote.com で公開中です。\n\n${tags}\n`;
+  const cat = data.category?.name;
+  const head = cat === "グルメ" ? `関門エリアのおいしい話、${posts.length}つまとめました🍴`
+    : cat ? `かんもんノートの「${cat}」の記事から、${posts.length}本まとめました📖`
+    : `かんもんノートの新着記事から、${posts.length}本まとめました📖`;
+  const body = posts.map((p, i) => `${NUM[i] || "・"}${p.title}`).join("\n\n");
+  const titles = posts.map(p => p.title.normalize("NFKC")).join(" ");
+  const places = PLACES.filter(pl => titles.includes(pl));
+  const cats = cat ? [cat] : [...new Set(posts.map(p => p.category).filter(Boolean))];
+  const tags = [...new Set(["#かんもんノート", "#関門海峡", "#下関", ...places.map(pl => `#${pl}`),
+    ...(cat === "グルメ" ? places.map(pl => `#${pl}グルメ`) : []), ...cats.map(tag)])].join(" ");
+  return `${head}\n\n${body}\n\n気になる記事はありましたか？\n記事の続きは、プロフィールのリンク(kanmonnote.com)から📖\n\n${tags}\n`;
 }
 
 // "gourmet" → reel-data/categories.json から cat-<id>.json を引く / "new" → posts.json
