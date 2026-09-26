@@ -154,7 +154,7 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-fa
         <ul>
           <li>Canva「関門カイギHP」デザイン</li>
           <li>Canva「関門カイギ #1」「#7」「#8」「#9」の告知デザイン</li>
-          <li>Dの写真：企画書デザインの港の写真、#1〜#9と9.20特別回の告知画像、円形ロゴ（Canvaのプレビュー画像）</li>
+          <li>Dの写真：企画書デザインの港の写真（Canva上で9分割して撮影し、横1920pxに復元）、#1〜#9と9.20特別回の告知画像、円形ロゴ（Canvaのプレビュー画像）</li>
           <li>下関は山口県、門司は福岡県（一般的な地理情報）</li>
         </ul>
       </div>
@@ -786,7 +786,7 @@ const D=(()=>{
       for(let j=Math.max(0,i-3);j<=i;j++){
         const lt=t-(2.5+.5*j),p=E.oExpo(seg(lt,0,.38));
         const fx=W*.635+(hash(j*2.1)-.5)*70,fy=CY+(hash(j*3.7)-.5)*50,rot=(hash(j*1.7)-.5)*.13;
-        card(IMG[FL[j][0]+'.jpg'],lerp(W+700,fx,p),lerp(fy-120,fy,p),960,rot+(1-p)*.45,j<i-2?.0:1);
+        card(IMG[FL[j][0]+'.jpg'],lerp(W+700,fx,p),lerp(fy-120,fy,p),820,rot+(1-p)*.45,j<i-2?.0:1);
       }
       const lt=(t-2.5)-i*.5,k=E.oExpo(seg(lt,0,.3));const [,num,date]=FL[i];
       font(700,34,G);text('関門カイギ',120,CY-190,{c:C.white,align:'left',track:6});
@@ -797,7 +797,7 @@ const D=(()=>{
     }else if(t<10.0){
       const g=X.createLinearGradient(0,0,0,H);g.addColorStop(0,C.sky);g.addColorStop(1,C.sky2);X.fillStyle=g;X.fillRect(0,0,W,H);
       const cw=356,chh=200,gap=26,x0=CX-(5*cw+4*gap)/2+cw/2,y0=CY-(chh+gap)/2;
-      const k=E.io3(seg(t,7.5,8.5));const z=lerp(960/cw,1,k);
+      const k=E.io3(seg(t,7.5,8.5));const z=lerp(820/cw,1,k);
       const fx=lerp(x0+4*(cw+gap),CX,k),fy=lerp(y0+chh+gap,CY,k);
       const drift=(t-8.5)>0?(t-8.5)*6:0;
       X.save();X.translate(CX,CY);X.scale(z,z);X.translate(-fx-drift,-fy);
