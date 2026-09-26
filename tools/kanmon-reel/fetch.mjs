@@ -49,22 +49,29 @@ async function getJSON(url) {
 }
 
 // 1st: WP REST API
-async function fromRest() {
-  let posts;
-  try { posts = await getJSON(`${SITE}/wp-json/wp/v2/posts?per_page=${COUNT}&_embed=1`); }
-  catch (e) { // パーマリンク未設定サイト向けの別ルート
+// REST のルート: 通常は /wp-json/、パーマリンク未設定なら ?rest_route= を使う
+let restBase = null;
+const restUrl = (route, query) => restBase === "rest_route" ? `${SITE}/?rest_route=/wp/v2/${route}&${query}` : `${SITE}/wp-json/wp/v2/${route}?${query}`;
+async function rest(route, query) {
+  if (restBase) return getJSON(restUrl(route, query));
+  try { const r = await getJSON(restUrl(route, query)); restBase = "wp-json"; return r; }
+  catch (e) {
     console.warn(`/wp-json 失敗 → ?rest_route で再試行: ${e.message}`);
-    posts = await getJSON(`${SITE}/?rest_route=/wp/v2/posts&per_page=${COUNT}&_embed=1`);
+    restBase = "rest_route"; return getJSON(restUrl(route, query));
   }
+}
+function mapPost(p) {
+  const media = p._embedded?.["wp:featuredmedia"]?.[0];
+  const sizes = media?.media_details?.sizes || {};
+  const image = (sizes.large || sizes.medium_large || sizes.full || {}).source_url || media?.source_url || "";
+  const terms = (p._embedded?.["wp:term"] || []).flat();
+  const cat = terms.find(t => t.taxonomy === "category");
+  return { id: p.id, title: decode(p.title?.rendered), date: p.date, link: p.link, category: cat ? decode(cat.name) : "", image };
+}
+async function fromRest(extra = "") {
+  const posts = await rest("posts", `per_page=${COUNT}&_embed=1${extra}`);
   if (!Array.isArray(posts)) throw new Error(`想定外の応答: ${JSON.stringify(posts).slice(0, 160)}`);
-  return posts.map(p => {
-    const media = p._embedded?.["wp:featuredmedia"]?.[0];
-    const sizes = media?.media_details?.sizes || {};
-    const image = (sizes.large || sizes.medium_large || sizes.full || {}).source_url || media?.source_url || "";
-    const terms = (p._embedded?.["wp:term"] || []).flat();
-    const cat = terms.find(t => t.taxonomy === "category");
-    return { id: p.id, title: decode(p.title?.rendered), date: p.date, link: p.link, category: cat ? decode(cat.name) : "", image };
-  });
+  return posts.map(mapPost);
 }
 
 // 2nd: RSS feed (REST API が無効化されているサイト向け)
@@ -94,20 +101,48 @@ async function download(url, id) {
   }
 }
 
+const CAT_MAX = Number(process.env.REEL_CATEGORIES || 8); // 記事数の多い順に何カテゴリ分作るか
+const CAT_MIN_POSTS = 3;
+
 async function main() {
   let posts, source;
   try { posts = await fromRest(); source = "rest"; }
   catch (e) { console.warn(`REST API 失敗 → RSS で再試行: ${e.message}`); posts = await fromRss(); source = "rss"; }
   if (!posts.length) throw new Error("記事が0件でした");
 
+  // カテゴリ別(REST が使えるときのみ)
+  const cats = [];
+  if (source === "rest") {
+    try {
+      const list = await rest("categories", "per_page=100&orderby=count&order=desc&hide_empty=1");
+      for (const c of list.filter(c => c.count >= CAT_MIN_POSTS).slice(0, CAT_MAX)) {
+        const cp = await fromRest(`&categories=${c.id}`);
+        if (cp.length) cats.push({ id: c.id, name: decode(c.name), slug: c.slug, count: c.count, posts: cp });
+      }
+    } catch (e) { console.warn(`カテゴリ別の取得に失敗(新着のみ保存): ${e.message}`); }
+  }
+
   await mkdir(IMG, { recursive: true });
   for (const f of await readdir(IMG)) await unlink(path.join(IMG, f)); // 古い画像を掃除
-  for (const p of posts) p.localImage = await download(p.image, p.id);
+  for (const f of await readdir(OUT)) if (/^cat-.*\.json$/.test(f)) await unlink(path.join(OUT, f));
+  const done = new Map(); // 同じ記事の画像は1回だけ落とす
+  const withImages = async list => { for (const p of list) { if (!done.has(p.id)) done.set(p.id, await download(p.image, p.id)); p.localImage = done.get(p.id); } };
 
-  const data = { site: SITE, source, fetchedAt: new Date().toISOString(), posts };
-  await writeFile(path.join(OUT, "posts.json"), JSON.stringify(data, null, 2) + "\n");
-  console.log(`${posts.length}件を保存 (${source}):`);
+  const fetchedAt = new Date().toISOString();
+  await withImages(posts);
+  await writeFile(path.join(OUT, "posts.json"), JSON.stringify({ site: SITE, source, fetchedAt, posts }, null, 2) + "\n");
+  console.log(`新着 ${posts.length}件を保存 (${source}):`);
   for (const p of posts) console.log(`- ${p.date.slice(0, 10)} [${p.category || "-"}] ${p.title} ${p.localImage ? "🖼" : "(画像なし)"}`);
+
+  const index = [];
+  for (const c of cats) {
+    await withImages(c.posts);
+    const file = `cat-${c.id}.json`;
+    await writeFile(path.join(OUT, file), JSON.stringify({ site: SITE, source, fetchedAt, category: { id: c.id, name: c.name, slug: c.slug }, posts: c.posts }, null, 2) + "\n");
+    index.push({ id: c.id, name: c.name, slug: c.slug, count: c.count, file });
+    console.log(`カテゴリ「${c.name}」(全${c.count}件) → ${c.posts.length}件`);
+  }
+  await writeFile(path.join(OUT, "categories.json"), JSON.stringify({ fetchedAt, categories: index }, null, 2) + "\n");
 }
 
 main().catch(e => { console.error(e); process.exit(1); });
