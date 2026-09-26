@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ナイトバブル Reels｜はじめての夜</title>
+<meta name="description" content="Yスタジオ＋ ナイトバブル事業部のインスタリール用15秒ムービー。子どもと親に向けた、ループする縦型動画。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Noto+Serif+JP:wght@500;700;900&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#070b22;--gold:#d8b25a;--text:#f4f1e8;--sub:rgba(244,241,232,.62);--line:rgba(244,241,232,.14);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino Sans',sans-serif;line-height:1.8;}
+a{color:inherit;}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px;}
+header.top{padding:16px 0;border-bottom:1px solid var(--line);}
+header.top .wrap{display:flex;justify-content:space-between;align-items:center;}
+.brand{font-weight:700;font-size:14px;text-decoration:none;color:var(--gold);}
+.back{font-size:12px;color:var(--sub);text-decoration:none;}
+.stage{position:relative;margin:20px auto 0;aspect-ratio:9/16;width:min(100%,calc(80vh * 9 / 16));background:#000;border-radius:12px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5);}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;}
+.play{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(7,11,34,.45);border:none;color:var(--text);cursor:pointer;font:inherit;transition:opacity .3s;}
+.play .circle{width:72px;height:72px;border-radius:50%;background:var(--gold);color:var(--bg);display:flex;align-items:center;justify-content:center;font-size:26px;padding-left:5px;}
+.play .lbl{font-size:12px;letter-spacing:2px;color:var(--sub);}
+.play.hidden{opacity:0;pointer-events:none;}
+.controls{display:flex;flex-wrap:wrap;gap:10px;margin:14px auto 0;justify-content:center;}
+.btn{border:1px solid var(--line);background:none;color:var(--text);font:inherit;font-size:13px;padding:8px 16px;border-radius:6px;cursor:pointer;text-decoration:none;}
+.btn:hover{border-color:var(--gold);color:var(--gold);}
+.btn[aria-pressed="true"]{border-color:var(--gold);color:var(--gold);}
+.btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+p.note{font-size:12px;color:var(--sub);text-align:center;margin-top:12px;}
+footer{border-top:1px solid var(--line);margin-top:40px;padding:24px 0 40px;font-size:11px;color:var(--sub);}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="nightbubble.html">ナイトバブル事業部</a>
+  <a class="back" href="nightbubble-reel.html">15秒ムービー（通常版）→</a>
+</div></header>
+<main class="wrap">
+  <div class="stage">
+    <canvas id="cv" width="1080" height="1920"></canvas>
+    <button class="play" id="playBtn" type="button" aria-label="音ありで再生">
+      <span class="circle">▶</span><span class="lbl">REELS · 15s · LOOP</span>
+    </button>
+  </div>
+  <div class="controls">
+    <button class="btn" id="loopBtn" type="button" aria-pressed="true">ループ再生</button>
+    <a class="btn" href="nightbubble-reels.mp4">▶ MP4で見る</a>
+    <button class="btn" id="safeBtn" type="button" aria-pressed="false">リールの表示位置を重ねる</button>
+  </div>
+  <p class="note">写真はすべて nightbubble.html に掲載済みのもの。文字は3つだけ、日付なしで通年使える構成です。</p>
+</main>
+<footer><div class="wrap">© 2025–2026 山西水産株式会社 Yスタジオ＋ ナイトバブル事業部 · <a href="privacy.html">プライバシーポリシー</a></div></footer>
+
+<script>
+(() => {
+'use strict';
+const W = 1080, H = 1920, FPS = 30, DUR = 15;
+const CX = W / 2, CY = H / 2;
+const BPM = 120, BEAT = 60 / BPM;                 // 0.5s — 30 beats
+const C = { bg0: '#070b22', bg1: '#111c4a', navy: '#0f1a44', gold: '#d8b25a', gold2: '#f3dc9a', white: '#f4f1e8', day0: '#8fc8f2', day1: '#fdf1d2', dayInk: '#12204f' };
+const SERIF = "'Noto Serif JP', serif", SANS = "'Noto Sans JP', sans-serif", ROMAN = "'Cinzel', serif";
+// Reels UI covers roughly the bottom 330px and a 150px column on the right; keep copy inside SAFE.
+const SAFE = { x0: 60, x1: W - 150, y0: 220, y1: H - 380 };
+
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+
+// ---------- math ----------
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const eOutExpo = x => x >= 1 ? 1 : 1 - Math.pow(2, -10 * x);
+const eInExpo = x => x <= 0 ? 0 : Math.pow(2, 10 * x - 10);
+const eInOut = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const eOutBack = (x, s = 1.9) => 1 + (s + 1) * Math.pow(x - 1, 3) + s * Math.pow(x - 1, 2);
+function rng(seed) { let s = seed >>> 0; return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
+const hash = n => { const x = Math.sin(n * 127.1) * 43758.5453; return x - Math.floor(x); };
+const mixHex = (a, b, t) => { const p = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)); const A = p(a), B = p(b); return `rgb(${A.map((v, i) => Math.round(lerp(v, B[i], t))).join(',')})`; };
+
+// ---------- drawing helpers ----------
+function txt(s, x, y, o = {}) {
+  ctx.save();
+  let size = o.size || 80;
+  const font = sz => `${o.weight || 700} ${sz}px ${o.family || SERIF}`;
+  ctx.font = font(size); ctx.letterSpacing = (o.ls || 0) + 'px';
+  if (o.maxW) { const w = ctx.measureText(s).width; if (w > o.maxW) { size *= o.maxW / w; ctx.font = font(size); } }
+  ctx.fillStyle = o.color || C.white;
+  ctx.textAlign = o.align || 'center'; ctx.textBaseline = o.base || 'middle';
+  ctx.globalAlpha *= (o.alpha == null ? 1 : o.alpha);
+  if (o.glow) { ctx.shadowColor = o.glow; ctx.shadowBlur = o.blur || 24; }
+  ctx.fillText(s, x, y);
+  ctx.restore();
+}
+function withClip(x, y, w, h, fn) { ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip(); fn(); ctx.restore(); }
+function cover(img, x, y, w, h, fx = .5, fy = .5, zoom = 1) {
+  if (!img.complete || !img.naturalWidth) return;
+  const s = Math.max(w / img.naturalWidth, h / img.naturalHeight) * zoom;
+  const dw = img.naturalWidth * s, dh = img.naturalHeight * s;
+  ctx.drawImage(img, x + (w - dw) * fx, y + (h - dh) * fy, dw, dh);
+}
+
+// iridescent soap bubble
+function bubble(x, y, r, a = 1, spin = 0, rimOnly = false) {
+  if (r < 1 || a <= 0) return;
+  ctx.save(); ctx.globalAlpha *= a;
+  if (r < 16) {
+    ctx.strokeStyle = `hsla(${(x * .3 + y * .2 + spin * 60) % 360},90%,80%,.75)`; ctx.lineWidth = Math.max(1, r * .16);
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.beginPath(); ctx.arc(x - r * .35, y - r * .4, r * .18, 0, Math.PI * 2); ctx.fill();
+    ctx.restore(); return;
+  }
+  const body = ctx.createRadialGradient(x, y, r * .55, x, y, r);
+  body.addColorStop(0, 'rgba(255,255,255,0)'); body.addColorStop(.85, 'rgba(180,220,255,.06)'); body.addColorStop(1, 'rgba(255,255,255,.22)');
+  ctx.fillStyle = body; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+  const rim = ctx.createConicGradient(spin, x, y);
+  ['#7fe7ff', '#b98cff', '#ff8ad8', '#ffd58a', '#9dffb8', '#7fe7ff'].forEach((c, i, arr) => rim.addColorStop(i / (arr.length - 1), c));
+  ctx.strokeStyle = rim; ctx.globalAlpha *= .75; ctx.lineWidth = Math.max(1.5, r * .045);
+  ctx.beginPath(); ctx.arc(x, y, r * .985, 0, Math.PI * 2); ctx.stroke();
+  ctx.globalAlpha /= .75;
+  if (rimOnly) { ctx.restore(); return; }
+  const hl = ctx.createRadialGradient(x - r * .38, y - r * .42, 0, x - r * .38, y - r * .42, r * .32);
+  hl.addColorStop(0, 'rgba(255,255,255,.9)'); hl.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = hl; ctx.beginPath(); ctx.ellipse(x - r * .38, y - r * .42, r * .3, r * .18, -.6, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = Math.max(1, r * .03);
+  ctx.beginPath(); ctx.arc(x, y, r * .8, .15 * Math.PI, .45 * Math.PI); ctx.stroke();
+  ctx.restore();
+}
+function pop(x, y, r, p) {           // p: 0..1 after the pop
+  if (p <= 0 || p >= 1) return;
+  ctx.save(); ctx.globalAlpha = (1 - p);
+  ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.lineWidth = 3 * (1 - p) + 1;
+  ctx.beginPath(); ctx.arc(x, y, r * (1 + eOutExpo(p) * .6), 0, Math.PI * 2); ctx.stroke();
+  for (let i = 0; i < 12; i++) {
+    const a = i / 12 * Math.PI * 2 + r, d = r * (1 + eOutExpo(p) * 1.1);
+    ctx.fillStyle = `hsla(${i * 30},90%,80%,1)`;
+    ctx.beginPath(); ctx.arc(x + Math.cos(a) * d, y + Math.sin(a) * d + p * p * 60, 4 * (1 - p) + 1, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.restore();
+}
+function sparkle(x, y, s, a) {       // 4-point star like the logo
+  ctx.save(); ctx.globalAlpha *= a; ctx.fillStyle = C.gold2; ctx.translate(x, y);
+  ctx.beginPath(); ctx.moveTo(0, -s); ctx.quadraticCurveTo(0, 0, s, 0); ctx.quadraticCurveTo(0, 0, 0, s); ctx.quadraticCurveTo(0, 0, -s, 0); ctx.quadraticCurveTo(0, 0, 0, -s); ctx.fill();
+  ctx.restore();
+}
+function moon(x, y, r, p) {          // gold crescent, grows in with p
+  if (p <= 0) return;
+  ctx.save(); ctx.translate(x, y); ctx.rotate(-.35 + (1 - p) * -.6); ctx.scale(p, p);
+  ctx.shadowColor = 'rgba(243,220,154,.6)'; ctx.shadowBlur = 40;
+  ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.clip();
+  ctx.beginPath(); ctx.rect(-r * 2, -r * 2, r * 4, r * 4); ctx.arc(r * .42, -r * .18, r * .86, 0, Math.PI * 2, true);
+  const g = ctx.createLinearGradient(-r, -r, r, r); g.addColorStop(0, '#f7e3a4'); g.addColorStop(.6, C.gold); g.addColorStop(1, '#a8802e');
+  ctx.fillStyle = g; ctx.fill('evenodd');
+  ctx.restore();
+}
+
+
+// pre-rendered grain
+const grain = [];
+(() => { const r = rng(7); for (let k = 0; k < 6; k++) { const g = document.createElement('canvas'); g.width = g.height = 256; const gx = g.getContext('2d'); const id = gx.createImageData(256, 256); for (let i = 0; i < id.data.length; i += 4) { const v = r() * 255; id.data[i] = id.data[i + 1] = id.data[i + 2] = v; id.data[i + 3] = 18; } gx.putImageData(id, 0, 0); grain.push(g); } })();
+
+
+const load = src => { const i = new Image(); i.src = src; return i; };
+// every Night Bubble photo already published on nightbubble.html — fx/fy = focus point for the 9:16 crop
+const P = {
+  hook: { img: load('otsukimi-3.jpg'), fx: .5, fy: .45 },
+  ex: { img: load('kaosuya-nightbubble-ex.jpg'), fx: .5, fy: .5 },
+  n09: { img: load('kaosuya-nightbubble-09.jpg'), fx: .38, fy: .5 },
+  n03: { img: load('kaosuya-nightbubble-03.jpg'), fx: .55, fy: .5 },
+  n01: { img: load('kaosuya-nightbubble-01.jpg'), fx: .5, fy: .5 },
+  n04: { img: load('kaosuya-nightbubble-04.jpg'), fx: .45, fy: .5 },
+  n06: { img: load('kaosuya-nightbubble-06.jpg'), fx: .6, fy: .5 },
+  o2: { img: load('otsukimi-2.jpg'), fx: .5, fy: .5 },
+  me: { img: load('shabon-ojisan.jpeg'), fx: .3, fy: .5 },
+  n015: { img: load('kaosuya-nightbubble-015.jpg'), fx: .5, fy: .5 },
+  o1: { img: load('otsukimi-1.jpg'), fx: .5, fy: .5 },
+  me2: { img: load('shabon-ojisan2.jpeg'), fx: .5, fy: .5 },
+};
+const LOGO = load('nightbubble-logo.png');
+
+const STARS = (() => { const r = rng(11); return Array.from({ length: 160 }, () => ({ x: r() * W, y: r() * H * .85, s: .6 + r() * 1.8, ph: r() * 6 })); })();
+const FLOAT = (() => { const r = rng(21); return Array.from({ length: 46 }, () => ({ x: r() * W, y: r() * H, r: 6 + Math.pow(r(), 3) * 70, v: 40 + r() * 80, w: r() * 6, sp: r() * 6 })); })();
+const BURST = (() => { const r = rng(33); return Array.from({ length: 160 }, () => { const a = r() * Math.PI * 2, v = 300 + r() * 1400; return { vx: Math.cos(a) * v, vy: Math.sin(a) * v, r: 4 + Math.pow(r(), 2.5) * 60, w: r() * 6, sp: r() * 6, life: .6 + r() * 1.6 }; }); })();
+// ---------- background ----------
+function sky(t, day = 0) {
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, mixHex(C.bg0, C.day0, day)); g.addColorStop(1, mixHex(C.bg1, C.day1, day));
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  if (day < 1) STARS.forEach(s => {
+    const tw = .45 + .55 * Math.sin(t * 3 + s.ph);
+    ctx.fillStyle = `rgba(255,248,225,${tw * (1 - day) * .9})`;
+    ctx.fillRect(s.x, s.y, s.s, s.s);
+  });
+}
+function floaters(t, a = 1) {
+  FLOAT.forEach(b => {
+    const y = ((b.y - t * b.v) % (H + 160) + H + 160) % (H + 160) - 80;
+    bubble(b.x + Math.sin(t * 1.3 + b.w) * 24, y, b.r, a * .8, b.sp + t * .4);
+  });
+}
+
+
+function photo(key, zoom = 1, dim = .18, dx = 0) {
+  const p = P[key]; cover(p.img, dx, 0, W, H, p.fx, p.fy, zoom);
+  if (dim) { ctx.fillStyle = `rgba(7,11,34,${dim})`; ctx.fillRect(0, 0, W, H); }
+}
+function burst(t0, t, x, y, a = 1) {
+  const lt = t - t0; if (lt < 0 || lt > 2.4) return;
+  BURST.forEach(b => {
+    if (lt > b.life + .6) return;
+    const k = 2.4, d = (1 - Math.exp(-k * lt)) / k;
+    bubble(x + b.vx * d + Math.sin(lt * 2 + b.w) * 14, y + b.vy * d - lt * 50, b.r * eOutExpo(prog(lt, 0, .2)), a * (1 - prog(lt, b.life, b.life + .6)), b.sp + lt);
+  });
+}
+function scrim(y0, y1, a = .7) {   // darkens behind copy so it stays readable on any photo
+  const g = ctx.createLinearGradient(0, y0, 0, y1);
+  g.addColorStop(0, 'rgba(7,11,34,0)'); g.addColorStop(.5, `rgba(7,11,34,${a})`); g.addColorStop(1, 'rgba(7,11,34,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, y0, W, y1 - y0);
+}
+
+// the hook frame (also the last frame, so the reel loops seamlessly)
+const HOOK_R = 400;
+function hookBubble(t, r = HOOK_R, a = 1) {
+  const y = CY - 60 + Math.sin(t * 2.4) * 12;
+  ctx.save(); ctx.globalAlpha = a;
+  ctx.beginPath(); ctx.arc(CX, y, r, 0, Math.PI * 2); ctx.clip();
+  photo('hook', 1.25 + Math.sin(t * 2) * .02, .05);
+  ctx.restore();
+  bubble(CX, y, r, a, t * .8);
+  return y;
+}
+function nightBase(t) { sky(t); [[.2, .16, 16, 0], [.8, .12, 20, .7], [.86, .7, 12, 1.3], [.12, .66, 14, 2]].forEach(([x, y, s, d]) => sparkle(W * x, H * y, s, .5 + .5 * Math.sin(t * 4 + d * 3))); }
+
+// ---------- timeline (beats of 0.5s) ----------
+const FAST = ['ex', 'n09', 'n03', 'n01', 'n04', 'n06', 'o2', 'me'];     // one per beat
+const SLOW = ['n015', 'o1', 'me2', 'n04', 'n01'];                        // two beats each
+const T = { pop: 1.5, fastEnd: 5.5, approachEnd: 7.5, slowEnd: 12.5, logoEnd: 14.0 };
+
+function render(t) {
+  t = clamp(t, 0, DUR);
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.filter = 'none'; ctx.globalCompositeOperation = 'source-over';
+
+  if (t < T.pop) {                                   // HOOK: a bubble with the night inside
+    nightBase(t);
+    const breathe = 1 + Math.sin(t * Math.PI * 2 / BEAT) * .015 + eInExpo(prog(t, T.pop - .4, T.pop)) * .12;
+    hookBubble(t, HOOK_R * breathe);
+    floaters(t, .5);
+  } else if (t < T.fastEnd) {                         // POP → one photo per beat
+    const i = Math.min(FAST.length - 1, Math.floor((t - T.pop) / BEAT)), lt = t - T.pop - i * BEAT;
+    const z = 1.14 - lt * .12, whip = i ? (1 - eOutExpo(prog(lt, 0, .18))) * (i % 2 ? 1 : -1) * 140 : 0;
+    if (i % 2 === 0 && i > 0 && lt < .3) {           // every other cut: the new photo grows out of a bubble over the previous one
+      photo(FAST[i - 1], 1.14 - (BEAT + lt) * .12, .22);
+      const R = Math.hypot(W, H) * .5 * eOutExpo(prog(lt, 0, .3));
+      ctx.save(); ctx.beginPath(); ctx.arc(CX, CY, Math.max(1, R), 0, Math.PI * 2); ctx.clip(); photo(FAST[i], z, .22); ctx.restore();
+      bubble(CX, CY, R, 1 - prog(lt, .15, .3), t * 3, true);
+    } else photo(FAST[i], z, .22, whip);
+    floaters(t, .75);
+    burst(T.pop, t, CX, CY - 60, 1);
+    // COPY 1
+    const a = eOutExpo(prog(t, 2.5, 3.0)) * (1 - prog(t, 5.1, 5.5));
+    if (a > 0) {
+      scrim(CY - 260, CY + 260, .75 * a);
+      const s = lerp(1.15, 1, eOutExpo(prog(t, 2.5, 3.1)));
+      ctx.save(); ctx.translate(CX - 45, CY); ctx.scale(s, s);
+      txt('はじめての夜に、', 0, -70, { size: 92, weight: 900, alpha: a, glow: 'rgba(160,200,255,.6)', maxW: SAFE.x1 - SAFE.x0 });
+      txt('なる。', 0, 70, { size: 92, weight: 900, color: C.gold2, alpha: eOutExpo(prog(t, 3.0, 3.5)) * (1 - prog(t, 5.1, 5.5)), glow: 'rgba(243,220,154,.6)' });
+      ctx.restore();
+    }
+  } else if (t < T.approachEnd) {                     // PATCHIN: a bubble drifts to the camera and pops
+    nightBase(t);
+    floaters(t, .5);
+    const p = prog(t, T.fastEnd, T.approachEnd), e = eInExpo(p) * .85 + p * .15;
+    const r = lerp(90, Math.hypot(W, H) * .6, e), x = lerp(W * .35, CX, e), y = lerp(H * .7, CY, e) + Math.sin(t * 3) * 20 * (1 - e);
+    ctx.save(); ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.clip(); photo('n015', 1.3 - e * .3, .05); ctx.restore();
+    bubble(x, y, r, 1, t);
+  } else if (t < T.slowEnd) {                         // slow, warm montage: two beats per photo
+    const lt = t - T.approachEnd, i = Math.min(SLOW.length - 1, Math.floor(lt / (BEAT * 2))), ft = lt - i * BEAT * 2;
+    if (i > 0 && ft < .35) { photo(SLOW[i - 1], 1.04 + (BEAT * 2 + ft) * .04, .2); ctx.globalAlpha = eInOut(ft / .35); }
+    photo(SLOW[i], 1.04 + ft * .04, .2);
+    ctx.globalAlpha = 1;
+    floaters(t, .8);
+    pop(CX, CY, Math.hypot(W, H) * .6, prog(t, T.approachEnd, T.approachEnd + .5));
+    burst(T.approachEnd, t, CX, CY, .9);
+    // COPY 2
+    const a1 = eOutExpo(prog(t, 10.0, 10.5)), a2 = eOutExpo(prog(t, 10.5, 11.0)), out = prog(t, 12.2, 12.5);
+    if (a1 > 0) {
+      scrim(CY - 240, CY + 240, .8 * a1 * (1 - out));
+      txt('その夜を、', CX - 45, CY - 60, { size: 84, weight: 700, alpha: a1 * (1 - out), maxW: SAFE.x1 - SAFE.x0 });
+      txt('きっとずっと覚えてる。', CX - 45, CY + 60, { size: 84, weight: 700, color: C.gold2, alpha: a2 * (1 - out), maxW: SAFE.x1 - SAFE.x0 });
+    }
+  } else {                                            // LOGO, then back to the hook for a seamless loop
+    nightBase(t);
+    floaters(t, .5);
+    const lp = eOutExpo(prog(t, T.slowEnd, T.slowEnd + .6)) * (1 - eInOut(prog(t, T.logoEnd - .2, T.logoEnd + .4)));
+    if (lp > 0 && logoCut.width) {
+      ctx.save(); ctx.globalAlpha = lp; ctx.globalCompositeOperation = 'lighten';
+      ctx.translate(CX - 45, CY - 40); const s = 1.1 * lerp(.92, 1, lp); ctx.scale(s, s); ctx.drawImage(logoCut, -377, -365);
+      ctx.restore();
+    }
+    pop(CX - 45, CY - 60, 320, prog(t, T.slowEnd, T.slowEnd + .7));
+    const hp = eOutExpo(prog(t, T.logoEnd, DUR - .05));
+    if (hp > 0) hookBubble(t, HOOK_R * hp, hp);
+  }
+
+  // transitions
+  const fl = (at, d, col, m) => { const p = (t - at) / d; if (p >= 0 && p <= 1) { ctx.save(); ctx.globalAlpha = (1 - p) * m; ctx.fillStyle = col; ctx.fillRect(0, 0, W, H); ctx.restore(); } };
+  fl(T.pop, .3, 'rgb(225,238,255)', .9);
+  fl(T.approachEnd, .35, 'rgb(255,255,255)', .85);
+
+  // grain + vignette (no HUD: the reel UI sits on top)
+  ctx.save(); const f = Math.floor(t * FPS);
+  ctx.fillStyle = ctx.createPattern(grain[f % grain.length], 'repeat');
+  ctx.translate((hash(f) * 256) | 0, (hash(f + 3) * 256) | 0); ctx.fillRect(-256, -256, W + 512, H + 512); ctx.restore();
+  const v = ctx.createRadialGradient(CX, CY, W * .45, CX, CY, Math.hypot(W, H) * .6);
+  v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,.45)'); ctx.fillStyle = v; ctx.fillRect(0, 0, W, H);
+  if (showSafe) drawSafe();
+}
+
+const logoCut = document.createElement('canvas');
+function buildLogo() {
+  if (!LOGO.naturalWidth) return;
+  const k = LOGO.naturalWidth / 1254;
+  logoCut.width = 754; logoCut.height = 730;
+  const g = logoCut.getContext('2d');
+  g.drawImage(LOGO, 250 * k, 40 * k, 754 * k, 730 * k, 0, 0, 754, 730);
+  g.globalCompositeOperation = 'destination-out';
+  const F = 60;
+  [[0, 0, F, 0, 0, 0, F, 730], [754, 0, 754 - F, 0, 754 - F, 0, F, 730], [0, 0, 0, F, 0, 0, 754, F], [0, 730, 0, 730 - F, 0, 730 - F, 754, F]]
+    .forEach(([x0, y0, x1, y1, rx, ry, rw, rh]) => { const m = g.createLinearGradient(x0, y0, x1, y1); m.addColorStop(0, 'rgba(0,0,0,1)'); m.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = m; g.fillRect(rx, ry, rw, rh); });
+}
+
+// preview of where Instagram's own UI lands (toggle on the page, never in the export)
+let showSafe = false;
+function drawSafe() {
+  ctx.save(); ctx.fillStyle = 'rgba(255,60,60,.22)';
+  ctx.fillRect(0, SAFE.y1, W, H - SAFE.y1); ctx.fillRect(SAFE.x1, 0, W - SAFE.x1, SAFE.y1); ctx.fillRect(0, 0, SAFE.x1, SAFE.y0);
+  ctx.restore();
+}
+
+// ================= AUDIO =================
+const NOTE = n => 440 * Math.pow(2, (n - 69) / 12);
+function buildAudio(ac, t0, dest) {
+  const r = rng(1120);
+  const master = ac.createGain(); master.gain.value = .55;
+  const comp = ac.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 4;
+  master.connect(comp).connect(dest);
+  const irLen = ac.sampleRate * 2.6, ir = ac.createBuffer(2, irLen, ac.sampleRate);
+  for (let ch = 0; ch < 2; ch++) { const d = ir.getChannelData(ch); for (let i = 0; i < irLen; i++) d[i] = (r() * 2 - 1) * Math.pow(1 - i / irLen, 2.5); }
+  const verb = ac.createConvolver(); verb.buffer = ir; const vg = ac.createGain(); vg.gain.value = .45; verb.connect(vg).connect(master);
+  const noiseBuf = ac.createBuffer(1, ac.sampleRate * 2, ac.sampleRate);
+  { const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = r() * 2 - 1; }
+  const send = (node, amt) => { const g = ac.createGain(); g.gain.value = amt; node.connect(g).connect(verb); };
+  const osc = (at, dur, type, f0, f1, gain, rv = 0, attack = .005) => {
+    const o = ac.createOscillator(); o.type = type; o.frequency.setValueAtTime(f0, at); if (f1 !== f0) o.frequency.exponentialRampToValueAtTime(f1, at + dur);
+    const g = ac.createGain(); g.gain.setValueAtTime(0.0001, at); g.gain.exponentialRampToValueAtTime(gain, at + attack); g.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+    o.connect(g).connect(master); if (rv) send(g, rv); o.start(at); o.stop(at + dur + .05);
+  };
+  const noise = (at, dur, type, f0, f1, gain, q = 1, rv = 0) => {
+    const s = ac.createBufferSource(); s.buffer = noiseBuf;
+    const f = ac.createBiquadFilter(); f.type = type; f.Q.value = q; f.frequency.setValueAtTime(f0, at); f.frequency.exponentialRampToValueAtTime(f1, at + dur);
+    const g = ac.createGain(); g.gain.setValueAtTime(0.0001, at); g.gain.exponentialRampToValueAtTime(gain, at + Math.min(.01, dur * .3)); g.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+    s.connect(f).connect(g).connect(master); if (rv) send(g, rv); s.start(at, r() * .5); s.stop(at + dur + .05);
+  };
+  const bell = (at, n, g = .1) => { osc(at, 1.2, 'sine', NOTE(n), NOTE(n), g, .5); osc(at, .5, 'sine', NOTE(n) * 3.01, NOTE(n) * 3.01, g * .25, .5); };
+  const blip = (at, n, g = .12) => osc(at, .12, 'sine', NOTE(n) * 1.6, NOTE(n), g, .4, .002);
+  const kick = (at, g = .7) => osc(at, .3, 'sine', 130, 42, g);
+  const clap = at => { for (let k = 0; k < 3; k++) noise(at + k * .011, .14, 'bandpass', 1600, 1200, .3, 1.2, .3); };
+  const pad = (at, dur, notes, g = .03) => notes.forEach(n => [-7, 7].forEach(det => {
+    const o = ac.createOscillator(); o.type = 'triangle'; o.frequency.value = NOTE(n); o.detune.value = det;
+    const f = ac.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 2000;
+    const gg = ac.createGain(); gg.gain.setValueAtTime(0.0001, at); gg.gain.exponentialRampToValueAtTime(g, at + .2); gg.gain.setValueAtTime(g, at + dur - .1); gg.gain.exponentialRampToValueAtTime(0.0001, at + dur + .3);
+    o.connect(f).connect(gg); gg.connect(master); send(gg, .5); o.start(at); o.stop(at + dur + .4);
+  }));
+  const B = b => t0 + b * BEAT;
+  // C major, bright: C G Am F (x2) then F G C — one chord per 4 beats
+  const prog4 = [[48, 60, 64, 67, 72], [43, 59, 62, 67, 71], [45, 60, 64, 69, 72], [41, 60, 65, 69, 72], [48, 60, 64, 67, 72], [43, 59, 62, 67, 71], [41, 60, 65, 69, 72], [48, 60, 64, 67, 72]];
+  prog4.forEach((ch, i) => {
+    const b0 = i * 4 - 1 < 0 ? 0 : i * 4 - 1;          // chords land one beat early so the pop at 1.5s is the downbeat
+    const len = i === prog4.length - 1 ? 30 - b0 : 4;
+    pad(B(b0), len * BEAT, ch.slice(1), i === 0 ? .02 : .03);
+    for (let b = b0; b < Math.min(b0 + len, 28); b += .5) bell(B(b), [ch[1], ch[2], ch[3], ch[4]][Math.floor((b - b0) * 2) % 4] + 12, b < 3 ? .04 : .06);
+    if (b0 >= 3) for (let b = b0; b < Math.min(b0 + len, 25); b++) osc(B(b), BEAT * .9, 'sine', NOTE(ch[0]), NOTE(ch[0]), .3, 0, .02);
+  });
+  // hook: heartbeat-soft sparkle, then riser into the pop
+  [0, 1, 2].forEach(b => blip(B(b), 96 + b * 2, .06));
+  noise(B(1), BEAT * 2, 'bandpass', 500, 7000, .18, 3);
+  // POP at 1.5s + fast montage groove (one hit per photo)
+  noise(B(3), 1.2, 'lowpass', 7000, 300, .5, .7, .5); osc(B(3), 1, 'sine', 90, 35, .8, .2);
+  for (let i = 0; i < 20; i++) blip(B(3) + r() * 1.1, 84 + Math.floor(r() * 24), .05 + r() * .04);
+  for (let b = 3; b < 11; b++) { kick(B(b)); if (b % 2 === 0) clap(B(b)); noise(B(b + .5), .05, 'highpass', 7000, 6000, .1); blip(B(b), 88 + (b % 4) * 3, .08); }
+  // approach: everything drops out, only a rising shimmer
+  for (let i = 0; i < 12; i++) bell(B(11) + i * (BEAT * 4 / 12), 76 + i * 2, .03);
+  // PATCHIN at 7.5s
+  osc(B(15), .08, 'square', 1800, 600, .12, .4); noise(B(15), .9, 'lowpass', 8000, 400, .45, .7, .5); osc(B(15), 1.2, 'sine', 80, 32, .8, .3);
+  for (let i = 0; i < 16; i++) blip(B(15) + .05 + r() * .9, 86 + Math.floor(r() * 22), .05);
+  // warm groove through the slow montage
+  for (let b = 15; b < 25; b++) { kick(B(b), .5); if (b % 2) clap(B(b)); noise(B(b + .5), .05, 'highpass', 7000, 6000, .08); }
+  // logo hit, then a soft tail that leads back into the hook
+  kick(B(25), .6); [72, 76, 79, 84].forEach((n, i) => bell(B(25) + i * .06, n, .09));
+  for (let i = 0; i < 8; i++) blip(B(25) + .1 + r() * .8, 90 + Math.floor(r() * 14), .04);
+  blip(B(28), 96, .06); blip(B(29), 98, .06);
+}
+async function renderAudioWav() {
+  const sr = 48000, len = Math.ceil(sr * (DUR + .01));
+  const oac = new OfflineAudioContext(2, len, sr);
+  buildAudio(oac, 0, oac.destination);
+  const buf = await oac.startRendering();
+  const n = buf.length, out = new DataView(new ArrayBuffer(44 + n * 4));
+  const ws = (o, s) => { for (let i = 0; i < s.length; i++) out.setUint8(o + i, s.charCodeAt(i)); };
+  ws(0, 'RIFF'); out.setUint32(4, 36 + n * 4, true); ws(8, 'WAVE'); ws(12, 'fmt '); out.setUint32(16, 16, true);
+  out.setUint16(20, 1, true); out.setUint16(22, 2, true); out.setUint32(24, sr, true); out.setUint32(28, sr * 4, true); out.setUint16(32, 4, true); out.setUint16(34, 16, true);
+  ws(36, 'data'); out.setUint32(40, n * 4, true);
+  const L = buf.getChannelData(0), R = buf.getChannelData(1), fade = Math.floor(sr * .5);
+  for (let i = 0; i < n; i++) {
+    const f = i > n - fade ? (n - i) / fade : 1;
+    out.setInt16(44 + i * 4, clamp(L[i] * f, -1, 1) * 32767, true);
+    out.setInt16(46 + i * 4, clamp(R[i] * f, -1, 1) * 32767, true);
+  }
+  const bytes = new Uint8Array(out.buffer); let s = '';
+  for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  return btoa(s);
+}
+
+
+
+// ================= player =================
+const playBtn = document.getElementById('playBtn'), loopBtn = document.getElementById('loopBtn'), safeBtn = document.getElementById('safeBtn');
+let ac = null, start = 0, raf = 0, looping = true;
+function loop() {
+  let t = ac.currentTime - start;
+  if (t >= DUR) {
+    if (looping) { start += DUR; buildAudio(ac, start, ac.destination); t -= DUR; }
+    else { render(DUR); playBtn.classList.remove('hidden'); playBtn.querySelector('.lbl').textContent = 'REPLAY'; return; }
+  }
+  render(Math.max(0, t));
+  raf = requestAnimationFrame(loop);
+}
+function play() {
+  cancelAnimationFrame(raf);
+  if (ac) ac.close();
+  try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
+  ac = new (window.AudioContext || window.webkitAudioContext)();
+  start = ac.currentTime + .12;
+  buildAudio(ac, start, ac.destination);
+  playBtn.classList.add('hidden');
+  raf = requestAnimationFrame(loop);
+}
+playBtn.addEventListener('click', play);
+loopBtn.addEventListener('click', () => { looping = !looping; loopBtn.setAttribute('aria-pressed', String(looping)); });
+safeBtn.addEventListener('click', () => { showSafe = !showSafe; safeBtn.setAttribute('aria-pressed', String(showSafe)); if (!ac) render(3.5); });
+
+const GLYPHS = 'はじめての夜に、なる。その夜を、きっとずっと覚えてる。NIGHTBUBLE';
+const fontsReady = Promise.all([`700 100px Cinzel`, `900 100px 'Noto Serif JP'`, `700 100px 'Noto Serif JP'`].map(f => document.fonts.load(f, GLYPHS))).catch(() => {});
+const imgs = [...Object.values(P).map(p => p.img), LOGO];
+const imgsReady = Promise.all(imgs.map(i => new Promise(res => { if (i.complete) res(); else { i.onload = res; i.onerror = res; } })));
+Promise.all([fontsReady, imgsReady]).then(() => { buildLogo(); render(3.5); });
+
+window.__showreel = { render, renderAudioWav, ready: Promise.all([fontsReady, imgsReady, document.fonts.ready]).then(buildLogo), DUR, FPS };
+})();
+</script>
+</body>
+</html>
