@@ -174,7 +174,8 @@ const P = {
   n04: { img: load('kaosuya-nightbubble-04.jpg'), fx: .45, fy: .5 },
   n06: { img: load('kaosuya-nightbubble-06.jpg'), fx: .6, fy: .5 },
   o2: { img: load('otsukimi-2.jpg'), fx: .5, fy: .5 },
-  me: { img: load('shabon-ojisan.jpeg'), fx: .3, fy: .5 },
+  ev1: { img: load('event-day.jpg'), fx: .62, fy: .5 },
+  ev2: { img: load('event-day2.jpg'), fx: .47, fy: .5 },
   n015: { img: load('kaosuya-nightbubble-015.jpg'), fx: .5, fy: .5 },
   o1: { img: load('otsukimi-1.jpg'), fx: .5, fy: .5 },
   me2: { img: load('shabon-ojisan2.jpeg'), fx: .5, fy: .5 },
@@ -235,12 +236,16 @@ function photo(key, zoom = 1, dim = .18, dx = 0, ct = 0) {
   const p = media(key, ct); cover(p.img, dx, 0, W, H, p.fx, p.fy, zoom);
   if (dim) { ctx.fillStyle = `rgba(7,11,34,${dim})`; ctx.fillRect(0, 0, W, H); }
 }
-// a photo (or clip at time o.ct) with camera motion: zoom, offset, roll
+// a photo (or clip at time o.ct) with camera motion: zoom, offset, roll — always on a handheld camera,
+// o.zb (0..1) adds a zoom blur for cut hits
+let NOW = 0;
+const handheld = u => ({ x: Math.sin(u * 1.9) * 11 + Math.sin(u * 5.3 + 1) * 5, y: Math.cos(u * 1.6) * 9 + Math.sin(u * 4.1 + 2) * 4, r: Math.sin(u * 1.3) * .006 + Math.sin(u * 3.7) * .002 });
 function shot(key, o = {}) {
-  const p = media(key, o.ct), z = o.zoom || 1;
-  ctx.save(); ctx.translate(CX + (o.dx || 0), CY + (o.dy || 0)); ctx.rotate(o.rot || 0); ctx.translate(-CX, -CY);
+  const p = media(key, o.ct), z = o.zoom || 1, hh = handheld(NOW);
+  ctx.save(); ctx.translate(CX + (o.dx || 0) + hh.x, CY + (o.dy || 0) + hh.y); ctx.rotate((o.rot || 0) + hh.r); ctx.translate(-CX, -CY);
   if (o.alpha != null) ctx.globalAlpha *= o.alpha;
   cover(p.img, -W * .05, -H * .05, W * 1.1, H * 1.1, p.fx, p.fy, z);
+  if (o.zb > 0) { ctx.globalAlpha *= .2; for (let k = 1; k <= 4; k++) cover(p.img, -W * .05, -H * .05, W * 1.1, H * 1.1, p.fx, p.fy, z * (1 + k * .045 * o.zb)); ctx.globalAlpha /= .2; }
   ctx.fillStyle = `rgba(7,11,34,${o.dim == null ? .2 : o.dim})`; ctx.fillRect(-W, -H, W * 3, H * 3);
   ctx.restore();
 }
@@ -277,6 +282,49 @@ function burst(t0, t, x, y, a = 1) {
     const k = 2.4, d = (1 - Math.exp(-k * lt)) / k;
     bubble(x + b.vx * d + Math.sin(lt * 2 + b.w) * 14, y + b.vy * d - lt * 50, b.r * eOutExpo(prog(lt, 0, .2)), a * (1 - prog(lt, b.life, b.life + .6)), b.sp + lt);
   });
+}
+// small bubbles whipping across the frame with motion trails — periodic, so any t works
+const STREAK = (() => { const r = rng(64); return Array.from({ length: 22 }, () => ({ y: r() * H, r: 8 + r() * 26, v: 900 + r() * 1300, ph: r() * 10, ang: -.35 - r() * .4, sp: r() * 6 })); })();
+function streaks(u, a = 1) {
+  STREAK.forEach(b => {
+    const span = W + 800, d = ((b.ph * 300 + u * b.v) % span + span) % span - 400;
+    const x = d, y = b.y + d * Math.tan(b.ang);
+    for (let k = 4; k >= 0; k--) bubble(x - k * b.r * 1.6, y - k * b.r * 1.6 * Math.tan(b.ang), b.r * (1 - k * .1), a * (k ? .16 : .85), b.sp + u);
+  });
+}
+// chromatic split for impact frames: G stays, R and B slide apart
+const mk = () => { const c = document.createElement('canvas'); c.width = W; c.height = H; return c; };
+const chR = mk(), chB = mk();
+function rgbSplit(px) {
+  if (px < .5) return;
+  [[chR, '#ff0000', -px], [chB, '#0000ff', px]].forEach(([c, col, dx]) => {
+    const g = c.getContext('2d'); g.globalCompositeOperation = 'copy'; g.drawImage(cv, 0, 0); g.globalCompositeOperation = 'source-over'; g.drawImage(cv, dx, 0);   // unshifted underlay keeps the edges clean
+    g.globalCompositeOperation = 'multiply'; g.fillStyle = col; g.fillRect(0, 0, W, H);
+  });
+  ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.filter = 'none';
+  ctx.globalCompositeOperation = 'multiply'; ctx.fillStyle = '#00ff00'; ctx.fillRect(0, 0, W, H);
+  ctx.globalCompositeOperation = 'lighter'; ctx.drawImage(chR, 0, 0); ctx.drawImage(chB, 0, 0);
+  ctx.restore();
+}
+// three tilted bands, each a photo panning against its neighbours; they slam in one by one
+const STRIPS = ['n04', 'ev2', 'n03'];
+function strips(t, t0, dim = 0) {
+  const bh = H / 3 + 40;
+  ctx.save(); ctx.translate(CX, CY); ctx.rotate(-.07); ctx.scale(1.12, 1.12); ctx.translate(-CX, -CY);
+  STRIPS.forEach((k, j) => {
+    const lt = t - t0 - j * .125, d = j % 2 ? 1 : -1;
+    if (lt < 0) return;
+    const inn = eOutExpo(prog(lt, 0, .3)), y0 = -40 + j * (H / 3);
+    const p = media(k, lt), hh = handheld(t + j * 2), x0 = d * (1 - inn) * W * 1.2 + d * lt * 90 + hh.x;
+    const band = (dx, z) => cover(p.img, x0 + dx - 120, y0 - 30 + hh.y, W + 240, bh + 60, p.fx, p.fy, z);
+    withClip(-W, y0, W * 3, bh, () => {
+      if (lt < .3) { ctx.globalAlpha = .25; for (let m = 1; m <= 3; m++) band(d * m * 70, 1.04); ctx.globalAlpha = 1; }
+      band(0, 1.02 + lt * .06);
+      ctx.fillStyle = `rgba(7,11,34,${.12 + dim})`; ctx.fillRect(-W, y0, W * 3, bh);
+    });
+    ctx.fillStyle = C.gold; ctx.globalAlpha = inn * (1 - dim); ctx.fillRect(-W, y0 + bh - 3, W * 3, 6); ctx.globalAlpha = 1;
+  });
+  ctx.restore();
 }
 function scrim(y0, y1, a = .7) {   // darkens behind copy so it stays readable on any photo
   const g = ctx.createLinearGradient(0, y0, 0, y1);
@@ -394,7 +442,7 @@ function nightBase(t) { sky(t); [[.2, .16, 16, 0], [.8, .12, 20, .7], [.86, .7, 
 // ---------- timeline (beats of 0.5s) ----------
 // [photo or clip key, beats]. FAST fills 1.5–5.5s (8 beats), SLOW fills 7.5–12.5s (10 beats).
 const FAST = [['n09', 1], ['ex', 1], ['o3', 1], ['n03', 1], ['n01', 1], ['n04', 1], ['o2', 1], ['n06', 1]];
-const SLOW = [['n015', 2], ['o1', 2], ['me2', 2], ['me', 2], ['n09', 2]];
+const SLOW = [['n015', 2], ['o1', 2], ['me2', 2], ['ev1', 2], ['n09', 2]];
 function slot(list, lt) {           // which shot is on at lt seconds into a section, and for how long it has been
   let b0 = 0;
   for (let i = 0; i < list.length; i++) {
@@ -406,7 +454,7 @@ function slot(list, lt) {           // which shot is on at lt seconds into a sec
 const T = { pop: 1.5, fastEnd: 5.5, approachEnd: 7.5, slowEnd: 12.5, logoEnd: 14.0 };
 
 function render(t) {
-  t = clamp(t, 0, DUR); want.clear();
+  t = clamp(t, 0, DUR); want.clear(); NOW = t;
   ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.filter = 'none'; ctx.globalCompositeOperation = 'source-over';
 
   if (t < T.pop) {                                   // HOOK: a bubble with the night inside
@@ -435,9 +483,11 @@ function render(t) {
       bubble(CX, CY, R, 1 - prog(lt, .15, .3), t * 3, true);
     } else {
       if (Math.abs(whip) > 40) for (let k = 3; k >= 1; k--) shot(s.key, { zoom: z, rot, dx: whip + dir * k * 70, alpha: .22, ct: lt });   // motion smear
-      shot(s.key, { zoom: z, rot, dx: whip, ct: lt });
+      shot(s.key, { zoom: z, rot, dx: whip, ct: lt, zb: 1 - prog(lt, 0, .2) });
     }
     ctx.restore();
+    rgbSplit(Math.max(0, 1 - lt / .16) * 22);
+    streaks(t, .9);
     const cf = Math.max(0, 1 - lt / .1) * (i ? .35 : 0);
     if (cf) { ctx.save(); ctx.globalAlpha = cf; ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H); ctx.restore(); }
     frontBokeh(t * 1.8, .9);
@@ -458,6 +508,9 @@ function render(t) {
     }
   } else if (t < T.approachEnd) {                     // PATCHIN: a bubble drifts to the camera and pops
     nightBase(t);
+    strips(t, T.fastEnd, .62 * eInOut(prog(t, T.fastEnd + .7, T.approachEnd - .3)));
+    rgbSplit(STRIPS.reduce((m, _, j) => { const q = t - T.fastEnd - j * .125; return q >= 0 && q < .12 ? Math.max(m, 1 - q / .12) : m; }, 0) * 20);
+    streaks(t, .7);
     floaters(t, .5);
     const p = prog(t, T.fastEnd, T.approachEnd), e = eInExpo(p) * .85 + p * .15;
     const r = lerp(90, Math.hypot(W, H) * .6, e), sw = (1 - e);
@@ -470,10 +523,11 @@ function render(t) {
     bubble(x, y, r, 1, t);
   } else if (t < T.slowEnd) {                         // slow, warm montage: two beats per photo
     const s = slot(SLOW, t - T.approachEnd), i = s.i, ft = s.ft;
-    const mv = (k, f, len) => { const d = k % 2 ? 1 : -1; return { zoom: 1.1 + f * .08, dx: d * lerp(-70, 70, f / len), dy: -f * 30, rot: d * .015 * (f - .5), ct: f }; };
+    const mv = (k, f, len) => { const d = k % 2 ? 1 : -1; return { zoom: 1.1 + f * .08 + .2 * (1 - eOutExpo(prog(f, 0, .5))), dx: d * lerp(-70, 70, f / len), dy: -f * 30, rot: d * .015 * (f - .5), ct: f, zb: 1 - prog(f, 0, .3) }; };
     if (i > 0 && ft < .4) { shot(s.prev, mv(i - 1, s.prevLen + ft, s.prevLen)); shot(s.key, { ...mv(i, ft, s.len), alpha: eInOut(ft / .4) }); }
     else shot(s.key, mv(i, ft, s.len));
     lightLeak(ft);
+    streaks(t * .8, .6);
     floaters(t, .8);
     pop(CX, CY, Math.hypot(W, H) * .6, prog(t, T.approachEnd, T.approachEnd + .5));
     burst(T.approachEnd, t, CX, CY, .9);
@@ -502,7 +556,12 @@ function render(t) {
       const ang = t * (1.1 + k * .05) + k * .7, rr = 360 + (k % 3) * 60;
       bubble(CX - 45 + Math.cos(ang) * rr, CY - 60 + Math.sin(ang) * rr * .55, 16 + (k % 4) * 10, lp * .9, t + k);
     }
-    if (hp > 0) heroBubble(u, hp, Math.min(1, hp * 1.4));
+    if (hp > 0) {                                    // same beat squash as the hook, so 15.0s lands exactly on frame 0.0
+      const kick = Math.exp(-((t % BEAT) / BEAT) * 5) * (t >= DUR - 1e-6 ? 1 : 0);
+      ctx.save(); ctx.translate(CX, CY - 40); ctx.scale(1 + kick * .025, 1 - kick * .025); ctx.translate(-CX, -(CY - 40));
+      heroBubble(u, hp, Math.min(1, hp * 1.4));
+      ctx.restore();
+    }
   }
 
   // transitions
@@ -591,7 +650,8 @@ function buildAudio(ac, t0, dest) {
   noise(B(3), 1.2, 'lowpass', 7000, 300, .5, .7, .5); osc(B(3), 1, 'sine', 90, 35, .8, .2);
   for (let i = 0; i < 20; i++) blip(B(3) + r() * 1.1, 84 + Math.floor(r() * 24), .05 + r() * .04);
   for (let b = 3; b < 11; b++) { kick(B(b)); if (b % 2 === 0) clap(B(b)); noise(B(b + .5), .05, 'highpass', 7000, 6000, .1); blip(B(b), 88 + (b % 4) * 3, .08); }
-  // approach: everything drops out, only a rising shimmer
+  // three bands slam in (5.5 / 5.625 / 5.75s), then everything drops out to a rising shimmer
+  [0, .25, .5].forEach((d, j) => { kick(B(11 + d), .45); noise(B(11 + d), .25, 'bandpass', 3000, 600, .22, 1.5, .3); blip(B(11 + d), 91 + j * 4, .08); });
   for (let i = 0; i < 12; i++) bell(B(11) + i * (BEAT * 4 / 12), 76 + i * 2, .03);
   // PATCHIN at 7.5s
   osc(B(15), .08, 'square', 1800, 600, .12, .4); noise(B(15), .9, 'lowpass', 8000, 400, .45, .7, .5); osc(B(15), 1.2, 'sine', 80, 32, .8, .3);
