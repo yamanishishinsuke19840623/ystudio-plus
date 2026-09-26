@@ -1,16 +1,16 @@
 @echo off
-chcp 65001 > nul
+rem yayoi-mcp setup (ASCII only: Japanese text lives in setup.mjs)
 cd /d "%~dp0"
 where node > nul 2>&1
 if errorlevel 1 (
-  echo [ERROR] Node.js が見つかりません。https://nodejs.org/ から LTS 版をインストールしてから、もう一度実行してください。
+  echo [ERROR] Node.js not found. Install the LTS version from https://nodejs.org/ and run this again.
   pause
   exit /b 1
 )
-echo 依存パッケージをインストールしています...
+echo Installing packages...
 call npm install --omit=dev --no-audit --no-fund
 if errorlevel 1 (
-  echo [ERROR] npm install に失敗しました。表示されたエラーをそのまま Claude に送ってください。
+  echo [ERROR] npm install failed. Send the error shown above to Claude.
   pause
   exit /b 1
 )

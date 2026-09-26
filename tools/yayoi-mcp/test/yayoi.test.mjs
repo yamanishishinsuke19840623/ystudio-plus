@@ -10,7 +10,7 @@ process.env.YAYOI_DATA_DIR = dir;
 const y = await import("../yayoi.mjs");
 
 const entries = [
-  { date: "2026-04-01", description: "文具購入", lines: [{ debit: { account: "消耗品費", taxCategory: "課対仕入10%", amount: 1100 }, credit: { account: "現金", amount: 1100 } }] },
+  { date: "2026-04-01", description: "文具購入", lines: [{ debit: { account: "消耗品費", taxCategory: "課対仕入内10%適格", amount: 1100 }, credit: { account: "現金", amount: 1100 } }] },
   { date: "2026-04-10", description: "売上入金（手数料差引）", lines: [
     { debit: { account: "普通預金", subAccount: "山口銀行", amount: 9670 }, credit: { account: "売掛金", amount: 10000 } },
     { debit: { account: "支払手数料", amount: 330 } },
@@ -68,4 +68,21 @@ test("月次推移と二重計上チェック", () => {
   assert.deepEqual(m.map((r) => [r.month, r.net]), [["2026-04", 1000], ["2026-05", 1300]]);
   assert.equal(y.findDuplicates(lines).length, 0);
   assert.equal(y.findDuplicates(lines, { windowDays: 1 }).length, 1);
+});
+
+test("実データ（弥生の仕訳日記帳エクスポート）と同じ列の埋め方", () => {
+  const rows = y.entriesToRows([
+    { date: "2026-08-31", description: "売上", voucherNo: "1", lines: [
+      { debit: { account: "売掛金", subAccount: "A社", taxCategory: "対象外", amount: 75400 }, credit: { account: "売上", taxCategory: "課税売上内軽減8%", amount: 75400 } },
+    ] },
+    { date: "2026-08-31", description: "売上", voucherNo: "2", lines: [
+      { debit: { account: "売掛金", taxCategory: "対象外", amount: 1000 }, credit: { account: "売上", taxCategory: "課税売上内軽減8%", amount: 1000 } },
+      { debit: { account: "販売手数料", taxCategory: "課対仕入内10%適格", amount: 110 }, credit: { account: "売掛金", taxCategory: "対象外", amount: 110 } },
+    ] },
+  ]);
+  assert.deepEqual(rows[0], ["2000", "1", "", "2026/08/31", "売掛金", "A社", "", "対象外", 75400, 0,
+    "売上", "", "", "課税売上内軽減8%", 75400, 5585, "売上", "", "", "0", "", "", "0", "0", "no"]);
+  assert.deepEqual(rows.slice(1).map((r) => [r[0], r[19], r[9], r[15]]), [["2110", "3", 0, 74], ["2101", "3", 10, 0]]);
+  assert.throws(() => y.taxIncluded(1000, "課対仕入10%"), /税金額\(tax\)を指定/);
+  assert.equal(y.taxIncluded(5500, "課対仕入内10%適格"), 500);
 });

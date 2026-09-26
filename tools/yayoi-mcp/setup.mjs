@@ -5,6 +5,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { spawnSync } from "node:child_process";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const server = path.join(here, "server.mjs");
@@ -42,13 +43,32 @@ cfg.mcpServers.yayoi = {
 };
 fs.writeFileSync(cfgFile, JSON.stringify(cfg, null, 2) + "\n");
 
+// Claude Code が入っていれば、ユーザー全体の設定にも登録する（どのフォルダで開いても使える）
+// Windows の claude は npm の claude.cmd。PowerShell の claude.ps1 は実行ポリシーで止まることがあるため cmd 経由で呼ぶ。
+// 引数にダブルクォートを含めない（JSON を渡す add-json は使わない）ことで cmd のクォート問題を避ける。
+function claude(args) {
+  const r = process.platform === "win32"
+    ? spawnSync("claude.cmd", args.map((a) => `"${a}"`), { encoding: "utf8", shell: true })
+    : spawnSync("claude", args, { encoding: "utf8" });
+  return { ok: r.status === 0, msg: (r.stderr || r.stdout || "").trim() };
+}
+
+let codeResult = "未インストールのため省略";
+if (claude(["--version"]).ok) {
+  claude(["mcp", "remove", "yayoi", "--scope", "user"]); // 再実行時の重複登録を避ける
+  const add = claude(["mcp", "add", "yayoi", "--scope", "user", "-e", `YAYOI_DATA_DIR=${dataDir}`, "--", process.execPath, server]);
+  codeResult = add.ok ? "登録しました（scope: user）" : `登録に失敗: ${add.msg}`;
+}
+
 console.log(`
 セットアップ完了
   設定ファイル : ${cfgFile}
+  Claude Code  : ${codeResult}
   CSVフォルダ  : ${dataDir}
 
 次にやること
   1. 弥生会計の仕訳日記帳を「弥生インポート形式」でエクスポートし、上のCSVフォルダに保存
-  2. Claude Desktop を完全に終了（タスクトレイのアイコンも「終了」）して起動し直す
+  2. Claude Desktop なら完全に終了（タスクトレイのアイコンも「終了」）して起動し直す
+     Claude Code（VSCode）なら新しい会話を開く
   3. Claude に「弥生のCSV一覧を見せて」と話しかける
 `);

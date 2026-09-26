@@ -198,6 +198,19 @@ export function listAccounts(lines) {
 // ---------- 書き出し ----------
 
 /**
+ * 税金額の省略時: 税込金額から内税を切り捨てで求める（実データ 75400 → 5585 と一致）。
+ * 税率を読み取れない税区分（対象外・非課税など）は 0。
+ * 内税以外の課税区分は計算方法を決められないため、税金額の明示を求める。
+ */
+export function taxIncluded(amount, taxCategory = "") {
+  const c = String(taxCategory);
+  const m = c.match(/(8|10)%/);
+  if (!m) return 0;
+  if (!c.includes("内")) throw new Error(`税区分「${c}」は内税ではないため、税金額(tax)を指定してください`);
+  return Math.floor((amount * Number(m[1])) / (100 + Number(m[1])));
+}
+
+/**
  * entries: [{ date, description?, voucherNo?, memo?, lines: [{ debit?, credit? }] }]
  *   debit/credit: { account, subAccount?, department?, taxCategory?, amount, tax? }
  * 1仕訳ごとに借方合計＝貸方合計を検証し、弥生インポート形式の行配列を返す。
@@ -213,15 +226,17 @@ export function entriesToRows(entries) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(normalizeDate(e.date))) throw new Error(`${label}: 日付は YYYY-MM-DD 形式で指定してください`);
     const date = normalizeDate(e.date).replace(/-/g, "/");
     const n = e.lines.length;
+    // タイプ列: 実データ（弥生の仕訳日記帳エクスポート）では1行仕訳=0、複合仕訳=3
+    const type = n === 1 ? "0" : "3";
     e.lines.forEach((l, i) => {
       const flag = n === 1 ? FLAG.SINGLE : i === 0 ? FLAG.FIRST : i === n - 1 ? FLAG.LAST : FLAG.MIDDLE;
       const side = (s) => s?.account
-        ? [s.account, s.subAccount ?? "", s.department ?? "", s.taxCategory ?? "", s.amount, s.tax ?? ""]
-        : ["", "", "", "", "", ""];
+        ? [s.account, s.subAccount ?? "", s.department ?? "", s.taxCategory ?? "", s.amount, s.tax ?? taxIncluded(s.amount, s.taxCategory)]
+        : ["", "", "", "", 0, 0];
       out.push([
         flag, e.voucherNo ?? "", "", date,
         ...side(l.debit), ...side(l.credit),
-        l.description ?? e.description ?? "", "", "", "0", "", e.memo ?? "", "", "", "no",
+        l.description ?? e.description ?? "", "", "", type, "", e.memo ?? "", "0", "0", "no",
       ]);
     });
   });
