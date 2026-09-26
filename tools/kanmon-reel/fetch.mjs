@@ -7,11 +7,13 @@
 //
 // 方針(盛らずに、掘る): 記事タイトル・日付・カテゴリ・アイキャッチは WordPress が返した値だけを使う。
 // 取れなかった項目は空のまま保存し、補完はしない。
-import { mkdir, writeFile, readdir, unlink } from "node:fs/promises";
+import { mkdir, writeFile, readdir, unlink, readFile } from "node:fs/promises";
 import path from "node:path";
 
 const SITE = (process.env.KANMON_SITE || "https://www.kanmonnote.com").replace(/\/+$/, "");
 const COUNT = Number(process.env.REEL_COUNT || 5);
+// 時期限定の記事を外すぶん、多めに取ってから絞る
+const FETCH_N = Math.min(50, COUNT * 4);
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../..");
 const OUT = path.join(ROOT, "reel-data");
 const IMG = path.join(OUT, "img");
@@ -69,7 +71,7 @@ function mapPost(p) {
   return { id: p.id, title: decode(p.title?.rendered), date: p.date, link: p.link, category: cat ? decode(cat.name) : "", image };
 }
 async function fromRest(extra = "") {
-  const posts = await rest("posts", `per_page=${COUNT}&_embed=1${extra}`);
+  const posts = await rest("posts", `per_page=${FETCH_N}&_embed=1${extra}`);
   if (!Array.isArray(posts)) throw new Error(`想定外の応答: ${JSON.stringify(posts).slice(0, 160)}`);
   return posts.map(mapPost);
 }
@@ -77,7 +79,7 @@ async function fromRest(extra = "") {
 // 2nd: RSS feed (REST API が無効化されているサイト向け)
 async function fromRss() {
   const xml = await (await get(`${SITE}/feed/`, "application/rss+xml, application/xml, text/xml")).text();
-  const items = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].slice(0, COUNT).map(m => m[1]);
+  const items = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].slice(0, FETCH_N).map(m => m[1]);
   const pick = (s, tag) => { const m = s.match(new RegExp(`<${tag}[^>]*>(?:<!\\[CDATA\\[)?([\\s\\S]*?)(?:\\]\\]>)?</${tag}>`)); return m ? m[1] : ""; };
   return items.map((s, i) => {
     const content = pick(s, "content:encoded") || pick(s, "description");
@@ -104,11 +106,33 @@ async function download(url, id) {
 const CAT_MAX = Number(process.env.REEL_CATEGORIES || 8); // 記事数の多い順に何カテゴリ分作るか
 const CAT_MIN_POSTS = 3;
 
+// tools/kanmon-reel/exclude.json のキーワードで「時期限定」の記事を外す(終わったイベントや期限つきの告知をリールに出さないため)
+const EX = JSON.parse(await readFile(new URL("./exclude.json", import.meta.url), "utf8"));
+const EX_RE = EX.patterns.map(p => new RegExp(p));
+function whyExcluded(title) {
+  const t = title.normalize("NFKC");
+  const w = EX.words.find(w => t.includes(w.normalize("NFKC")));
+  if (w) return `キーワード「${w}」`;
+  const r = EX_RE.find(re => re.test(t));
+  return r ? `日付・期限の表記(${t.match(r)[0]})` : "";
+}
+function pick(list) {
+  const kept = [], excluded = [];
+  for (const p of list) {
+    const why = whyExcluded(p.title || "");
+    if (why) excluded.push({ id: p.id, title: p.title, date: p.date, reason: why });
+    else if (kept.length < COUNT) kept.push(p);
+  }
+  return { kept, excluded };
+}
+
 async function main() {
   let posts, source;
   try { posts = await fromRest(); source = "rest"; }
   catch (e) { console.warn(`REST API 失敗 → RSS で再試行: ${e.message}`); posts = await fromRss(); source = "rss"; }
   if (!posts.length) throw new Error("記事が0件でした");
+  const top = pick(posts); posts = top.kept;
+  if (!posts.length) throw new Error("時期限定の記事を除くと0件でした(exclude.json を見直してください)");
 
   // カテゴリ別(REST が使えるときのみ)
   const cats = [];
@@ -116,8 +140,9 @@ async function main() {
     try {
       const list = await rest("categories", "per_page=100&orderby=count&order=desc&hide_empty=1");
       for (const c of list.filter(c => c.count >= CAT_MIN_POSTS).slice(0, CAT_MAX)) {
-        const cp = await fromRest(`&categories=${c.id}`);
-        if (cp.length) cats.push({ id: c.id, name: decode(c.name), slug: c.slug, count: c.count, posts: cp });
+        const { kept, excluded } = pick(await fromRest(`&categories=${c.id}`));
+        if (kept.length) cats.push({ id: c.id, name: decode(c.name), slug: c.slug, count: c.count, posts: kept, excluded });
+        else console.log(`カテゴリ「${decode(c.name)}」は時期限定の記事しかないためスキップ`);
       }
     } catch (e) { console.warn(`カテゴリ別の取得に失敗(新着のみ保存): ${e.message}`); }
   }
@@ -130,17 +155,18 @@ async function main() {
 
   const fetchedAt = new Date().toISOString();
   await withImages(posts);
-  await writeFile(path.join(OUT, "posts.json"), JSON.stringify({ site: SITE, source, fetchedAt, posts }, null, 2) + "\n");
+  await writeFile(path.join(OUT, "posts.json"), JSON.stringify({ site: SITE, source, fetchedAt, posts, excluded: top.excluded }, null, 2) + "\n");
   console.log(`新着 ${posts.length}件を保存 (${source}):`);
   for (const p of posts) console.log(`- ${p.date.slice(0, 10)} [${p.category || "-"}] ${p.title} ${p.localImage ? "🖼" : "(画像なし)"}`);
+  for (const x of top.excluded) console.log(`  除外: ${x.title}(${x.reason})`);
 
   const index = [];
   for (const c of cats) {
     await withImages(c.posts);
     const file = `cat-${c.id}.json`;
-    await writeFile(path.join(OUT, file), JSON.stringify({ site: SITE, source, fetchedAt, category: { id: c.id, name: c.name, slug: c.slug }, posts: c.posts }, null, 2) + "\n");
+    await writeFile(path.join(OUT, file), JSON.stringify({ site: SITE, source, fetchedAt, category: { id: c.id, name: c.name, slug: c.slug }, posts: c.posts, excluded: c.excluded }, null, 2) + "\n");
     index.push({ id: c.id, name: c.name, slug: c.slug, count: c.count, file });
-    console.log(`カテゴリ「${c.name}」(全${c.count}件) → ${c.posts.length}件`);
+    console.log(`カテゴリ「${c.name}」(全${c.count}件) → ${c.posts.length}件(除外 ${c.excluded.length}件)`);
   }
   await writeFile(path.join(OUT, "categories.json"), JSON.stringify({ fetchedAt, categories: index }, null, 2) + "\n");
 }
