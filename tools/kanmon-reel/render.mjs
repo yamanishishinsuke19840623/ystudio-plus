@@ -74,6 +74,7 @@ async function renderFeed(page, base, { file, count }) {
   const mp4 = path.join(OUT, `${slug}.mp4`);
   const r = spawnSync(FFMPEG, ["-y", "-loglevel", "error", "-framerate", String(FPS), "-i", path.join(tmp, "f%04d.jpg"), "-i", path.join(tmp, "audio.wav"),
     "-c:v", "libx264", "-preset", "medium", "-crf", "21", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "160k", "-shortest", "-movflags", "+faststart", mp4], { stdio: "inherit" });
+  if (r.error) throw new Error(`ffmpeg を起動できません(${FFMPEG}): ${r.error.message}`);
   if (r.status !== 0) throw new Error(`ffmpeg failed (${r.status})`);
   // cover: the intro frame with logo + date range
   await writeFile(path.join(OUT, `${slug}.jpg`), await readFile(path.join(tmp, `f${String(Math.round(1.7 * FPS)).padStart(4, "0")}.jpg`)));
