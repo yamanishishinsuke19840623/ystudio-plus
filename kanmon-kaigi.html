@@ -7,7 +7,6 @@
 <meta name="description" content="関門エリア（山口県や福岡県等）で活動するゲストが10分間で「思い」をプレゼンし、参加者の交流をメインにしたイベント。「ひと・まち・まなび」が「想い」でつながる、終わらないカイギ。">
 <meta property="og:title" content="関門カイギ｜終わらないカイギ">
 <meta property="og:description" content="「ひと・まち・まなび」が「想い」でつながる、終わらないカイギ。">
-<meta property="og:image" content="kanmon-reel/flyer-09.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Mono:wght@400;500&family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap">
@@ -103,15 +102,15 @@ h2 .lat{font-family:var(--f-lat);display:block;font-size:.5em;letter-spacing:.04
 /* archive */
 .arc-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:16px;margin-bottom:28px;}
 .arc-head h2{margin-bottom:0;}
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px;}
-.card{border:2px solid var(--ink);background:#fff;display:flex;flex-direction:column;}
-.card img{width:100%;height:auto;border-bottom:2px solid var(--ink);}
-.card .meta{display:flex;align-items:baseline;gap:14px;padding:12px 14px;}
-.card .no{font-family:var(--f-lat);font-size:34px;line-height:1;}
-.card .no.sp{font-size:22px;color:var(--blue);}
-.card time{font-family:var(--f-mono);font-size:14px;font-variant-numeric:tabular-nums;}
-.card .where{margin-left:auto;font-size:12px;color:var(--sub);text-align:right;}
-.card.latest{border-color:var(--red);box-shadow:8px 8px 0 var(--red);}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));border-top:2px solid var(--ink);border-left:2px solid var(--ink);}
+.card{border-right:2px solid var(--ink);border-bottom:2px solid var(--ink);background:var(--paper);padding:18px 18px 16px;display:flex;flex-direction:column;gap:10px;min-height:190px;}
+.card .no{font-family:var(--f-lat);font-size:72px;line-height:.95;letter-spacing:.01em;}
+.card .no.sp{font-size:40px;line-height:1.1;color:var(--blue);}
+.card time{font-family:var(--f-mono);font-size:16px;font-variant-numeric:tabular-nums;margin-top:auto;}
+.card .where{font-size:13px;color:var(--sub);line-height:1.5;}
+.card.latest{background:var(--red);color:var(--paper);}
+.card.latest .where{color:rgba(247,247,243,.85);}
+.card.latest .new{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;}
 
 /* venue & team */
 .two{display:grid;grid-template-columns:1fr 1fr;gap:48px;}
@@ -158,7 +157,7 @@ footer small{font-family:var(--f-mono);font-size:12px;color:rgba(247,247,243,.6)
 
 <main id="top">
   <div class="hero">
-    <video id="reel" autoplay muted loop playsinline preload="auto" poster="kanmon-reel/flyer-09.jpg" aria-label="関門カイギ 15秒ムービー"></video>
+    <video id="reel" autoplay muted loop playsinline preload="auto" aria-label="関門カイギ 15秒ムービー"></video>
     <button class="snd" id="snd" aria-pressed="false">♪ 音を出す</button>
   </div>
 
@@ -291,24 +290,23 @@ footer small{font-family:var(--f-mono);font-size:12px;color:rgba(247,247,243,.6)
 (()=>{
   // archive: facts taken from each event's announcement (Canva)
   const EV=[
-    ['flyer-09.jpg','#9','2026.8.26','しものせき市民活動センター'],
-    ['flyer-08.jpg','#8','2026.5.12','しものせき市民活動センター'],
-    ['flyer-07.jpg','#7','2025.11.18','しものせき市民活動センター'],
-    ['flyer-06.jpg','#6','2025.10.23','しものせき市民活動センター'],
-    ['flyer-05x.jpg','SPECIAL','2025.9.20','菊川ふれあい会館（アブニール）'],
-    ['flyer-05.jpg','#5','2025.9.5','しものせき市民活動センター'],
-    ['flyer-04.jpg','#4','2025.7.3','しものせき市民活動センター'],
-    ['flyer-03.jpg','#3','2025.6.19','しものせき市民活動センター'],
-    ['flyer-02.jpg','#2','2025.5.14','しものせき市民活動センター'],
-    ['flyer-01.jpg','#1','2025.4.24','しものせき市民活動センター'],
+    ['#9','2026.8.26','しものせき市民活動センター'],
+    ['#8','2026.5.12','しものせき市民活動センター'],
+    ['#7','2025.11.18','しものせき市民活動センター'],
+    ['#6','2025.10.23','しものせき市民活動センター'],
+    ['SPECIAL','2025.9.20','菊川ふれあい会館（アブニール）'],
+    ['#5','2025.9.5','しものせき市民活動センター'],
+    ['#4','2025.7.3','しものせき市民活動センター'],
+    ['#3','2025.6.19','しものせき市民活動センター'],
+    ['#2','2025.5.14','しものせき市民活動センター'],
+    ['#1','2025.4.24','しものせき市民活動センター'],
   ];
-  document.getElementById('cards').innerHTML=EV.map(([img,no,date,where],i)=>
-    `<article class="card${i===0?' latest':''}"><img src="kanmon-reel/${img}" alt="関門カイギ ${no} ${date} の告知" loading="lazy" width="596" height="335">
-     <div class="meta"><span class="no${no==='SPECIAL'?' sp':''}">${no}</span><time>${date}</time><span class="where">${where}</span></div></article>`).join('');
+  document.getElementById('cards').innerHTML=EV.map(([no,date,where],i)=>
+    `<article class="card${i===0?' latest':''}">${i===0?'<span class="new">LATEST</span>':''}<span class="no${no==='SPECIAL'?' sp':''}">${no}</span><time>${date}</time><span class="where">${where}</span></article>`).join('');
 
   // hero video: vertical on phones, horizontal elsewhere
   const v=document.getElementById('reel'),mq=matchMedia('(max-width:760px)');
-  const pick=()=>{const src='kanmon-reel/video/kanmon-kaigi-B-'+(mq.matches?'9x16':'16x9')+'.mp4';if(!v.src.endsWith(src)){v.src=src;v.play().catch(()=>{});}};
+  const pick=()=>{const src='kanmon-reel/video/kanmon-kaigi-D-'+(mq.matches?'9x16':'16x9')+'.mp4';if(!v.src.endsWith(src)){v.src=src;v.play().catch(()=>{});}};
   pick();mq.addEventListener?mq.addEventListener('change',pick):mq.addListener(pick);
   if(matchMedia('(prefers-reduced-motion: reduce)').matches){v.removeAttribute('autoplay');v.pause();}
   const b=document.getElementById('snd');

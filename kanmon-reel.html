@@ -128,7 +128,7 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-fa
     <button class="btn" id="restart">↺ 頭から</button>
     <button class="btn" id="sound" aria-pressed="false">♪ 音 OFF</button>
     <span class="tc" id="tc">00:00:00:00 <small>/ 00:00:15:00</small></span>
-    <span class="seg" role="group" aria-label="画面の向き"><button id="ar169" aria-pressed="true">16:9</button><button id="ar916" aria-pressed="false" title="縦型はパターンBのみ">9:16</button></span>
+    <span class="seg" role="group" aria-label="画面の向き"><button id="ar169" aria-pressed="true">16:9</button><button id="ar916" aria-pressed="false" title="縦型はパターンBとDのみ">9:16</button></span>
     <span class="spacer"></span>
     <button class="btn" id="full">⛶ 全画面</button>
     <button class="btn" id="rec">● WebM書き出し</button>
@@ -786,48 +786,53 @@ const D=(()=>{
   function logo(cx,cy,size,s,r,a=1){if(!logoW||s<=0)return;X.save();X.globalAlpha*=a;X.translate(cx,cy);X.rotate(r);X.scale(s,s);X.drawImage(logoW,-size/2,-size/2,size,size);X.restore();}
   function sweep(t,t0){const p=seg(t,t0-.18,t0+.18);if(p<=0||p>=1)return;const x=lerp(-W*.6,W*1.3,E.io3(p));X.save();X.fillStyle='#fff';X.globalAlpha=.95;X.beginPath();X.moveTo(x,0);X.lineTo(x+520,0);X.lineTo(x+220,H);X.lineTo(x-300,H);X.closePath();X.fill();X.restore();}
   function render(t){
+    const V=H>W;
     if(t<2.5){
       harbor(lerp(1.02,1.16,t/2.5),lerp(.3,.6,t/2.5));wash(.45,.5);
       logo(200,190,250,E.oBack(seg(t,.45,.85)),(1-E.o3(seg(t,.45,.95)))*-1.4);
-      font(900,230,G);X.save();X.shadowColor='rgba(0,30,70,.55)';X.shadowBlur=30;X.shadowOffsetY=8;
+      font(900,V?180:230,G);X.save();X.shadowColor='rgba(0,30,70,.55)';X.shadowBlur=30;X.shadowOffsetY=8;
       chars('関門カイギ',CX,CY-70,10,i=>{const p=E.oBack(seg(t,.2+i*.07,.62+i*.07));return{a:clamp(p*3),dy:(1-p)*160,c:C.white};});X.restore();
-      label('「ひと・まち・まなび」が「想い」でつながる、終わらないカイギ',CX,CY+130,44,seg(t,1.0,1.45),{align:'center'});
-      font(500,26,F.mono);text('KANMON KAIGI COMMUNITY',CX,CY+230,{c:C.white,a:seg(t,1.4,1.7),track:12});
+      if(V){label('「ひと・まち・まなび」が「想い」で',CX,CY+120,44,seg(t,1.0,1.4),{align:'center'});label('つながる、終わらないカイギ',CX,CY+200,44,seg(t,1.15,1.55),{align:'center'});}
+      else label('「ひと・まち・まなび」が「想い」でつながる、終わらないカイギ',CX,CY+130,44,seg(t,1.0,1.45),{align:'center'});
+      font(500,26,F.mono);text('KANMON KAIGI COMMUNITY',CX,CY+(V?300:230),{c:C.white,a:seg(t,1.4,1.7),track:12});
     }else if(t<7.5){
-      if(blurBg)X.drawImage(blurBg,0,0);else harbor(1,.5);
+      if(blurBg)cover(X,blurBg,0,0,W,H);else harbor(1,.5);
       X.fillStyle='rgba(18,58,104,.38)';X.fillRect(0,0,W,H);
       const i=Math.min(9,Math.floor((t-2.5)/.5));
       for(let j=Math.max(0,i-3);j<=i;j++){
         const lt=t-(2.5+.5*j),p=E.oExpo(seg(lt,0,.38));
-        const fx=W*.635+(hash(j*2.1)-.5)*70,fy=CY+(hash(j*3.7)-.5)*50,rot=(hash(j*1.7)-.5)*.13;
-        card(IMG[FL[j][0]+'.jpg'],lerp(W+700,fx,p),lerp(fy-120,fy,p),820,rot+(1-p)*.45,j<i-2?.0:1);
+        const fx=(V?CX:W*.635)+(hash(j*2.1)-.5)*70,fy=(V?CY+230:CY)+(hash(j*3.7)-.5)*50,rot=(hash(j*1.7)-.5)*.13;
+        card(IMG[FL[j][0]+'.jpg'],lerp(W+700,fx,p),lerp(fy-120,fy,p),V?900:820,rot+(1-p)*.45,j<i-2?.0:1);
       }
       const lt=(t-2.5)-i*.5,k=E.oExpo(seg(lt,0,.3));const [,num,date]=FL[i];
-      font(700,34,G);text('関門カイギ',120,CY-190,{c:C.white,align:'left',track:6});
-      X.save();X.beginPath();X.rect(0,CY-150,W*.36,260);X.clip();
-      font(900,num.length>3?118:230,G);text(num,112,CY-30+(1-k)*200,{c:C.white,align:'left'});X.restore();
-      font(500,54,F.mono);text(date,120,CY+120,{c:C.white,align:'left',a:k,track:4});
-      for(let d=0;d<10;d++){X.fillStyle=d<=i?C.white:'rgba(255,255,255,.3)';X.beginPath();X.arc(128+d*30,CY+210,7,0,Math.PI*2);X.fill();}
+      const oy=V?-330:0;
+      font(700,34,G);text('関門カイギ',120,CY-190+oy,{c:C.white,align:'left',track:6});
+      X.save();X.beginPath();X.rect(0,CY-150+oy,V?W:W*.36,260);X.clip();
+      font(900,num.length>3?118:230,G);text(num,112,CY-30+oy+(1-k)*200,{c:C.white,align:'left'});X.restore();
+      font(500,54,F.mono);text(date,120,CY+120+oy,{c:C.white,align:'left',a:k,track:4});
+      for(let d=0;d<10;d++){X.fillStyle=d<=i?C.white:'rgba(255,255,255,.3)';X.beginPath();X.arc(128+d*30,CY+210+oy,7,0,Math.PI*2);X.fill();}
     }else if(t<10.0){
       const g=X.createLinearGradient(0,0,0,H);g.addColorStop(0,C.sky);g.addColorStop(1,C.sky2);X.fillStyle=g;X.fillRect(0,0,W,H);
-      const cw=356,chh=200,gap=26,x0=CX-(5*cw+4*gap)/2+cw/2,y0=CY-(chh+gap)/2;
-      const k=E.io3(seg(t,7.5,8.5));const z=lerp(820/cw,1,k);
-      const fx=lerp(x0+4*(cw+gap),CX,k),fy=lerp(y0+chh+gap,CY,k);
+      const COLS=V?2:5,ROWS=V?5:2,cw=V?470:356,chh=cw*9/16,gap=V?22:26,x0=CX-(COLS*cw+(COLS-1)*gap)/2+cw/2,y0=CY-((ROWS-1)*(chh+gap))/2;
+      const k=E.io3(seg(t,7.5,8.5));const z=lerp((V?900:820)/cw,1,k);
+      const fx=lerp(x0+(COLS-1)*(cw+gap),CX,k),fy=lerp(y0+(ROWS-1)*(chh+gap),CY,k);
       const drift=(t-8.5)>0?(t-8.5)*6:0;
       X.save();X.translate(CX,CY);X.scale(z,z);X.translate(-fx-drift,-fy);
-      FL.forEach((f,j)=>{const c=j%5,r=Math.floor(j/5);card(IMG[f[0]+'.jpg'],x0+c*(cw+gap),y0+r*(chh+gap),cw,0,1);});
+      FL.forEach((f,j)=>{const c=j%COLS,r=Math.floor(j/COLS);card(IMG[f[0]+'.jpg'],x0+c*(cw+gap),y0+r*(chh+gap),cw,0,1);});
       X.restore();
       const o=E.io3(seg(t,8.5,8.9));
       if(o>0){X.fillStyle=`rgba(18,50,92,${.62*o})`;X.fillRect(0,0,W,H);
         font(900,170,G);chars('#1 → #9',CX,CY-60,8,i=>{const p=E.oBack(seg(t,8.55+i*.04,8.95+i*.04));return{a:clamp(p*3),dy:(1-p)*80,c:C.white};});
-        label('ゲストが10分間で「思い」をプレゼン ＋ 交流',CX,CY+110,48,seg(t,9.05,9.45),{align:'center'});}
+        if(V){label('ゲストが10分間で',CX,CY+110,48,seg(t,9.05,9.4),{align:'center'});label('「思い」をプレゼン ＋ 交流',CX,CY+190,48,seg(t,9.15,9.5),{align:'center'});}
+        else label('ゲストが10分間で「思い」をプレゼン ＋ 交流',CX,CY+110,48,seg(t,9.05,9.45),{align:'center'});}
     }else if(t<12.5){
       harbor(lerp(1.18,1.06,seg(t,10,12.5)),lerp(.75,.4,seg(t,10,12.5)));wash(.35,.55);
-      label('「ひと・まち・まなび」が',140,CY-190,76,seg(t,10.05,10.35));
-      label('「想い」でつながる、',140,CY-50,76,seg(t,10.55,10.85));
-      label('終わらないカイギ',140,CY+95,96,seg(t,11.05,11.4),{bg:C.navy,fg:C.white});
+      const lx=V?70:140;
+      label('「ひと・まち・まなび」が',lx,CY-190,V?60:76,seg(t,10.05,10.35));
+      label('「想い」でつながる、',lx,CY-50,V?60:76,seg(t,10.55,10.85));
+      label('終わらないカイギ',lx,CY+95,V?88:96,seg(t,11.05,11.4),{bg:C.navy,fg:C.white});
       const fa=seg(t,11.6,11.9);
-      if(fa>0){X.save();X.shadowColor='rgba(0,20,50,.6)';X.shadowBlur=16;font(700,36,G);text('会場　しものせき市民活動センター　19:00–20:30',146,CY+235,{c:C.white,a:fa,align:'left',track:2});X.restore();}
+      if(fa>0){X.save();X.shadowColor='rgba(0,20,50,.6)';X.shadowBlur=16;font(700,36,G);if(V){text('会場　しものせき市民活動センター',lx+6,CY+235,{c:C.white,a:fa,align:'left',track:2});text('19:00–20:30',lx+6,CY+290,{c:C.white,a:fa,align:'left',track:2});}else text('会場　しものせき市民活動センター　19:00–20:30',146,CY+235,{c:C.white,a:fa,align:'left',track:2});X.restore();}
     }else{
       harbor(1.05,.5,.9);
       const g=X.createLinearGradient(0,0,0,H);g.addColorStop(0,'rgba(155,208,242,.95)');g.addColorStop(.7,'rgba(79,159,212,.88)');g.addColorStop(1,'rgba(29,79,122,.75)');X.fillStyle=g;X.fillRect(0,0,W,H);
@@ -909,8 +914,8 @@ function buildMarks(){
 }
 function selectPattern(k,push=true){
   if(!PAT[k])return;key=k;cur=PAT[k];
-  if(k!=='B'&&H>W)setAspect(false);
-  $('ar916').disabled=k!=='B';
+  if(!'BD'.includes(k)&&H>W)setAspect(false);
+  $('ar916').disabled=!'BD'.includes(k);
   document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.p===k)));
   buildMarks();jump(reduce?13.9:0);
   if(push){try{history.replaceState(null,'','#'+k);}catch(e){}}
@@ -995,7 +1000,7 @@ Promise.all([ready.catch(()=>{}),D.load()]).then(()=>{
   window.__reelReady=true;
 });
 function setAspect(vert){
-  if(vert&&key!=='B')return;
+  if(vert&&!'BD'.includes(key))return;
   setSize(vert?1080:1920,vert?1920:1080);
   $('stage').classList.toggle('vert',vert);
   $('ar169').setAttribute('aria-pressed',String(!vert));$('ar916').setAttribute('aria-pressed',String(vert));
