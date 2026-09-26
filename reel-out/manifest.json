@@ -1,29 +1,29 @@
 {
-  "renderedAt": "2026-09-26T12:14:41.235Z",
+  "renderedAt": "2026-09-26T12:24:53.283Z",
   "reels": [
     {
-      "slug": "new",
-      "file": "posts.json",
+      "slug": "gourmet",
+      "file": "cat-5.json",
       "count": 3,
-      "video": "reel-out/new.mp4",
-      "cover": "reel-out/new.jpg",
-      "caption": "reel-out/new.txt",
+      "video": "reel-out/gourmet.mp4",
+      "cover": "reel-out/gourmet.jpg",
+      "caption": "reel-out/gourmet.txt",
       "fetchedAt": "2026-09-26T12:13:22.944Z",
       "posts": [
-        {
-          "id": 47719,
-          "title": "【イベント】9月19日子どもの「できた！」「たのしい！」があふれる体験型イベントが開催されます",
-          "link": "https://www.kanmonnote.com/0919miyell/"
-        },
-        {
-          "id": 47685,
-          "title": "【イベント】かつて服を仕立てた洋裁店が、まちの未来をつくる新拠点に！オープニングイベント開催",
-          "link": "https://www.kanmonnote.com/tailors-open/"
-        },
         {
           "id": 47611,
           "title": "団体で訪れ、次はひとりで。“帰ってきたくなる”スナック「ばぁ～びぃ〜Boo」",
           "link": "https://www.kanmonnote.com/202608baa-bii-boo/"
+        },
+        {
+          "id": 47488,
+          "title": "ふぐ一尾、20～30秒!?下関・山西水産4代目が目指す「顔の見える魚屋」【かんもん企業紹介 No.01】",
+          "link": "https://www.kanmonnote.com/202607yamanishi-suisan/"
+        },
+        {
+          "id": 47353,
+          "title": "【開店】唐揚げ専門店の新しい挑戦！新店舗にてカレー屋さんをプレオープン中です！！",
+          "link": "https://www.kanmonnote.com/2026raku_open/"
         }
       ]
     }

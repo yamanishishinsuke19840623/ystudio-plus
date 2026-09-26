@@ -97,7 +97,7 @@ footer a{color:var(--sub);}
         <h2>しくみ</h2>
         <ul class="note">
           <li>GitHub Actions「かんもんノート リール用データ取得」が毎週月曜 6:00 に最新記事と画像を <code>reel-data/</code> に保存します(手動実行も可)。</li>
-          <li>このページはまず <code>reel-data/posts.json</code> を読み、無ければWordPressへ直接取りに行きます。どちらも取れないときは「サンプル」と明記した枠だけを表示します。</li>
+          <li>このページはまず保存済みデータ(既定はグルメ)を読み、無ければWordPressへ直接取りに行きます。どちらも取れないときは「サンプル」と明記した枠だけを表示します。</li>
           <li>公式ロゴは <code>kanmonnote-logo.png</code> を置くと自動で差し替わります。</li>
           <li>文字として出すのは、記事データの値と「関門海峡エリアの情報メディア」「サイトのドメイン」だけです。</li>
         </ul>
@@ -204,11 +204,14 @@ async function fromLocal(file = 'posts.json') {
 }
 async function loadCategories() {
   try {
-    const r = await fetch('reel-data/categories.json', { cache: 'no-store' }); if (!r.ok) return;
-    const sel = $('feed');
-    (await r.json()).categories.forEach(c => sel.append(new Option(c.name, c.file)));
-  } catch { /* 新着のみ */ }
+    const r = await fetch('reel-data/categories.json', { cache: 'no-store' }); if (!r.ok) return [];
+    const sel = $('feed'), cats = (await r.json()).categories;
+    cats.forEach(c => sel.append(new Option(c.name, c.file)));
+    return cats;
+  } catch { return []; /* 新着のみ */ }
 }
+// 既定はグルメ(イベント記事は開催日を過ぎると告知として古くなるため)
+const DEFAULT_SLUG = 'gourmet';
 const COUNT = () => +$('count').value;
 function applyCount() {
   DATA.posts = (DATA.all || DATA.posts).slice(0, COUNT());
@@ -621,13 +624,17 @@ const fontsReady = document.fonts ? Promise.race([
 fontsReady.then(async () => {
   DATA = { mode: 'sample', site: 'https://www.kanmonnote.com', all: samplePosts(), posts: samplePosts().slice(0, COUNT()) }; applyCount();
   requestAnimationFrame(frame);
-  await loadCategories();
+  const cats = await loadCategories();
   // ?feed=cat-6.json&count=3 lets the renderer (and shared links) pick a reel directly
   const q = new URLSearchParams(location.search);
   if (['3', '4', '5'].includes(q.get('count'))) { $('count').value = q.get('count'); applyCount(); }
   const feedParam = q.get('feed');
   if (feedParam && /^(posts|cat-\d+)\.json$/.test(feedParam)) {
     try { await useData(await fromLocal(feedParam)); $('feed').value = feedParam === 'posts.json' ? '' : feedParam; return; } catch { /* fall through */ }
+  }
+  const def = cats.find(c => c.slug === DEFAULT_SLUG);
+  if (!feedParam && def) {
+    try { await useData(await fromLocal(def.file)); $('feed').value = def.file; return; } catch { /* fall through */ }
   }
   try { await useData(await fromLocal()); }
   catch { try { await useData(await fromLive($('site').value.trim())); } catch { /* stay in labeled sample mode */ } }
