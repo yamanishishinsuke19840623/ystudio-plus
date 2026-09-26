@@ -1,0 +1,36 @@
+name: かんもんノート リール用データ取得
+
+on:
+  schedule:
+    # 毎週月曜 06:00 JST (日曜 21:00 UTC)
+    - cron: "0 21 * * 0"
+  workflow_dispatch: {}
+
+jobs:
+  fetch-posts:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Fetch latest posts from WordPress
+        run: node tools/kanmon-reel/fetch.mjs
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A reel-data
+          if ! git diff --cached --quiet; then
+            git commit -m "かんもんノート リール用データを更新"
+            git push
+          else
+            echo "変更なし（新しい記事がなかった）"
+          fi
