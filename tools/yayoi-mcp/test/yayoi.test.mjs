@@ -12,8 +12,8 @@ const y = await import("../yayoi.mjs");
 const entries = [
   { date: "2026-04-01", description: "文具購入", lines: [{ debit: { account: "消耗品費", taxCategory: "課対仕入内10%適格", amount: 1100 }, credit: { account: "現金", amount: 1100 } }] },
   { date: "2026-04-10", description: "売上入金（手数料差引）", lines: [
-    { debit: { account: "普通預金", subAccount: "山口銀行", amount: 9670 }, credit: { account: "売掛金", amount: 10000 } },
-    { debit: { account: "支払手数料", amount: 330 } },
+    { debit: { account: "普通預金", subAccount: "山口銀行", amount: 9670 }, credit: { account: "売掛金", amount: 9670 } },
+    { debit: { account: "支払手数料", amount: 330 }, credit: { account: "売掛金", amount: 330 } },
   ] },
 ];
 
@@ -37,12 +37,16 @@ test("集計と絞り込み", () => {
   assert.equal(s["現金"].net, -1100);
   assert.equal(y.filterLines(lines, { from: "2026-04-05" }).length, 2);
   assert.equal(y.filterLines(lines, { keyword: "文具" }).length, 1);
-  assert.equal(y.listAccounts(lines)[0].count, 1);
+  assert.deepEqual([y.listAccounts(lines)[0].account, y.listAccounts(lines)[0].count], ["売掛金", 2]);
 });
 
 test("貸借不一致・上書き・ディレクトリ外は拒否", () => {
   assert.throws(() => y.entriesToRows([{ date: "2026-04-01", lines: [{ debit: { account: "現金", amount: 1 }, credit: { account: "売上高", amount: 2 } }] }]), /一致しません/);
   assert.throws(() => y.writeJournalCsv("out.csv", entries), /上書きしません/);
+  assert.throws(() => y.entriesToRows([{ date: "2026-04-01", lines: [
+    { debit: { account: "普通預金", amount: 9670 }, credit: { account: "売掛金", amount: 10000 } },
+    { debit: { account: "支払手数料", amount: 330 } },
+  ] }]), /両方に科目/);
   assert.throws(() => y.readJournal("../etc/passwd"), /外のファイル/);
 });
 

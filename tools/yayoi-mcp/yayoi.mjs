@@ -220,6 +220,12 @@ export function entriesToRows(entries) {
   entries.forEach((e, ei) => {
     const label = `仕訳${ei + 1}（${e.date} ${e.description ?? ""}）`;
     if (!e.lines?.length) throw new Error(`${label}: 行がありません`);
+    // 実データでは複合仕訳も全行に借方・貸方の両方の科目が入っている（金額0円はあり）。片側だけの行は作らない
+    e.lines.forEach((l, i) => {
+      if (!l.debit?.account || !l.credit?.account) {
+        throw new Error(`${label} ${i + 1}行目: 借方・貸方の両方に科目を指定してください（例: 手数料330円なら 借方 支払手数料 330／貸方 売掛金 330）`);
+      }
+    });
     const dt = e.lines.reduce((s, l) => s + (l.debit?.amount ?? 0), 0);
     const ct = e.lines.reduce((s, l) => s + (l.credit?.amount ?? 0), 0);
     if (dt !== ct) throw new Error(`${label}: 借方合計 ${dt} と貸方合計 ${ct} が一致しません`);
@@ -230,9 +236,7 @@ export function entriesToRows(entries) {
     const type = n === 1 ? "0" : "3";
     e.lines.forEach((l, i) => {
       const flag = n === 1 ? FLAG.SINGLE : i === 0 ? FLAG.FIRST : i === n - 1 ? FLAG.LAST : FLAG.MIDDLE;
-      const side = (s) => s?.account
-        ? [s.account, s.subAccount ?? "", s.department ?? "", s.taxCategory ?? "", s.amount, s.tax ?? taxIncluded(s.amount, s.taxCategory)]
-        : ["", "", "", "", 0, 0];
+      const side = (s) => [s.account, s.subAccount ?? "", s.department ?? "", s.taxCategory ?? "", s.amount, s.tax ?? taxIncluded(s.amount, s.taxCategory)];
       out.push([
         flag, e.voucherNo ?? "", "", date,
         ...side(l.debit), ...side(l.credit),

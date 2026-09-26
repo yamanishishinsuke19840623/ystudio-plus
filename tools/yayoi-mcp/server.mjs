@@ -95,10 +95,10 @@ server.tool(
       voucherNo: z.string().optional(),
       memo: z.string().optional(),
       lines: z.array(z.object({
-        debit: side.optional(),
-        credit: side.optional(),
+        debit: side,
+        credit: side,
         description: z.string().optional(),
-      })).min(1).describe("1行なら通常仕訳、複数行なら複合仕訳"),
+      })).min(1).describe("1行なら通常仕訳、複数行なら複合仕訳。各行に借方・貸方の両方が必要（弥生の実データと同じ形。金額0円は可）"),
     })).min(1),
   },
   async ({ file, encoding, entries }) => json(writeJournalCsv(file, entries, { encoding })),
