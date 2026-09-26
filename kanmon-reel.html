@@ -103,7 +103,7 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-fa
       <p class="eyebrow">Showreel · 1920×1080 · 30fps · 15s</p>
       <h1>関門カイギ<br>15秒ショーリール</h1>
     </div>
-    <p class="lead">同じ「関門カイギ」を、潮流・拍・信号という3つの演出で描き分けました。映像はすべてブラウザのCanvasでその場で描画しています。音はボタンで入れられます。</p>
+    <p class="lead">「ひと・まち・まなび」が「想い」でつながる、終わらないカイギ。関門カイギのHPと告知デザインから取った事実だけで、潮流・拍・信号の3つの演出を作りました。映像はブラウザのCanvasでその場で描画しています。音はボタンで入れられます。</p>
   </div>
 
   <div class="tabs" role="tablist" aria-label="演出パターン">
@@ -141,25 +141,26 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-fa
   <section class="block">
     <h2>What's in the frame</h2>
     <div class="facts">
-      <div class="fact f"><span class="tag">FACT ／ 使った事実</span>
+      <div class="fact f"><span class="tag">FACT ／ 映像に入れた事実</span>
         <ul>
-          <li>名称「関門カイギ」（ご依頼文より）</li>
-          <li>下関は本州側、門司は九州側。関門海峡をはさんで向かい合う</li>
-          <li>関門橋は吊り橋（Aの橋のシルエット）</li>
+          <li>名称「関門カイギ」、ロゴ表記「KANMON KAIGI COMMUNITY」</li>
+          <li>コピー「「ひと・まち・まなび」が「想い」でつながる、終わらないカイギ」（#2〜#9の告知）</li>
+          <li>関門エリア（山口県や福岡県等）で活動するゲストが10分間で「思い」をプレゼンし、参加者の交流をメインにしたイベント</li>
+          <li>#1 2025.4.24 〜 #9 2026.8.26、会場はしものせき市民活動センター</li>
         </ul>
       </div>
-      <div class="fact i"><span class="tag">IDEA ／ 仮のコピー</span>
+      <div class="fact i"><span class="tag">SOURCE ／ 出典</span>
         <ul>
-          <li>「海峡を、こえて話そう。」（A）</li>
-          <li>端末風の起動テキスト（C）</li>
-          <li>差し替え前提の演出用コピーです</li>
+          <li>Canva「関門カイギHP」デザイン</li>
+          <li>Canva「関門カイギ #1」「#7」「#8」「#9」の告知デザイン</li>
+          <li>下関は山口県、門司は福岡県（一般的な地理情報）</li>
         </ul>
       </div>
-      <div class="fact u"><span class="tag">UNKNOWN ／ 入れていない</span>
+      <div class="fact u"><span class="tag">NOT USED ／ 入れていない</span>
         <ul>
-          <li>開催日・会場・登壇者・主催者</li>
-          <li>ロゴやブランドカラーの指定</li>
-          <li>確認できれば、どのパターンにも差し込めます</li>
+          <li>ゲスト・運営メンバーの個人名と写真（ご本人の了承が要るため）</li>
+          <li>曜日（HPの#6「10.23（金）」は、暦では木曜日のため要確認）</li>
+          <li>Instagramの内容（この環境からは閲覧不可）</li>
         </ul>
       </div>
     </div>
@@ -169,6 +170,7 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-fa
 </div>
 
 <script>
+const SCRIPT_SRC=document.currentScript?document.currentScript.textContent.replace(/[\x00-\x7F]/g,''):'';
 (()=>{
 'use strict';
 const W=1920,H=1080,CX=W/2,CY=H/2,DUR=15,FPS=30;
@@ -339,10 +341,10 @@ const A=(()=>{
     const la=E.o3(seg(t,3.0,3.6))*(1-seg(t,6.3,6.7));
     if(la>0){
       const yT=CY-gap(260,s,1)-70,yB=CY+gap(W-260,s,2.7)+90;
-      font(600,46,F.mincho);text('本州　下関',120,yT,{c:C.foam,a:la,align:'left',track:6});
-      font(400,17,F.mono);text('HONSHU / SHIMONOSEKI',122,yT+46,{c:C.tide,a:la*.8,align:'left',track:5});
-      font(600,46,F.mincho);text('九州　門司',W-120,yB,{c:C.foam,a:la,align:'right',track:6});
-      font(400,17,F.mono);text('KYUSHU / MOJI',W-122,yB+46,{c:C.tide,a:la*.8,align:'right',track:5});
+      font(600,46,F.mincho);text('山口県　下関',120,yT,{c:C.foam,a:la,align:'left',track:6});
+      font(400,17,F.mono);text('YAMAGUCHI / SHIMONOSEKI',122,yT+46,{c:C.tide,a:la*.8,align:'left',track:5});
+      font(600,46,F.mincho);text('福岡県　門司',W-120,yB,{c:C.foam,a:la,align:'right',track:6});
+      font(400,17,F.mono);text('FUKUOKA / MOJI',W-122,yB+46,{c:C.tide,a:la*.8,align:'right',track:5});
     }
 
     // 関門 title with wipe + shine
@@ -383,8 +385,10 @@ const A=(()=>{
       for(let i=0;i<22;i++){const y=hz+14+i*i*.9;const w=(260-i*9)*(.5+hash(i+Math.floor(t*8)*.37));X.globalAlpha=skyA*(.55-i*.022);X.fillRect(CX-w/2+(hash(i*2.3)-.5)*60,y,w,2.2);}
       X.restore();
       bridge(t,skyA);
-      font(600,64,F.mincho);
-      chars('海峡を、こえて話そう。',CX,H*.14,10,i=>{const p=E.o3(seg(t,8.8+i*.06,9.4+i*.06));return{a:p*skyA,dy:(1-p)*30,c:C.foam};});
+      font(600,54,F.mincho);
+      chars('「ひと・まち・まなび」が「想い」でつながる、',CX,H*.1,4,i=>{const p=E.o3(seg(t,8.6+i*.03,9.1+i*.03));return{a:p*skyA,dy:(1-p)*26,c:C.foam};});
+      font(800,72,F.mincho);
+      chars('終わらないカイギ',CX,H*.1+92,10,i=>{const p=E.o3(seg(t,9.3+i*.05,9.8+i*.05));return{a:p*skyA,dy:(1-p)*26,c:C.sun};});
     }
 
     // kinetic KANMON / KAIGI
@@ -406,8 +410,10 @@ const A=(()=>{
       const ds=E.oBack(seg(t,13.4,13.8));if(ds>0){X.fillStyle=C.sun;X.beginPath();X.arc(CX+lw/2+22,CY+15,11*ds,0,Math.PI*2);X.fill();}
       font(800,168,F.mincho);
       chars('関門カイギ',CX,CY-100,14,i=>{const p=E.o3(seg(t,13.05+i*.08,13.65+i*.08));return{a:p,dy:(1-p)*40,c:C.foam};});
-      font(400,30,F.mono);
-      chars('KANMON KAIGI',CX,CY+84,22,i=>{const p=seg(t,13.6+i*.03,13.9+i*.03);return{a:p,c:C.tide};});
+      font(400,28,F.mono);
+      chars('KANMON KAIGI COMMUNITY',CX,CY+84,16,i=>{const p=seg(t,13.6+i*.02,13.9+i*.02);return{a:p,c:C.tide};});
+      font(400,20,F.mono);
+      text('#1 2025.04.24  →  #9 2026.08.26',CX,CY+150,{c:C.foam,a:seg(t,14.0,14.3)*.7,track:6});
       X.restore();
     }
     vignette(.6);
@@ -426,10 +432,10 @@ const A=(()=>{
     S.tone(12.85,65.4,2.1,'sine',.25,.01);S.kick(12.85,.9);
   }
   return{render,audio,
-    scenes:[[0,'潮流'],[1.8,'海峡'],[4.0,'関門'],[7.0,'橋'],[10.2,'KANMON'],[12.8,'ロゴ']],
-    card:{key:'A',name:'TIDE ／ 潮流',concept:'関門海峡の流れを84本の線で描きます。本州と九州の岸が寄って海峡の形になり、明朝の「関門」が流れの上に浮かびます。後半は夕景の吊り橋と余韻のあるロゴで締めます。',
+    scenes:[[0,'潮流'],[1.8,'海峡'],[4.0,'関門'],[7.0,'橋・コピー'],[10.2,'KANMON'],[12.8,'ロゴ']],
+    card:{key:'A',name:'TIDE ／ 潮流',concept:'関門海峡の流れを84本の線で描きます。山口県と福岡県の岸が寄って海峡の形になり、明朝の「関門」が流れの上に浮かびます。後半はロゴにもある橋を夕景で描き、公式コピー「終わらないカイギ」とロゴで締めます。',
       swatches:[C.deep,C.mid,C.tide,C.foam,C.sun],fonts:'Shippori Mincho B1 / DM Mono',
-      cuts:[['00:00','流れの線が走り出す'],['01:24','両岸が寄って海峡になる'],['04:00','「関門」をワイプで出す'],['07:00','夕景に吊り橋を描く'],['10:06','KANMON / KAIGI、波紋3発'],['12:24','ロゴ・ライン・夕日の点']]}};
+      cuts:[['00:00','流れの線が走り出す'],['01:24','山口県と福岡県の岸が寄る'],['04:00','「関門」をワイプで出す'],['07:00','吊り橋と公式コピー'],['10:06','KANMON / KAIGI、波紋3発'],['12:24','ロゴ・#1→#9の日付']]}};
 })();
 
 /* =====================================================================
@@ -447,8 +453,8 @@ const B=(()=>{
     text(`BEAT ${String(beat).padStart(2,'0')}/30  ·  120 BPM`,W-60,52,{c,a:.85,align:'right',track:3});
     X.save();X.globalAlpha=.85;X.fillStyle=c;X.fillRect(60,H-60,(W-120)*(t/DUR),4);X.restore();
   }
-  const WORDS=[['KAN','関',C.blue,C.paper],['MON','門',C.paper,C.red],['KAI','カイ',C.ink,C.paper],['GI','ギ',C.red,C.ink]];
-  const CELLS=[['circle',C.red],['kan',C.ink],['square',C.ink],['tri',C.blue],['mon',C.red],['ring',C.ink],['ka',C.blue],['bars',C.red],['i',C.ink],['half',C.blue],['gi',C.red],['dot',C.ink]];
+  const WORDS=[['ひと','HITO',C.blue,C.paper],['まち','MACHI',C.paper,C.red],['まなび','MANABI',C.ink,C.paper],['想い','OMOI',C.red,C.ink]];
+  const CELLS=[['circle',C.red],['#1',C.ink],['square',C.ink],['tri',C.blue],['10分',C.red],['ring',C.ink],['#9',C.blue],['bars',C.red],['想い',C.ink],['half',C.blue],['交流',C.red],['dot',C.ink]];
   const ORDER=[3,7,0,10,5,1,8,2,11,6,4,9];
   function cellShape(type,col,t,s){
     X.save();X.scale(s,s);X.fillStyle=col;X.strokeStyle=col;
@@ -461,7 +467,7 @@ const B=(()=>{
       case'bars':for(let i=0;i<5;i++){const h=40+Math.abs(Math.sin(t*6+i*.9))*170;X.fillRect(-120+i*50,R-h,34,h);}break;
       case'half':X.rotate(t*2);X.beginPath();X.arc(0,0,R,0,Math.PI);X.fill();break;
       case'dot':{const y=-Math.abs(Math.sin(Math.PI*t*2))*80;X.beginPath();X.arc(0,y+30,46,0,Math.PI*2);X.fill();X.fillRect(-90,82,180,8);break;}
-      default:{const m={kan:'関',mon:'門',ka:'カ',i:'イ',gi:'ギ'}[type];font(400,230,F.dela);text(m,0,10,{c:col});}
+      default:{font(400,type.length>2?130:175,F.dela);text(type,0,10,{c:col});}
     }
     X.restore();
   }
@@ -487,9 +493,9 @@ const B=(()=>{
       const i=Math.min(3,Math.floor((t-3)/.5)),lt=(t-3)-i*.5;const [w,jp,bg,fg]=WORDS[i];
       fill(bg);hudC=fg;
       const dy=(1-E.oExpo(seg(lt,0,.2)))*H*.95;
-      font(400,860,F.anton);text(w,CX,CY+40+dy,{c:fg,track:10});
+      font(400,w.length>2?500:640,F.dela);text(w,CX,CY+30+dy,{c:fg,track:10});
       font(400,20,F.mono);text(`0${i+1} / 04`,60,H-100,{c:fg,align:'left',track:4});
-      font(400,120,F.dela);text(jp,W-80,H-150,{c:fg,align:'right',a:E.o3(seg(lt,.08,.22))});
+      font(400,90,F.anton);text(jp,W-80,H-140,{c:fg,align:'right',track:6,a:E.o3(seg(lt,.08,.22))});
     }else if(t<8.0){
       fill(C.paper);hudC=C.ink;
       const cw=W/4,ch=H/3;
@@ -515,7 +521,7 @@ const B=(()=>{
         const dir=k%2?1:-1;
         const ent=(1-E.oExpo(seg(t,8.0+k*.05,8.5+k*.05)))*dir*3200;
         X.save();X.translate(ent,y0+k*bh);X.fillStyle=bg;X.fillRect(-1700,0,3400,bh);
-        const str=ff==='dela'?'関門カイギ　●　':'KANMON KAIGI  ●  ';
+        const str=ff==='dela'?'関門カイギ　●　終わらないカイギ　●　':'KANMON KAIGI COMMUNITY  ●  ';
         ff==='dela'?font(400,150,F.dela):font(400,200,F.anton);
         const tw=X.measureText(str).width;
         let off=frac(((t-8)*(520+k*60)*dir)/tw)*tw;
@@ -530,14 +536,14 @@ const B=(()=>{
       const outL=E.iExpo(seg(t,12.15,12.5)),outR=E.iExpo(seg(t,12.2,12.5));
       const yl=(-inL-outL)*H,yr=(inR+outR)*H;
       X.fillStyle=C.ink;X.fillRect(0,yl,CX,H);X.fillStyle=C.red;X.fillRect(CX,yr,CX,H);
-      font(400,300,F.dela);text('下関',CX/2,CY-40+yl,{c:C.paper});text('門司',CX+CX/2,CY-40+yr,{c:C.ink});
-      font(400,24,F.mono);text('SHIMONOSEKI · HONSHU',CX/2,CY+170+yl,{c:C.paper,track:5});text('MOJI · KYUSHU',CX+CX/2,CY+170+yr,{c:C.ink,track:5});
+      font(400,300,F.dela);text('山口',CX/2,CY-40+yl,{c:C.paper});text('福岡',CX+CX/2,CY-40+yr,{c:C.ink});
+      font(400,24,F.mono);text('YAMAGUCHI',CX/2,CY+170+yl,{c:C.paper,track:8});text('FUKUOKA',CX+CX/2,CY+170+yr,{c:C.ink,track:8});
       // link line + shuttle
       const lp=E.io3(seg(t,11.0,11.4))*(1-E.io3(seg(t,12.05,12.25)));
       if(lp>0){const y=H*.82,x0=W*.18,x1=W*.82,len=(x1-x0)*lp;
         X.fillStyle=C.paper;X.fillRect(CX-len/2,y-3,len,6);
         const k=.5+.5*Math.sin((t-11.4)*Math.PI*1.4-Math.PI/2);if(t>11.4){X.beginPath();X.arc(lerp(x0,x1,k),y,26,0,Math.PI*2);X.fill();}
-        font(400,22,F.mono);text('⇄  関門海峡  ⇄',CX,y-52,{c:C.paper,a:lp,track:6});}
+        font(400,22,F.mono);text('⇄  関門エリア  ⇄',CX,y-52,{c:C.paper,a:lp,track:6});}
     }else{
       fill(C.paper);hudC=C.ink;
       font(400,230,F.dela);
@@ -546,8 +552,9 @@ const B=(()=>{
       const ds=E.oBack(seg(t,13.1,13.45))*pulse;
       if(ds>0){X.fillStyle=C.red;X.beginPath();X.arc(CX-30+tw/2+70,CY+50,34*ds,0,Math.PI*2);X.fill();}
       const wp=E.io3(seg(t,13.2,13.7));
-      X.save();X.beginPath();X.rect(0,CY+100,W*wp,140);X.clip();font(400,84,F.anton);text('KANMON KAIGI',CX,CY+168,{c:C.ink,track:16});X.restore();
-      X.fillStyle=C.red;const bw=E.oExpo(seg(t,13.4,13.9))*520;X.fillRect(CX-bw/2,CY+232,bw,10);
+      X.save();X.beginPath();X.rect(0,CY+100,W*wp,140);X.clip();font(400,72,F.anton);text('KANMON KAIGI COMMUNITY',CX,CY+168,{c:C.ink,track:10});X.restore();
+      X.fillStyle=C.red;const bw=E.oExpo(seg(t,13.4,13.9))*760;X.fillRect(CX-bw/2,CY+232,bw,10);
+      font(400,22,F.mono);text('GUEST × 10 MIN  ·  #1 → #9  ·  しものせき市民活動センター',CX,CY+300,{c:C.ink,a:seg(t,13.9,14.2)*.8,track:4});
     }
     hud(t,hudC);
   }
@@ -562,10 +569,10 @@ const B=(()=>{
     S.tone(13.1,1318.5,.25,'sine',.08,.002);
   }
   return{render,audio,
-    scenes:[[0,'赤丸'],[1.0,'関'],[1.5,'門'],[2.0,'衝突'],[3.0,'KAN MON…'],[5.0,'グリッド'],[8.0,'帯'],[10.5,'下関｜門司'],[12.5,'ロゴ']],
+    scenes:[[0,'赤丸'],[1.0,'関'],[1.5,'門'],[2.0,'衝突'],[3.0,'ひと・まち…'],[5.0,'グリッド'],[8.0,'帯'],[10.5,'山口｜福岡'],[12.5,'ロゴ']],
     card:{key:'B',name:'BEAT ／ 拍',concept:'120BPMの拍にカットを合わせ、0.5秒ごとに地の色と文字を切り替えます。極太ゴシックと細いモノスペースの対比で押し切るスイス調の構成です。',
       swatches:[C.paper,C.ink,C.red,C.blue],fonts:'Dela Gothic One / Anton / DM Mono',
-      cuts:[['00:00','赤丸が画面を埋める'],['01:00','関／門 1拍ずつ'],['02:00','左右から衝突、赤帯で抜く'],['03:00','KAN・MON・KAI・GI'],['05:00','4×3グリッドに図形'],['08:00','斜めの帯が流れる'],['10:15','下関｜門司の分割画面'],['12:15','ロゴ・赤い点']]}};
+      cuts:[['00:00','赤丸が画面を埋める'],['01:00','関／門 1拍ずつ'],['02:00','左右から衝突、赤帯で抜く'],['03:00','ひと・まち・まなび・想い'],['05:00','#1・#9・10分・交流のグリッド'],['08:00','斜めの帯が流れる'],['10:15','山口｜福岡の分割画面'],['12:15','ロゴ・赤い点']]}};
 })();
 
 /* =====================================================================
@@ -627,7 +634,7 @@ const Cp=(()=>{
     // boot terminal
     if(t<2.45){
       const out=seg(t,2.1,2.45);const flick=out>0?(hash(Math.floor(t*40))>out?1:0):1;
-      const L=[[.15,'> SIGNAL CHECK ............ OK'],[.65,'> TARGET  : 関門カイギ'],[1.1,'> FORMAT  : SHOWREEL / 15 SEC'],[1.55,'> STATUS  : ■■■■■■■■■■ READY']];
+      const L=[[.15,'> EVENT   : 関門カイギ #1 → #9'],[.6,'> FORMAT  : GUEST × 10 MIN / 交流'],[1.05,'> VENUE   : しものせき市民活動センター'],[1.35,'> STATUS  : ■■■■■■ 終わらないカイギ']];
       font(400,42,F.mono);let lastY=300,lastW=0,any=false;
       L.forEach(([st,s],i)=>{const n=Math.floor((t-st)*46);if(n<=0)return;any=true;const v=[...s].slice(0,n).join('');const y=300+i*84;text(v,170,y,{c:C.amb,a:flick,align:'left'});lastY=y;lastW=X.measureText(v).width;});
       if(any&&Math.floor(t*4)%2===0){X.fillStyle=C.amb;X.globalAlpha=flick;X.fillRect(178+lastW,lastY-22,24,44);X.globalAlpha=1;}
@@ -666,18 +673,18 @@ const Cp=(()=>{
       const pw=E.io3(seg(t,7.1,7.4))*1500;X.globalAlpha=1;X.fillStyle=C.bg;X.fillRect(CX-pw/2,CY-230,pw,400);
       X.strokeStyle=C.amb;X.lineWidth=2;X.strokeRect(CX-pw/2,CY-230,pw,400);
       font(500,150,F.mono);text(scramble('KANMON KAIGI',t,7.4,.07),CX,CY-80,{c:C.amb2,track:6});
-      font(400,74,F.dot);const n=Math.max(0,Math.floor((t-8.3)/.1));text([...'関門カイギ'].slice(0,n).join(''),CX,CY+70,{c:C.amb,track:12});
+      font(400,70,F.dot);const n=Math.max(0,Math.floor((t-8.3)/.08));text([...'ひと・まち・まなび × 想い'].slice(0,n).join(''),CX,CY+70,{c:C.amb,track:8});
       const beatEnv=Math.exp(-frac(t*2)*6);
       for(let i=0;i<72;i++){const h=(.25+.75*Math.abs(Math.sin(i*.37+t*6))*hash(i*1.9))*(30+110*beatEnv);X.globalAlpha=ga*.85;X.fillStyle=C.amb;X.fillRect(CX-72*13+i*26,H-70-h,14,h);}
       X.restore();
     }
     // rapid cuts
     if(t>=10.0&&t<12.6){
-      const words=[['下関','dot',520],['門司','dot',520],['関門','dot',520],['KAN','mono',470],['MON','mono',470],['KAI','mono',470],['GI','mono',520],['15s','mono',470],['● REC','mono',300],['関門カイギ','dot',270]];
+      const words=[['ひと','dot',520],['まち','dot',520],['まなび','dot',440],['想い','dot',520],['10分','dot',440],['#1','mono',520],['#5','mono',520],['#9','mono',520],['交流','dot',520],['関門カイギ','dot',270]];
       const i=Math.min(9,Math.floor((t-10)/.26)),lt=(t-10)-i*.26;const inv=i%2===0;
       fill(inv?C.amb:C.bg);const fg=inv?C.bg:C.amb;
       X.save();X.translate(CX,CY);const s=lerp(1.1,1,E.oExpo(seg(lt,0,.2)));X.scale(s,s);
-      const [w,ff,sz]=words[i];font(400,sz,ff==='dot'?F.dot:F.mono);text(w,0,10,{c:w==='● REC'&&!inv?C.red:fg,track:ff==='mono'?8:0});X.restore();
+      const [w,ff,sz]=words[i];font(400,sz,ff==='dot'?F.dot:F.mono);text(w,0,10,{c:fg,track:ff==='mono'?8:0});X.restore();
       brackets(fg,.9);font(400,20,F.mono);text(`CUT ${String(i+1).padStart(2,'0')}/10`,110,H-110,{c:fg,align:'left',track:3});
     }
     // CRT off
@@ -696,8 +703,8 @@ const Cp=(()=>{
       text(shown,CX-fullW/2,CY-30,{c:C.amb,align:'left',track:10});
       const cw=X.measureText(shown).width+(n?n*10:0);
       if(Math.floor(t*3)%2===0){X.fillStyle=C.amb;X.fillRect(CX-fullW/2+cw+10,CY-110,26,160);}
-      font(400,40,F.mono);text(scramble('KANMON KAIGI',t,13.7,.04),CX,CY+120,{c:C.amb2,track:20});
-      font(400,18,F.mono);text('END OF SIGNAL',CX,H-110,{c:C.amb,a:seg(t,14.3,14.5)*.7,track:8});
+      font(400,36,F.mono);text(scramble('KANMON KAIGI COMMUNITY',t,13.6,.03),CX,CY+120,{c:C.amb2,track:14});
+      font(400,30,F.dot);text('— 終わらないカイギ —',CX,H-130,{c:C.amb,a:seg(t,14.2,14.45)*.85,track:10});
     }
     // CRT overlays
     X.drawImage(scan,0,0);
@@ -721,9 +728,9 @@ const Cp=(()=>{
   }
   return{render,audio,
     scenes:[[0,'起動'],[2.3,'レーダー'],[3.2,'輝点→文字'],[5.0,'グリッチ'],[7.0,'グリッド'],[10.0,'10カット'],[12.6,'CRT'],[13.2,'ロゴ']],
-    card:{key:'C',name:'SIGNAL ／ 信号',concept:'アンバーのレーダー画面で、輝点が集まって「関門」の文字になります。グリッチ、パースグリッド、0.26秒刻みの10カットと加速し、ブラウン管が消えるように収束させます。',
+    card:{key:'C',name:'SIGNAL ／ 信号',concept:'アンバーのレーダー画面で、輝点が集まって「関門」の文字になります。グリッチ、パースグリッド、0.26秒刻みの10カットと加速し、ブラウン管が消えたあとに「終わらないカイギ」が残ります。',
       swatches:[C.bg,C.amb,C.amb2,C.red,C.cyan],fonts:'DotGothic16 / DM Mono',
-      cuts:[['00:00','端末の起動テキスト'],['02:09','レーダーの輪と掃引線'],['03:06','輝点が集まって「関門」'],['05:00','RGBずれのグリッチ'],['07:00','パースグリッドと文字化け解除'],['10:00','白黒反転の10カット'],['12:18','CRTオフ'],['13:06','ロゴをタイプ']]}};
+      cuts:[['00:00','#1→#9・10分・会場を端末表示'],['02:09','レーダーの輪と掃引線'],['03:06','輝点が集まって「関門」'],['05:00','RGBずれのグリッチ'],['07:00','パースグリッドと文字化け解除'],['10:00','ひと・まち・まなび・想い…10カット'],['12:18','CRTオフ'],['13:06','ロゴ・「終わらないカイギ」']]}};
 })();
 
 const PAT={A,B,C:Cp};
@@ -854,7 +861,9 @@ $('cards').innerHTML=Object.values(PAT).map(p=>{const c=p.card;return`<article c
 /* ---------- boot ---------- */
 const initial=(location.hash||'').replace('#','').toUpperCase();
 const fontsToLoad=[`800 100px ${F.mincho}`,`600 40px ${F.mincho}`,`400 100px ${F.dela}`,`400 100px ${F.anton}`,`400 100px ${F.dot}`,`400 30px ${F.mono}`,`500 30px ${F.mono}`];
-const ready=document.fonts?Promise.race([Promise.all(fontsToLoad.map(f=>document.fonts.load(f,'関門カイギ下関門司KANMON'))),new Promise(r=>setTimeout(r,3000))]):Promise.resolve();
+// preload every glyph the reel draws (Google Fonts serves CJK in unicode-range slices)
+const GLYPHS_ALL=[...new Set((SCRIPT_SRC||'')+'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#→×·—')].join('');
+const ready=document.fonts?Promise.race([Promise.all(fontsToLoad.map(f=>document.fonts.load(f,GLYPHS_ALL))),new Promise(r=>setTimeout(r,4000))]):Promise.resolve();
 ready.catch(()=>{}).then(()=>{
   selectPattern(PAT[initial]?initial:'A',false);
   setPlay(playing);
