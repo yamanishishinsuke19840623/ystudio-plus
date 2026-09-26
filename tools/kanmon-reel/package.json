@@ -1,0 +1,13 @@
+{
+  "name": "kanmon-reel",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "fetch": "node fetch.mjs",
+    "render": "node render.mjs",
+    "publish": "node publish-instagram.mjs"
+  },
+  "dependencies": {
+    "playwright": "^1.56.1"
+  }
+}
