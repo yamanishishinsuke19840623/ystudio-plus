@@ -35,6 +35,7 @@ button.rec.on{background:#e5484d;border-color:#e5484d;color:#fff;}
 .status{font-size:13px;padding:8px 12px;border-radius:8px;margin-bottom:10px;background:rgba(143,208,255,.1);border:1px solid var(--line);}
 .status.sample{background:rgba(255,217,138,.12);border-color:rgba(255,217,138,.5);color:var(--warn);}
 .row{display:flex;gap:8px;flex-wrap:wrap;}
+select{background:#06112b;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:8px 10px;font:14px 'Noto Sans JP',sans-serif;margin-top:4px;}
 .row input{flex:1 1 220px;background:#06112b;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:8px 10px;font:14px 'JetBrains Mono',monospace;}
 ol.posts{list-style:none;display:grid;gap:10px;margin-top:10px;}
 ol.posts li{display:grid;grid-template-columns:64px 1fr;gap:10px;align-items:center;font-size:13px;}
@@ -70,6 +71,15 @@ footer a{color:var(--sub);}
     </div>
 
     <div>
+      <div class="panel">
+        <h2>リールの設定</h2>
+        <div class="row">
+          <label class="note" style="flex:1 1 200px">記事の選び方<br>
+            <select id="feed" style="width:100%"><option value="">新着(全カテゴリ)</option></select></label>
+          <label class="note" style="flex:1 1 140px">本数(合計15秒)<br>
+            <select id="count" style="width:100%"><option value="3" selected>3本(1本 約3.3秒)</option><option value="4">4本(1本 2.5秒)</option><option value="5">5本(1本 2秒)</option></select></label>
+        </div>
+      </div>
       <div class="panel">
         <h2>使用中の記事データ</h2>
         <div id="status" class="status">読み込み中…</div>
@@ -186,11 +196,23 @@ function loadImage(src) {
     img.src = src;
   });
 }
-async function fromLocal() {
-  const r = await fetch('reel-data/posts.json', { cache: 'no-store' });
+async function fromLocal(file = 'posts.json') {
+  const r = await fetch('reel-data/' + file, { cache: 'no-store' });
   if (!r.ok) throw new Error('no local data');
   const d = await r.json();
-  return { mode: 'local', site: d.site, fetchedAt: d.fetchedAt, posts: d.posts.map(p => ({ ...p, src: p.localImage ? 'reel-data/' + p.localImage : '' })) };
+  return { mode: 'local', site: d.site, fetchedAt: d.fetchedAt, feed: d.category || null, posts: d.posts.map(p => ({ ...p, src: p.localImage ? 'reel-data/' + p.localImage : '' })) };
+}
+async function loadCategories() {
+  try {
+    const r = await fetch('reel-data/categories.json', { cache: 'no-store' }); if (!r.ok) return;
+    const sel = $('feed');
+    (await r.json()).categories.forEach(c => sel.append(new Option(c.name, c.file)));
+  } catch { /* 新着のみ */ }
+}
+const COUNT = () => +$('count').value;
+function applyCount() {
+  DATA.posts = (DATA.all || DATA.posts).slice(0, COUNT());
+  layoutCache.clear(); events = buildEvents(); resetSched(); dirty = true; renderList();
 }
 async function fromLive(site) {
   site = site.replace(/\/+$/, '');
@@ -207,10 +229,10 @@ async function fromLive(site) {
 }
 async function useData(d) {
   tainted = false; layoutCache.clear();
-  d.posts = d.posts.slice(0, 5);
-  const chars = d.posts.map(p => (p.title || '') + (p.category || '')).join('');
+  d.all = d.posts.slice(0, 5); d.posts = d.all.slice(0, COUNT());
+  const chars = d.all.map(p => (p.title || '') + (p.category || '')).join('') + (d.feed ? d.feed.name + 'の新着記事' : '');
   await Promise.all([
-    ...d.posts.map(async p => { p.img = await loadImage(p.src); p.blurBg = p.img ? blurred(p.img) : null; }),
+    ...d.all.map(async p => { p.img = await loadImage(p.src); p.blurBg = p.img ? blurred(p.img) : null; }),
     // titles contain arbitrary kanji: load those glyphs before measuring/drawing on canvas
     document.fonts ? Promise.race([Promise.all(['900 70px "Zen Kaku Gothic New"', '700 40px "Zen Kaku Gothic New"'].map(f => document.fonts.load(f, chars))), new Promise(r => setTimeout(r, 3000))]).catch(() => {}) : null
   ]);
@@ -283,7 +305,7 @@ function intro(t) {
   g.fillStyle = C.sky; g.fillRect(110, 0, 3, H * E.outExpo(seg(t, .1, .9)));
   hudTop(C.blue, 'NEW POSTS');
   font(64, JP, 700); g.fillStyle = C.blue; g.globalAlpha = seg(t, .3, .6);
-  textC('新着記事', W / 2, 520 + (1 - E.outExpo(seg(t, .3, .7))) * 40); g.globalAlpha = 1;
+  textC(DATA.feed ? `${DATA.feed.name}の新着記事` : '新着記事', W / 2, 520 + (1 - E.outExpo(seg(t, .3, .7))) * 40); g.globalAlpha = 1;
   if (logoReady) drawLogo(W / 2, 700, 880, 190, seg(t, .5, 1.2), null);
   else {
     font(136, JP, 900); g.fillStyle = C.deep;
@@ -337,11 +359,13 @@ function post(i, lt, d, t) {
   const shift = -pout * 1150;
   hudTop('#fff', `${String(i + 1).padStart(2, '0')} / ${String(n).padStart(2, '0')}`);
   // category chip
-  if (p.category) {
-    font(40, JP, 700); const w = g.measureText(p.category).width + 64;
+  // in a category reel every post belongs to that category, so show it consistently
+  const chip = DATA.feed ? DATA.feed.name : p.category;
+  if (chip) {
+    font(40, JP, 700); const w = g.measureText(chip).width + 64;
     g.save(); g.translate(shift, 0); g.globalAlpha = pin;
     g.fillStyle = '#fff'; g.beginPath(); g.roundRect(W - 90 - w, 170, w, 76, 38); g.fill();
-    g.fillStyle = C.blue; textC(p.category, W - 90 - w / 2, 210); g.restore();
+    g.fillStyle = C.blue; textC(chip, W - 90 - w / 2, 210); g.restore();
   }
   // photo (taped note-card)
   g.save();
@@ -536,7 +560,7 @@ function startRecording() {
   recorder.onstop = () => {
     const type = recorder.mimeType || mime || 'video/webm', blob = new Blob(chunks, { type });
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-    const day = new Date(); a.download = `kanmonnote-reel-${day.getFullYear()}${String(day.getMonth() + 1).padStart(2, '0')}${String(day.getDate()).padStart(2, '0')}.${type.includes('mp4') ? 'mp4' : 'webm'}`;
+    const day = new Date(); a.download = `kanmonnote-reel-${DATA.feed ? DATA.feed.slug : 'new'}-${day.getFullYear()}${String(day.getMonth() + 1).padStart(2, '0')}${String(day.getDate()).padStart(2, '0')}.${type.includes('mp4') ? 'mp4' : 'webm'}`;
     document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
   };
   recorder.start(); recording = true; recBtn.classList.add('on'); recBtn.textContent = '● 録画中…'; play();
@@ -548,6 +572,12 @@ bigPlay.addEventListener('click', play);
 scrub.addEventListener('input', () => { if (recording) return; t = +scrub.value; killAudio(); if (playing && soundOn) ensureAudio(); resetSched(); dirty = true; });
 $('sound').addEventListener('click', e => { if (recording) return; soundOn = !soundOn; e.target.textContent = soundOn ? '🔊' : '🔇'; if (!soundOn) killAudio(); else if (playing) { ensureAudio(); resetSched(); } });
 recBtn.addEventListener('click', () => recording ? (stopRecording(), pause()) : startRecording());
+$('count').addEventListener('change', () => { if (!recording) applyCount(); });
+$('feed').addEventListener('change', async e => {
+  if (recording) return;
+  try { await useData(await fromLocal(e.target.value || 'posts.json')); }
+  catch (err) { $('status').textContent = `読み込めませんでした(${err.message})`; }
+});
 $('loadLive').addEventListener('click', async () => {
   const st = $('status'); st.className = 'status'; st.textContent = 'WordPressから取得中…';
   try { await useData(await fromLive($('site').value.trim())); }
@@ -562,8 +592,9 @@ const fontsReady = document.fonts ? Promise.race([
   new Promise(r => setTimeout(r, 2500))
 ]) : Promise.resolve();
 fontsReady.then(async () => {
-  DATA = { mode: 'sample', site: 'https://www.kanmonnote.com', posts: samplePosts() }; renderList();
+  DATA = { mode: 'sample', site: 'https://www.kanmonnote.com', all: samplePosts(), posts: samplePosts().slice(0, COUNT()) }; applyCount();
   requestAnimationFrame(frame);
+  await loadCategories();
   try { await useData(await fromLocal()); }
   catch { try { await useData(await fromLive($('site').value.trim())); } catch { /* stay in labeled sample mode */ } }
 });
