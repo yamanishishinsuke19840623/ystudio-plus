@@ -1,7 +1,7 @@
 {
   "site": "https://www.kanmonnote.com",
   "source": "rest",
-  "fetchedAt": "2026-09-26T12:26:19.314Z",
+  "fetchedAt": "2026-09-26T12:34:11.278Z",
   "category": {
     "id": 82,
     "name": "生活",
@@ -53,5 +53,6 @@
       "image": "https://www.kanmonnote.com/wp-content/uploads/2025/02/IMG_1904-768x576.jpeg",
       "localImage": "img/44411.jpg"
     }
-  ]
+  ],
+  "excluded": []
 }

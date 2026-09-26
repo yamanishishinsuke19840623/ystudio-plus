@@ -1,26 +1,8 @@
 {
   "site": "https://www.kanmonnote.com",
   "source": "rest",
-  "fetchedAt": "2026-09-26T12:26:19.314Z",
+  "fetchedAt": "2026-09-26T12:34:11.278Z",
   "posts": [
-    {
-      "id": 47719,
-      "title": "【イベント】9月19日子どもの「できた！」「たのしい！」があふれる体験型イベントが開催されます",
-      "date": "2026-09-17T14:34:29",
-      "link": "https://www.kanmonnote.com/0919miyell/",
-      "category": "イベント",
-      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/09/IMG_5453-768x1086.jpeg",
-      "localImage": "img/47719.jpg"
-    },
-    {
-      "id": 47685,
-      "title": "【イベント】かつて服を仕立てた洋裁店が、まちの未来をつくる新拠点に！オープニングイベント開催",
-      "date": "2026-09-13T12:00:13",
-      "link": "https://www.kanmonnote.com/tailors-open/",
-      "category": "イベント",
-      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/09/IMG_5364-768x576.jpeg",
-      "localImage": "img/47685.jpg"
-    },
     {
       "id": 47611,
       "title": "団体で訪れ、次はひとりで。“帰ってきたくなる”スナック「ばぁ～びぃ〜Boo」",
@@ -31,22 +13,84 @@
       "localImage": "img/47611.jpg"
     },
     {
+      "id": 47488,
+      "title": "ふぐ一尾、20～30秒!?下関・山西水産4代目が目指す「顔の見える魚屋」【かんもん企業紹介 No.01】",
+      "date": "2026-07-20T15:43:11",
+      "link": "https://www.kanmonnote.com/202607yamanishi-suisan/",
+      "category": "ふぐ",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/07/5fb1965471d9ba33276f9a3ba40099b4-768x461.jpg",
+      "localImage": "img/47488.jpg"
+    },
+    {
+      "id": 47414,
+      "title": "BTSファンで賑わう、釜山へ行ってきました！⑦終",
+      "date": "2026-07-08T19:30:05",
+      "link": "https://www.kanmonnote.com/bts-busan7/",
+      "category": "お店（飲食以外）",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/07/IMG_1223-768x576.jpeg",
+      "localImage": "img/47414.jpg"
+    },
+    {
+      "id": 47385,
+      "title": "BTSファンで賑わう、釜山へ行ってきました！⑥",
+      "date": "2026-07-07T19:30:30",
+      "link": "https://www.kanmonnote.com/bts-busan6/",
+      "category": "観光",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/06/IMG_1115-1-768x1024.jpeg",
+      "localImage": "img/47385.jpg"
+    },
+    {
+      "id": 47301,
+      "title": "BTSファンで賑わう、釜山へ行ってきました！⑤",
+      "date": "2026-07-06T19:30:52",
+      "link": "https://www.kanmonnote.com/bts-busan5/",
+      "category": "お店（飲食以外）",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/06/IMG_1111-scaled.jpeg",
+      "localImage": "img/47301.jpg"
+    }
+  ],
+  "excluded": [
+    {
+      "id": 47719,
+      "title": "【イベント】9月19日子どもの「できた！」「たのしい！」があふれる体験型イベントが開催されます",
+      "date": "2026-09-17T14:34:29",
+      "reason": "キーワード「【イベント】」"
+    },
+    {
+      "id": 47685,
+      "title": "【イベント】かつて服を仕立てた洋裁店が、まちの未来をつくる新拠点に！オープニングイベント開催",
+      "date": "2026-09-13T12:00:13",
+      "reason": "キーワード「【イベント】」"
+    },
+    {
       "id": 23551,
       "title": "【202６年改訂版】「関門海峡花火大会」駐車場情報",
       "date": "2026-08-11T11:00:12",
-      "link": "https://www.kanmonnote.com/kanmonkaikyo-hanabi-parking/",
-      "category": "観光",
-      "image": "https://www.kanmonnote.com/wp-content/uploads/2019/08/09398A46-C4E7-4AD2-9314-0120724E1B60.jpeg",
-      "localImage": "img/23551.jpg"
+      "reason": "キーワード「改訂版」"
     },
     {
       "id": 47588,
       "title": "【イベント】県内外からプロのハンドメイドクリエイターが2日間で延べ160店舗が集まる下関最大級のマルシェイベント開催！",
       "date": "2026-08-09T18:24:21",
-      "link": "https://www.kanmonnote.com/kaikyomarche2026/",
-      "category": "イベント",
-      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/08/IMG_3810-768x1086.jpg",
-      "localImage": "img/47588.jpg"
+      "reason": "キーワード「【イベント】」"
+    },
+    {
+      "id": 47539,
+      "title": "【夏限定】抹茶好き必見。かき氷×下関銘菓を楽しめる「茶房 風舞(ふわり)」",
+      "date": "2026-07-30T17:33:31",
+      "reason": "日付・期限の表記(【夏限定】)"
+    },
+    {
+      "id": 47353,
+      "title": "【開店】唐揚げ専門店の新しい挑戦！新店舗にてカレー屋さんをプレオープン中です！！",
+      "date": "2026-06-28T19:30:57",
+      "reason": "キーワード「プレオープン」"
+    },
+    {
+      "id": 47270,
+      "title": "【イベント】6月27日、子どもの「できた！」「たのしい！」があふれる体験型イベントが開催されます",
+      "date": "2026-06-22T19:30:58",
+      "reason": "キーワード「【イベント】」"
     }
   ]
 }
