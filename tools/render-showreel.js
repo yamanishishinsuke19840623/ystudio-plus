@@ -21,7 +21,7 @@ const out = path.resolve(root, opt('--out') || `${base}${vertical ? '-vertical' 
 const ffmpeg = process.env.FFMPEG || 'ffmpeg';
 const { chromium } = require(process.env.PLAYWRIGHT || 'playwright');
 
-const MIME = { '.html': 'text/html; charset=utf-8', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png' };
+const MIME = { '.html': 'text/html; charset=utf-8', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webm': 'video/webm', '.mp4': 'video/mp4' };
 const server = http.createServer((req, res) => {
   const f = path.join(root, decodeURIComponent(req.url.split('?')[0]));
   if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); return res.end(); }
@@ -44,7 +44,8 @@ const server = http.createServer((req, res) => {
   }
   await page.goto(url, { waitUntil: 'networkidle' });
   await page.evaluate(() => window.__showreel.ready);
-  const grab = t => page.evaluate(t => { window.__showreel.render(t); return document.getElementById('cv').toDataURL('image/png').split(',')[1]; }, t);
+  // render(t) may return a promise (pages with video clips seek them to the exact frame first)
+  const grab = t => page.evaluate(async t => { await window.__showreel.render(t); return document.getElementById('cv').toDataURL('image/png').split(',')[1]; }, t);
 
   if (stills) {
     for (const f of stills.split(',').map(Number)) {
