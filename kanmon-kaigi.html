@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>関門カイギ</title>
+<meta name="description" content="関門エリア（山口県や福岡県等）で活動するゲストが10分間で「思い」をプレゼンし、参加者の交流をメインにしたイベント。「ひと・まち・まなび」が「想い」でつながる、終わらないカイギ。">
+<meta property="og:title" content="関門カイギ｜終わらないカイギ">
+<meta property="og:description" content="「ひと・まち・まなび」が「想い」でつながる、終わらないカイギ。">
+<meta property="og:image" content="kanmon-reel/flyer-09.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Mono:wght@400;500&family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --paper:#f7f7f3;--ink:#111318;--red:#e8321e;--blue:#1f3bd6;--line:rgba(17,19,24,.14);--sub:#55585f;
+  --f-disp:"Dela Gothic One","Hiragino Sans","Noto Sans JP",sans-serif;
+  --f-lat:"Anton","Impact","Arial Narrow",sans-serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP",sans-serif;
+  --f-mono:"DM Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.85;}
+a{color:inherit;}
+img,video{max-width:100%;display:block;}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px;}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px;}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--paper);border-bottom:2px solid var(--ink);}
+.top .wrap{display:flex;align-items:center;gap:16px;min-height:64px;}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--f-disp);font-size:20px;letter-spacing:.02em;}
+.brand img{width:40px;height:40px;}
+.nav{display:flex;gap:4px 18px;margin-left:auto;flex-wrap:wrap;font-family:var(--f-mono);font-size:13px;letter-spacing:.08em;}
+.nav a{text-decoration:none;padding:4px 0;border-bottom:2px solid transparent;}
+.nav a:hover{border-color:var(--red);}
+.btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:700;font-size:14px;padding:10px 18px;border:2px solid var(--ink);background:var(--ink);color:var(--paper);min-height:44px;}
+.btn:hover{background:var(--red);border-color:var(--red);}
+.btn.ghost{background:transparent;color:var(--ink);}
+.btn.ghost:hover{background:var(--ink);color:var(--paper);}
+@media (max-width:760px){.nav{display:none;}.top .btn{margin-left:auto;padding:8px 12px;font-size:13px;}}
+
+/* hero */
+.hero{position:relative;background:var(--ink);}
+.hero video{width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--ink);}
+@media (max-width:760px){.hero video{aspect-ratio:9/16;max-height:82vh;margin-inline:auto;width:auto;}}
+.snd{position:absolute;right:16px;bottom:16px;font-family:var(--f-mono);font-size:13px;letter-spacing:.06em;background:var(--paper);color:var(--ink);border:2px solid var(--ink);padding:8px 14px;cursor:pointer;min-height:40px;}
+.snd[aria-pressed="true"]{background:var(--red);color:var(--paper);border-color:var(--red);}
+
+.tag{background:var(--red);color:var(--paper);}
+.tag .wrap{padding-block:34px;display:grid;gap:10px;}
+.tag h1{font-family:var(--f-disp);font-weight:400;font-size:clamp(26px,4.6vw,56px);line-height:1.3;text-wrap:balance;}
+.tag p{font-family:var(--f-mono);font-size:13px;letter-spacing:.14em;}
+
+/* marquee */
+.band{overflow:hidden;background:var(--ink);color:var(--paper);border-block:2px solid var(--ink);}
+.band.blue{background:var(--blue);}
+.band .row{display:flex;width:max-content;animation:run 26s linear infinite;}
+.band.rev .row{animation-direction:reverse;}
+.band span{font-family:var(--f-lat);font-size:clamp(34px,5vw,64px);line-height:1.35;white-space:nowrap;padding-right:.6em;letter-spacing:.02em;}
+.band span b{font-family:var(--f-disp);font-weight:400;font-size:.82em;}
+.band i{display:inline-block;width:.42em;height:.42em;border-radius:50%;background:var(--red);vertical-align:.18em;margin:0 .5em;}
+.band.blue i{background:var(--paper);}
+@keyframes run{to{transform:translateX(-50%);}}
+@media (prefers-reduced-motion:reduce){.band .row{animation:none;}}
+
+/* sections */
+section{padding-block:72px;}
+.eyebrow{font-family:var(--f-mono);font-size:13px;letter-spacing:.16em;color:var(--red);margin-bottom:10px;}
+h2{font-family:var(--f-disp);font-weight:400;font-size:clamp(34px,6vw,76px);line-height:1.1;margin-bottom:28px;text-wrap:balance;}
+h2 .lat{font-family:var(--f-lat);display:block;font-size:.5em;letter-spacing:.04em;color:var(--sub);margin-top:6px;}
+
+.about{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:start;}
+.about .lead{font-size:17px;line-height:2.1;max-width:34em;}
+.pillars{display:grid;grid-template-columns:1fr 1fr;gap:0;border:2px solid var(--ink);}
+.pillar{padding:22px 20px;min-height:170px;display:flex;flex-direction:column;justify-content:space-between;gap:14px;border:1px solid var(--ink);}
+.pillar strong{font-family:var(--f-disp);font-weight:400;font-size:22px;line-height:1.4;}
+.pillar small{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;}
+.pillar.r{background:var(--red);color:var(--paper);}
+.pillar.b{background:var(--blue);color:var(--paper);}
+.pillar.k{background:var(--ink);color:var(--paper);}
+.pillar.wide{grid-column:1/-1;min-height:0;flex-direction:row;align-items:center;}
+@media (max-width:860px){.about{grid-template-columns:1fr;}}
+@media (max-width:480px){.pillars{grid-template-columns:1fr;}}
+
+/* format */
+.fmt{background:var(--ink);color:var(--paper);}
+.fmt h2 .lat{color:rgba(247,247,243,.55);}
+.fmt-grid{display:grid;grid-template-columns:320px 1fr;gap:48px;align-items:start;}
+.ten{font-family:var(--f-disp);font-size:clamp(96px,12vw,160px);line-height:.9;color:var(--red);white-space:nowrap;}
+.ten span{font-size:.36em;color:var(--paper);margin-left:.1em;}
+.ten-note{margin-top:16px;font-size:15px;color:rgba(247,247,243,.8);}
+.tl{list-style:none;display:grid;gap:0;border-top:1px solid rgba(247,247,243,.25);}
+.tl li{display:grid;grid-template-columns:130px 1fr;gap:16px;padding:14px 0;border-bottom:1px solid rgba(247,247,243,.25);align-items:baseline;}
+.tl time{font-family:var(--f-mono);font-size:15px;font-variant-numeric:tabular-nums;color:rgba(247,247,243,.7);}
+.tl b{font-weight:700;font-size:17px;}
+.tl li.hl b{color:var(--red);}
+.tl-cap{margin-top:14px;font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;color:rgba(247,247,243,.55);}
+@media (max-width:860px){.fmt-grid{grid-template-columns:1fr;gap:28px;}.tl li{grid-template-columns:104px 1fr;}}
+
+/* archive */
+.arc-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:16px;margin-bottom:28px;}
+.arc-head h2{margin-bottom:0;}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px;}
+.card{border:2px solid var(--ink);background:#fff;display:flex;flex-direction:column;}
+.card img{width:100%;height:auto;border-bottom:2px solid var(--ink);}
+.card .meta{display:flex;align-items:baseline;gap:14px;padding:12px 14px;}
+.card .no{font-family:var(--f-lat);font-size:34px;line-height:1;}
+.card .no.sp{font-size:22px;color:var(--blue);}
+.card time{font-family:var(--f-mono);font-size:14px;font-variant-numeric:tabular-nums;}
+.card .where{margin-left:auto;font-size:12px;color:var(--sub);text-align:right;}
+.card.latest{border-color:var(--red);box-shadow:8px 8px 0 var(--red);}
+
+/* venue & team */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:48px;}
+@media (max-width:860px){.two{grid-template-columns:1fr;}}
+.venue{border:2px solid var(--ink);padding:26px;display:grid;gap:12px;background:#fff;}
+.venue .nm{font-family:var(--f-disp);font-size:26px;line-height:1.4;}
+.venue dl{display:grid;grid-template-columns:5.5em 1fr;gap:6px 12px;font-size:15px;}
+.venue dt{font-family:var(--f-mono);font-size:12px;letter-spacing:.1em;color:var(--sub);padding-top:3px;}
+.venue .note{font-size:13px;color:var(--sub);}
+.team{list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:0;border-top:2px solid var(--ink);}
+.team li{padding:12px 4px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;}
+.team b{font-size:17px;}
+.team span{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;color:var(--sub);}
+
+/* follow */
+.follow{background:var(--blue);color:var(--paper);}
+.follow .wrap{display:grid;grid-template-columns:1fr auto;gap:28px;align-items:center;}
+.follow h2{margin-bottom:10px;}
+.follow p{font-size:16px;max-width:36em;}
+.follow .acts{display:flex;flex-wrap:wrap;gap:12px;}
+.follow .btn{background:var(--paper);color:var(--ink);border-color:var(--paper);}
+.follow .btn:hover{background:var(--red);color:var(--paper);border-color:var(--red);}
+.follow .btn.ghost{background:transparent;color:var(--paper);}
+@media (max-width:760px){.follow .wrap{grid-template-columns:1fr;}}
+
+footer{background:var(--ink);color:var(--paper);padding-block:36px 48px;}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;align-items:center;}
+footer .big{font-family:var(--f-lat);font-size:clamp(28px,5vw,48px);letter-spacing:.04em;}
+footer .big i{display:inline-block;width:.4em;height:.4em;border-radius:50%;background:var(--red);margin-left:.1em;}
+footer small{font-family:var(--f-mono);font-size:12px;color:rgba(247,247,243,.6);letter-spacing:.06em;}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="kanmon-reel/logo-circle.png" alt="" width="40" height="40">関門カイギ</a>
+    <nav class="nav" aria-label="ページ内">
+      <a href="#about">ABOUT</a><a href="#format">FORMAT</a><a href="#archive">ARCHIVE</a><a href="#venue">VENUE</a><a href="#team">TEAM</a>
+    </nav>
+    <a class="btn" href="https://www.instagram.com/kanmon_kaigi/" target="_blank" rel="noopener">Instagram</a>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <video id="reel" autoplay muted loop playsinline preload="auto" poster="kanmon-reel/flyer-09.jpg" aria-label="関門カイギ 15秒ムービー"></video>
+    <button class="snd" id="snd" aria-pressed="false">♪ 音を出す</button>
+  </div>
+
+  <div class="tag">
+    <div class="wrap">
+      <h1>「ひと・まち・まなび」が「想い」でつながる、終わらないカイギ</h1>
+      <p>KANMON KAIGI COMMUNITY · SINCE 2025</p>
+    </div>
+  </div>
+
+  <div class="band" aria-hidden="true"><div class="row">
+    <span>KANMON KAIGI<i></i><b>関門カイギ</b><i></i>SINCE 2025<i></i><b>終わらないカイギ</b><i></i></span>
+    <span>KANMON KAIGI<i></i><b>関門カイギ</b><i></i>SINCE 2025<i></i><b>終わらないカイギ</b><i></i></span>
+  </div></div>
+
+  <section id="about">
+    <div class="wrap about">
+      <div>
+        <p class="eyebrow">ABOUT</p>
+        <h2>関門カイギとは<span class="lat">WHAT IS KANMON KAIGI</span></h2>
+        <p class="lead">関門エリア（山口県や福岡県等）で様々な活動をしているゲストをお呼びして、10分間で自分の「思い」等をプレゼンして頂く、参加者の交流をメインにしたイベントです。<br><br>地域で活躍する魅力ある活動を世の中の人々に知っていただくことや、関門の未来を創るゲストをお招きすることで、業種の垣根を超え、学生から定年退職した方まで壁を取り払って交流することを目的としております。</p>
+      </div>
+      <div class="pillars">
+        <div class="pillar r"><small>LISTEN</small><strong>地域で活躍する<br>面白い人の話を聞く</strong></div>
+        <div class="pillar"><small>CONNECT</small><strong>地域の人をつなぎ、<br>ゆるやかなコミュニティを創る</strong></div>
+        <div class="pillar b"><small>OMOI</small><strong>肩書きや属性ではなく、<br>「想い」でつながる</strong></div>
+        <div class="pillar k"><small>NEVER ENDS</small><strong>最大の特徴：<br>終わらないカイギ</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="format" class="fmt">
+    <div class="wrap">
+      <p class="eyebrow">FORMAT</p>
+      <h2>当日の流れ<span class="lat">HOW IT WORKS</span></h2>
+      <div class="fmt-grid">
+        <div>
+          <div class="ten">10<span>分</span></div>
+          <p class="ten-note">ゲスト1人の持ち時間は10分。自分の「思い」をプレゼンします。そのあとはクロストークと交流の時間です。</p>
+        </div>
+        <div>
+          <ol class="tl">
+            <li><time>19:00–19:10</time><b>オープニング</b></li>
+            <li class="hl"><time>19:10–19:20</time><b>ゲストトーク ①</b></li>
+            <li class="hl"><time>19:20–19:30</time><b>ゲストトーク ②</b></li>
+            <li class="hl"><time>19:30–19:40</time><b>ゲストトーク ③</b></li>
+            <li><time>19:40–20:00</time><b>クロストーク・質疑</b></li>
+            <li><time>20:00–20:10</time><b>クロージング</b></li>
+            <li><time>〜21:00</time><b>交流会（リアルのみ）</b></li>
+          </ol>
+          <p class="tl-cap">※ 関門カイギ #3（2025.6.19）の進行です。回によって変わります。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="band blue rev" aria-hidden="true"><div class="row">
+    <span><b>ひと</b><i></i>HITO<i></i><b>まち</b><i></i>MACHI<i></i><b>まなび</b><i></i>MANABI<i></i><b>想い</b><i></i>OMOI<i></i></span>
+    <span><b>ひと</b><i></i>HITO<i></i><b>まち</b><i></i>MACHI<i></i><b>まなび</b><i></i>MANABI<i></i><b>想い</b><i></i>OMOI<i></i></span>
+  </div></div>
+
+  <section id="archive">
+    <div class="wrap">
+      <div class="arc-head">
+        <div><p class="eyebrow">ARCHIVE</p><h2>これまでのカイギ<span class="lat">#1 → #9</span></h2></div>
+        <a class="btn" href="https://youtube.com/playlist?list=PL7uQalFKSwfsdh4LU5p1qSs5unThlfRNC" target="_blank" rel="noopener">▶ YouTubeでアーカイブを見る</a>
+      </div>
+      <div class="cards" id="cards"></div>
+    </div>
+  </section>
+
+  <section id="venue" style="padding-top:0">
+    <div class="wrap two">
+      <div>
+        <p class="eyebrow">VENUE</p>
+        <h2>会場<span class="lat">VENUE</span></h2>
+        <div class="venue">
+          <div class="nm">しものせき市民活動センター</div>
+          <dl>
+            <dt>住所</dt><dd>山口県下関市竹崎町4丁目4−2</dd>
+            <dt>時間</dt><dd>19:00–20:30（#1〜#9の告知より）</dd>
+          </dl>
+          <p class="note">2025.9.20の特別回（×下関市教育委員会）は、菊川ふれあい会館（アブニール）で13:30–16:30に開催しました。最新の日程・会場はInstagramでご確認ください。</p>
+        </div>
+      </div>
+      <div id="team">
+        <p class="eyebrow">TEAM</p>
+        <h2>企画・運営<span class="lat">TEAM</span></h2>
+        <ul class="team">
+          <li><b>松山 功</b><span>Isao Matsuyama</span></li>
+          <li><b>日下 まりあ</b><span>Maria Kusaka</span></li>
+          <li><b>恩地 智也</b><span>Tomoya Onchi</span></li>
+          <li><b>阿座上 紗那</b><span>Sana Azakami</span></li>
+          <li><b>釣井 伸一郎</b><span>Shinitiro Trui</span></li>
+          <li><b>山西 伸典</b><span>Shinsuke Yamanishi</span></li>
+          <li><b>新内 俊允</b><span>Toshimasa Shinnai</span></li>
+          <li><b>石掛 りさ</b><span>Risa Ishikake</span></li>
+          <li><b>福田 麗</b><span>Rei Fukuda</span></li>
+          <li><b>菅 新汰</b><span>Arata Suga</span></li>
+          <li><b>大迫 宣之</b><span>Nobuyuki Osako</span></li>
+          <li><b>本松 哲郎</b><span>Tetsuro Motomatsu</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="follow">
+    <div class="wrap">
+      <div>
+        <p class="eyebrow" style="color:var(--paper)">FOLLOW</p>
+        <h2>次のカイギで会いましょう</h2>
+        <p>開催のお知らせはInstagramで。過去のゲストトークはYouTubeで見られます。</p>
+      </div>
+      <div class="acts">
+        <a class="btn" href="https://www.instagram.com/kanmon_kaigi/" target="_blank" rel="noopener">Instagram @kanmon_kaigi</a>
+        <a class="btn ghost" href="https://youtube.com/playlist?list=PL7uQalFKSwfsdh4LU5p1qSs5unThlfRNC" target="_blank" rel="noopener">YouTube アーカイブ</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="big">KANMON KAIGI<i></i></div>
+    <small>© 関門カイギ · KANMON KAIGI COMMUNITY · since 2025</small>
+  </div>
+</footer>
+
+<script>
+(()=>{
+  // archive: facts taken from each event's announcement (Canva)
+  const EV=[
+    ['flyer-09.jpg','#9','2026.8.26','しものせき市民活動センター'],
+    ['flyer-08.jpg','#8','2026.5.12','しものせき市民活動センター'],
+    ['flyer-07.jpg','#7','2025.11.18','しものせき市民活動センター'],
+    ['flyer-06.jpg','#6','2025.10.23','しものせき市民活動センター'],
+    ['flyer-05x.jpg','SPECIAL','2025.9.20','菊川ふれあい会館（アブニール）'],
+    ['flyer-05.jpg','#5','2025.9.5','しものせき市民活動センター'],
+    ['flyer-04.jpg','#4','2025.7.3','しものせき市民活動センター'],
+    ['flyer-03.jpg','#3','2025.6.19','しものせき市民活動センター'],
+    ['flyer-02.jpg','#2','2025.5.14','しものせき市民活動センター'],
+    ['flyer-01.jpg','#1','2025.4.24','しものせき市民活動センター'],
+  ];
+  document.getElementById('cards').innerHTML=EV.map(([img,no,date,where],i)=>
+    `<article class="card${i===0?' latest':''}"><img src="kanmon-reel/${img}" alt="関門カイギ ${no} ${date} の告知" loading="lazy" width="596" height="335">
+     <div class="meta"><span class="no${no==='SPECIAL'?' sp':''}">${no}</span><time>${date}</time><span class="where">${where}</span></div></article>`).join('');
+
+  // hero video: vertical on phones, horizontal elsewhere
+  const v=document.getElementById('reel'),mq=matchMedia('(max-width:760px)');
+  const pick=()=>{const src='kanmon-reel/video/kanmon-kaigi-B-'+(mq.matches?'9x16':'16x9')+'.mp4';if(!v.src.endsWith(src)){v.src=src;v.play().catch(()=>{});}};
+  pick();mq.addEventListener?mq.addEventListener('change',pick):mq.addListener(pick);
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){v.removeAttribute('autoplay');v.pause();}
+  const b=document.getElementById('snd');
+  b.addEventListener('click',()=>{v.muted=!v.muted;b.setAttribute('aria-pressed',String(!v.muted));b.textContent=v.muted?'♪ 音を出す':'♪ 音を消す';if(!v.muted)v.play().catch(()=>{});});
+})();
+</script>
+</body>
+</html>
