@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>福を贈る｜山西水産 プロモーション</title>
+<meta name="description" content="下関では、ふぐを「ふく」と呼ぶ。明治12年創業・山西水産の、福を贈る15秒ムービー。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500;700;900&family=Noto+Sans+JP:wght@400;700;900&family=Shippori+Mincho+B1:wght@800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a1026;--gold:#d4a64a;--red:#c8323a;--text:#f6f1e6;--sub:rgba(246,241,230,.62);--line:rgba(246,241,230,.14);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino Sans',sans-serif;line-height:1.8;}
+a{color:inherit;}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px;}
+header.top{padding:16px 0;border-bottom:1px solid var(--line);}
+header.top .wrap{display:flex;justify-content:space-between;align-items:center;}
+.brand{font-weight:700;font-size:14px;text-decoration:none;color:var(--gold);}
+.back{font-size:12px;color:var(--sub);text-decoration:none;}
+.stage{position:relative;margin:20px auto 0;aspect-ratio:9/16;width:min(100%,calc(80vh * 9 / 16));background:#000;border-radius:12px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5);}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;}
+.play{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(10,16,38,.45);border:none;color:var(--text);cursor:pointer;font:inherit;transition:opacity .3s;}
+.play .circle{width:72px;height:72px;border-radius:50%;background:var(--gold);color:var(--bg);display:flex;align-items:center;justify-content:center;font-size:26px;padding-left:5px;}
+.play .lbl{font-size:12px;letter-spacing:2px;color:var(--sub);}
+.play.hidden{opacity:0;pointer-events:none;}
+.controls{display:flex;flex-wrap:wrap;gap:10px;margin:14px auto 0;justify-content:center;}
+.btn{border:1px solid var(--line);background:none;color:var(--text);font:inherit;font-size:13px;padding:8px 16px;border-radius:6px;cursor:pointer;text-decoration:none;}
+.btn:hover{border-color:var(--gold);color:var(--gold);}
+.btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+p.note{font-size:12px;color:var(--sub);text-align:center;margin-top:12px;}
+footer{border-top:1px solid var(--line);margin-top:40px;padding:24px 0 40px;font-size:11px;color:var(--sub);}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="index.html">山西水産</a>
+  <a class="back" href="showreel.html">Showreel →</a>
+</div></header>
+<main class="wrap">
+  <div class="stage">
+    <canvas id="cv" width="1080" height="1920"></canvas>
+    <button class="play" id="playBtn" type="button" aria-label="音ありで再生">
+      <span class="circle">▶</span><span class="lbl">福を贈る · 15s</span>
+    </button>
+  </div>
+  <div class="controls">
+    <button class="btn" id="replayBtn" type="button">↺ もう一度</button>
+    <a class="btn" href="promo-fuku.mp4">▶ MP4で見る</a>
+  </div>
+  <p class="note">皿の菊盛りはイラストの仮素材です（実際の商品写真に差し替え予定）。</p>
+</main>
+<footer><div class="wrap">© 2021-2026 山西水産株式会社 · 山口県下関市 · <a href="privacy.html">プライバシーポリシー</a></div></footer>
+
+<script>
+(() => {
+'use strict';
+const W = 1080, H = 1920, FPS = 30, DUR = 15, CX = W / 2, CY = H / 2;
+const BPM = 120, BEAT = 60 / BPM;
+const C = { bg0: '#070b1f', bg1: '#13204c', gold: '#e2b95c', gold2: '#f6dfa0', red: '#c8323a', red2: '#e5575e', white: '#f6f1e6', ink: '#0a1026', porcelain: '#f4f1ea', indigo: '#274690' };
+const SERIF = "'Noto Serif JP', serif", SANS = "'Noto Sans JP', sans-serif", BRUSH = "'Shippori Mincho B1', 'Noto Serif JP', serif";
+const SAFE = { x0: 60, x1: W - 150, y0: 220, y1: H - 380 };
+const TX = (SAFE.x0 + SAFE.x1) / 2;          // optical centre for copy (clear of the Reels buttons on the right)
+const T = { fuku: 0, kanji: 2.0, plate: 4.0, trust: 8.0, gift: 11.0 };
+
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+
+// ---------- math ----------
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const eOutExpo = x => x >= 1 ? 1 : 1 - Math.pow(2, -10 * x);
+const eInExpo = x => x <= 0 ? 0 : Math.pow(2, 10 * x - 10);
+const eInOut = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const eOutBack = (x, s = 1.9) => 1 + (s + 1) * Math.pow(x - 1, 3) + s * Math.pow(x - 1, 2);
+function rng(seed) { let s = seed >>> 0; return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
+const hash = n => { const x = Math.sin(n * 127.1) * 43758.5453; return x - Math.floor(x); };
+
+// ---------- drawing helpers ----------
+function txt(s, x, y, o = {}) {
+  ctx.save();
+  let size = o.size || 80;
+  const font = sz => `${o.weight || 700} ${sz}px ${o.family || SERIF}`;
+  ctx.font = font(size); ctx.letterSpacing = (o.ls || 0) + 'px';
+  if (o.maxW) { const w = ctx.measureText(s).width; if (w > o.maxW) { size *= o.maxW / w; ctx.font = font(size); } }
+  ctx.fillStyle = o.color || C.white; ctx.textAlign = o.align || 'center'; ctx.textBaseline = o.base || 'middle';
+  ctx.globalAlpha *= (o.alpha == null ? 1 : o.alpha);
+  if (o.glow) { ctx.shadowColor = o.glow; ctx.shadowBlur = o.blur || 24; }
+  if (o.stroke) { ctx.strokeStyle = o.stroke; ctx.lineWidth = o.lw || 2; ctx.strokeText(s, x, y); } else ctx.fillText(s, x, y);
+  ctx.restore();
+}
+function kinetic(str, x, y, t0, t, o = {}) {           // per-character drop, spin and bounce
+  const chars = [...str], size = o.size || 90;
+  ctx.save(); ctx.font = `${o.weight || 900} ${size}px ${o.family || SERIF}`; ctx.letterSpacing = '0px';
+  const ws = chars.map(c => ctx.measureText(c).width), total = ws.reduce((a, b) => a + b, 0); ctx.restore();
+  const sc = Math.min(1, (o.maxW || 1e9) / total); let cx = x - total * sc / 2;
+  chars.forEach((c, k) => {
+    const st = t0 + k * (o.stagger || .045), p = prog(t, st, st + .42), w = ws[k] * sc;
+    if (p > 0) {
+      const e = eOutBack(p, 2.6), f = 1 - eOutExpo(p);
+      ctx.save(); ctx.translate(cx + w / 2, y - f * 90); ctx.rotate(f * (k % 2 ? .5 : -.5)); ctx.scale(sc * e, sc * e);
+      txt(c, 0, 0, { size, weight: o.weight || 900, family: o.family, color: o.color, glow: o.glow, alpha: (o.alpha == null ? 1 : o.alpha) * clamp(p * 3) });
+      ctx.restore();
+    }
+    cx += w;
+  });
+}
+function sparkle(x, y, s, a, col = C.gold2) {
+  if (a <= 0) return;
+  ctx.save(); ctx.globalAlpha *= a; ctx.fillStyle = col; ctx.translate(x, y);
+  ctx.beginPath(); ctx.moveTo(0, -s); ctx.quadraticCurveTo(0, 0, s, 0); ctx.quadraticCurveTo(0, 0, 0, s); ctx.quadraticCurveTo(0, 0, -s, 0); ctx.quadraticCurveTo(0, 0, 0, -s); ctx.fill();
+  ctx.restore();
+}
+function burst(x, y, p, n = 36, reach = 520, seed = 5, cols = [C.gold2, C.gold, C.red2, C.white]) {
+  if (p <= 0 || p >= 1) return;
+  const r = rng(seed);
+  for (let i = 0; i < n; i++) {
+    const a = r() * Math.PI * 2, d = eOutExpo(p) * reach * (.4 + r() * .6);
+    sparkle(x + Math.cos(a) * d, y + Math.sin(a) * d + p * p * 120, (6 + r() * 14) * (1 - p * .6), 1 - p, cols[i % cols.length]);
+  }
+  ctx.save(); ctx.globalAlpha = (1 - p) * .8; ctx.strokeStyle = C.gold2; ctx.lineWidth = 6 * (1 - p) + 1;
+  ctx.beginPath(); ctx.arc(x, y, eOutExpo(p) * reach * .7, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+}
+
+// ---------- background: night-blue with a slow gold "seigaiha" wave pattern ----------
+const seigai = (() => {
+  const c = document.createElement('canvas'), R = 60; c.width = R * 2; c.height = R;
+  const g = c.getContext('2d'); g.strokeStyle = 'rgba(226,185,92,1)'; g.lineWidth = 2;
+  [[R, R], [0, R / 2 + R / 2], [R * 2, R]].forEach(([x, y]) => { for (let k = 1; k <= 4; k++) { g.beginPath(); g.arc(x, y, R * k / 4, Math.PI, 0); g.stroke(); } });
+  [[0, 0], [R * 2, 0]].forEach(([x, y]) => { for (let k = 1; k <= 4; k++) { g.beginPath(); g.arc(x, y + R / 2, R * k / 4 * .98, Math.PI, 0); g.stroke(); } });
+  return c;
+})();
+function bg(t, warm = 0) {
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, warm ? `rgb(${lerp(7, 40, warm)},${lerp(11, 12, warm)},${lerp(31, 26, warm)})` : C.bg0);
+  g.addColorStop(1, warm ? `rgb(${lerp(19, 90, warm)},${lerp(32, 20, warm)},${lerp(76, 36, warm)})` : C.bg1);
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  ctx.save(); ctx.globalAlpha = .07; ctx.fillStyle = ctx.createPattern(seigai, 'repeat');
+  ctx.translate(-(t * 30) % 120, -(t * 12) % 60); ctx.fillRect(-120, -60, W + 240, H + 120); ctx.restore();
+  const hl = ctx.createRadialGradient(CX, CY - 200, 50, CX, CY - 200, 900);
+  hl.addColorStop(0, 'rgba(226,185,92,.16)'); hl.addColorStop(1, 'rgba(226,185,92,0)');
+  ctx.fillStyle = hl; ctx.fillRect(0, 0, W, H);
+}
+const DUST = (() => { const r = rng(3); return Array.from({ length: 70 }, () => ({ x: r() * W, y: r() * H, s: 2 + r() * 6, v: 20 + r() * 60, ph: r() * 6 })); })();
+function goldDust(t, a = 1) {
+  DUST.forEach(d => { const y = ((d.y - t * d.v) % H + H) % H; sparkle(d.x + Math.sin(t + d.ph) * 20, y, d.s, a * (.4 + .6 * Math.sin(t * 3 + d.ph) ** 2)); });
+}
+
+// ---------- the dish: a kiku-mori (chrysanthemum) plate of thin slices — illustration, stand-in for a product photo ----------
+const PETALS = (() => {
+  const out = [], rings = [{ n: 22, r: .74, len: .30, w: .085 }, { n: 18, r: .56, len: .27, w: .08 }, { n: 14, r: .38, len: .23, w: .075 }];
+  rings.forEach((ring, ri) => { for (let i = 0; i < ring.n; i++) out.push({ a: i / ring.n * Math.PI * 2 + ri * .12, ...ring, ri }); });
+  return out;
+})();
+function plate(x, y, R, t, laid, spin) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(spin);
+  // shadow + porcelain
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.55)'; ctx.shadowBlur = 60; ctx.shadowOffsetY = 30;
+  ctx.fillStyle = C.porcelain; ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+  // indigo rim pattern
+  ctx.strokeStyle = C.indigo; ctx.lineWidth = R * .05; ctx.beginPath(); ctx.arc(0, 0, R * .93, 0, Math.PI * 2); ctx.stroke();
+  ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(0, 0, R * .86, 0, Math.PI * 2); ctx.stroke();
+  for (let i = 0; i < 24; i++) { ctx.save(); ctx.rotate(i / 24 * Math.PI * 2); ctx.fillStyle = C.indigo; ctx.beginPath(); ctx.ellipse(0, -R * .93, R * .018, R * .035, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
+  const well = ctx.createRadialGradient(0, 0, R * .2, 0, 0, R * .86); well.addColorStop(0, '#ffffff'); well.addColorStop(1, '#e6e2d8');
+  ctx.fillStyle = well; ctx.beginPath(); ctx.arc(0, 0, R * .84, 0, Math.PI * 2); ctx.fill();
+  // slices, translucent so the indigo shows through like real thin-cut fugu
+  const order = PETALS.length;
+  PETALS.forEach((p, i) => {
+    const lp = prog(laid, i / order, i / order + .12); if (lp <= 0) return;
+    const e = eOutBack(lp, 1.4);
+    ctx.save(); ctx.rotate(p.a); ctx.translate(0, -R * p.r * lerp(1.25, 1, e)); ctx.rotate(.35);
+    ctx.globalAlpha = clamp(lp * 2) * .9;
+    const L = R * p.len, Wd = R * p.w;
+    const g = ctx.createLinearGradient(0, -L / 2, 0, L / 2);
+    g.addColorStop(0, 'rgba(255,255,255,.55)'); g.addColorStop(.6, 'rgba(236,232,245,.42)'); g.addColorStop(1, 'rgba(255,230,236,.5)');
+    ctx.fillStyle = g; ctx.strokeStyle = 'rgba(160,170,200,.35)'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.ellipse(0, 0, Wd, L / 2, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-Wd * .3, -L * .35); ctx.lineTo(-Wd * .1, L * .3); ctx.stroke();
+    ctx.restore();
+  });
+  // garnish in the middle once the flower is complete
+  const gp = eOutBack(prog(laid, .95, 1.0 + .12), 2);
+  if (gp > 0) {
+    ctx.save(); ctx.scale(gp, gp);
+    ctx.fillStyle = '#e8743b'; ctx.beginPath(); ctx.arc(R * .05, R * .02, R * .06, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = '#5aa04a'; ctx.lineWidth = R * .018; ctx.lineCap = 'round';
+    for (let i = 0; i < 7; i++) { ctx.beginPath(); ctx.moveTo(-R * .06, -R * .04 + i * 5); ctx.lineTo(-R * .16 - i * 3, -R * .14 + i * 9); ctx.stroke(); }
+    ctx.restore();
+  }
+  // glaze highlight
+  ctx.save(); ctx.globalAlpha = .35; ctx.strokeStyle = '#fff'; ctx.lineWidth = R * .03; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.arc(0, 0, R * .97, Math.PI * 1.1, Math.PI * 1.35); ctx.stroke(); ctx.restore();
+  ctx.restore();
+}
+
+// ---------- mizuhiki (gift cord) knot, drawn as strokes ----------
+function mizuhiki(x, y, s, p) {
+  if (p <= 0) return;
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  const loops = [                                   // awaji-style knot: two side loops, a centre loop, two tails
+    [[-10, 0], [-120, -90], [-230, -10], [-120, 70], [-10, 0]],
+    [[10, 0], [120, -90], [230, -10], [120, 70], [10, 0]],
+    [[0, -10], [-60, -110], [0, -170], [60, -110], [0, -10]],
+    [[-10, 10], [-60, 120], [-110, 240]],
+    [[10, 10], [60, 120], [110, 240]],
+  ];
+  const cols = [C.red, C.white, C.gold];
+  cols.forEach((col, ci) => {
+    ctx.strokeStyle = col; ctx.lineWidth = 9;
+    loops.forEach((pts, li) => {
+      const lp = prog(p, li * .12, li * .12 + .45); if (lp <= 0) return;
+      const off = (ci - 1) * 11;
+      const path = new Path2D(); path.moveTo(pts[0][0] + off, pts[0][1]);
+      for (let k = 1; k < pts.length - 1; k += 2) path.quadraticCurveTo(pts[k][0] + off * .6, pts[k][1] + off, pts[k + 1][0] + off, pts[k + 1][1]);
+      if (pts.length === 3) path.quadraticCurveTo(pts[1][0] + off, pts[1][1], pts[2][0] + off, pts[2][1]);
+      ctx.setLineDash([900 * lp, 2000]); ctx.stroke(path);
+    });
+  });
+  ctx.setLineDash([]); ctx.restore();
+}
+
+// ---------- scenes ----------
+function sceneFuku(t) {                              // 0–2.0s: ふぐ → the dakuten flies off → ふく
+  bg(t); goldDust(t, .6);
+  const size = 380, cy = CY - 80, fx = TX - size * .52, kx = TX + size * .52;
+  const inA = eOutBack(prog(t, 0, .45), 1.6);
+  const pop = 1.0;
+  ctx.save(); ctx.translate(TX, cy); ctx.scale(inA, inA); ctx.translate(-TX, -cy);
+  txt('ふ', fx, cy, { size, weight: 900, color: C.white });
+  const turned = eOutExpo(prog(t, pop + .05, pop + .4));
+  txt('く', kx, cy, { size, weight: 900, color: C.white });
+  txt('く', kx, cy, { size, weight: 900, color: C.gold2, alpha: turned, glow: 'rgba(246,223,160,.7)', blur: 40 });
+  ctx.restore();
+  const dp = prog(t, pop, pop + .6), pre = prog(t, pop - .3, pop);
+  for (let i = 0; i < 2; i++) {
+    const bx = kx + size * (.25 + i * .12), by = cy - size * .34, fly = eInExpo(dp);
+    ctx.save(); ctx.translate(bx + fly * (380 + i * 140), by - fly * (620 - i * 80)); ctx.rotate(-.45 + fly * (5 + i * 2));
+    ctx.globalAlpha = (1 - prog(t, pop + .4, pop + .6)) * clamp(inA);
+    const sc = 1 + Math.sin(pre * Math.PI) * .5 * (t < pop ? 1 : 0); ctx.scale(sc, sc);
+    ctx.fillStyle = C.white; ctx.beginPath(); ctx.roundRect(-9, -30, 18, 60, 9); ctx.fill(); ctx.restore();
+  }
+  burst(kx + size * .31, cy - size * .34, prog(t, pop, pop + .9), 30, 420, 9);
+  const c1 = eOutExpo(prog(t, .2, .6));
+  txt('下関では、ふぐを', TX, cy - 360, { size: 44, family: SANS, weight: 700, ls: 8, alpha: c1 });
+  kinetic('「ふく」と呼ぶ。', TX, cy + 330, pop + .15, t, { size: 76, weight: 900, color: C.gold2, glow: 'rgba(246,223,160,.5)' });
+}
+function sceneKanji(t) {                             // 2.0–4.0s: ふく → 福
+  const lt = t - T.kanji;
+  bg(t, eOutExpo(prog(lt, .3, 1.2)) * .8);
+  goldDust(t, .8);
+  const cy = CY - 80;
+  const out = eInExpo(prog(lt, 0, .3));
+  txt('ふく', TX, cy, { size: 380, weight: 900, color: C.gold2, alpha: 1 - out, glow: 'rgba(246,223,160,.7)', blur: 40, ls: 10 });
+  const kp = prog(lt, .25, .75), ke = eOutBack(kp, 2.2);
+  if (kp > 0) {
+    ctx.save(); ctx.translate(TX, cy); ctx.scale(lerp(2.4, 1, ke), lerp(2.4, 1, ke)); ctx.rotate((1 - eOutExpo(kp)) * -.25);
+    // red seal behind the character
+    ctx.save(); ctx.globalAlpha = clamp(kp * 2); ctx.fillStyle = C.red; ctx.shadowColor = 'rgba(200,50,58,.7)'; ctx.shadowBlur = 50;
+    ctx.beginPath(); ctx.roundRect(-250, -250, 500, 500, 60); ctx.fill(); ctx.restore();
+    txt('福', 0, 10, { size: 420, weight: 800, family: BRUSH, color: C.gold2, alpha: clamp(kp * 2), glow: 'rgba(255,230,160,.8)', blur: 30 });
+    ctx.restore();
+    burst(TX, cy, prog(lt, .6, 1.6), 60, 800, 21);
+  }
+  kinetic('不遇ではなく、', TX, cy + 400, T.kanji + .9, t, { size: 64, weight: 700, maxW: SAFE.x1 - SAFE.x0 });
+  kinetic('福を届けたいから。', TX, cy + 490, T.kanji + 1.25, t, { size: 64, weight: 700, color: C.gold2, maxW: SAFE.x1 - SAFE.x0 });
+}
+function scenePlate(t) {                             // 4.0–8.0s: slices laid on the beat into a chrysanthemum
+  const lt = t - T.plate;
+  bg(t, .35);
+  const R = 430, py = CY - 60;
+  const zoomIn = eOutExpo(prog(lt, 0, .6)), zoomOut = eInOut(prog(lt, 3.0, 4.0));
+  const s = lerp(1.35, 1, zoomIn) * lerp(1, 1.12, zoomOut);
+  // laid progress advances in steps on the beat (snap), so every beat adds a burst of slices
+  const beats = lt / BEAT, step = Math.floor(beats), frac = beats - step;
+  const laid = clamp((step + eOutExpo(clamp(frac * 2.2))) / 5.5);
+  ctx.save(); ctx.translate(TX, py); ctx.scale(s, s); ctx.translate(-TX, -py);
+  plate(TX, py, R, t, laid, lt * .12 - .3);
+  ctx.restore();
+  goldDust(t, .5);
+  const kick = Math.exp(-frac * 6) * (lt < 3 ? 1 : 0);
+  if (kick > .05) { ctx.save(); ctx.globalAlpha = kick * .12; ctx.fillStyle = C.gold2; ctx.fillRect(0, 0, W, H); ctx.restore(); }
+  burst(TX, py, prog(lt, 2.85, 3.8), 50, 700, 31);
+  kinetic('ふくを、贈る。', TX, H * .15, T.plate + .3, t, { size: 96, weight: 900, glow: 'rgba(0,0,0,.6)', maxW: SAFE.x1 - SAFE.x0 });
+  kinetic('それは、福を贈ること。', TX, py + R + 150, T.plate + 2.6, t, { size: 60, weight: 700, color: C.gold2, maxW: SAFE.x1 - SAFE.x0 });
+}
+function sceneTrust(t) {                             // 8.0–11.0s: 147 years + Rakuten award
+  const lt = t - T.trust;
+  bg(t, .15); goldDust(t, .7);
+  // 147 count-up in gold
+  const n = Math.round(147 * eOutExpo(prog(lt, .1, 1.0)));
+  const s = eOutBack(prog(lt, 0, .4), 2);
+  ctx.save(); ctx.translate(TX, CY - 340); ctx.scale(s, s);
+  txt(String(n), 0, 0, { size: 330, weight: 900, color: C.gold2, glow: 'rgba(246,223,160,.55)', blur: 40 });
+  ctx.restore();
+  txt('年', TX + 250, CY - 250, { size: 120, weight: 900, color: C.white, alpha: eOutExpo(prog(lt, .6, 1.0)) });
+  kinetic('明治12年創業・下関のふぐ問屋', TX, CY - 90, T.trust + .5, t, { size: 50, weight: 700, stagger: .03, maxW: SAFE.x1 - SAFE.x0 });
+  // award stamp slams in on the beat
+  const sp = prog(lt, 1.5, 1.8), se = eOutBack(sp, 3);
+  if (sp > 0) {
+    ctx.save(); ctx.translate(TX, CY + 230); ctx.rotate(-.08); ctx.scale(lerp(2.2, 1, se), lerp(2.2, 1, se)); ctx.globalAlpha = clamp(sp * 3);
+    ctx.strokeStyle = C.red2; ctx.lineWidth = 10; ctx.beginPath(); ctx.roundRect(-330, -110, 660, 220, 30); ctx.stroke();
+    ctx.lineWidth = 3; ctx.beginPath(); ctx.roundRect(-310, -92, 620, 184, 22); ctx.stroke();
+    txt('楽天市場', 0, -40, { size: 52, family: SANS, weight: 900, color: C.red2 });
+    txt('優良ショップ受賞', 0, 40, { size: 70, family: SANS, weight: 900, color: C.red2 });
+    ctx.restore();
+    const sh = Math.max(0, 1 - (lt - 1.65) / .25) * 18 * (lt > 1.65 ? 1 : 0);
+    if (sh) { ctx.save(); ctx.globalAlpha = sh / 60; ctx.fillStyle = C.red; ctx.fillRect(0, 0, W, H); ctx.restore(); }
+  }
+  // sales channels ticker
+  const chans = '楽天市場 ・ Amazon ・ Yahoo! ・ auPAYマーケット ・ ギフトモール ・ ふるさと納税 ・ 自社サイト ・ ';
+  const ta = eOutExpo(prog(lt, 2.0, 2.4));
+  if (ta > 0) {
+    ctx.save(); ctx.font = `700 40px ${SANS}`; const w = ctx.measureText(chans).width; ctx.restore();
+    const x0 = -((lt - 2) * 260) % w;
+    for (let k = -1; k < 3; k++) txt(chans, x0 + k * w, CY + 470, { size: 40, family: SANS, weight: 700, align: 'left', alpha: ta * .85 });
+  }
+}
+function sceneGift(t) {                              // 11.0–15.0s: mizuhiki ties, "福を、贈ろう。", logo
+  const lt = t - T.gift;
+  bg(t, .5); goldDust(t, 1);
+  mizuhiki(TX, CY - 330, 1.35, eInOut(prog(lt, 0, 1.4)));
+  burst(TX, CY - 330, prog(lt, 1.3, 2.2), 50, 650, 41);
+  kinetic('福を、贈ろう。', TX, CY + 120, T.gift + .9, t, { size: 120, weight: 900, color: C.gold2, glow: 'rgba(246,223,160,.6)', maxW: SAFE.x1 - SAFE.x0 });
+  const la = eOutExpo(prog(lt, 1.9, 2.4));
+  ctx.save(); ctx.globalAlpha = la; ctx.strokeStyle = C.gold; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(TX - 300 * la, CY + 250); ctx.lineTo(TX + 300 * la, CY + 250); ctx.stroke(); ctx.restore();
+  txt('山西水産', TX, CY + 360, { size: 110, weight: 900, color: C.white, ls: 16, alpha: la });
+  txt('SHIMONOSEKI · SINCE 1878', TX, CY + 460, { size: 30, family: SANS, weight: 700, ls: 10, color: C.gold, alpha: la });
+  txt('楽天市場・Amazon・ふるさと納税 ほかで販売中', TX, CY + 560, { size: 34, family: SANS, weight: 700, alpha: eOutExpo(prog(lt, 2.4, 2.9)) * .9, maxW: SAFE.x1 - SAFE.x0 });
+}
+
+// ---------- master ----------
+const grain = [];
+(() => { const r = rng(7); for (let k = 0; k < 6; k++) { const g = document.createElement('canvas'); g.width = g.height = 256; const gx = g.getContext('2d'); const id = gx.createImageData(256, 256); for (let i = 0; i < id.data.length; i += 4) { const v = r() * 255; id.data[i] = id.data[i + 1] = id.data[i + 2] = v; id.data[i + 3] = 16; } gx.putImageData(id, 0, 0); grain.push(g); } })();
+function flash(t, at, d, col, m) { const p = (t - at) / d; if (p >= 0 && p <= 1) { ctx.save(); ctx.globalAlpha = (1 - p) * m; ctx.fillStyle = col; ctx.fillRect(0, 0, W, H); ctx.restore(); } }
+function wipe(t, at, col) {                           // a gold diagonal band sweeps across the cut
+  const p = prog(t, at - .2, at + .2); if (p <= 0 || p >= 1) return;
+  ctx.save(); ctx.translate(CX, CY); ctx.rotate(-.5); const x = lerp(-H * 1.2, H * 1.2, eInOut(p));
+  ctx.fillStyle = col; ctx.fillRect(x - 260, -H, 520, H * 2); ctx.fillStyle = C.gold2; ctx.fillRect(x - 300, -H, 30, H * 2); ctx.restore();
+}
+function render(t) {
+  t = clamp(t, 0, DUR);
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.filter = 'none'; ctx.globalCompositeOperation = 'source-over';
+  if (t < T.kanji) sceneFuku(t);
+  else if (t < T.plate) sceneKanji(t);
+  else if (t < T.trust) scenePlate(t);
+  else if (t < T.gift) sceneTrust(t);
+  else sceneGift(t);
+  flash(t, T.kanji, .2, '#fff', .6);
+  wipe(t, T.plate, C.red);
+  wipe(t, T.trust, C.ink);
+  flash(t, T.gift, .3, C.gold2, .6);
+  ctx.save(); const f = Math.floor(t * FPS);
+  ctx.fillStyle = ctx.createPattern(grain[f % grain.length], 'repeat');
+  ctx.translate((hash(f) * 256) | 0, (hash(f + 3) * 256) | 0); ctx.fillRect(-256, -256, W + 512, H + 512); ctx.restore();
+  const v = ctx.createRadialGradient(CX, CY, W * .45, CX, CY, Math.hypot(W, H) * .6);
+  v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,.45)'); ctx.fillStyle = v; ctx.fillRect(0, 0, W, H);
+}
+
+// ================= AUDIO: koto-like plucks on the yo-scale, taiko, chimes =================
+const NOTE = n => 440 * Math.pow(2, (n - 69) / 12);
+function buildAudio(ac, t0, dest) {
+  const r = rng(147);
+  const master = ac.createGain(); master.gain.value = .55;
+  const comp = ac.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 4;
+  master.connect(comp).connect(dest);
+  const irLen = ac.sampleRate * 2.4, ir = ac.createBuffer(2, irLen, ac.sampleRate);
+  for (let ch = 0; ch < 2; ch++) { const d = ir.getChannelData(ch); for (let i = 0; i < irLen; i++) d[i] = (r() * 2 - 1) * Math.pow(1 - i / irLen, 2.5); }
+  const verb = ac.createConvolver(); verb.buffer = ir; const vg = ac.createGain(); vg.gain.value = .4; verb.connect(vg).connect(master);
+  const noiseBuf = ac.createBuffer(1, ac.sampleRate * 2, ac.sampleRate);
+  { const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = r() * 2 - 1; }
+  const send = (node, amt) => { const g = ac.createGain(); g.gain.value = amt; node.connect(g).connect(verb); };
+  const osc = (at, dur, type, f0, f1, gain, rv = 0, attack = .004) => {
+    const o = ac.createOscillator(); o.type = type; o.frequency.setValueAtTime(f0, at); if (f1 !== f0) o.frequency.exponentialRampToValueAtTime(f1, at + dur);
+    const g = ac.createGain(); g.gain.setValueAtTime(0.0001, at); g.gain.exponentialRampToValueAtTime(gain, at + attack); g.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+    o.connect(g).connect(master); if (rv) send(g, rv); o.start(at); o.stop(at + dur + .05);
+  };
+  const noise = (at, dur, type, f0, f1, gain, q = 1, rv = 0) => {
+    const s = ac.createBufferSource(); s.buffer = noiseBuf;
+    const f = ac.createBiquadFilter(); f.type = type; f.Q.value = q; f.frequency.setValueAtTime(f0, at); f.frequency.exponentialRampToValueAtTime(f1, at + dur);
+    const g = ac.createGain(); g.gain.setValueAtTime(0.0001, at); g.gain.exponentialRampToValueAtTime(gain, at + Math.min(.01, dur * .3)); g.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+    s.connect(f).connect(g).connect(master); if (rv) send(g, rv); s.start(at, r() * .5); s.stop(at + dur + .05);
+  };
+  const koto = (at, n, g = .14) => {                 // plucked string: bright attack, quick decay, slight pitch drop
+    osc(at, .9, 'triangle', NOTE(n) * 1.01, NOTE(n), g, .35, .002);
+    osc(at, .35, 'sawtooth', NOTE(n + 12), NOTE(n + 12), g * .12, .2, .002);
+  };
+  const taiko = (at, g = .9) => { osc(at, .55, 'sine', 110, 48, g, .25); noise(at, .08, 'lowpass', 900, 200, .35); };
+  const kane = (at, n, g = .1) => { osc(at, 1.6, 'sine', NOTE(n), NOTE(n), g, .6); osc(at, .9, 'sine', NOTE(n) * 2.76, NOTE(n) * 2.76, g * .3, .6); };
+  const clap = at => { for (let k = 0; k < 3; k++) noise(at + k * .011, .13, 'bandpass', 1700, 1300, .25, 1.2, .25); };
+  const B = b => t0 + b * BEAT;
+  // yo-scale (D E G A B) melody, bright and festive
+  const YO = [62, 64, 67, 69, 71, 74, 76, 79, 81];
+  const mel = [4, 5, 6, 5, 4, 3, 4, 2, 4, 5, 7, 6, 5, 4, 5, 4];
+  for (let b = 0; b < 29; b++) {
+    const idx = mel[b % mel.length] + (b >= 22 ? 1 : 0);
+    koto(B(b), YO[Math.min(YO.length - 1, idx)], b < 4 ? .08 : .12);
+    if (b % 2 === 1 && b >= 4) koto(B(b + .5), YO[Math.min(YO.length - 1, idx + 2)], .07);
+    osc(B(b), BEAT * .9, 'sine', NOTE([50, 50, 55, 57][Math.floor(b / 4) % 4]), NOTE([50, 50, 55, 57][Math.floor(b / 4) % 4]), .28, 0, .02);
+  }
+  // hits that match the picture
+  osc(B(2), .12, 'sine', 1400, 2400, .08, .4);                       // the dakuten flies (1.0s)
+  kane(B(2), 86, .12);
+  taiko(B(4), 1); kane(B(4) + .25, 81, .14); noise(B(4) + .2, 1.2, 'lowpass', 5000, 300, .35, .7, .5);   // 福 lands
+  for (let b = 8; b < 22; b++) { if (b % 2 === 0) taiko(B(b), .55); else clap(B(b)); }
+  for (let b = 8; b < 14; b++) osc(B(b), .1, 'sine', NOTE(88 + (b % 3) * 2), NOTE(88 + (b % 3) * 2), .07, .4);   // slices land
+  kane(B(14), 83, .12);                                                               // the dish is complete
+  taiko(B(19), 1); noise(B(19), .15, 'highpass', 2000, 1500, .3);                     // award stamp
+  // gift: rising plucks, big taiko + bell on the logo
+  for (let i = 0; i < 8; i++) koto(B(22) + i * BEAT * .25, YO[Math.min(8, i)], .09);
+  taiko(B(25), 1.1); kane(B(25), 74, .16); kane(B(25) + .05, 81, .12); kane(B(25) + .1, 86, .1);
+  for (let i = 0; i < 6; i++) koto(B(26) + i * .12, YO[8 - i], .06);
+}
+async function renderAudioWav() {
+  const sr = 48000, len = Math.ceil(sr * (DUR + .01));
+  const oac = new OfflineAudioContext(2, len, sr);
+  buildAudio(oac, 0, oac.destination);
+  const buf = await oac.startRendering();
+  const n = buf.length, out = new DataView(new ArrayBuffer(44 + n * 4));
+  const ws = (o, s) => { for (let i = 0; i < s.length; i++) out.setUint8(o + i, s.charCodeAt(i)); };
+  ws(0, 'RIFF'); out.setUint32(4, 36 + n * 4, true); ws(8, 'WAVE'); ws(12, 'fmt '); out.setUint32(16, 16, true);
+  out.setUint16(20, 1, true); out.setUint16(22, 2, true); out.setUint32(24, sr, true); out.setUint32(28, sr * 4, true); out.setUint16(32, 4, true); out.setUint16(34, 16, true);
+  ws(36, 'data'); out.setUint32(40, n * 4, true);
+  const L = buf.getChannelData(0), R = buf.getChannelData(1), fade = Math.floor(sr * .6);
+  for (let i = 0; i < n; i++) {
+    const f = i > n - fade ? (n - i) / fade : 1;
+    out.setInt16(44 + i * 4, clamp(L[i] * f, -1, 1) * 32767, true);
+    out.setInt16(46 + i * 4, clamp(R[i] * f, -1, 1) * 32767, true);
+  }
+  const bytes = new Uint8Array(out.buffer); let s = '';
+  for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  return btoa(s);
+}
+
+// ================= player =================
+const playBtn = document.getElementById('playBtn'), replayBtn = document.getElementById('replayBtn');
+let ac = null, start = 0, raf = 0;
+function loop() {
+  const t = ac.currentTime - start;
+  render(Math.max(0, t));
+  if (t < DUR) raf = requestAnimationFrame(loop);
+  else { playBtn.classList.remove('hidden'); playBtn.querySelector('.lbl').textContent = 'REPLAY'; }
+}
+function play() {
+  cancelAnimationFrame(raf); if (ac) ac.close();
+  try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
+  ac = new (window.AudioContext || window.webkitAudioContext)();
+  start = ac.currentTime + .12; buildAudio(ac, start, ac.destination);
+  playBtn.classList.add('hidden'); raf = requestAnimationFrame(loop);
+}
+playBtn.addEventListener('click', play); replayBtn.addEventListener('click', play);
+
+const GLYPHS = 'ふぐく下関では、を「」と呼ぶ。福不遇ではなく、福を届けたいから。ふくを、贈る。それは、福を贈ること。0123456789年明治12年創業・下関のふぐ問屋楽天市場優良ショップ受賞Amazon Yahoo! auPAYマーケットギフトモールふるさと納税自社サイト福を、贈ろう。山西水産SHIMONOSEKI · SINCE 1878ほかで販売中';
+const fontsReady = Promise.all([`900 100px 'Noto Serif JP'`, `700 100px 'Noto Serif JP'`, `900 100px 'Noto Sans JP'`, `700 100px 'Noto Sans JP'`, `800 100px 'Shippori Mincho B1'`]
+  .map(f => document.fonts.load(f, GLYPHS))).catch(() => {});
+fontsReady.then(() => render(13.8));
+window.__showreel = { render, renderAudioWav, ready: Promise.all([fontsReady, document.fonts.ready]), DUR, FPS };
+})();
+</script>
+</body>
+</html>
