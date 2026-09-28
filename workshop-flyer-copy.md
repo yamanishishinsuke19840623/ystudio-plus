@@ -57,7 +57,7 @@ SHIMONOSEKI TAILORS
 - 参加費：無料（大きく）
 - 対象：高校生・高専生
 - 定員：各回10名
-- 会場：SHIMONOSEKI TAILORS（下関市豊前田町2丁目3-13 Tallor house 1階）【要確認：「Tallor」の綴り（Tailor？）】
+- 会場：SHIMONOSEKI TAILORS（下関市豊前田町2丁目3-13 Tailor house 1階）
 - 参加：1回だけでもOK／3回通しがおすすめ
 - 持ち物：スマホ／昼食は各自ご持参ください
 - 申込：各回のQRコード または お電話（TEL 0120-540-201）
