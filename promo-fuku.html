@@ -162,20 +162,23 @@ function plate(x, y, R, t, laid, spin) {
   ctx.strokeStyle = C.indigo; ctx.lineWidth = R * .05; ctx.beginPath(); ctx.arc(0, 0, R * .93, 0, Math.PI * 2); ctx.stroke();
   ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(0, 0, R * .86, 0, Math.PI * 2); ctx.stroke();
   for (let i = 0; i < 24; i++) { ctx.save(); ctx.rotate(i / 24 * Math.PI * 2); ctx.fillStyle = C.indigo; ctx.beginPath(); ctx.ellipse(0, -R * .93, R * .018, R * .035, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
-  const well = ctx.createRadialGradient(0, 0, R * .2, 0, 0, R * .86); well.addColorStop(0, '#ffffff'); well.addColorStop(1, '#e6e2d8');
+  const well = ctx.createRadialGradient(0, 0, R * .1, 0, 0, R * .86); well.addColorStop(0, '#6f8fd0'); well.addColorStop(.7, '#3d5fae'); well.addColorStop(1, '#2a4a95');
   ctx.fillStyle = well; ctx.beginPath(); ctx.arc(0, 0, R * .84, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = 3;               // painted wave rings under the slices
+  for (let k = 1; k <= 7; k++) { ctx.beginPath(); ctx.arc(0, 0, R * .84 * k / 7.5, 0, Math.PI * 2); ctx.stroke(); }
   // slices, translucent so the indigo shows through like real thin-cut fugu
   const order = PETALS.length;
   PETALS.forEach((p, i) => {
     const lp = prog(laid, i / order, i / order + .12); if (lp <= 0) return;
     const e = eOutBack(lp, 1.4);
     ctx.save(); ctx.rotate(p.a); ctx.translate(0, -R * p.r * lerp(1.25, 1, e)); ctx.rotate(.35);
-    ctx.globalAlpha = clamp(lp * 2) * .9;
+    ctx.globalAlpha = clamp(lp * 2);
+    ctx.shadowColor = 'rgba(0,0,30,.35)'; ctx.shadowBlur = 8; ctx.shadowOffsetY = 3;
     const L = R * p.len, Wd = R * p.w;
     const g = ctx.createLinearGradient(0, -L / 2, 0, L / 2);
-    g.addColorStop(0, 'rgba(255,255,255,.55)'); g.addColorStop(.6, 'rgba(236,232,245,.42)'); g.addColorStop(1, 'rgba(255,230,236,.5)');
-    ctx.fillStyle = g; ctx.strokeStyle = 'rgba(160,170,200,.35)'; ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.ellipse(0, 0, Wd, L / 2, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    g.addColorStop(0, 'rgba(255,255,255,.88)'); g.addColorStop(.55, 'rgba(240,238,250,.72)'); g.addColorStop(1, 'rgba(255,225,232,.8)');
+    ctx.fillStyle = g; ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.ellipse(0, 0, Wd, L / 2, 0, 0, Math.PI * 2); ctx.fill(); ctx.shadowColor = 'transparent'; ctx.stroke();
     ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-Wd * .3, -L * .35); ctx.lineTo(-Wd * .1, L * .3); ctx.stroke();
     ctx.restore();
   });
@@ -194,29 +197,35 @@ function plate(x, y, R, t, laid, spin) {
   ctx.restore();
 }
 
-// ---------- mizuhiki (gift cord) knot, drawn as strokes ----------
+// ---------- a gift: wrapped box, then a red-and-white mizuhiki cord ties it ----------
 function mizuhiki(x, y, s, p) {
   if (p <= 0) return;
   ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-  const loops = [                                   // awaji-style knot: two side loops, a centre loop, two tails
-    [[-10, 0], [-120, -90], [-230, -10], [-120, 70], [-10, 0]],
-    [[10, 0], [120, -90], [230, -10], [120, 70], [10, 0]],
-    [[0, -10], [-60, -110], [0, -170], [60, -110], [0, -10]],
-    [[-10, 10], [-60, 120], [-110, 240]],
-    [[10, 10], [60, 120], [110, 240]],
+  // box drops in
+  const bp = eOutBack(prog(p, 0, .35), 1.8);
+  ctx.save(); ctx.translate(0, (1 - bp) * -300); ctx.globalAlpha = clamp(bp * 2);
+  ctx.shadowColor = 'rgba(0,0,0,.5)'; ctx.shadowBlur = 40; ctx.shadowOffsetY = 20;
+  const bx = ctx.createLinearGradient(-260, -170, 260, 170); bx.addColorStop(0, '#1d2d63'); bx.addColorStop(1, '#0e1638');
+  ctx.fillStyle = bx; ctx.beginPath(); ctx.roundRect(-260, -170, 520, 340, 18); ctx.fill();
+  ctx.shadowColor = 'transparent'; ctx.strokeStyle = C.gold; ctx.lineWidth = 3; ctx.stroke();
+  ctx.fillStyle = 'rgba(226,185,92,.12)'; for (let i = -240; i < 260; i += 40) { ctx.beginPath(); ctx.arc(i, 170, 30, Math.PI, 0); ctx.fill(); }   // wave print
+  ctx.restore();
+  if (bp < .6) { ctx.restore(); return; }
+  // cords: vertical band, then two loops and two tails drawn on
+  const cords = [
+    { d: 'M0,-170 L0,170', t0: .35 },
+    { d: 'M0,0 C-60,-80 -170,-90 -170,-20 C-170,40 -60,30 0,0', t0: .5 },
+    { d: 'M0,0 C60,-80 170,-90 170,-20 C170,40 60,30 0,0', t0: .5 },
+    { d: 'M0,0 C-30,50 -80,110 -130,190', t0: .7 },
+    { d: 'M0,0 C30,50 80,110 130,190', t0: .7 },
   ];
-  const cols = [C.red, C.white, C.gold];
-  cols.forEach((col, ci) => {
-    ctx.strokeStyle = col; ctx.lineWidth = 9;
-    loops.forEach((pts, li) => {
-      const lp = prog(p, li * .12, li * .12 + .45); if (lp <= 0) return;
-      const off = (ci - 1) * 11;
-      const path = new Path2D(); path.moveTo(pts[0][0] + off, pts[0][1]);
-      for (let k = 1; k < pts.length - 1; k += 2) path.quadraticCurveTo(pts[k][0] + off * .6, pts[k][1] + off, pts[k + 1][0] + off, pts[k + 1][1]);
-      if (pts.length === 3) path.quadraticCurveTo(pts[1][0] + off, pts[1][1], pts[2][0] + off, pts[2][1]);
-      ctx.setLineDash([900 * lp, 2000]); ctx.stroke(path);
-    });
+  [[C.red, -7], [C.white, 0], [C.red, 7]].forEach(([col, off]) => {
+    ctx.save(); ctx.translate(off, 0); ctx.strokeStyle = col; ctx.lineWidth = 8;
+    cords.forEach(c => { const lp = eInOut(prog(p, c.t0, c.t0 + .3)); if (lp <= 0) return; ctx.setLineDash([700 * lp, 2000]); ctx.stroke(new Path2D(c.d)); });
+    ctx.restore();
   });
+  const kp = eOutBack(prog(p, .8, 1), 2.5);
+  if (kp > 0) { ctx.setLineDash([]); ctx.fillStyle = C.gold2; ctx.beginPath(); ctx.arc(0, 0, 18 * kp, 0, Math.PI * 2); ctx.fill(); }
   ctx.setLineDash([]); ctx.restore();
 }
 
@@ -319,7 +328,7 @@ function sceneTrust(t) {                             // 8.0–11.0s: 147 years +
 function sceneGift(t) {                              // 11.0–15.0s: mizuhiki ties, "福を、贈ろう。", logo
   const lt = t - T.gift;
   bg(t, .5); goldDust(t, 1);
-  mizuhiki(TX, CY - 330, 1.35, eInOut(prog(lt, 0, 1.4)));
+  mizuhiki(TX, CY - 360, 1.05, prog(lt, 0, 1.6));
   burst(TX, CY - 330, prog(lt, 1.3, 2.2), 50, 650, 41);
   kinetic('福を、贈ろう。', TX, CY + 120, T.gift + .9, t, { size: 120, weight: 900, color: C.gold2, glow: 'rgba(246,223,160,.6)', maxW: SAFE.x1 - SAFE.x0 });
   const la = eOutExpo(prog(lt, 1.9, 2.4));
