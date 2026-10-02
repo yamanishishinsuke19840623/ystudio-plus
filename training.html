@@ -411,7 +411,7 @@ footer .related-sites__arrow{width:18px;height:18px;flex:0 0 18px;color:var(--re
         </ul>
       </div>
       <div class="profile-text">
-        創業147年の老舗ふぐ屋4代目として、自社のEC運営（10モール＋自社サイト）にAIを実装し、月30時間超の業務削減を実現。その経験をもとに、2021年からYスタジオ＋として地方中小企業のAI導入を現場で支援しています。<br><br>
+        創業<span data-fy>147</span>年の老舗ふぐ屋4代目として、自社のEC運営（10モール＋自社サイト）にAIを実装し、月30時間超の業務削減を実現。その経験をもとに、2021年からYスタジオ＋として地方中小企業のAI導入を現場で支援しています。<br><br>
         <strong>「教わって終わり」ではなく「現場で回るところまで」</strong>を重視し、実際の業務データを使った実践的な研修を行います。座学だけでなく、御社の業種・規模に合わせたカリキュラムをその都度設計します。
       </div>
     </div>
@@ -543,5 +543,11 @@ footer .related-sites__arrow{width:18px;height:18px;flex:0 0 18px;color:var(--re
   </div>
 </footer>
 
+<script id="founding-years">
+/* 創業からの年数を自動更新（明治12年＝1879年創業）。HTML内の数字はJS無効時の予備表示 */
+(function(){var y=new Date(Date.now()+9*36e5).getUTCFullYear()-1879;
+document.querySelectorAll('[data-fy]').forEach(function(e){e.textContent=y});
+var m=document.querySelector('meta[name="description"]');if(m)m.content=m.content.replace(/147年/g,y+'年');})();
+</script>
 </body>
 </html>

@@ -157,7 +157,7 @@ td.task{text-align:left}
 <div class="intro-box">
   <div class="intro-title">商工会議所の皆様へ　―― なぜ、この提案をするのか</div>
   <p>
-    私は創業<strong>147年の老舗ふく問屋・山西水産</strong>の代表取締役です。自社でAI導入を実践し、<strong>月間30時間以上の業務を削減</strong>しました。<br>
+    私は創業<strong><span data-fy>147</span>年の老舗ふく問屋・山西水産</strong>の代表取締役です。自社でAI導入を実践し、<strong>月間30時間以上の業務を削減</strong>しました。<br>
     同じ悩みを抱える地域の中小企業・個人事業主に、<strong>実証済みの方法</strong>で貢献したい。<br>
     商工会議所様と連携し、会員の皆様のDX推進を<strong>現場レベルで支援</strong>させてください。
   </p>
@@ -178,7 +178,7 @@ td.task{text-align:left}
     <div class="kpi-label">自動化ツール現在も稼働中</div>
   </div>
   <div class="kpi">
-    <div class="kpi-num">147<span class="kpi-unit">年</span></div>
+    <div class="kpi-num"><span data-fy>147</span><span class="kpi-unit">年</span></div>
     <div class="kpi-label">老舗企業での実証実績</div>
   </div>
 </div>
@@ -200,7 +200,7 @@ td.task{text-align:left}
     <div class="history-card">
       <div class="hc-date">2026年6月8日　山口大学 平野ゼミ　講演</div>
       <div class="hc-event">「あなたはどう生きるか」</div>
-      <div class="hc-theme">AI × 業 × 地域 × 地元　― 147年ふく問屋4代目の挑戦</div>
+      <div class="hc-theme">AI × 業 × 地域 × 地元　― <span data-fy>147</span>年ふく問屋4代目の挑戦</div>
       <div class="hc-desc">
         次世代を担う大学生に向けて、地域産業とAIの可能性を講義。<br>
         「やりたいこと（個人の熱量）」と「地域課題」が重なる場所に、<br>
@@ -234,7 +234,7 @@ td.task{text-align:left}
       </div>
       <div class="reason-card">
         <div class="reason-num">02</div>
-        <div><b>地元の老舗企業で実証済み</b><p>147年の歴史を持つ自社で8年以上運用。中小企業の現場を知っているから、現実的な提案ができます。</p></div>
+        <div><b>地元の老舗企業で実証済み</b><p><span data-fy>147</span>年の歴史を持つ自社で8年以上運用。中小企業の現場を知っているから、現実的な提案ができます。</p></div>
       </div>
       <div class="reason-card">
         <div class="reason-num">03</div>
@@ -328,5 +328,11 @@ td.task{text-align:left}
 </div>
 
 </div>
+<script id="founding-years">
+/* 創業からの年数を自動更新（明治12年＝1879年創業）。HTML内の数字はJS無効時の予備表示 */
+(function(){var y=new Date(Date.now()+9*36e5).getUTCFullYear()-1879;
+document.querySelectorAll('[data-fy]').forEach(function(e){e.textContent=y});
+var m=document.querySelector('meta[name="description"]');if(m)m.content=m.content.replace(/147年/g,y+'年');})();
+</script>
 </body>
 </html>
