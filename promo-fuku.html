@@ -147,54 +147,103 @@ function goldDust(t, a = 1) {
   DUST.forEach(d => { const y = ((d.y - t * d.v) % H + H) % H; sparkle(d.x + Math.sin(t + d.ph) * 20, y, d.s, a * (.4 + .6 * Math.sin(t * 3 + d.ph) ** 2)); });
 }
 
-// ---------- the dish: a kiku-mori (chrysanthemum) plate of thin slices — illustration, stand-in for a product photo ----------
+// ---------- the dish: tessa (paper-thin fugu) laid as a chrysanthemum on a dark plate — illustration, stand-in for a product photo ----------
 const PETALS = (() => {
-  const out = [], rings = [{ n: 22, r: .74, len: .30, w: .085 }, { n: 18, r: .56, len: .27, w: .08 }, { n: 14, r: .38, len: .23, w: .075 }];
-  rings.forEach((ring, ri) => { for (let i = 0; i < ring.n; i++) out.push({ a: i / ring.n * Math.PI * 2 + ri * .12, ...ring, ri }); });
+  const out = [], rings = [{ n: 34, r0: .40, r1: .80, w: .075 }, { n: 26, r0: .24, r1: .58, w: .07 }, { n: 16, r0: .10, r1: .38, w: .065 }];
+  rings.forEach((ring, ri) => { for (let i = 0; i < ring.n; i++) out.push({ a: i / ring.n * Math.PI * 2 + ri * .09, ...ring, ri, seed: hash(i * 7 + ri * 31) }); });
   return out;
 })();
-function plate(x, y, R, t, laid, spin) {
+const petalPath = (r0, r1, w) => {                     // pointed inner tip, long body, rounded outer edge
+  const p = new Path2D(), L = r1 - r0;
+  p.moveTo(0, -r0);
+  p.bezierCurveTo(w * .9, -(r0 + L * .25), w * 1.1, -(r0 + L * .75), w * .55, -(r1 - L * .02));
+  p.quadraticCurveTo(0, -r1 - L * .06, -w * .55, -(r1 - L * .02));
+  p.bezierCurveTo(-w * 1.1, -(r0 + L * .75), -w * .9, -(r0 + L * .25), 0, -r0);
+  return p;
+};
+function plate(x, y, R, t, laid, spin, sweep) {
   ctx.save(); ctx.translate(x, y); ctx.rotate(spin);
-  // shadow + porcelain
-  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.55)'; ctx.shadowBlur = 60; ctx.shadowOffsetY = 30;
-  ctx.fillStyle = C.porcelain; ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI * 2); ctx.fill(); ctx.restore();
-  // indigo rim pattern
-  ctx.strokeStyle = C.indigo; ctx.lineWidth = R * .05; ctx.beginPath(); ctx.arc(0, 0, R * .93, 0, Math.PI * 2); ctx.stroke();
-  ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(0, 0, R * .86, 0, Math.PI * 2); ctx.stroke();
-  for (let i = 0; i < 24; i++) { ctx.save(); ctx.rotate(i / 24 * Math.PI * 2); ctx.fillStyle = C.indigo; ctx.beginPath(); ctx.ellipse(0, -R * .93, R * .018, R * .035, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
-  const well = ctx.createRadialGradient(0, 0, R * .1, 0, 0, R * .86); well.addColorStop(0, '#6f8fd0'); well.addColorStop(.7, '#3d5fae'); well.addColorStop(1, '#2a4a95');
-  ctx.fillStyle = well; ctx.beginPath(); ctx.arc(0, 0, R * .84, 0, Math.PI * 2); ctx.fill();
-  ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = 3;               // painted wave rings under the slices
-  for (let k = 1; k <= 7; k++) { ctx.beginPath(); ctx.arc(0, 0, R * .84 * k / 7.5, 0, Math.PI * 2); ctx.stroke(); }
-  // slices, translucent so the indigo shows through like real thin-cut fugu
+  // dark porcelain with a gold rim
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.8)'; ctx.shadowBlur = 90; ctx.shadowOffsetY = 40;
+  const body = ctx.createRadialGradient(-R * .3, -R * .3, R * .1, 0, 0, R);
+  body.addColorStop(0, '#1d2b5c'); body.addColorStop(.75, '#0c1430'); body.addColorStop(1, '#070b1d');
+  ctx.fillStyle = body; ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+  ctx.strokeStyle = C.gold; ctx.lineWidth = R * .018; ctx.beginPath(); ctx.arc(0, 0, R * .965, 0, Math.PI * 2); ctx.stroke();
+  ctx.strokeStyle = 'rgba(226,185,92,.5)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, R * .9, 0, Math.PI * 2); ctx.stroke();
+  // faint gold seigaiha painted in the well — it shows through the slices
+  ctx.save(); ctx.beginPath(); ctx.arc(0, 0, R * .88, 0, Math.PI * 2); ctx.clip();
+  ctx.strokeStyle = 'rgba(226,185,92,.22)'; ctx.lineWidth = 2;
+  const S = R * .12;
+  for (let row = -10; row <= 10; row++) for (let col = -10; col <= 10; col++) {
+    const cx = col * S * 2 + (row % 2 ? S : 0), cy = row * S * .55;
+    for (let k = 1; k <= 3; k++) { ctx.beginPath(); ctx.arc(cx, cy, S * k / 3, Math.PI, 0); ctx.stroke(); }
+  }
+  ctx.restore();
+  // the slices: laid outer ring first, each one sliding in along its radius and settling with a slight twist
   const order = PETALS.length;
   PETALS.forEach((p, i) => {
-    const lp = prog(laid, i / order, i / order + .12); if (lp <= 0) return;
-    const e = eOutBack(lp, 1.4);
-    ctx.save(); ctx.rotate(p.a); ctx.translate(0, -R * p.r * lerp(1.25, 1, e)); ctx.rotate(.35);
-    ctx.globalAlpha = clamp(lp * 2);
-    ctx.shadowColor = 'rgba(0,0,30,.35)'; ctx.shadowBlur = 8; ctx.shadowOffsetY = 3;
-    const L = R * p.len, Wd = R * p.w;
-    const g = ctx.createLinearGradient(0, -L / 2, 0, L / 2);
-    g.addColorStop(0, 'rgba(255,255,255,.88)'); g.addColorStop(.55, 'rgba(240,238,250,.72)'); g.addColorStop(1, 'rgba(255,225,232,.8)');
-    ctx.fillStyle = g; ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.ellipse(0, 0, Wd, L / 2, 0, 0, Math.PI * 2); ctx.fill(); ctx.shadowColor = 'transparent'; ctx.stroke();
-    ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-Wd * .3, -L * .35); ctx.lineTo(-Wd * .1, L * .3); ctx.stroke();
+    const lp = prog(laid, i / order * .92, i / order * .92 + .08); if (lp <= 0) return;
+    const e = eOutExpo(lp);
+    ctx.save(); ctx.rotate(p.a + (1 - e) * .5);
+    ctx.translate(0, -(1 - e) * R * .35);
+    ctx.rotate(.28);                                     // the knife's angle: slices overlap like a fan
+    ctx.globalAlpha = clamp(lp * 3);
+    const path = petalPath(R * p.r0, R * p.r1, R * p.w);
+    const g = ctx.createLinearGradient(0, -R * p.r0, 0, -R * p.r1);
+    g.addColorStop(0, 'rgba(235,240,255,.18)'); g.addColorStop(.45, 'rgba(244,244,252,.5)'); g.addColorStop(.9, 'rgba(255,246,248,.78)'); g.addColorStop(1, 'rgba(255,225,232,.85)');
+    ctx.shadowColor = 'rgba(0,0,0,.45)'; ctx.shadowBlur = 10; ctx.shadowOffsetX = 3; ctx.shadowOffsetY = 4;
+    ctx.fillStyle = g; ctx.fill(path);
+    ctx.shadowColor = 'transparent';
+    ctx.save(); ctx.clip(path);
+    ctx.strokeStyle = 'rgba(255,255,255,.18)'; ctx.lineWidth = 1.2;      // muscle fibres
+    for (let k = -2; k <= 2; k++) { ctx.beginPath(); ctx.moveTo(k * R * p.w * .3, -R * p.r0); ctx.quadraticCurveTo(k * R * p.w * .5 + R * p.w * .2, -(R * (p.r0 + p.r1) / 2), k * R * p.w * .35, -R * p.r1); ctx.stroke(); }
+    const sh = ctx.createLinearGradient(-R * p.w, 0, R * p.w, 0);           // edge sheen
+    sh.addColorStop(0, 'rgba(255,255,255,0)'); sh.addColorStop(.8, 'rgba(255,255,255,.0)'); sh.addColorStop(.95, 'rgba(255,255,255,.55)'); sh.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = sh; ctx.fillRect(-R * p.w * 1.2, -R * p.r1 * 1.1, R * p.w * 2.4, R * p.r1);
+    ctx.restore();
+    ctx.strokeStyle = 'rgba(255,255,255,.45)'; ctx.lineWidth = 1; ctx.stroke(path);
     ctx.restore();
   });
-  // garnish in the middle once the flower is complete
-  const gp = eOutBack(prog(laid, .95, 1.0 + .12), 2);
+  // garnish: momiji-oroshi and chopped green onion, dropped in at the end
+  const gp = eOutBack(prog(laid, .96, 1.08), 2.4);
   if (gp > 0) {
     ctx.save(); ctx.scale(gp, gp);
-    ctx.fillStyle = '#e8743b'; ctx.beginPath(); ctx.arc(R * .05, R * .02, R * .06, 0, Math.PI * 2); ctx.fill();
-    ctx.strokeStyle = '#5aa04a'; ctx.lineWidth = R * .018; ctx.lineCap = 'round';
-    for (let i = 0; i < 7; i++) { ctx.beginPath(); ctx.moveTo(-R * .06, -R * .04 + i * 5); ctx.lineTo(-R * .16 - i * 3, -R * .14 + i * 9); ctx.stroke(); }
+    const m = ctx.createRadialGradient(R * .05, -R * .02, 2, R * .05, R * .01, R * .09);
+    m.addColorStop(0, '#ffb07a'); m.addColorStop(.6, '#e8622e'); m.addColorStop(1, '#a8361a');
+    ctx.fillStyle = m; ctx.shadowColor = 'rgba(0,0,0,.5)'; ctx.shadowBlur = 12; ctx.shadowOffsetY = 5;
+    ctx.beginPath(); ctx.ellipse(R * .05, R * .01, R * .06, R * .05, .3, 0, Math.PI * 2); ctx.fill();
+    ctx.shadowColor = 'transparent';
+    const rr = rng(12);
+    for (let k = 0; k < 34; k++) {                        // finely chopped green onion, scattered
+      const a = rr() * Math.PI * 2, d = R * (.06 + rr() * .1);
+      const gx = -R * .07 + Math.cos(a) * d * .8, gy = -R * .02 + Math.sin(a) * d * .6, gr = R * (.006 + rr() * .006);
+      ctx.strokeStyle = k % 4 ? 'rgba(120,200,90,.95)' : 'rgba(210,240,180,.95)'; ctx.lineWidth = gr * .55;
+      ctx.beginPath(); ctx.ellipse(gx, gy, gr, gr * .75, rr() * 3, 0, Math.PI * 2); ctx.stroke();
+    }
     ctx.restore();
   }
-  // glaze highlight
-  ctx.save(); ctx.globalAlpha = .35; ctx.strokeStyle = '#fff'; ctx.lineWidth = R * .03; ctx.lineCap = 'round';
-  ctx.beginPath(); ctx.arc(0, 0, R * .97, Math.PI * 1.1, Math.PI * 1.35); ctx.stroke(); ctx.restore();
+  // a light sweep across the glaze and the slices
+  if (sweep > 0 && sweep < 1) {
+    ctx.save(); ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI * 2); ctx.clip(); ctx.rotate(-spin - .6);
+    const sx = lerp(-R * 1.6, R * 1.6, sweep);
+    const lg = ctx.createLinearGradient(sx - R * .35, 0, sx + R * .35, 0);
+    lg.addColorStop(0, 'rgba(255,240,210,0)'); lg.addColorStop(.5, 'rgba(255,240,210,.32)'); lg.addColorStop(1, 'rgba(255,240,210,0)');
+    ctx.globalCompositeOperation = 'screen'; ctx.fillStyle = lg; ctx.fillRect(-R * 2, -R * 2, R * 4, R * 4);
+    ctx.restore();
+  }
   ctx.restore();
+}
+function tategaki(str, x, y, t0, t, o = {}) {           // vertical type, characters ink in one by one
+  const size = o.size || 80, step = size * 1.08;
+  [...str].forEach((c, k) => {
+    const p = prog(t, t0 + k * .07, t0 + k * .07 + .5); if (p <= 0) return;
+    const e = eOutExpo(p);
+    const punct = '、。'.includes(c);
+    ctx.save(); ctx.translate(x + (punct ? size * .38 : 0), y + k * step - (punct ? size * .3 : 0) + (1 - e) * 30);
+    ctx.filter = p < 1 ? `blur(${(1 - e) * 10}px)` : 'none';
+    txt(c, 0, 0, { size, weight: o.weight || 700, color: o.color, glow: o.glow, alpha: e });
+    ctx.restore();
+  });
 }
 
 // ---------- a gift: wrapped box, then a red-and-white mizuhiki cord ties it ----------
@@ -274,24 +323,29 @@ function sceneKanji(t) {                             // 2.0–4.0s: ふく → �
   kinetic('不遇ではなく、', TX, cy + 400, T.kanji + .9, t, { size: 64, weight: 700, maxW: SAFE.x1 - SAFE.x0 });
   kinetic('福を届けたいから。', TX, cy + 490, T.kanji + 1.25, t, { size: 64, weight: 700, color: C.gold2, maxW: SAFE.x1 - SAFE.x0 });
 }
-function scenePlate(t) {                             // 4.0–8.0s: slices laid on the beat into a chrysanthemum
+function scenePlate(t) {                             // 4.0–8.0s: macro on the knife-fan, pull back to the full chrysanthemum
   const lt = t - T.plate;
-  bg(t, .35);
-  const R = 430, py = CY - 60;
-  const zoomIn = eOutExpo(prog(lt, 0, .6)), zoomOut = eInOut(prog(lt, 3.0, 4.0));
-  const s = lerp(1.35, 1, zoomIn) * lerp(1, 1.12, zoomOut);
-  // laid progress advances in steps on the beat (snap), so every beat adds a burst of slices
-  const beats = lt / BEAT, step = Math.floor(beats), frac = beats - step;
-  const laid = clamp((step + eOutExpo(clamp(frac * 2.2))) / 5.5);
-  ctx.save(); ctx.translate(TX, py); ctx.scale(s, s); ctx.translate(-TX, -py);
-  plate(TX, py, R, t, laid, lt * .12 - .3);
+  // near-black stage with a warm spotlight on the plate
+  ctx.fillStyle = '#04060f'; ctx.fillRect(0, 0, W, H);
+  const R = 400, py = CY + 80;
+  const spot = ctx.createRadialGradient(TX, py, R * .4, TX, py, R * 1.9);
+  spot.addColorStop(0, 'rgba(255,214,150,.22)'); spot.addColorStop(1, 'rgba(255,214,150,0)');
+  ctx.fillStyle = spot; ctx.fillRect(0, 0, W, H);
+  const laid = eInOut(prog(lt, .05, 2.4));
+  const spin = -.9 + lt * .16;
+  // camera: start tight on the slices being laid at the top of the plate, then pull back
+  const pull = eInOut(prog(lt, 1.1, 2.3));
+  const zoom = lerp(3.1, 1, pull) * lerp(1, 1.06, prog(lt, 2.3, 4));
+  const fa = spin + (-Math.PI / 2) + .25;               // follows the first slices as they land
+  const fx = TX + Math.cos(fa) * R * .62, fy = py + Math.sin(fa) * R * .62;
+  const cxp = lerp(fx, TX, pull), cyp = lerp(fy, py, pull);
+  ctx.save(); ctx.translate(TX, py); ctx.scale(zoom, zoom); ctx.rotate((1 - pull) * .25); ctx.translate(-cxp, -cyp);
+  plate(TX, py, R, t, laid, spin, prog(lt, 2.5, 3.4));
   ctx.restore();
-  goldDust(t, .5);
-  const kick = Math.exp(-frac * 6) * (lt < 3 ? 1 : 0);
-  if (kick > .05) { ctx.save(); ctx.globalAlpha = kick * .12; ctx.fillStyle = C.gold2; ctx.fillRect(0, 0, W, H); ctx.restore(); }
-  burst(TX, py, prog(lt, 2.85, 3.8), 50, 700, 31);
-  kinetic('ふくを、贈る。', TX, H * .15, T.plate + .3, t, { size: 96, weight: 900, glow: 'rgba(0,0,0,.6)', maxW: SAFE.x1 - SAFE.x0 });
-  kinetic('それは、福を贈ること。', TX, py + R + 150, T.plate + 2.6, t, { size: 60, weight: 700, color: C.gold2, maxW: SAFE.x1 - SAFE.x0 });
+  goldDust(t, .35 * pull);
+  burst(TX, py, prog(lt, 2.45, 3.4), 40, 640, 31, [C.gold2, C.gold, C.white]);
+  tategaki('ふくを、贈る。', SAFE.x0 + 35, 250, T.plate + .5, t, { size: 76, color: C.gold2, glow: 'rgba(246,223,160,.45)' });
+  kinetic('それは、福を贈ること。', TX, py + R + 85, T.plate + 2.7, t, { size: 60, weight: 700, color: C.white, maxW: SAFE.x1 - SAFE.x0 });
 }
 function sceneTrust(t) {                             // 8.0–11.0s: 147 years + Rakuten award
   const lt = t - T.trust;
