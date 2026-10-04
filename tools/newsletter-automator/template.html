@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>{{subject}}</title>
+</head>
+<body style="margin:0;padding:0;background:#f5f7fa;font-family:'Hiragino Sans','Noto Sans JP',sans-serif;color:#1a1a2e;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f5f7fa;padding:32px 0;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;">
+          <tr>
+            <td style="background:linear-gradient(135deg,#1a3a8f,#0d2060);padding:28px 36px;">
+              <span style="color:#f7c52d;font-size:12px;letter-spacing:2px;">Y STUDIO+ NEWSLETTER</span>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:36px;">
+              <p style="font-size:15px;">{{name}} 様</p>
+              <h1 style="font-size:20px;margin:0 0 20px;">{{subject}}</h1>
+              <div style="font-size:14px;line-height:1.9;">
+                {{body_html}}
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:20px 36px;border-top:1px solid #eef1f7;font-size:11px;color:#888;">
+              このメールに心当たりがない場合、または配信停止をご希望の場合は
+              <a href="{{unsubscribe_url}}" style="color:#1a3a8f;">こちら</a>からお手続きください。
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
