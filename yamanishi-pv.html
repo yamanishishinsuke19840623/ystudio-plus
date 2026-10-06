@@ -65,9 +65,7 @@ svg.fugu path,svg.fugu circle,svg.fugu ellipse{fill:none;stroke:var(--gold2);str
 #s5 .card{width:500px;height:320px;border:1.5px solid rgba(201,151,58,.55);border-radius:6px;background:rgba(10,29,61,.62);display:flex;flex-direction:column;align-items:center;justify-content:center;}
 #s5 .card .n{font-size:110px;font-weight:700;color:var(--gold2);line-height:1.1;font-family:'Inter','Noto Sans JP',sans-serif;}
 #s5 .card .n small{font-size:50px;margin-left:.08em;font-family:'Noto Sans JP',sans-serif;}
-#s5 .card .n .pre{font-size:46px;margin-right:.1em;}
 #s5 .card .d{font-size:32px;letter-spacing:.1em;margin-top:18px;}
-#s5 .src{position:absolute;left:0;right:0;bottom:150px;text-align:center;font-size:24px;color:var(--sub);letter-spacing:.12em;}
 
 /* S5b */
 #s5b .line{font-size:84px;font-weight:600;letter-spacing:.16em;line-height:1.8;}
@@ -100,7 +98,7 @@ body.render #ui{display:none;}
   <!-- S1 0–10s：イントロ -->
   <div class="layer center" id="s1a">
     <div class="en">Shimonoseki, Yamaguchi</div>
-    <div class="big serif" data-split>下関、富任町。</div>
+    <div class="big serif" data-split>山口県　下関市。</div>
   </div>
   <div class="layer" id="s1b">
     <svg class="fugu" id="fugu1" viewBox="0 0 520 340"></svg>
@@ -137,15 +135,14 @@ body.render #ui{display:none;}
     <div class="note">下関では「ふぐ」を、「福」に通じる「ふく」と呼びます。</div>
   </div>
 
-  <!-- S5 40–47s：変えていくもの -->
+  <!-- S5 40–47s：魚屋の朝 -->
   <div class="layer" id="s5">
-    <div class="head serif" data-split>四時起きの浜も、AIも両方。</div>
+    <div class="head serif" data-split>朝3時。四代目の朝が始まる。</div>
     <div class="cards">
-      <div class="card"><div class="n">10<small>モール</small></div><div class="d">＋自社サイトを、1人で運営</div></div>
-      <div class="card"><div class="n"><span id="c6">0</span><small>種</small></div><div class="d">業務の自動化が稼働中</div></div>
-      <div class="card"><div class="n"><span class="pre serif">月</span><span id="c30">0</span><small>時間</small></div><div class="d">業務を削減</div></div>
+      <div class="card"><div class="n">3:00</div><div class="d">毎朝3時に起きて</div></div>
+      <div class="card"><div class="n serif">本場</div><div class="d">ふぐの本場・下関で</div></div>
+      <div class="card"><div class="n serif">全国へ</div><div class="d">ネット通販でお届け</div></div>
     </div>
-    <div class="src">※ 山西水産での自社実証データ（2023〜2024年）</div>
   </div>
 
   <!-- S5b 47–50s -->
@@ -169,7 +166,7 @@ body.render #ui{display:none;}
   <div class="layer center" id="s7">
     <div class="catch serif" data-split>ふくと生きる、<span>山西水産。</span></div>
     <div class="co serif">山西水産株式会社</div>
-    <div class="info">創業 明治12年（1878年）　山口県下関市富任町1-1-5<br><b>lp.yamanisi.co.jp</b>　／　YouTube <b>@shimofugu</b></div>
+    <div class="info">創業 明治12年（1878年）　山口県 下関市<br><b>lp.yamanisi.co.jp</b>　／　YouTube <b>@shimofugu</b></div>
     <div class="credit">BGM：「潮風と、ふくと。」山西水産 オリジナルテーマソング（制作：Yスタジオ＋）</div>
   </div>
 
@@ -309,9 +306,6 @@ function seek(t){
   show('s5', win(t, 40, 46.9, .5, .5));
   reveal($('s5').querySelector('.head'), t, 40.1, .05, .6);
   $('s5').querySelectorAll('.card').forEach((c,i) => { const p = ease(prog(t, 41.2 + i*.45, 42.2 + i*.45)); c.style.opacity = p; c.style.transform = `translateY(${(1-p)*60}px)`; });
-  $('c6').textContent = Math.round(6 * easeIO(prog(t, 41.8, 43.4)));
-  $('c30').textContent = Math.round(30 * easeIO(prog(t, 42.2, 44.0)));
-  $('s5').querySelector('.src').style.opacity = ease(prog(t, 43.2, 44)) * .9;
 
   // S5b
   show('s5b', win(t, 46.9, 49.9, .2, .5));
