@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>山西水産 プロモーション動画</title>
+<meta name="description" content="創業147年・下関のふぐ問屋 山西水産株式会社のプロモーション動画（78秒）。テーマソング「潮風と、ふくと。」にのせて、サイトで公開済みの事実だけで構成しています。">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;900&family=Noto+Sans+JP:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* 1920x1080 の舞台を1コマずつ描く。?render=1 のとき render.mjs が window.pv.seek(t) で駆動する */
+:root{--navy:#0a1d3d;--deep:#050f22;--gold:#c9973a;--gold2:#e8c27a;--ink:#f4f1ea;--sub:rgba(244,241,234,.62);}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;background:#000;overflow:hidden;}
+body{font-family:'Noto Sans JP','IPAGothic',sans-serif;color:var(--ink);}
+#stage{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;background:var(--deep);}
+#sea{position:absolute;inset:0;}
+.layer{position:absolute;inset:0;opacity:0;}
+.serif{font-family:'Noto Serif JP',serif;}
+.en{font-family:'Inter',sans-serif;letter-spacing:.35em;text-transform:uppercase;font-weight:700;color:var(--gold);}
+.center{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+.ch{display:inline-block;will-change:transform,opacity;}
+svg.fugu path,svg.fugu circle,svg.fugu ellipse{fill:none;stroke:var(--gold2);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;}
+
+/* S1 */
+#s1a .en{font-size:22px;margin-bottom:34px;}
+#s1a .big{font-size:120px;font-weight:600;letter-spacing:.12em;}
+#s1b{display:flex;align-items:center;justify-content:center;gap:90px;}
+#s1b svg{width:520px;height:340px;}
+#s1b .title{font-size:150px;font-weight:900;letter-spacing:.14em;line-height:1.1;}
+#s1b .en{font-size:24px;margin-top:22px;}
+
+/* S2 */
+#s2 .stamp{font-size:40px;letter-spacing:.3em;color:var(--gold2);margin-bottom:10px;}
+#s2 .year{font-family:'Inter',sans-serif;font-size:250px;font-weight:700;letter-spacing:.04em;line-height:1;}
+#s2 .bar{width:900px;height:2px;background:rgba(201,151,58,.25);margin:46px auto 40px;position:relative;}
+#s2 .bar i{position:absolute;left:0;top:0;height:100%;background:var(--gold);}
+#s2 .count{font-size:70px;font-weight:600;letter-spacing:.08em;}
+#s2 .count b{font-family:'Inter',sans-serif;font-size:120px;color:var(--gold2);margin:0 .12em;}
+#s2 .lead{font-size:34px;color:var(--sub);margin-top:22px;letter-spacing:.2em;}
+
+/* S3 */
+#s3 .photo{position:absolute;right:0;top:0;width:1000px;height:1080px;overflow:hidden;}
+#s3 .photo img{position:absolute;width:1100px;left:-40px;top:-10px;filter:saturate(.92) contrast(1.03);}
+#s3 .photo:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--deep) 0%,rgba(5,15,34,.7) 25%,rgba(5,15,34,0) 60%);}
+#s3 .txt{position:absolute;left:150px;top:250px;}
+#s3 .gen{font-size:200px;font-weight:900;line-height:1;letter-spacing:.06em;}
+#s3 .gen small{font-size:80px;margin-left:.1em;}
+#s3 .name{font-size:76px;font-weight:600;letter-spacing:.3em;margin-top:40px;}
+#s3 .role{font-size:30px;color:var(--sub);letter-spacing:.15em;margin-top:16px;}
+#s3 .quote{position:absolute;left:150px;bottom:150px;font-size:54px;font-weight:600;letter-spacing:.14em;}
+#s3 .quote span{color:var(--gold2);}
+
+/* S4 */
+#s4 .l1{font-size:76px;letter-spacing:.14em;color:var(--sub);}
+#s4 .l2{font-size:260px;font-weight:900;letter-spacing:.06em;line-height:1.2;color:var(--gold2);}
+#s4 .l3{font-size:56px;font-weight:600;letter-spacing:.16em;margin-top:24px;}
+#s4 .note{font-size:28px;color:var(--sub);letter-spacing:.12em;margin-top:36px;}
+
+/* S5 */
+#s5 .head{position:absolute;left:0;right:0;top:150px;text-align:center;font-size:66px;font-weight:600;letter-spacing:.16em;}
+#s5 .cards{position:absolute;left:0;right:0;top:380px;display:flex;justify-content:center;gap:48px;}
+#s5 .card{width:500px;height:320px;border:1.5px solid rgba(201,151,58,.55);border-radius:6px;background:rgba(10,29,61,.62);display:flex;flex-direction:column;align-items:center;justify-content:center;}
+#s5 .card .n{font-size:110px;font-weight:700;color:var(--gold2);line-height:1.1;font-family:'Inter','Noto Sans JP',sans-serif;}
+#s5 .card .n small{font-size:50px;margin-left:.08em;font-family:'Noto Sans JP',sans-serif;}
+#s5 .card .n .pre{font-size:46px;margin-right:.1em;}
+#s5 .card .d{font-size:32px;letter-spacing:.1em;margin-top:18px;}
+#s5 .src{position:absolute;left:0;right:0;bottom:150px;text-align:center;font-size:24px;color:var(--sub);letter-spacing:.12em;}
+
+/* S5b */
+#s5b .line{font-size:84px;font-weight:600;letter-spacing:.16em;line-height:1.8;}
+
+/* S6 */
+#s6 .lyric{position:absolute;left:0;right:0;top:0;bottom:0;display:flex;align-items:center;justify-content:center;font-size:96px;font-weight:600;letter-spacing:.16em;line-height:1.7;text-shadow:0 4px 30px rgba(0,0,0,.35);}
+#s6 .tag{position:absolute;left:0;right:0;bottom:120px;text-align:center;font-size:24px;}
+#s6 svg.fugu{position:absolute;width:260px;height:170px;}
+
+/* S7 */
+#s7 .catch{font-size:130px;font-weight:900;letter-spacing:.14em;}
+#s7 .catch span{color:var(--gold2);}
+#s7 .co{font-size:52px;font-weight:600;letter-spacing:.3em;margin-top:70px;}
+#s7 .info{font-size:28px;color:var(--sub);letter-spacing:.14em;margin-top:26px;line-height:2;}
+#s7 .info b{color:var(--ink);font-weight:700;font-family:'Inter','Noto Sans JP',sans-serif;letter-spacing:.06em;}
+#s7 .credit{position:absolute;left:0;right:0;bottom:60px;text-align:center;font-size:20px;color:rgba(244,241,234,.4);letter-spacing:.14em;}
+
+#fade{position:absolute;inset:0;background:#000;pointer-events:none;}
+#ui{position:fixed;left:0;right:0;bottom:0;padding:12px 16px;display:flex;gap:12px;align-items:center;background:linear-gradient(transparent,rgba(0,0,0,.7));font:13px 'Noto Sans JP',sans-serif;color:#ddd;z-index:9;}
+#ui button{background:var(--gold);color:#111;border:0;border-radius:4px;padding:8px 16px;font-weight:700;cursor:pointer;}
+#ui a{color:var(--gold2);}
+#ui input{flex:1;accent-color:var(--gold);}
+body.render #ui{display:none;}
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="sea" width="1920" height="1080"></canvas>
+
+  <!-- S1 0–10s：イントロ -->
+  <div class="layer center" id="s1a">
+    <div class="en">Shimonoseki, Yamaguchi</div>
+    <div class="big serif" data-split>下関、富任町。</div>
+  </div>
+  <div class="layer" id="s1b">
+    <svg class="fugu" id="fugu1" viewBox="0 0 520 340"></svg>
+    <div>
+      <div class="title serif" data-split>山西水産</div>
+      <div class="en">Yamanishi Suisan</div>
+    </div>
+  </div>
+
+  <!-- S2 10–20s：創業 -->
+  <div class="layer center" id="s2">
+    <div class="stamp serif">創業　明治十二年</div>
+    <div class="year" id="year">1878</div>
+    <div class="bar"><i id="bar"></i></div>
+    <div class="count serif">老舗ふぐ問屋として<b id="cnt">0</b>年</div>
+  </div>
+
+  <!-- S3 20–30s：4代目 -->
+  <div class="layer" id="s3">
+    <div class="photo"><img src="shinsuke.jpg" alt="山西伸典" id="photo"></div>
+    <div class="txt">
+      <div class="gen serif">4<small>代目</small></div>
+      <div class="name serif">山西伸典</div>
+      <div class="role">山西水産株式会社　代表取締役</div>
+    </div>
+    <div class="quote serif" data-split>変わらないもの、<span>変えていくもの。</span></div>
+  </div>
+
+  <!-- S4 30–40s：ふく -->
+  <div class="layer center" id="s4">
+    <div class="l1 serif">「ふぐ」ではなく、</div>
+    <div class="l2 serif">ふく</div>
+    <div class="l3 serif" data-split>不遇ではなく、福を届けたいから。</div>
+    <div class="note">下関では「ふぐ」を、「福」に通じる「ふく」と呼びます。</div>
+  </div>
+
+  <!-- S5 40–47s：変えていくもの -->
+  <div class="layer" id="s5">
+    <div class="head serif" data-split>四時起きの浜も、AIも両方。</div>
+    <div class="cards">
+      <div class="card"><div class="n">10<small>モール</small></div><div class="d">＋自社サイトを、1人で運営</div></div>
+      <div class="card"><div class="n"><span id="c6">0</span><small>種</small></div><div class="d">業務の自動化が稼働中</div></div>
+      <div class="card"><div class="n"><span class="pre serif">月</span><span id="c30">0</span><small>時間</small></div><div class="d">業務を削減</div></div>
+    </div>
+    <div class="src">※ 山西水産での自社実証データ（2023〜2024年）</div>
+  </div>
+
+  <!-- S5b 47–50s -->
+  <div class="layer center" id="s5b">
+    <div class="line serif" data-split>百四十七年の続きを、</div>
+    <div class="line serif" data-split>僕らが書いていく。</div>
+  </div>
+
+  <!-- S6 50–70s：サビ -->
+  <div class="layer" id="s6">
+    <svg class="fugu" id="fugu2" viewBox="0 0 520 340"></svg>
+    <svg class="fugu" id="fugu3" viewBox="0 0 520 340"></svg>
+    <div class="lyric serif" id="ly0"><div data-split>海からのふく　今日もあなたに</div></div>
+    <div class="lyric serif" id="ly1"><div data-split>一匹一匹　心を込めて</div></div>
+    <div class="lyric serif" id="ly2"><div data-split>下関から　届けたいのは</div></div>
+    <div class="lyric serif" id="ly3"><div data-split>美味しさだけじゃない<br>幸せのかたち</div></div>
+    <div class="tag en">Theme song ― 潮風と、ふくと。</div>
+  </div>
+
+  <!-- S7 70–78s：エンドカード -->
+  <div class="layer center" id="s7">
+    <div class="catch serif" data-split>ふくと生きる、<span>山西水産。</span></div>
+    <div class="co serif">山西水産株式会社</div>
+    <div class="info">創業 明治12年（1878年）　山口県下関市富任町1-1-5<br><b>lp.yamanisi.co.jp</b>　／　YouTube <b>@shimofugu</b></div>
+    <div class="credit">BGM：「潮風と、ふくと。」山西水産 オリジナルテーマソング（制作：Yスタジオ＋）</div>
+  </div>
+
+  <div id="fade"></div>
+</div>
+
+<div id="ui">
+  <button id="play">▶ 音ありで再生</button>
+  <input type="range" id="seek" min="0" max="78" step="0.01" value="0">
+  <span id="tc">0.0s</span>
+  <a href="media/yamanishi-pv.mp4">MP4</a>
+</div>
+<audio id="bgm" src="media/yamanishi-pv-bgm.m4a" preload="auto"></audio>
+
+<script>
+(function(){
+const DUR = 78;
+const $ = id => document.getElementById(id);
+const clamp = (x,a=0,b=1) => Math.min(b, Math.max(a, x));
+const lerp = (a,b,p) => a + (b-a)*p;
+const ease = p => 1 - Math.pow(1-clamp(p), 3);
+const easeIO = p => { p = clamp(p); return p<.5 ? 4*p*p*p : 1 - Math.pow(-2*p+2,3)/2; };
+// t が [a,b] の間で 0→1
+const prog = (t,a,b) => clamp((t-a)/(b-a));
+// 区間 [a,b] でフェードイン/アウト（in, out 秒）
+const win = (t,a,b,i=.6,o=.6) => Math.min(ease(prog(t,a,a+i)), 1-easeIO(prog(t,b-o,b)));
+
+// ---- ふぐの線画（汎用イラスト） ----
+const FUGU = [
+  'M 120 170 C 130 90 230 55 320 70 C 400 82 445 130 450 170 C 445 210 400 258 320 270 C 230 285 130 250 120 170 Z',
+  'M 122 170 C 90 130 55 110 30 100 C 45 140 45 200 30 240 C 55 230 90 210 122 170',
+  'M 300 72 C 310 40 340 30 360 38 C 352 55 345 70 340 78',
+  'M 300 268 C 312 295 338 305 356 300 C 348 284 342 272 338 262',
+  'M 260 175 C 285 160 305 165 318 185 C 302 200 280 198 260 175',
+  'M 438 165 C 446 168 450 172 452 176',
+];
+function drawFugu(svg){
+  svg.innerHTML = FUGU.map(d => `<path d="${d}"/>`).join('') +
+    '<circle cx="385" cy="140" r="14"/><circle cx="389" cy="137" r="4"/>' +
+    [[200,120],[240,100],[280,110],[220,150],[180,190],[230,225],[275,240],[320,232]].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="3.5"/>`).join('');
+  svg.querySelectorAll('path,circle').forEach(p => { const L = p.getTotalLength(); p.dataset.len = L; p.style.strokeDasharray = L; p.style.strokeDashoffset = L; });
+}
+function strokeFugu(svg, p){
+  const els = svg.querySelectorAll('path,circle'), n = els.length;
+  els.forEach((e,i) => { const q = clamp(p*n*.55 - i*.45); e.style.strokeDashoffset = e.dataset.len * (1 - ease(q)); });
+}
+['fugu1','fugu2','fugu3'].forEach(id => drawFugu($(id)));
+
+// ---- 文字を1文字ずつに分ける ----
+document.querySelectorAll('[data-split]').forEach(el => {
+  const walk = node => { [...node.childNodes].forEach(c => {
+    if (c.nodeType === 3) { const f = document.createDocumentFragment();
+      [...c.textContent].forEach(ch => { const s = document.createElement('span'); s.className = 'ch'; s.textContent = ch === ' ' ? ' ' : ch; f.appendChild(s); });
+      c.replaceWith(f);
+    } else walk(c); }); };
+  walk(el); el._chs = [...el.querySelectorAll('.ch')];
+});
+// 文字を順に浮かび上がらせる（start から per 秒ずつずらす）
+function reveal(el, t, start, per=.06, dur=.7, out=null){
+  el._chs.forEach((c,i) => {
+    let p = ease(prog(t, start + i*per, start + i*per + dur));
+    if (out) p *= 1 - easeIO(prog(t, out[0] + i*per*.4, out[1] + i*per*.4));
+    c.style.opacity = p; c.style.transform = `translateY(${(1-p)*28}px)`; c.style.filter = `blur(${(1-p)*6}px)`;
+  });
+}
+
+// ---- 海（背景） ----
+const cv = $('sea'), cx = cv.getContext('2d');
+const rnd = (s => () => (s = (s*16807) % 2147483647) / 2147483647)(20261006);
+const BUB = Array.from({length:70}, () => ({x:rnd()*1920, y:rnd()*1080, r:1+rnd()*4, v:18+rnd()*40, ph:rnd()*6.28}));
+function sea(t){
+  // サビ（50s〜）にかけて夜明けのように明るくする
+  const dawn = easeIO(prog(t, 48, 56)) * (1 - easeIO(prog(t, 72, 76)));
+  const g = cx.createLinearGradient(0,0,0,1080);
+  g.addColorStop(0, `rgb(${lerp(5,38,dawn)|0},${lerp(15,52,dawn)|0},${lerp(34,92,dawn)|0})`);
+  g.addColorStop(.55, `rgb(${lerp(10,92,dawn)|0},${lerp(29,82,dawn)|0},${lerp(61,92,dawn)|0})`);
+  g.addColorStop(1, `rgb(${lerp(5,30,dawn)|0},${lerp(15,38,dawn)|0},${lerp(34,66,dawn)|0})`);
+  cx.fillStyle = g; cx.fillRect(0,0,1920,1080);
+  // 光の帯
+  const sun = cx.createRadialGradient(960, 760, 0, 960, 760, 900);
+  sun.addColorStop(0, `rgba(232,194,122,${.06 + .3*dawn})`); sun.addColorStop(1, 'rgba(232,194,122,0)');
+  cx.fillStyle = sun; cx.fillRect(0,0,1920,1080);
+  // 波（下から重ねる）
+  const rise = ease(prog(t, 0, 3.5));
+  for (let k = 0; k < 6; k++) {
+    const base = 1080 - (60 + k*55) * rise - 10*k, amp = 10 + k*4, sp = .35 + k*.12;
+    cx.beginPath(); cx.moveTo(0, 1080);
+    for (let x = 0; x <= 1920; x += 16) {
+      const y = base + Math.sin(x/(170+k*40) + t*sp + k) * amp + Math.sin(x/63 - t*sp*1.7 + k*2) * amp*.3;
+      cx.lineTo(x, y);
+    }
+    cx.lineTo(1920, 1080); cx.closePath();
+    cx.fillStyle = `rgba(${lerp(20,120,dawn)|0},${lerp(60,110,dawn)|0},${lerp(110,140,dawn)|0},${.10 + k*.02})`; cx.fill();
+    cx.strokeStyle = `rgba(232,194,122,${(.10 + .12*dawn) * (1 - k/7)})`; cx.lineWidth = 1.2; cx.stroke();
+  }
+  // 泡
+  BUB.forEach(b => {
+    const y = ((b.y - t*b.v) % 1180 + 1180) % 1180 - 50, x = b.x + Math.sin(t*.8 + b.ph)*14;
+    cx.beginPath(); cx.arc(x, y, b.r, 0, 6.283);
+    cx.strokeStyle = `rgba(244,241,234,${.16 + .14*dawn})`; cx.lineWidth = 1; cx.stroke();
+  });
+}
+
+function show(id, o){ $(id).style.opacity = o; $(id).style.visibility = o > .001 ? 'visible' : 'hidden'; }
+
+function seek(t){
+  sea(t);
+
+  // S1
+  show('s1a', win(t, .8, 5.2, .3, .7)); reveal($('s1a').querySelector('.big'), t, 1.0, .12, .9);
+  show('s1b', win(t, 5.0, 9.8, .4, .7));
+  strokeFugu($('fugu1'), prog(t, 5.0, 8.0));
+  $('fugu1').style.transform = `translateY(${Math.sin(t*1.4)*8}px) rotate(${Math.sin(t*.9)*2}deg)`;
+  reveal($('s1b').querySelector('.title'), t, 6.4, .22, 1.0);
+
+  // S2
+  show('s2', win(t, 10, 19.8, .6, .7));
+  $('bar').style.width = (easeIO(prog(t, 12.5, 17.5)) * 100) + '%';
+  $('cnt').textContent = Math.round(147 * easeIO(prog(t, 12.5, 17.5)));
+  $('s2').style.transform = `scale(${1 + prog(t,10,20)*.04})`;
+
+  // S3
+  show('s3', win(t, 20, 29.8, .7, .7));
+  $('photo').style.transform = `scale(${1.02 + prog(t,20,30)*.08}) translate(${-prog(t,20,30)*20}px, 0)`;
+  $('s3').querySelector('.txt').style.transform = `translateX(${(1-ease(prog(t,20.2,21.6)))*-60}px)`;
+  reveal($('s3').querySelector('.quote'), t, 24.5, .08, .8);
+
+  // S4
+  show('s4', win(t, 30, 39.8, .6, .7));
+  $('s4').querySelector('.l1').style.opacity = ease(prog(t, 30.3, 31.3));
+  const l2 = ease(prog(t, 31.6, 32.8));
+  $('s4').querySelector('.l2').style.cssText = `opacity:${l2};transform:scale(${1.25 - .25*l2});letter-spacing:${.5 - .44*l2}em`;
+  reveal($('s4').querySelector('.l3'), t, 34.0, .07, .8);
+  $('s4').querySelector('.note').style.opacity = ease(prog(t, 36.2, 37.2));
+
+  // S5
+  show('s5', win(t, 40, 46.9, .5, .5));
+  reveal($('s5').querySelector('.head'), t, 40.1, .05, .6);
+  $('s5').querySelectorAll('.card').forEach((c,i) => { const p = ease(prog(t, 41.2 + i*.45, 42.2 + i*.45)); c.style.opacity = p; c.style.transform = `translateY(${(1-p)*60}px)`; });
+  $('c6').textContent = Math.round(6 * easeIO(prog(t, 41.8, 43.4)));
+  $('c30').textContent = Math.round(30 * easeIO(prog(t, 42.2, 44.0)));
+  $('s5').querySelector('.src').style.opacity = ease(prog(t, 43.2, 44)) * .9;
+
+  // S5b
+  show('s5b', win(t, 46.9, 49.9, .2, .5));
+  const lines = $('s5b').querySelectorAll('.line');
+  reveal(lines[0], t, 47.0, .07, .6); reveal(lines[1], t, 48.0, .07, .6);
+
+  // S6 サビ：歌詞は2小節(5秒)ごと
+  show('s6', win(t, 50, 69.9, .4, .6));
+  for (let i = 0; i < 4; i++) {
+    const a = 50 + i*5, el = $('ly' + i);
+    el.style.visibility = (t > a - .1 && t < a + 5.1) ? 'visible' : 'hidden';
+    reveal(el.firstElementChild, t, a + .05, .06, .7, [a + 4.3, a + 4.9]);
+  }
+  strokeFugu($('fugu2'), prog(t, 50.5, 54)); strokeFugu($('fugu3'), prog(t, 58, 61.5));
+  $('fugu2').style.cssText = `left:${lerp(-300, 1960, prog(t,50,70))}px;top:${190 + Math.sin(t*1.3)*14}px;opacity:.55`;
+  $('fugu3').style.cssText = `left:${lerp(1960, -300, prog(t,56,70))}px;top:${740 + Math.sin(t*1.1+1)*14}px;opacity:.45;transform:scaleX(-1) scale(.75)`;
+  $('s6').querySelector('.tag').style.opacity = ease(prog(t, 51, 52.5)) * .8;
+
+  // S7
+  show('s7', ease(prog(t, 69.9, 70.6)));
+  reveal($('s7').querySelector('.catch'), t, 70.0, .1, .9);
+  $('s7').querySelector('.co').style.opacity = ease(prog(t, 72.2, 73.2));
+  $('s7').querySelector('.info').style.opacity = ease(prog(t, 73.0, 74.0));
+  $('s7').querySelector('.credit').style.opacity = ease(prog(t, 73.6, 74.6));
+
+  $('fade').style.opacity = Math.max(1 - prog(t, 0, .8), easeIO(prog(t, 76.6, 78)));
+}
+
+// ---- 表示・再生 ----
+const params = new URLSearchParams(location.search);
+const stage = $('stage');
+function fit(){
+  if (params.has('render')) return;
+  const s = Math.min(innerWidth/1920, innerHeight/1080);
+  stage.style.transform = `translate(${(innerWidth-1920*s)/2}px,${(innerHeight-1080*s)/2}px) scale(${s})`;
+}
+addEventListener('resize', fit); fit();
+window.pv = { seek, duration: DUR, ready: document.fonts.ready.then(() => Promise.all([...document.images].map(i => i.decode().catch(()=>{})))) };
+
+if (params.has('render')) { document.body.classList.add('render'); seek(0); return; }
+const bgm = $('bgm'), sl = $('seek'); let t0 = null, playing = false, cur = 0;
+function loop(now){
+  if (playing) { cur = bgm.currentTime && !bgm.paused ? bgm.currentTime : (now - t0)/1000; if (cur >= DUR) { playing = false; cur = DUR; $('play').textContent = '▶ もう一度'; } }
+  seek(cur); sl.value = cur; $('tc').textContent = cur.toFixed(1) + 's';
+  requestAnimationFrame(loop);
+}
+$('play').onclick = () => {
+  if (playing) { playing = false; bgm.pause(); $('play').textContent = '▶ 再生'; return; }
+  if (cur >= DUR) cur = 0;
+  t0 = performance.now() - cur*1000; bgm.currentTime = cur; bgm.play().catch(()=>{}); playing = true; $('play').textContent = '❚❚ 一時停止';
+};
+sl.oninput = () => { cur = +sl.value; t0 = performance.now() - cur*1000; bgm.currentTime = cur; };
+window.pv.ready.then(() => requestAnimationFrame(loop));
+})();
+</script>
+</body>
+</html>
