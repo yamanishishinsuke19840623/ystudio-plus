@@ -98,7 +98,7 @@ footer a{color:var(--sub);}
         <ul class="note">
           <li>GitHub Actions「かんもんノート リール用データ取得」が毎週月曜 6:00 に最新記事と画像を <code>reel-data/</code> に保存します(手動実行も可)。</li>
           <li>このページはまず保存済みデータ(既定はグルメ)を読み、無ければWordPressへ直接取りに行きます。どちらも取れないときは「サンプル」と明記した枠だけを表示します。</li>
-          <li>公式ロゴは <code>kanmonnote-logo.png</code> を置くと自動で差し替わります。</li>
+          <li>公式ロゴは <code>img/kanmonnote/kanmonnote-logo.png</code> を置くと自動で差し替わります。</li>
           <li>文字として出すのは、記事データの値と「関門海峡エリアの情報メディア」「サイトのドメイン」だけです。</li>
         </ul>
       </div>
@@ -155,7 +155,7 @@ const shortDate = iso => { const d = new Date(iso); return isNaN(d) ? '' : `${d.
 /* ---------- logo (optional) ---------- */
 const LOGO = new Image(); let logoReady = false;
 LOGO.onload = () => { logoReady = true; dirty = true; };
-LOGO.src = 'kanmonnote-logo.png';
+LOGO.src = 'img/kanmonnote/kanmonnote-logo.png';
 function drawLogo(cx, cy, maxW, maxH, p, plate) {
   if (p <= 0) return;
   const s = Math.min(maxW / LOGO.naturalWidth, maxH / LOGO.naturalHeight), w = LOGO.naturalWidth * s, h = LOGO.naturalHeight * s;

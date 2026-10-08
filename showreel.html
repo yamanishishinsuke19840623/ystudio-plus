@@ -678,12 +678,12 @@ const C = (() => {
    KANMON NOTE — shared helpers (strait / bridge / note motifs)
    ========================================================= */
 const JP = "'Zen Kaku Gothic New', 'Noto Sans JP', sans-serif";
-// Official logo: drop the file next to this page as kanmonnote-logo.png (transparent PNG recommended).
+// Official logo: place the file at img/kanmonnote/kanmonnote-logo.png (transparent PNG recommended).
 // Until it exists, the lockups fall back to the typeset name.
 const LOGO = new Image();
 let logoReady = false;
 LOGO.onload = () => { logoReady = true; dirty = true; };
-LOGO.src = 'kanmonnote-logo.png';
+LOGO.src = 'img/kanmonnote/kanmonnote-logo.png';
 function drawLogo(cx, cy, maxW, maxH, p, plate) { // p: 0→1 reveal
   if (p <= 0) return;
   const s = Math.min(maxW / LOGO.naturalWidth, maxH / LOGO.naturalHeight);
