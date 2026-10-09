@@ -34,6 +34,7 @@ const orders = [
 const details = {
   A: [{ order_item_id: 11, item_id: 1, title: '商品1', amount: 2, price: 1000, total: 2000 }, { order_item_id: 12, item_id: 2, title: '商品2', amount: 1, price: 1000, total: 1000 }],
   B: [{ order_item_id: 21, item_id: 1, title: '商品1', amount: 2, price: 1000, total: 2000 }],
+  E: [{ order_item_id: 51, item_id: 1, title: '商品1', amount: 1, price: 1000, total: 1000 }, { order_item_id: 52, item_id: 2, title: '商品2', amount: 1, price: 1000, total: 1000 }],
 };
 const posts = [];
 let refreshCount = 0;
@@ -146,6 +147,19 @@ await test('未発送：キャンセル・発送済みを除き古い順', async
   assert.deepEqual(r.orders.map((o) => [o.unique_key, o.days_waiting]), [['A', 1]]);
 });
 
+await test('売上アップの機会：在庫切れ・セット候補・動かない在庫・曜日/時間帯・まとめ買い率', async () => {
+  const r = await call(client, 'base_growth_insights', { period: 'this_week' });
+  assert.equal(r.basis.orders, 3);
+  const byType = Object.fromEntries(r.opportunities.map((o) => [o.type, o]));
+  assert.deepEqual(byType['売れ筋の在庫切れ・在庫切れ間近'].items.map((i) => [i.item_id, i.stock, i.days_of_stock_left]), [[1, 0, 0], [2, 1, 2.5]]);
+  assert.deepEqual(byType['セット販売の候補'].pairs[0], { items: ['商品1', '商品2'], item_ids: ['1', '2'], orders: 2 });
+  assert.ok(byType['動いていない在庫'].items.length > 0);
+  assert.ok(!byType['在庫があるのに非公開']);
+  assert.equal(r.facts.multi_item_order_rate_pct, 100);
+  assert.equal(r.facts.by_weekday.find((w) => w.weekday === '木').orders, 2);
+  assert.deepEqual(r.facts.top_hours.map((h) => h.hour).sort(), ['10時台', '15時台', '23時台']);
+});
+
 await test('商品検索：全角半角を区別せず複数語AND', async () => {
   const r = await call(client, 'base_find_items', { query: '商品１２' });
   assert.deepEqual(r.items.map((i) => i.item_id).slice(0, 3), [12, 120, 121]);
@@ -186,7 +200,7 @@ await test('商品更新：内容を変えたら同じトークンは使えな�
 
 await test('定型プロンプトが出る', async () => {
   const names = (await client.listPrompts()).prompts.map((p) => p.name);
-  assert.deepEqual(names.sort(), ['restock_plan', 'shipping_check', 'weekly_report']);
+  assert.deepEqual(names.sort(), ['growth_plan', 'restock_plan', 'shipping_check', 'weekly_report']);
   const p = await client.getPrompt({ name: 'restock_plan', arguments: { threshold: '2' } });
   assert.match(p.messages[0].content.text, /threshold=2/);
 });

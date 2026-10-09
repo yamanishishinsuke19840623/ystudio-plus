@@ -130,6 +130,40 @@ async function summarize(start_date, end_date) {
   };
 }
 
+// 注文詳細を読んで、注文ごとの明細（商品・数量・金額）を集める。注文数ぶんAPIを呼ぶので上限つき
+async function fetchLineItems(validOrders, max) {
+  const targets = validOrders.slice(0, max);
+  const orders = [];
+  for (const o of targets) {
+    const detail = await callApi('GET', `/1/orders/detail/${encodeURIComponent(o[F.order.key])}`);
+    const order = detail.order ?? detail;
+    const raw = order[F.orderDetail.items] ?? [];
+    if (raw[0]) requireFields(raw[0], ['item_id', 'amount'], '注文明細データ');
+    orders.push({
+      key: o[F.order.key],
+      lines: raw.map((li) => ({
+        item_id: li.item_id, title: li.title, variation: li.variation || undefined,
+        amount: Number(li.amount) || 0,
+        sales: Number(li.total ?? (li.price * li.amount)) || 0,
+      })),
+    });
+  }
+  return { orders, read: targets.length };
+}
+
+function rankItems(orders) {
+  const byItem = {};
+  for (const { lines } of orders) {
+    for (const li of lines) {
+      const key = `${li.item_id}:${li.variation ?? ''}`;
+      byItem[key] ??= { item_id: li.item_id, title: li.title, variation: li.variation, quantity: 0, sales: 0 };
+      byItem[key].quantity += li.amount;
+      byItem[key].sales += li.sales;
+    }
+  }
+  return Object.values(byItem).sort((a, b) => b.quantity - a.quantity);
+}
+
 const pctChange = (cur, prev) => (prev ? Math.round(((cur - prev) / prev) * 1000) / 10 : null);
 
 // ---------------- 書き込みの2段階確認 ----------------
@@ -151,7 +185,7 @@ function consumeConfirmToken(token, key) {
 }
 
 export function createServer({ allowWrite = process.env.BASE_ALLOW_WRITE === '1' } = {}) {
-  const server = new McpServer({ name: 'base-shop', version: '0.3.0' });
+  const server = new McpServer({ name: 'base-shop', version: '0.4.0' });
 
   const ok = (data) => ({ content: [{ type: 'text', text: JSON.stringify(data, null, 2) }] });
   const fail = (e) => ({ isError: true, content: [{ type: 'text', text: e.message }] });
@@ -303,20 +337,9 @@ export function createServer({ allowWrite = process.env.BASE_ALLOW_WRITE === '1'
       }
 
       if (include_items) {
-        const targets = valid.slice(0, max_detail_orders);
-        const byItem = {};
-        for (const o of targets) {
-          const detail = await callApi('GET', `/1/orders/detail/${encodeURIComponent(o[F.order.key])}`);
-          const order = detail.order ?? detail;
-          for (const li of order[F.orderDetail.items] ?? []) {
-            const key = `${li.item_id}:${li.variation ?? ''}`;
-            byItem[key] ??= { item_id: li.item_id, title: li.title, variation: li.variation || undefined, quantity: 0, sales: 0 };
-            byItem[key].quantity += Number(li.amount) || 0;
-            byItem[key].sales += Number(li.total ?? (li.price * li.amount)) || 0;
-          }
-        }
-        result.items_ranking = Object.values(byItem).sort((a, b) => b.quantity - a.quantity);
-        result.items_ranking_based_on_orders = targets.length;
+        const { orders, read } = await fetchLineItems(valid, max_detail_orders);
+        result.items_ranking = rankItems(orders);
+        result.items_ranking_based_on_orders = read;
       }
       return result;
     });
@@ -345,6 +368,135 @@ export function createServer({ allowWrite = process.env.BASE_ALLOW_WRITE === '1'
         truncated,
         orders: rows,
         note: '入金待ち（銀行振込・コンビニ払いなど）の注文が含まれる可能性があります。発送前に base_get_order で支払い状況を確認してください',
+      };
+    });
+
+
+  tool('base_growth_insights',
+    '売上アップの「機会」を実データから洗い出す。期間内の注文と全商品から、' +
+    '①売れ筋の在庫切れ・在庫切れ間近（機会損失）②売れていない在庫 ③在庫があるのに非公開 ④一緒に買われている組み合わせ（セット販売候補）' +
+    '⑤曜日・時間帯ごとの売れ方 ⑥注文金額の分布とまとめ買い率 を返す。' +
+    '各項目の evidence は集計結果（事実）、idea は施策の仮説。仮説を事実として伝えないこと',
+    {
+      ...periodArgs,
+      max_detail_orders: z.number().int().min(1).max(500).optional().describe('明細を読む注文の上限（既定300。注文数ぶんAPIを呼ぶ）'),
+    },
+    async ({ max_detail_orders = 300, ...range }) => {
+      const [start_date, end_date] = range.period || range.start_date ? pickRange(range) : resolvePeriod('last_30_days');
+      const { valid, summary } = await summarize(start_date, end_date);
+      const [{ orders: detailed, read }, { list: items, truncated: itemsTruncated }] =
+        await Promise.all([fetchLineItems(valid, max_detail_orders), getAllItems()]);
+      const days = summary.period.days;
+      const sampleRatio = valid.length ? read / valid.length : 1;
+      const ranking = rankItems(detailed);
+
+      // 商品ごとの販売数（バリエーションをまとめる）
+      const soldByItem = new Map();
+      for (const r of ranking) {
+        const k = String(r.item_id);
+        soldByItem.set(k, (soldByItem.get(k) ?? 0) + r.quantity);
+      }
+      const totalStock = (it) => (it.variations ? it.variations.reduce((a, v) => a + v.stock, 0) : it.stock);
+      const isVisible = (it) => it.visible === undefined || Number(it.visible) !== 0;
+
+      // ① 売れ筋の在庫切れ・在庫切れ間近
+      const stockout = items.filter(isVisible).map((it) => {
+        const sold = soldByItem.get(String(it.item_id)) ?? 0;
+        const perDay = sold / sampleRatio / days;
+        const stock = totalStock(it);
+        return { item_id: it.item_id, title: it.title, sold_in_period: sold, stock, days_of_stock_left: perDay ? Math.round((stock / perDay) * 10) / 10 : null };
+      }).filter((r) => r.sold_in_period > 0 && (r.stock === 0 || r.days_of_stock_left < 14))
+        .sort((a, b) => a.days_of_stock_left - b.days_of_stock_left);
+
+      // ② 期間中に1つも売れていない公開中の在庫
+      const dead = items.filter((it) => isVisible(it) && totalStock(it) > 0 && !soldByItem.has(String(it.item_id)))
+        .map((it) => ({ item_id: it.item_id, title: it.title, stock: totalStock(it), price: it.price }))
+        .sort((a, b) => b.stock * (b.price || 0) - a.stock * (a.price || 0));
+
+      // ③ 在庫があるのに非公開
+      const hidden = items.filter((it) => !isVisible(it) && totalStock(it) > 0)
+        .map((it) => ({ item_id: it.item_id, title: it.title, stock: totalStock(it) }));
+
+      // ④ 同じ注文で一緒に買われた組み合わせ
+      const pairs = {};
+      for (const { lines } of detailed) {
+        const ids = [...new Map(lines.map((l) => [String(l.item_id), l.title])).entries()].sort();
+        for (let i = 0; i < ids.length; i++) for (let j = i + 1; j < ids.length; j++) {
+          const k = `${ids[i][0]}|${ids[j][0]}`;
+          pairs[k] ??= { items: [ids[i][1], ids[j][1]], item_ids: [ids[i][0], ids[j][0]], orders: 0 };
+          pairs[k].orders += 1;
+        }
+      }
+      const bundles = Object.values(pairs).filter((p) => p.orders >= 2).sort((a, b) => b.orders - a.orders).slice(0, 10);
+
+      // ⑤ 曜日・時間帯
+      const WD = ['日', '月', '火', '水', '木', '金', '土'];
+      const byWd = WD.map((w) => ({ weekday: w, orders: 0, sales: 0 }));
+      const byHour = Array.from({ length: 24 }, (_, h) => ({ hour: h, orders: 0 }));
+      for (const o of valid) {
+        const d = new Date(Number(o[F.order.ordered]) * 1000 + JST_OFFSET_MS);
+        byWd[d.getUTCDay()].orders += 1;
+        byWd[d.getUTCDay()].sales += Number(o[F.order.total]) || 0;
+        byHour[d.getUTCHours()].orders += 1;
+      }
+      const topHours = [...byHour].sort((a, b) => b.orders - a.orders).filter((h) => h.orders > 0).slice(0, 3);
+
+      // ⑥ 注文金額の分布・まとめ買い率
+      const BUCKETS = [[0, 2000], [2000, 4000], [4000, 6000], [6000, 10000], [10000, Infinity]];
+      const dist = BUCKETS.map(([lo, hi]) => ({
+        range: hi === Infinity ? `${lo}円〜` : `${lo}〜${hi - 1}円`,
+        orders: valid.filter((o) => Number(o[F.order.total]) >= lo && Number(o[F.order.total]) < hi).length,
+      }));
+      const multi = detailed.filter((o) => o.lines.reduce((a, l) => a + l.amount, 0) >= 2).length;
+
+      const opportunities = [];
+      if (stockout.length) opportunities.push({
+        type: '売れ筋の在庫切れ・在庫切れ間近',
+        evidence: `期間中に売れていて、在庫ゼロまたは今のペースで14日以内に無くなる商品が ${stockout.length} 件`,
+        idea: '補充・再入荷の優先。売り切れ中なら「再入荷のお知らせ」の告知でお客さんを逃さない（仮説）',
+        items: stockout.slice(0, 10),
+      });
+      if (bundles.length) opportunities.push({
+        type: 'セット販売の候補',
+        evidence: `同じ注文で2回以上一緒に買われた組み合わせが ${bundles.length} 組`,
+        idea: 'セット商品にする、商品説明で「一緒に買われています」と紹介する（仮説）',
+        pairs: bundles,
+      });
+      if (dead.length) opportunities.push({
+        type: '動いていない在庫',
+        evidence: `公開中・在庫ありで、期間中の販売が0の商品が ${dead.length} 件（在庫金額の大きい順）` +
+          (read < valid.length ? `。ただし明細を読んだのは ${read}/${valid.length} 件の注文なので、実際は売れている商品が混じる可能性あり` : ''),
+        idea: '写真・商品名・説明の見直し、SNSでの紹介、セット化や期間限定の値引き（仮説。まず原因の見当をつける）',
+        items: dead.slice(0, 10),
+      });
+      if (hidden.length) opportunities.push({
+        type: '在庫があるのに非公開',
+        evidence: `非公開で在庫ありの商品が ${hidden.length} 件`,
+        idea: '意図的でなければ公開する（季節外・訳ありなど理由があるなら除外）',
+        items: hidden.slice(0, 10),
+      });
+
+      return {
+        period: summary.period,
+        basis: {
+          orders: valid.length,
+          orders_with_details_read: read,
+          note: read < valid.length ? `明細は ${read}/${valid.length} 件の注文から推計（販売ペースは比率で補正）` : undefined,
+          orders_truncated: summary.truncated,
+          items_checked: items.length,
+          items_truncated: itemsTruncated,
+        },
+        facts: {
+          sales_total: summary.sales_total,
+          average_order_value: summary.average_order_value,
+          multi_item_order_rate_pct: read ? Math.round((multi / read) * 1000) / 10 : null,
+          order_value_distribution: dist,
+          by_weekday: byWd,
+          top_hours: topHours.map((h) => ({ hour: `${h.hour}時台`, orders: h.orders })),
+          top_items: ranking.slice(0, 10),
+        },
+        opportunities,
+        caution: '注文が少ない期間は偶然の偏りが大きい。数十件未満なら傾向として断定しないこと。idea はすべて検証前の仮説',
       };
     });
 
@@ -515,6 +667,22 @@ export function createServer({ allowWrite = process.env.BASE_ALLOW_WRITE === '1'
     '2. 待ち日数が長い順に、上位10件まで base_get_order で中身（商品・支払い状況）を確認\n' +
     '3.「今日発送すべき」「入金待ち」「要確認」に分けて表にする\n' +
     'ステータスの変更はしないこと（確認だけ）。');
+
+  prompt('growth_plan', '売上アップ施策', '実データから売上アップの機会を見つけ、検証できる施策プランにする',
+    ({ goal }) =>
+      'BASEショップの売上アップ施策を、データにもとづいて考えてください。\n' +
+      (goal ? `目標・やりたいこと：${goal}\n` : '') +
+      '1. base_today で今日の日付を確認\n' +
+      '2. base_sales_summary（period=last_30_days, compare=previous）と（period=last_30_days, compare=last_year）で現在地\n' +
+      '3. base_growth_insights（period=last_30_days）で機会を洗い出す。注文が少なければ期間を90日に広げる\n' +
+      '4. 次の形でまとめる：\n' +
+      '   - FACT：数字で確認できた現状（ツールの結果だけ。推測で補わない）\n' +
+      '   - 機会：FACTから見えた伸びしろ上位3つ\n' +
+      '   - 施策案（IDEA）：機会ごとに1〜2個。「すぐできる（今日〜1週間）」「準備がいる（1か月）」に分ける\n' +
+      '   - 検証プラン：最初に試す1つについて、やること・期間（2週間など）・見る数字（売上／注文数／客単価／対象商品の販売数）・比較方法\n' +
+      '   - UNKNOWN：判断に足りない情報（アクセス数、広告、お客さんの声など）と、誰に何を確認すればよいか\n' +
+      '在庫や商品の変更はしないこと（提案だけ）。成果を約束する言い方はしないこと。',
+    { goal: z.string().optional().describe('目標ややりたいこと（例：客単価を上げたい、新商品を広めたい）') });
 
   return server;
 }
