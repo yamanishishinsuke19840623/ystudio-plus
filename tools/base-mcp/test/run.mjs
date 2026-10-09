@@ -335,7 +335,10 @@ await test('HTTP版：秘密URLで呼べる／違うURLは404', async () => {
 // ---- セットアップ（npm run setup） ----
 await test('setup：入力→.env保存→BASE許可→接続チェック→Claude Desktop登録（既存設定を保持・バックアップ）', async () => {
   const home = await mkdtemp(join(tmpdir(), 'base-mcp-home-'));
-  const desktopDir = join(home, '.config', 'Claude');
+  // 本物の Claude Desktop 設定に触れないよう、OSごとの置き場所を仮のホームの中に向ける
+  const desktopDir = process.platform === 'win32' ? join(home, 'AppData', 'Roaming', 'Claude')
+    : process.platform === 'darwin' ? join(home, 'Library', 'Application Support', 'Claude')
+      : join(home, '.config', 'Claude');
   await mkdir(desktopDir, { recursive: true });
   await writeFile(join(desktopDir, 'claude_desktop_config.json'), JSON.stringify({ mcpServers: { other: { command: 'x' } }, theme: 'dark' }));
   const envPath = join(home, 'base.env');
@@ -344,7 +347,7 @@ await test('setup：入力→.env保存→BASE許可→接続チェック→Clau
   const sdir = await mkdtemp(join(tmpdir(), 'base-mcp-setup-'));
   const { BASE_CLIENT_ID, BASE_CLIENT_SECRET, BASE_REDIRECT_URI, ...rest } = env;
   const child = spawn(process.execPath, [join(root, 'setup.mjs')], {
-    env: { ...rest, HOME: home, PATH: dirname(process.execPath), BASE_ENV_PATH: envPath, BASE_DATA_DIR: sdir, BASE_TOKEN_PATH: join(sdir, 'tokens.json'), BASE_SETUP_NO_BROWSER: '1' },
+    env: { ...rest, HOME: home, USERPROFILE: home, APPDATA: join(home, 'AppData', 'Roaming'), PATH: dirname(process.execPath), BASE_ENV_PATH: envPath, BASE_DATA_DIR: sdir, BASE_TOKEN_PATH: join(sdir, 'tokens.json'), BASE_SETUP_NO_BROWSER: '1' },
     stdio: ['pipe', 'pipe', 'inherit'],
   });
   child.stdin.end('myid\nmysecret\ny\ny\n');
