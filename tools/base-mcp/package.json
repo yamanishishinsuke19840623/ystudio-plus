@@ -1,6 +1,6 @@
 {
   "name": "base-mcp",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "description": "BASE（thebase.in）ネットショップをClaudeから操作するためのローカルMCPサーバー",
   "type": "module",
@@ -8,6 +8,7 @@
     "base-mcp": "server.mjs"
   },
   "scripts": {
+    "setup": "node setup.mjs",
     "auth": "node auth.mjs",
     "doctor": "node doctor.mjs",
     "start": "node server.mjs",

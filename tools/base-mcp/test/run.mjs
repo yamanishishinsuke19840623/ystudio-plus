@@ -2,7 +2,8 @@
 // 実在のBASE APIの仕様検証ではなく、ページ送り・集計・2段階書き込み・トークン更新などのロジック確認用
 import http from 'node:http';
 import assert from 'node:assert/strict';
-import { mkdtemp, writeFile, readFile } from 'node:fs/promises';
+import { mkdtemp, writeFile, readFile, mkdir } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -39,13 +40,22 @@ const details = {
 const posts = [];
 let refreshCount = 0;
 
-const api = http.createServer(async (req, res) => {
+const api = http.createServer((req, res) => handle(req, res).catch((e) => {
+  console.error('mock error:', e.message);
+  res.writeHead(500).end(e.message);
+}));
+async function handle(req, res) {
   const url = new URL(req.url, 'http://x');
   let body = '';
   for await (const c of req) body += c;
   const send = (s, j) => res.writeHead(s, { 'Content-Type': 'application/json' }).end(JSON.stringify(j));
   if (url.pathname === '/1/oauth/token') {
     const p = new URLSearchParams(body);
+    if (p.get('grant_type') === 'authorization_code') {
+      assert.equal(p.get('code'), 'the-code');
+      assert.equal(p.get('client_secret'), 'mysecret');
+      return send(200, { access_token: 'good', refresh_token: 'r-new', expires_in: 3600 });
+    }
     assert.equal(p.get('grant_type'), 'refresh_token');
     refreshCount++;
     return send(200, { access_token: 'good', refresh_token: 'r2', expires_in: 3600 });
@@ -68,7 +78,7 @@ const api = http.createServer(async (req, res) => {
   }
   if (req.method === 'POST') { posts.push({ path: url.pathname, params: Object.fromEntries(new URLSearchParams(body)) }); return send(200, { ok: true }); }
   send(404, { error: 'not_found' });
-});
+}
 await new Promise((r) => api.listen(0, '127.0.0.1', r));
 
 const dataDir = await mkdtemp(join(tmpdir(), 'base-mcp-test-'));
@@ -236,6 +246,53 @@ await test('HTTP版：秘密URLで呼べる／違うURLは404', async () => {
   await c.close();
   const bad = await fetch(`http://127.0.0.1:${port}/mcp/wrong`, { method: 'POST' });
   assert.equal(bad.status, 404);
+});
+
+// ---- セットアップ（npm run setup） ----
+await test('setup：入力→.env保存→BASE許可→接続チェック→Claude Desktop登録（既存設定を保持・バックアップ）', async () => {
+  const home = await mkdtemp(join(tmpdir(), 'base-mcp-home-'));
+  const desktopDir = join(home, '.config', 'Claude');
+  await mkdir(desktopDir, { recursive: true });
+  await writeFile(join(desktopDir, 'claude_desktop_config.json'), JSON.stringify({ mcpServers: { other: { command: 'x' } }, theme: 'dark' }));
+  const envPath = join(home, 'base.env');
+  const cbPort = 19000 + Math.floor(Math.random() * 1000);
+  await writeFile(envPath, `BASE_REDIRECT_URI=http://localhost:${cbPort}/callback\n`);
+  const sdir = await mkdtemp(join(tmpdir(), 'base-mcp-setup-'));
+  const { BASE_CLIENT_ID, BASE_CLIENT_SECRET, BASE_REDIRECT_URI, ...rest } = env;
+  const child = spawn(process.execPath, [join(root, 'setup.mjs')], {
+    env: { ...rest, HOME: home, PATH: dirname(process.execPath), BASE_ENV_PATH: envPath, BASE_DATA_DIR: sdir, BASE_TOKEN_PATH: join(sdir, 'tokens.json'), BASE_SETUP_NO_BROWSER: '1' },
+    stdio: ['pipe', 'pipe', 'inherit'],
+  });
+  child.stdin.end('myid\nmysecret\ny\ny\n');
+  let out = '';
+  const exited = new Promise((r) => child.on('exit', r));
+  await new Promise((resolve, reject) => {
+    child.stdout.on('data', async (d) => {
+      out += d;
+      const m = out.match(/state=([0-9a-f]+)\n/);
+      if (m && !out.includes('__sent__')) {
+        out += '__sent__';
+        const r = await fetch(`http://localhost:${cbPort}/callback?code=the-code&state=${m[1]}`);
+        r.ok ? resolve() : reject(new Error(await r.text()));
+      }
+    });
+  });
+  const code = await Promise.race([exited, new Promise((r) => setTimeout(() => r('timeout'), 15000))]);
+  if (code === 'timeout') child.kill();
+  assert.equal(code, 0, out);
+  assert.match(out, /ショップ: テストショップ/);
+  assert.doesNotMatch(out, /mysecret/);
+  const saved = await readFile(envPath, 'utf8');
+  assert.match(saved, /BASE_CLIENT_ID=myid/);
+  assert.match(saved, /BASE_CLIENT_SECRET=mysecret/);
+  assert.match(saved, new RegExp(`BASE_REDIRECT_URI=http://localhost:${cbPort}/callback`));
+  const tokens = JSON.parse(await readFile(join(sdir, 'tokens.json'), 'utf8'));
+  assert.equal(tokens.refresh_token, 'r-new');
+  const cfg = JSON.parse(await readFile(join(desktopDir, 'claude_desktop_config.json'), 'utf8'));
+  assert.equal(cfg.theme, 'dark');
+  assert.ok(cfg.mcpServers.other);
+  assert.deepEqual(cfg.mcpServers['base-shop'].args, [join(root, 'server.mjs')]);
+  assert.ok(existsSync(join(desktopDir, 'claude_desktop_config.json.bak')));
 });
 
 proc.kill();

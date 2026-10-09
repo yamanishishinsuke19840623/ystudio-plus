@@ -16,21 +16,36 @@
 
 ※ BASE API の利用は申請制です。審査の期間などはBASE側の運用によります。
 
-### 2. インストール・設定・認証
+### 2. PCでセットアップ（コマンド1つ）
+
+必要なもの：Node.js（https://nodejs.org の LTS 版）
 
 ```bash
-cd tools/base-mcp
+git clone https://github.com/yamanishishinsuke19840623/ystudio-plus.git
+cd ystudio-plus/tools/base-mcp
 npm install
-cp .env.example .env     # .env を開いて client_id / client_secret を入れる
-npm run auth             # 表示されたURLをブラウザで開いて「許可」
-npm run doctor           # 接続チェック。全部 ✅ ならOK
+npm run setup
 ```
 
-`doctor` は「設定 → トークン → 商品が読めるか → 注文が読めるか」を順に確認し、つまずいた箇所と直し方を表示します。
+`npm run setup` は次の順に進みます。
 
-### 3. Claude に登録
+1. client_id と client_secret を聞く（secret は入力しても画面に出ません）→ `.env` に保存
+2. ブラウザでBASEの許可画面を開く →「許可」を押す
+3. 接続チェック（商品・注文が読めるか）
+4. Claude Code / Claude Desktop が入っていれば登録する（Desktop の既存設定は残し、元のファイルは `.bak` に保存）
 
-`.env` を読むので、登録時に秘密情報を書く必要はありません。
+最後に「🎉 完了です」と出たら、Claude（Desktop は一度終了して開き直す）に **「昨日の売上は？」** と聞いて、BASEの管理画面の数字と合うか確かめてください。
+
+途中で止まったら、その画面のスクショを Claude に見せてください。もう一度 `npm run setup` を実行すると、入力済みの値はEnterでそのまま使えます。
+
+### 個別に実行する場合
+
+```bash
+npm run auth     # BASEの許可だけやり直す
+npm run doctor   # 接続チェックだけ
+```
+
+手で Claude に登録する場合：
 
 **Claude Code**
 ```bash

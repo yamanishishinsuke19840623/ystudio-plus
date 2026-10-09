@@ -1,12 +1,29 @@
 // BASE API の共通クライアント（設定読み込み・トークン保存・自動リフレッシュ・API呼び出し）
 import { readFile, writeFile, mkdir, appendFile } from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { homedir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 
 // tools/base-mcp/.env があれば読み込む（既に設定済みの環境変数は上書きしない）
+export const ENV_PATH = process.env.BASE_ENV_PATH || join(dirname(fileURLToPath(import.meta.url)), '.env');
+
+export function parseEnv(text) {
+  const out = {};
+  for (const line of text.split(/\r?\n/)) {
+    const m = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)\s*$/);
+    if (!m) continue;
+    let v = m[2];
+    if (/^(["']).*\1$/.test(v)) v = v.slice(1, -1);
+    out[m[1]] = v;
+  }
+  return out;
+}
+
 try {
-  process.loadEnvFile(join(dirname(fileURLToPath(import.meta.url)), '.env'));
+  for (const [k, v] of Object.entries(parseEnv(readFileSync(ENV_PATH, 'utf8')))) {
+    if (process.env[k] === undefined && v !== '') process.env[k] = v;
+  }
 } catch {}
 
 // テスト時はモックAPIに向けられるよう上書き可能にしている
