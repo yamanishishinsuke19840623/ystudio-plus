@@ -7,7 +7,7 @@ import { callApi, fetchAllPages, appendWriteLog } from './base-client.mjs';
 // ここで参照するレスポンスの項目名は、BASE API ドキュメントを実アカウントで未検証。
 // 項目が見つからないときは推測で計算せずエラーにする（requireFields）。
 const F = {
-  item: { id: 'item_id', title: 'title', price: 'price', stock: 'stock', visible: 'visible', variations: 'variations' },
+  item: { id: 'item_id', title: 'title', price: 'price', stock: 'stock', visible: 'visible', variations: 'variations', identifier: 'identifier' },
   variation: { id: 'variation_id', name: 'variation', stock: 'variation_stock' },
   order: { key: 'unique_key', ordered: 'ordered', cancelled: 'cancelled', dispatched: 'dispatched', total: 'total' },
   orderDetail: { items: 'order_items' },
@@ -24,12 +24,117 @@ function requireFields(obj, fields, label) {
   }
 }
 
+// ---------------- 日付（日本時間） ----------------
+const DAY = 24 * 60 * 60;
 const JST_OFFSET_MS = 9 * 60 * 60 * 1000;
 const jstDate = (unixSec) => new Date(unixSec * 1000 + JST_OFFSET_MS).toISOString().slice(0, 10);
 const jstStartUnix = (ymd) => Math.floor((Date.parse(`${ymd}T00:00:00Z`) - JST_OFFSET_MS) / 1000);
+const addDays = (ymd, n) => new Date(Date.parse(`${ymd}T00:00:00Z`) + n * DAY * 1000).toISOString().slice(0, 10);
+const daysBetween = (a, b) => Math.round((Date.parse(`${b}T00:00:00Z`) - Date.parse(`${a}T00:00:00Z`)) / (DAY * 1000));
 const ymd = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'YYYY-MM-DD 形式で指定してください');
 
-// 書き込みは「プレビュー → confirm_token 付きで実行」の2段階にする
+const PERIODS = ['today', 'yesterday', 'this_week', 'last_week', 'this_month', 'last_month', 'last_7_days', 'last_30_days'];
+const now = () => (process.env.BASE_MCP_NOW ? Date.parse(process.env.BASE_MCP_NOW) : Date.now()); // テスト用に固定可能
+
+// 'last_week' などの呼び名を、日本時間の開始日・終了日に変える（週は月曜始まり）
+export function resolvePeriod(name) {
+  const today = jstDate(Math.floor(now() / 1000));
+  const dow = (new Date(`${today}T00:00:00Z`).getUTCDay() + 6) % 7; // 月=0
+  const monthStart = `${today.slice(0, 8)}01`;
+  const prevMonthEnd = addDays(monthStart, -1);
+  switch (name) {
+    case 'today': return [today, today];
+    case 'yesterday': return [addDays(today, -1), addDays(today, -1)];
+    case 'this_week': return [addDays(today, -dow), today];
+    case 'last_week': return [addDays(today, -dow - 7), addDays(today, -dow - 1)];
+    case 'this_month': return [monthStart, today];
+    case 'last_month': return [`${prevMonthEnd.slice(0, 8)}01`, prevMonthEnd];
+    case 'last_7_days': return [addDays(today, -6), today];
+    case 'last_30_days': return [addDays(today, -29), today];
+  }
+  throw new Error(`不明な期間: ${name}`);
+}
+
+function shiftYear(ymdStr, years) {
+  const d = new Date(`${ymdStr}T00:00:00Z`);
+  const day = d.getUTCDate();
+  d.setUTCDate(1);
+  d.setUTCFullYear(d.getUTCFullYear() + years);
+  const lastDay = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0)).getUTCDate();
+  d.setUTCDate(Math.min(day, lastDay)); // 2/29 → 2/28
+  return d.toISOString().slice(0, 10);
+}
+
+// ---------------- 商品キャッシュ（API回数の節約。書き込み後は破棄） ----------------
+const ITEMS_TTL_MS = 60 * 1000;
+let itemsCache = null; // { at, list, truncated }
+async function getAllItems({ fresh = false } = {}) {
+  if (!fresh && itemsCache && Date.now() - itemsCache.at < ITEMS_TTL_MS) return itemsCache;
+  const { list, truncated } = await fetchAllPages('/1/items', 'items');
+  itemsCache = { at: Date.now(), list: list.map(compactItem), truncated };
+  return itemsCache;
+}
+const invalidateItems = () => { itemsCache = null; };
+
+function compactItem(it) {
+  requireFields(it, [F.item.id, F.item.title, F.item.stock], '商品データ');
+  const variations = (it[F.item.variations] ?? []).map((v) => ({
+    variation_id: v[F.variation.id], name: v[F.variation.name], stock: Number(v[F.variation.stock]),
+  }));
+  return {
+    item_id: it[F.item.id], title: it[F.item.title], price: it[F.item.price],
+    stock: Number(it[F.item.stock]), visible: it[F.item.visible],
+    ...(it[F.item.identifier] ? { identifier: it[F.item.identifier] } : {}),
+    ...(variations.length ? { variations } : {}),
+  };
+}
+
+// ---------------- 注文 ----------------
+async function fetchOrders(start_date, end_date) {
+  const from = jstStartUnix(start_date);
+  const to = jstStartUnix(end_date) + DAY; // 終了日の翌0時（含まない）
+  if (to <= from) throw new Error('end_date は start_date 以降にしてください');
+  // 期間クエリはAPIにも渡すが、効かなかった場合に備えて手元でも ordered で絞り込む
+  const { list, truncated } = await fetchAllPages('/1/orders', 'orders', {
+    start_ordered: `${start_date} 00:00:00`,
+    end_ordered: `${end_date} 23:59:59`,
+  });
+  if (list[0]) requireFields(list[0], [F.order.key, F.order.ordered, F.order.total], '注文データ');
+  const inRange = list.filter((o) => Number(o[F.order.ordered]) >= from && Number(o[F.order.ordered]) < to);
+  return { inRange, truncated };
+}
+
+async function summarize(start_date, end_date) {
+  const { inRange, truncated } = await fetchOrders(start_date, end_date);
+  const valid = inRange.filter((o) => !o[F.order.cancelled]);
+  const daily = {};
+  for (let d = start_date; d <= end_date; d = addDays(d, 1)) daily[d] = { orders: 0, sales: 0 };
+  for (const o of valid) {
+    const d = jstDate(Number(o[F.order.ordered]));
+    daily[d].orders += 1;
+    daily[d].sales += Number(o[F.order.total]) || 0;
+  }
+  const sales = valid.reduce((s, o) => s + (Number(o[F.order.total]) || 0), 0);
+  return {
+    valid,
+    summary: {
+      period: { start_date, end_date, days: daysBetween(start_date, end_date) + 1 },
+      orders: valid.length,
+      sales_total: sales,
+      average_order_value: valid.length ? Math.round(sales / valid.length) : 0,
+      cancelled_orders: inRange.length - valid.length,
+      undispatched_orders: valid.filter((o) => !o[F.order.dispatched]).length,
+      daily: Object.entries(daily).map(([date, v]) => ({ date, ...v })),
+      truncated,
+    },
+  };
+}
+
+const pctChange = (cur, prev) => (prev ? Math.round(((cur - prev) / prev) * 1000) / 10 : null);
+
+// ---------------- 書き込みの2段階確認 ----------------
+// 1回目: 現在値と送信内容を返す（まだ変更しない）。2回目: confirm_token 付きで実行。
+// トークンは「送信内容そのもの」に結びつくので、途中で在庫が変わって内容が変われば無効になる。
 const pending = new Map(); // token -> { key, expires }
 const PREVIEW_TTL_MS = 10 * 60 * 1000;
 function issueConfirmToken(key) {
@@ -41,12 +146,12 @@ function consumeConfirmToken(token, key) {
   const p = pending.get(token);
   pending.delete(token);
   if (!p || p.expires < Date.now() || p.key !== key) {
-    throw new Error('confirm_token が無効です（期限切れ・内容が変わった・未プレビュー）。もう一度 confirm_token なしで呼んでプレビューからやり直してください');
+    throw new Error('confirm_token が無効です（期限切れ・内容が変わった・在庫が途中で変わった・未プレビュー）。confirm_token なしで呼び直してプレビューからやり直してください');
   }
 }
 
 export function createServer({ allowWrite = process.env.BASE_ALLOW_WRITE === '1' } = {}) {
-  const server = new McpServer({ name: 'base-shop', version: '0.2.0' });
+  const server = new McpServer({ name: 'base-shop', version: '0.3.0' });
 
   const ok = (data) => ({ content: [{ type: 'text', text: JSON.stringify(data, null, 2) }] });
   const fail = (e) => ({ isError: true, content: [{ type: 'text', text: e.message }] });
@@ -69,12 +174,22 @@ export function createServer({ allowWrite = process.env.BASE_ALLOW_WRITE === '1'
     extra,
   };
   const itemId = z.union([z.string(), z.number()]).describe('商品ID');
+  const periodArgs = {
+    period: z.enum(PERIODS).optional().describe('期間の呼び名（日本時間・週は月曜始まり）。start_date/end_date の代わりに使える'),
+    start_date: ymd.optional().describe('開始日 YYYY-MM-DD（日本時間・この日を含む）'),
+    end_date: ymd.optional().describe('終了日 YYYY-MM-DD（日本時間・この日を含む）'),
+  };
+  const pickRange = ({ period, start_date, end_date }) => {
+    if (period) return resolvePeriod(period);
+    if (start_date && end_date) return [start_date, end_date];
+    throw new Error('period か、start_date と end_date の両方を指定してください');
+  };
 
   // ================= 読み取り（そのままのAPI） =================
   tool('base_get_shop', 'ショップ（ユーザー）情報を取得する。GET /1/users/me', {},
     () => callApi('GET', '/1/users/me'));
 
-  tool('base_list_items', '商品一覧を1ページ分取得する。GET /1/items。全件なら base_fetch_all_items', paging,
+  tool('base_list_items', '商品一覧を1ページ分取得する。GET /1/items。名前で探すなら base_find_items', paging,
     ({ limit, offset, extra }) => callApi('GET', '/1/items', { ...extra, limit, offset }));
 
   tool('base_get_item', '商品詳細を取得する。GET /1/items/detail/:item_id', { item_id: itemId },
@@ -97,25 +212,36 @@ export function createServer({ allowWrite = process.env.BASE_ALLOW_WRITE === '1'
   tool('base_list_savings', '振込申請履歴を取得する（要 read_savings）。GET /1/savings', paging,
     ({ limit, offset, extra }) => callApi('GET', '/1/savings', { ...extra, limit, offset }));
 
-  // ================= 集計 =================
-  const compactItem = (it) => {
-    requireFields(it, [F.item.id, F.item.title, F.item.stock], '商品データ');
-    const variations = (it[F.item.variations] ?? []).map((v) => ({
-      variation_id: v[F.variation.id], name: v[F.variation.name], stock: v[F.variation.stock],
+  // ================= 便利ツール =================
+  tool('base_today', '今日の日付（日本時間）と、期間の呼び名ごとの開始日・終了日を返す。日付の計算に迷ったらまずこれ', {},
+    async () => ({
+      today: resolvePeriod('today')[0],
+      periods: Object.fromEntries(PERIODS.map((p) => [p, resolvePeriod(p)])),
     }));
-    return {
-      item_id: it[F.item.id], title: it[F.item.title], price: it[F.item.price],
-      stock: it[F.item.stock], visible: it[F.item.visible],
-      ...(variations.length ? { variations } : {}),
-    };
-  };
+
+  tool('base_find_items',
+    '商品名（または品番）の一部で商品を探し、商品ID・価格・在庫・バリエーションIDを返す。' +
+    '「◯◯の在庫を変えて」と言われたときなど、商品IDを調べるのに使う。全角/半角・大文字/小文字は区別しない',
+    {
+      query: z.string().min(1).describe('探す文字（スペース区切りで複数語＝すべて含むもの）'),
+      limit: z.number().int().min(1).max(100).optional().describe('最大件数（既定20）'),
+    },
+    async ({ query, limit = 20 }) => {
+      const norm = (s) => String(s ?? '').normalize('NFKC').toLowerCase();
+      const words = norm(query).split(/\s+/).filter(Boolean);
+      const { list, truncated } = await getAllItems();
+      const hits = list.filter((it) => {
+        const hay = norm(`${it.title} ${it.identifier ?? ''} ${(it.variations ?? []).map((v) => v.name).join(' ')}`);
+        return words.every((w) => hay.includes(w));
+      });
+      return { query, total_hits: hits.length, truncated, items: hits.slice(0, limit) };
+    });
 
   tool('base_fetch_all_items',
-    '全商品をページ送りしながら取得し、ID・名前・価格・在庫・公開状態・バリエーションの要約で返す',
-    { max_pages: z.number().int().min(1).max(50).optional().describe('最大ページ数（1ページ100件、既定20）') },
-    async ({ max_pages = 20 }) => {
-      const { list, truncated } = await fetchAllPages('/1/items', 'items', {}, { maxPages: max_pages });
-      return { count: list.length, truncated, items: list.map(compactItem) };
+    '全商品をページ送りしながら取得し、ID・名前・価格・在庫・公開状態・バリエーションの要約で返す', {},
+    async () => {
+      const { list, truncated } = await getAllItems();
+      return { count: list.length, truncated, items: list };
     });
 
   tool('base_low_stock',
@@ -125,67 +251,56 @@ export function createServer({ allowWrite = process.env.BASE_ALLOW_WRITE === '1'
       include_hidden: z.boolean().optional().describe('非公開商品も含める（既定false）'),
     },
     async ({ threshold = 3, include_hidden = false }) => {
-      const { list, truncated } = await fetchAllPages('/1/items', 'items');
+      const { list, truncated } = await getAllItems();
       const rows = [];
-      for (const it of list.map(compactItem)) {
+      for (const it of list) {
         if (!include_hidden && it.visible !== undefined && Number(it.visible) === 0) continue;
         if (it.variations) {
           for (const v of it.variations) {
-            if (Number(v.stock) <= threshold) rows.push({ item_id: it.item_id, title: it.title, variation_id: v.variation_id, variation: v.name, stock: Number(v.stock) });
+            if (v.stock <= threshold) rows.push({ item_id: it.item_id, title: it.title, variation_id: v.variation_id, variation: v.name, stock: v.stock });
           }
-        } else if (Number(it.stock) <= threshold) {
-          rows.push({ item_id: it.item_id, title: it.title, stock: Number(it.stock) });
+        } else if (it.stock <= threshold) {
+          rows.push({ item_id: it.item_id, title: it.title, stock: it.stock });
         }
       }
       rows.sort((a, b) => a.stock - b.stock);
-      return { threshold, checked_items: list.length, truncated, low_stock: rows };
+      return { threshold, checked_items: list.length, truncated, sold_out: rows.filter((r) => r.stock === 0).length, low_stock: rows };
     });
 
   tool('base_sales_summary',
-    '期間（日本時間）の注文を集計する：注文数・売上合計・日別・キャンセル数。' +
-    'include_items=true なら注文詳細も読み、商品別の販売数ランキングを出す（API呼び出しが注文数ぶん増える）',
+    '期間（日本時間）の注文を集計する：注文数・売上合計・客単価・日別（売上0の日も含む）・キャンセル数・未発送数。' +
+    'compare で前の期間・前年同期との比較も出せる。include_items=true なら商品別の販売数ランキングも（注文数ぶんAPIを呼ぶ）',
     {
-      start_date: ymd.describe('開始日 YYYY-MM-DD（日本時間・この日を含む）'),
-      end_date: ymd.describe('終了日 YYYY-MM-DD（日本時間・この日を含む）'),
+      ...periodArgs,
+      compare: z.enum(['previous', 'last_year']).optional().describe('previous=直前の同じ日数 / last_year=前年同期 と比較'),
       include_items: z.boolean().optional().describe('商品別ランキングも出す（既定false）'),
       max_detail_orders: z.number().int().min(1).max(500).optional().describe('include_items時に詳細を読む注文の上限（既定100）'),
     },
-    async ({ start_date, end_date, include_items = false, max_detail_orders = 100 }) => {
-      const from = jstStartUnix(start_date);
-      const to = jstStartUnix(end_date) + 24 * 60 * 60; // 終了日の翌0時（含まない）
-      if (to <= from) throw new Error('end_date は start_date 以降にしてください');
+    async ({ compare, include_items = false, max_detail_orders = 100, ...range }) => {
+      const [start_date, end_date] = pickRange(range);
+      const { valid, summary } = await summarize(start_date, end_date);
+      const result = { ...summary, note: '売上合計は注文一覧の total（送料・手数料等の内訳はBASE側の定義に依存）。キャンセル注文は除外' };
 
-      // 期間クエリはAPIにも渡すが、効かなかった場合に備えて手元でも ordered で絞り込む
-      const { list, truncated } = await fetchAllPages('/1/orders', 'orders', {
-        start_ordered: `${start_date} 00:00:00`,
-        end_ordered: `${end_date} 23:59:59`,
-      });
-      if (list[0]) requireFields(list[0], [F.order.key, F.order.ordered, F.order.total], '注文データ');
-
-      const inRange = list.filter((o) => Number(o[F.order.ordered]) >= from && Number(o[F.order.ordered]) < to);
-      const valid = inRange.filter((o) => !o[F.order.cancelled]);
-      const cancelled = inRange.length - valid.length;
-
-      const daily = {};
-      for (const o of valid) {
-        const d = jstDate(Number(o[F.order.ordered]));
-        daily[d] ??= { orders: 0, sales: 0 };
-        daily[d].orders += 1;
-        daily[d].sales += Number(o[F.order.total]) || 0;
+      if (compare) {
+        const [ps, pe] = compare === 'previous'
+          ? [addDays(start_date, -summary.period.days), addDays(start_date, -1)]
+          : [shiftYear(start_date, -1), shiftYear(end_date, -1)];
+        const { summary: prev } = await summarize(ps, pe);
+        result.comparison = {
+          against: compare,
+          period: prev.period,
+          orders: prev.orders,
+          sales_total: prev.sales_total,
+          average_order_value: prev.average_order_value,
+          change: {
+            orders: summary.orders - prev.orders,
+            orders_pct: pctChange(summary.orders, prev.orders),
+            sales: summary.sales_total - prev.sales_total,
+            sales_pct: pctChange(summary.sales_total, prev.sales_total),
+            average_order_value_pct: pctChange(summary.average_order_value, prev.average_order_value),
+          },
+        };
       }
-      const sales = valid.reduce((s, o) => s + (Number(o[F.order.total]) || 0), 0);
-
-      const result = {
-        period: { start_date, end_date, timezone: 'Asia/Tokyo' },
-        orders: valid.length,
-        sales_total: sales,
-        average_order_value: valid.length ? Math.round(sales / valid.length) : 0,
-        cancelled_orders: cancelled,
-        undispatched_orders: valid.filter((o) => !o[F.order.dispatched]).length,
-        daily: Object.entries(daily).sort().map(([date, v]) => ({ date, ...v })),
-        truncated,
-        note: '売上合計は注文一覧の total（送料・手数料等の内訳はBASE側の定義に依存）。キャンセル注文は除外',
-      };
 
       if (include_items) {
         const targets = valid.slice(0, max_detail_orders);
@@ -206,49 +321,118 @@ export function createServer({ allowWrite = process.env.BASE_ALLOW_WRITE === '1'
       return result;
     });
 
+  tool('base_pending_shipments',
+    '未発送の注文（キャンセル除く）を、注文日が古い順に待ち日数つきで一覧にする。発送作業の確認用。' +
+    '中身（商品・お届け先）は base_get_order で見る',
+    { days: z.number().int().min(1).max(180).optional().describe('何日前までの注文を見るか（既定30）') },
+    async ({ days = 30 }) => {
+      const [, today] = resolvePeriod('today');
+      const { inRange, truncated } = await fetchOrders(addDays(today, -(days - 1)), today);
+      const nowSec = Math.floor(now() / 1000);
+      const rows = inRange
+        .filter((o) => !o[F.order.cancelled] && !o[F.order.dispatched])
+        .map((o) => ({
+          unique_key: o[F.order.key],
+          ordered_at: jstDate(Number(o[F.order.ordered])),
+          days_waiting: Math.floor((nowSec - Number(o[F.order.ordered])) / DAY),
+          total: Number(o[F.order.total]),
+        }))
+        .sort((a, b) => b.days_waiting - a.days_waiting);
+      return {
+        looked_back_days: days,
+        pending: rows.length,
+        waiting_3_days_or_more: rows.filter((r) => r.days_waiting >= 3).length,
+        truncated,
+        orders: rows,
+        note: '入金待ち（銀行振込・コンビニ払いなど）の注文が含まれる可能性があります。発送前に base_get_order で支払い状況を確認してください',
+      };
+    });
+
   // ================= 書き込み（BASE_ALLOW_WRITE=1 のときだけ） =================
   if (allowWrite) {
-    // 1回目: 現在値と変更内容を返す（まだ変更しない）。2回目: confirm_token 付きで実行
-    const twoStep = async ({ confirm_token, action, endpoint, params, current }) => {
-      const key = JSON.stringify({ endpoint, params });
+    const twoStep = async ({ confirm_token, action, key, preview, execute }) => {
       if (!confirm_token) {
         return {
           preview: true,
           action,
-          current,
-          will_send: { endpoint, params },
+          ...preview,
           confirm_token: issueConfirmToken(key),
           next: 'まだ何も変更していません。この内容をユーザーに見せて了承を得てから、同じ引数に confirm_token を付けて再実行してください（10分有効）',
         };
       }
       consumeConfirmToken(confirm_token, key);
-      const response = await callApi('POST', endpoint, params);
-      await appendWriteLog({ action, endpoint, params });
-      return { done: true, action, response };
+      try {
+        return { done: true, action, ...(await execute()) };
+      } finally {
+        invalidateItems();
+      }
     };
     const confirmToken = z.string().optional().describe('プレビューで返された確認トークン。なしで呼ぶとプレビューのみ');
-    const getItem = async (id) => {
-      const body = await callApi('GET', `/1/items/detail/${encodeURIComponent(id)}`);
-      return compactItem(body.item ?? body);
+    const send = async (action, endpoint, params) => {
+      const response = await callApi('POST', endpoint, params);
+      await appendWriteLog({ action, endpoint, params });
+      return response;
     };
 
     tool('base_update_stock',
-      '在庫数を変更する（POST /1/items/edit_stock）。バリエーション商品は variation_id と variation_stock を指定。' +
-      '必ずプレビュー→ユーザー確認→confirm_token付き実行の順で使う',
+      '在庫数を変更する（POST /1/items/edit_stock）。最大50件をまとめて変更できる。' +
+      '各行は stock（その数にする）か add（今の在庫に足す。入荷なら+、減らすなら−）のどちらか。バリエーション商品は variation_id も指定。' +
+      '必ずプレビュー→ユーザー確認→confirm_token付き実行の順で使う。商品IDが分からなければ先に base_find_items',
       {
-        item_id: itemId,
-        stock: z.number().int().min(0).optional().describe('在庫数（バリエーションなし商品）'),
-        variation_id: z.union([z.string(), z.number()]).optional(),
-        variation_stock: z.number().int().min(0).optional().describe('バリエーションの在庫数'),
+        changes: z.array(z.object({
+          item_id: itemId,
+          variation_id: z.union([z.string(), z.number()]).optional().describe('バリエーション商品のときだけ'),
+          stock: z.number().int().min(0).optional().describe('この在庫数にする'),
+          add: z.number().int().optional().describe('今の在庫に足す数（マイナス可）'),
+        })).min(1).max(50),
         confirm_token: confirmToken,
       },
-      async ({ item_id, stock, variation_id, variation_stock, confirm_token }) => {
-        if (stock === undefined && variation_stock === undefined) throw new Error('stock か variation_stock のどちらかを指定してください');
-        if ((variation_id === undefined) !== (variation_stock === undefined)) throw new Error('variation_id と variation_stock はセットで指定してください');
+      async ({ changes, confirm_token }) => {
+        // 毎回最新の在庫を読み直して、送る内容（絶対値）を確定させる
+        const { list } = await getAllItems({ fresh: true });
+        const byId = new Map(list.map((it) => [String(it.item_id), it]));
+        const plan = changes.map((c, i) => {
+          const row = `${i + 1}行目（item_id ${c.item_id}）`;
+          if ((c.stock === undefined) === (c.add === undefined)) throw new Error(`${row}: stock か add のどちらか一方を指定してください`);
+          const it = byId.get(String(c.item_id));
+          if (!it) throw new Error(`${row}: 商品が見つかりません`);
+          let before;
+          if (it.variations) {
+            if (c.variation_id === undefined) throw new Error(`${row}:「${it.title}」はバリエーション商品です。variation_id を指定してください（${it.variations.map((v) => `${v.variation_id}=${v.name}`).join(', ')}）`);
+            const v = it.variations.find((x) => String(x.variation_id) === String(c.variation_id));
+            if (!v) throw new Error(`${row}: variation_id ${c.variation_id} が「${it.title}」にありません`);
+            before = v.stock;
+          } else {
+            if (c.variation_id !== undefined) throw new Error(`${row}:「${it.title}」にバリエーションはありません`);
+            before = it.stock;
+          }
+          const after = c.stock ?? before + c.add;
+          if (after < 0) throw new Error(`${row}: 変更後の在庫が ${after} になります（現在 ${before}）`);
+          const variation = it.variations?.find((x) => String(x.variation_id) === String(c.variation_id))?.name;
+          const params = c.variation_id === undefined
+            ? { item_id: it.item_id, stock: after }
+            : { item_id: it.item_id, variation_id: c.variation_id, variation_stock: after };
+          return { title: it.title, variation, before, after, params };
+        });
         return twoStep({
-          confirm_token, action: '在庫更新', endpoint: '/1/items/edit_stock',
-          params: { item_id, stock, variation_id, variation_stock },
-          current: confirm_token ? undefined : await getItem(item_id),
+          confirm_token,
+          action: '在庫更新',
+          key: JSON.stringify(plan.map((p) => p.params)),
+          preview: { changes: plan.map(({ title, variation, before, after }) => ({ title, variation, before, after })) },
+          execute: async () => {
+            const results = [];
+            for (const p of plan) {
+              try {
+                await send('在庫更新', '/1/items/edit_stock', p.params);
+                results.push({ title: p.title, variation: p.variation, stock: p.after, ok: true });
+              } catch (e) {
+                // 途中で失敗したら止める（残りは送らない）
+                results.push({ title: p.title, variation: p.variation, ok: false, error: e.message });
+                return { results, stopped_at: results.length, not_attempted: plan.length - results.length };
+              }
+            }
+            return { results };
+          },
         });
       }, { write: true });
 
@@ -266,9 +450,15 @@ export function createServer({ allowWrite = process.env.BASE_ALLOW_WRITE === '1'
       async ({ item_id, title, price, detail, visible, confirm_token }) => {
         const params = { item_id, title, price, detail, visible: visible === undefined ? undefined : (visible ? 1 : 0) };
         if (Object.values(params).filter((v) => v !== undefined).length === 1) throw new Error('変更する項目を1つ以上指定してください');
+        let current;
+        if (!confirm_token) {
+          const body = await callApi('GET', `/1/items/detail/${encodeURIComponent(item_id)}`);
+          current = compactItem(body.item ?? body);
+        }
         return twoStep({
-          confirm_token, action: '商品情報更新', endpoint: '/1/items/edit', params,
-          current: confirm_token ? undefined : await getItem(item_id),
+          confirm_token, action: '商品情報更新', key: JSON.stringify({ e: 'edit', params }),
+          preview: { current, will_send: params },
+          execute: async () => ({ response: await send('商品情報更新', '/1/items/edit', params) }),
         });
       }, { write: true });
 
@@ -282,14 +472,49 @@ export function createServer({ allowWrite = process.env.BASE_ALLOW_WRITE === '1'
         add_comment: z.string().optional().describe('購入者へのコメント（発送連絡など）'),
         confirm_token: confirmToken,
       },
-      async ({ unique_key, order_item_id, status, add_comment, confirm_token }) => twoStep({
-        confirm_token,
-        action: status === 'dispatched' ? '発送済みにする' : '注文キャンセル',
-        endpoint: '/1/orders/edit_status',
-        params: { unique_key, order_item_id, status, add_comment },
-        current: confirm_token ? undefined : await callApi('GET', `/1/orders/detail/${encodeURIComponent(unique_key)}`),
-      }), { write: true });
+      async ({ unique_key, order_item_id, status, add_comment, confirm_token }) => {
+        const params = { unique_key, order_item_id, status, add_comment };
+        const action = status === 'dispatched' ? '発送済みにする' : '注文キャンセル';
+        return twoStep({
+          confirm_token, action, key: JSON.stringify({ e: 'edit_status', params }),
+          preview: {
+            current: confirm_token ? undefined : await callApi('GET', `/1/orders/detail/${encodeURIComponent(unique_key)}`),
+            will_send: params,
+          },
+          execute: async () => ({ response: await send(action, '/1/orders/edit_status', params) }),
+        });
+      }, { write: true });
   }
+
+  // ================= 定型の依頼（プロンプト） =================
+  const prompt = (name, title, description, text, argsSchema) =>
+    server.registerPrompt(name, { title, description, ...(argsSchema ? { argsSchema } : {}) }, (args) => ({
+      messages: [{ role: 'user', content: { type: 'text', text: typeof text === 'function' ? text(args) : text } }],
+    }));
+
+  prompt('weekly_report', '週次レポート', '先週の売上を前週と比べ、売れ筋・在庫・未発送をまとめる',
+    'BASEショップの週次レポートを作ってください。\n' +
+    '1. base_sales_summary（period=last_week, compare=previous, include_items=true）で先週の数字と前週比\n' +
+    '2. base_low_stock で売り切れ・在庫わずかの商品\n' +
+    '3. base_pending_shipments で未発送の注文\n' +
+    'まとめ方：最初に3行サマリー、次に数字（売上・注文数・客単価と前週比）、売れ筋トップ5、在庫の注意、未発送の注意、最後に「今週やること」を3つ。' +
+    '数字はツールの結果だけを使い、ないものは推測しないこと。');
+
+  prompt('restock_plan', '補充計画', '在庫が少ない商品を、最近の売れ行きと合わせて補充の優先順位をつける',
+    ({ threshold }) =>
+      `在庫の補充計画を作ってください。\n` +
+      `1. base_low_stock（threshold=${threshold || 5}）で在庫が少ない商品\n` +
+      `2. base_sales_summary（period=last_30_days, include_items=true）で直近30日の販売数\n` +
+      `3. 1日あたりの販売数から「あと何日で売り切れるか」を出し、早い順に並べた表にする\n` +
+      '販売実績がない商品はそう明記すること。在庫は変更しないこと（提案だけ）。',
+    { threshold: z.string().optional().describe('この在庫数以下を対象（既定5）') });
+
+  prompt('shipping_check', '発送チェック', '未発送の注文を古い順に確認し、今日発送すべきものを洗い出す',
+    '未発送の注文を確認してください。\n' +
+    '1. base_pending_shipments で未発送注文の一覧\n' +
+    '2. 待ち日数が長い順に、上位10件まで base_get_order で中身（商品・支払い状況）を確認\n' +
+    '3.「今日発送すべき」「入金待ち」「要確認」に分けて表にする\n' +
+    'ステータスの変更はしないこと（確認だけ）。');
 
   return server;
 }
