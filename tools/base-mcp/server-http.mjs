@@ -16,6 +16,7 @@ if (secret.length < 32) {
 const port = Number(process.env.PORT || 8788);
 const host = process.env.HOST || '127.0.0.1';
 const allowWrite = process.env.BASE_ALLOW_WRITE === '1';
+const allowCustomerData = process.env.BASE_ALLOW_CUSTOMER_DATA === '1';
 
 const expectedPath = Buffer.from(`/mcp/${secret}`);
 const pathMatches = (pathname) => {
@@ -50,7 +51,7 @@ http.createServer(async (req, res) => {
   try {
     const body = await readJson(req);
     // リクエストごとにサーバーとトランスポートを作るステートレス方式
-    const server = createServer({ allowWrite });
+    const server = createServer({ allowWrite, allowCustomerData });
     const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
     res.on('close', () => { transport.close(); server.close(); });
     await server.connect(transport);
@@ -61,5 +62,6 @@ http.createServer(async (req, res) => {
   }
 }).listen(port, host, () => {
   console.log(`BASE MCP (HTTP) 起動: http://${host}:${port}/mcp/<BASE_MCP_SECRET>`);
+  console.log(`お客さま情報ツール: ${allowCustomerData ? '有効（注意：URLを知る人はお客さまの個人情報を読めます）' : '無効'}`);
   console.log(`書き込みツール: ${allowWrite ? '有効（注意：URLを知る人は誰でもショップを変更できます）' : '無効（読み取り専用）'}`);
 });

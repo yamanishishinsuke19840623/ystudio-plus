@@ -2,7 +2,9 @@
 import { randomBytes } from 'node:crypto';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
-import { callApi, fetchAllPages, appendWriteLog } from './base-client.mjs';
+import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { join } from 'node:path';
+import { callApi, fetchAllPages, appendWriteLog, DATA_DIR } from './base-client.mjs';
 
 // ここで参照するレスポンスの項目名は、BASE API ドキュメントを実アカウントで未検証。
 // 項目が見つからないときは推測で計算せずエラーにする（requireFields）。
@@ -11,6 +13,8 @@ const F = {
   variation: { id: 'variation_id', name: 'variation', stock: 'variation_stock' },
   order: { key: 'unique_key', ordered: 'ordered', cancelled: 'cancelled', dispatched: 'dispatched', total: 'total' },
   orderDetail: { items: 'order_items' },
+  // 注文詳細に入っている購入者の情報（お届け先ではなく注文した人）
+  customer: { email: 'mail_address', lastName: 'last_name', firstName: 'first_name', prefecture: 'prefecture' },
 };
 
 function requireFields(obj, fields, label) {
@@ -131,16 +135,36 @@ async function summarize(start_date, end_date) {
 }
 
 // 注文詳細を読んで、注文ごとの明細（商品・数量・金額）を集める。注文数ぶんAPIを呼ぶので上限つき
+// 注文詳細はディスクにキャッシュする（1年分の顧客分析でも毎回APIを呼ばないため）。
+// 注文から45日以上たったものは発送・キャンセルの状態も落ち着いているとみなしてキャッシュを使う
+const ORDER_CACHE_DIR = join(DATA_DIR, 'order-cache');
+const SETTLED_SEC = 45 * DAY;
+async function getOrderDetail(key, orderedUnix) {
+  const file = join(ORDER_CACHE_DIR, `${String(key).replace(/[^A-Za-z0-9_-]/g, '_')}.json`);
+  const settled = Number(orderedUnix) < Math.floor(now() / 1000) - SETTLED_SEC;
+  if (settled) {
+    try { return JSON.parse(await readFile(file, 'utf8')); } catch {}
+  }
+  const detail = await callApi('GET', `/1/orders/detail/${encodeURIComponent(key)}`);
+  const order = detail.order ?? detail;
+  await mkdir(ORDER_CACHE_DIR, { recursive: true });
+  await writeFile(file, JSON.stringify(order), { mode: 0o600 });
+  return order;
+}
+
+// 注文詳細を読んで、注文ごとの明細（商品・数量・金額）と購入者を集める。上限つき
 async function fetchLineItems(validOrders, max) {
   const targets = validOrders.slice(0, max);
   const orders = [];
   for (const o of targets) {
-    const detail = await callApi('GET', `/1/orders/detail/${encodeURIComponent(o[F.order.key])}`);
-    const order = detail.order ?? detail;
+    const order = await getOrderDetail(o[F.order.key], o[F.order.ordered]);
     const raw = order[F.orderDetail.items] ?? [];
     if (raw[0]) requireFields(raw[0], ['item_id', 'amount'], '注文明細データ');
     orders.push({
       key: o[F.order.key],
+      ordered: Number(o[F.order.ordered]),
+      total: Number(o[F.order.total]) || 0,
+      detail: order,
       lines: raw.map((li) => ({
         item_id: li.item_id, title: li.title, variation: li.variation || undefined,
         amount: Number(li.amount) || 0,
@@ -150,6 +174,52 @@ async function fetchLineItems(validOrders, max) {
   }
   return { orders, read: targets.length };
 }
+
+// ---------------- お客さま ----------------
+const normEmail = (e) => String(e ?? '').trim().toLowerCase();
+
+function customerOf(detail) {
+  requireFields(detail, [F.customer.email], '注文詳細（購入者）データ');
+  const name = [detail[F.customer.lastName], detail[F.customer.firstName]].filter(Boolean).join(' ');
+  return { email: normEmail(detail[F.customer.email]), name: name || undefined, prefecture: detail[F.customer.prefecture] || undefined };
+}
+
+// 期間内の注文を購入者ごとにまとめる
+async function buildCustomers(start_date, end_date, maxOrders) {
+  const { inRange, truncated } = await fetchOrders(start_date, end_date);
+  const valid = inRange.filter((o) => !o[F.order.cancelled]);
+  const { orders, read } = await fetchLineItems(valid, maxOrders);
+  const byEmail = new Map();
+  for (const o of orders) {
+    const c = customerOf(o.detail);
+    if (!c.email) continue;
+    const cur = byEmail.get(c.email) ?? { ...c, orders: [] };
+    if (!cur.name && c.name) cur.name = c.name;
+    cur.orders.push({
+      unique_key: o.key, date: jstDate(o.ordered), ordered: o.ordered, total: o.total,
+      items: o.lines.map((l) => (l.variation ? `${l.title}（${l.variation}）×${l.amount}` : `${l.title}×${l.amount}`)),
+    });
+    byEmail.set(c.email, cur);
+  }
+  const customers = [...byEmail.values()].map((c) => {
+    c.orders.sort((a, b) => a.ordered - b.ordered);
+    const total = c.orders.reduce((a, o) => a + o.total, 0);
+    return {
+      email: c.email, name: c.name, prefecture: c.prefecture,
+      order_count: c.orders.length,
+      total_spent: total,
+      average_order_value: Math.round(total / c.orders.length),
+      first_order: c.orders[0].date,
+      last_order: c.orders.at(-1).date,
+      last_ordered_unix: c.orders.at(-1).ordered,
+      orders: c.orders,
+    };
+  });
+  return { customers, orders_considered: valid.length, orders_read: read, truncated };
+}
+
+const segmentOf = (c, vipSpend) =>
+  c.total_spent >= vipSpend || c.order_count >= 3 ? 'お得意様' : c.order_count >= 2 ? 'リピーター' : '1回購入';
 
 function rankItems(orders) {
   const byItem = {};
@@ -184,8 +254,11 @@ function consumeConfirmToken(token, key) {
   }
 }
 
-export function createServer({ allowWrite = process.env.BASE_ALLOW_WRITE === '1' } = {}) {
-  const server = new McpServer({ name: 'base-shop', version: '0.4.0' });
+export function createServer({
+  allowWrite = process.env.BASE_ALLOW_WRITE === '1',
+  allowCustomerData = true,
+} = {}) {
+  const server = new McpServer({ name: 'base-shop', version: '0.6.0' });
 
   const ok = (data) => ({ content: [{ type: 'text', text: JSON.stringify(data, null, 2) }] });
   const fail = (e) => ({ isError: true, content: [{ type: 'text', text: e.message }] });
@@ -500,6 +573,97 @@ export function createServer({ allowWrite = process.env.BASE_ALLOW_WRITE === '1'
       };
     });
 
+
+  // ================= お客さま（個人情報を扱うので、リモート版では既定で無効） =================
+  if (allowCustomerData) {
+    const stripUnix = ({ last_ordered_unix, orders, ...c }) => c;
+
+    tool('base_customers',
+      'お客さまを購入者（メールアドレス）ごとにまとめ、お得意様・リピーター・1回購入に分ける。' +
+      'さらに「去年の今ごろ（これから6週間の時期）に買っていて、今年はまだのお客さま」（季節のご案内候補）と、' +
+      '「しばらく注文がないお得意様」を出す。注文詳細を読むので初回は時間がかかる（2回目以降はキャッシュ）。' +
+      '結果には個人情報が含まれるので、外部に共有しないこと',
+      {
+        days: z.number().int().min(30).max(800).optional().describe('何日前までの注文を見るか（既定730＝2年。去年の同じ季節と、昔からのお得意様を含む）'),
+        vip_spend: z.number().int().min(0).optional().describe('この合計金額以上をお得意様とする（既定50000円）'),
+        max_orders: z.number().int().min(1).max(3000).optional().describe('詳細を読む注文の上限（既定3000）'),
+        limit: z.number().int().min(1).max(200).optional().describe('一覧の最大件数（既定30）'),
+      },
+      async ({ days = 730, vip_spend = 50000, max_orders = 3000, limit = 30 }) => {
+        const [, today] = resolvePeriod('today');
+        const { customers, orders_considered, orders_read, truncated } =
+          await buildCustomers(addDays(today, -(days - 1)), today, max_orders);
+        const nowSec = Math.floor(now() / 1000);
+        for (const c of customers) c.segment = segmentOf(c, vip_spend);
+
+        // 去年の「今日の1週間前〜6週間後」に注文があり、直近60日に注文がない人
+        const lyFrom = jstStartUnix(addDays(today, -365 - 7));
+        const lyTo = jstStartUnix(addDays(today, -365 + 42));
+        const seasonal = customers
+          .filter((c) => c.last_ordered_unix < nowSec - 60 * DAY)
+          .map((c) => ({ c, last_year: c.orders.filter((o) => o.ordered >= lyFrom && o.ordered < lyTo) }))
+          .filter((x) => x.last_year.length)
+          .sort((a, b) => a.last_year[0].ordered - b.last_year[0].ordered)
+          .map(({ c, last_year }) => ({
+            ...stripUnix(c),
+            last_year_orders: last_year.map(({ ordered, ...o }) => o),
+            reason: `去年の${last_year[0].date.slice(5).replace('-', '/')}ごろに注文あり。今年はまだ`,
+          }));
+
+        const dormant = customers
+          .filter((c) => c.segment === 'お得意様' && c.last_ordered_unix < nowSec - 180 * DAY)
+          .sort((a, b) => b.total_spent - a.total_spent)
+          .map((c) => ({ ...stripUnix(c), days_since_last_order: Math.floor((nowSec - c.last_ordered_unix) / DAY) }));
+
+        const bySeg = (seg) => customers.filter((c) => c.segment === seg);
+        const totalSales = customers.reduce((a, c) => a + c.total_spent, 0);
+        const repeatSales = customers.filter((c) => c.order_count >= 2).reduce((a, c) => a + c.total_spent, 0);
+        return {
+          period_days: days,
+          basis: { orders_considered, orders_read, truncated },
+          summary: {
+            customers: customers.length,
+            vip: bySeg('お得意様').length,
+            repeaters: bySeg('リピーター').length,
+            one_time: bySeg('1回購入').length,
+            repeat_customer_rate_pct: customers.length ? Math.round((customers.filter((c) => c.order_count >= 2).length / customers.length) * 1000) / 10 : null,
+            repeat_sales_share_pct: totalSales ? Math.round((repeatSales / totalSales) * 1000) / 10 : null,
+          },
+          seasonal_reminder_candidates: seasonal.slice(0, limit),
+          dormant_vip: dormant.slice(0, limit),
+          top_customers: [...customers].sort((a, b) => b.total_spent - a.total_spent).slice(0, limit)
+            .map(({ orders, last_ordered_unix, ...c }) => c),
+          note: '購入者のメールアドレスで同じ人とみなしています（別のアドレスで買った場合は別人扱い）。贈り物の注文はお届け先ではなく注文した人で数えています',
+        };
+      });
+
+    tool('base_customer_history',
+      '1人のお客さまの購入履歴（いつ・何を・いくら）を出す。電話やメールで「いつものを」と言われたときや、' +
+      'お礼・ご案内を書く前の確認に使う。メールアドレスか名前の一部で探す',
+      {
+        query: z.string().min(1).describe('メールアドレス、または名前の一部'),
+        days: z.number().int().min(30).max(800).optional().describe('何日前までさかのぼるか（既定800）'),
+      },
+      async ({ query, days = 800 }) => {
+        const [, today] = resolvePeriod('today');
+        const { customers, truncated } = await buildCustomers(addDays(today, -(days - 1)), today, 3000);
+        const q = query.normalize('NFKC').toLowerCase().replace(/\s+/g, '');
+        const hits = customers.filter((c) =>
+          c.email === normEmail(query) || (c.name ?? '').normalize('NFKC').toLowerCase().replace(/\s+/g, '').includes(q));
+        if (!hits.length) return { query, found: 0, truncated, note: '見つかりませんでした（期間外、別のアドレス、または表記ゆれの可能性）' };
+        return {
+          query, found: hits.length, truncated,
+          customers: hits.slice(0, 5).map(({ last_ordered_unix, orders, ...c }) => ({
+            ...c,
+            orders: orders.map(({ ordered, ...o }) => o).reverse(),
+            usual_items: Object.entries(orders.flatMap((o) => o.items.map((i) => i.replace(/×\d+$/, '')))
+              .reduce((m, t) => ({ ...m, [t]: (m[t] ?? 0) + 1 }), {}))
+              .sort((a, b) => b[1] - a[1]).slice(0, 5).map(([title, times]) => ({ title, times })),
+          })),
+        };
+      });
+  }
+
   // ================= 書き込み（BASE_ALLOW_WRITE=1 のときだけ） =================
   if (allowWrite) {
     const twoStep = async ({ confirm_token, action, key, preview, execute }) => {
@@ -683,6 +847,23 @@ export function createServer({ allowWrite = process.env.BASE_ALLOW_WRITE === '1'
       '   - UNKNOWN：判断に足りない情報（アクセス数、広告、お客さんの声など）と、誰に何を確認すればよいか\n' +
       '在庫や商品の変更はしないこと（提案だけ）。成果を約束する言い方はしないこと。',
     { goal: z.string().optional().describe('目標ややりたいこと（例：客単価を上げたい、新商品を広めたい）') });
+
+  if (allowCustomerData) {
+    prompt('customer_followup', 'お客さまへのご案内', '去年の今ごろ買ってくれたお客さまや、しばらく注文のないお得意様へのご案内メールを下書きする',
+      ({ note }) =>
+        'お客さまへのご案内メールの下書きを作ってください。\n' +
+        '1. base_customers で「季節のご案内候補」と「しばらく注文のないお得意様」を出す\n' +
+        '2. 対象者を表にして見せる（名前・前回の注文日・前回買ったもの・合計購入額）。ここで一度止まり、誰に送るかユーザーに選んでもらう\n' +
+        '3. 選ばれた人ごとに、短く心のこもった文面を書く：\n' +
+        '   - 前回の注文へのお礼と、実際に買ってもらった商品名（履歴にあるものだけ。推測で書かない）\n' +
+        '   - 今年もご用意できることの案内、ゴルフコンペの景品やギフトなど用途がわかっていればそれに触れる\n' +
+        '   - 価格・在庫・割引・発送日は書かない（未確認のため「◯◯」の空欄にして、ユーザーに埋めてもらう）\n' +
+        '   - 押し売りしない。返信で気軽に相談できる一文で締める\n' +
+        (note ? `   - 今回伝えたいこと：${note}\n` : '') +
+        '4. Gmail の下書き作成ツールが使えるなら下書きとして保存する。使えなければ本文を表示する。どちらの場合も絶対に送信はしない\n' +
+        'お客さまの個人情報は、この作業以外に使わないこと。',
+      { note: z.string().optional().describe('今回伝えたいこと（例：今季のとらふぐ入荷、年末の受付締切）') });
+  }
 
   return server;
 }

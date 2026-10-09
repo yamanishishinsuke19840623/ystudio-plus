@@ -31,10 +31,22 @@ const orders = [
   { unique_key: 'D', ordered: jst('2026-10-05T12:00:00'), cancelled: null, dispatched: null, total: 5000 }, // 期間外
   { unique_key: 'E', ordered: jst('2026-09-30T15:00:00'), cancelled: null, dispatched: jst('2026-09-30T18:00:00'), total: 4000 }, // 前期間
   { unique_key: 'F', ordered: jst('2025-10-01T15:00:00'), cancelled: null, dispatched: jst('2025-10-02T18:00:00'), total: 1000 }, // 前年
+  { unique_key: 'G', ordered: jst('2025-03-01T11:00:00'), cancelled: null, dispatched: jst('2025-03-02T10:00:00'), total: 200000 }, // コンペ景品の大口
 ];
+// 注文した人（注文詳細に入る）
+const buyers = {
+  A: { mail_address: 'Taro@Example.com', last_name: '山田', first_name: '太郎', prefecture: '山口県' },
+  E: { mail_address: 'taro@example.com', last_name: '山田', first_name: '太郎', prefecture: '山口県' },
+  B: { mail_address: 'hanako@example.com', last_name: '佐藤', first_name: '花子', prefecture: '福岡県' },
+  F: { mail_address: 'golf@example.com', last_name: '鈴木', first_name: '一郎', prefecture: '東京都' },
+  G: { mail_address: 'golf@example.com', last_name: '鈴木', first_name: '一郎', prefecture: '東京都' },
+};
+const detailHits = {};
 const details = {
   A: [{ order_item_id: 11, item_id: 1, title: '商品1', amount: 2, price: 1000, total: 2000 }, { order_item_id: 12, item_id: 2, title: '商品2', amount: 1, price: 1000, total: 1000 }],
   B: [{ order_item_id: 21, item_id: 1, title: '商品1', amount: 2, price: 1000, total: 2000 }],
+  F: [{ order_item_id: 61, item_id: 9, title: 'とらふぐ刺身', amount: 1, price: 1000, total: 1000 }],
+  G: [{ order_item_id: 71, item_id: 9, title: 'とらふぐ刺身', amount: 20, price: 10000, total: 200000 }],
   E: [{ order_item_id: 51, item_id: 1, title: '商品1', amount: 1, price: 1000, total: 1000 }, { order_item_id: 52, item_id: 2, title: '商品2', amount: 1, price: 1000, total: 1000 }],
 };
 const posts = [];
@@ -68,7 +80,8 @@ async function handle(req, res) {
   if (url.pathname === '/1/orders') return send(200, { orders: orders.slice(offset, offset + limit) }); // 期間クエリは無視（手元絞り込みの確認）
   if (url.pathname.startsWith('/1/orders/detail/')) {
     const key = url.pathname.split('/').pop();
-    return send(200, { order: { unique_key: key, order_items: details[key] ?? [] } });
+    detailHits[key] = (detailHits[key] ?? 0) + 1;
+    return send(200, { order: { unique_key: key, ...(buyers[key] ?? { mail_address: `${key}@example.com` }), order_items: details[key] ?? [] } });
   }
   if (req.method === 'POST' && url.pathname === '/1/items/edit_stock') {
     const p = Object.fromEntries(new URLSearchParams(body));
@@ -170,6 +183,32 @@ await test('売上アップの機会：在庫切れ・セット候補・動か�
   assert.deepEqual(r.facts.top_hours.map((h) => h.hour).sort(), ['10時台', '15時台', '23時台']);
 });
 
+await test('お客さま：同じメールは1人に（大文字小文字無視）、お得意様・季節のご案内・休眠お得意様、キャッシュ', async () => {
+  const r = await call(client, 'base_customers', {});
+  assert.equal(r.summary.customers, 3);
+  const top = r.top_customers.map((c) => [c.name, c.order_count, c.total_spent, c.segment]);
+  assert.deepEqual(top, [['鈴木 一郎', 2, 201000, 'お得意様'], ['山田 太郎', 2, 7000, 'リピーター'], ['佐藤 花子', 1, 2000, '1回購入']]);
+  assert.deepEqual(r.seasonal_reminder_candidates.map((c) => [c.email, c.reason]), [['golf@example.com', '去年の10/01ごろに注文あり。今年はまだ']]);
+  assert.deepEqual(r.seasonal_reminder_candidates[0].last_year_orders[0].items, ['とらふぐ刺身×1']);
+  assert.deepEqual(r.dormant_vip.map((c) => [c.email, c.days_since_last_order]), [['golf@example.com', 365]]);
+  assert.equal(r.summary.repeat_customer_rate_pct, 66.7);
+  // 2回目：45日以上前の注文（F・G）はキャッシュを使い、APIを呼ばない
+  const before = { F: detailHits.F, G: detailHits.G, A: detailHits.A };
+  await call(client, 'base_customers', {});
+  assert.equal(detailHits.F, before.F);
+  assert.equal(detailHits.G, before.G);
+  assert.equal(detailHits.A, before.A + 1); // 最近の注文は状態が変わりうるので読み直す
+});
+
+await test('お客さまの履歴：名前の一部で検索、いつもの商品', async () => {
+  const r = await call(client, 'base_customer_history', { query: '鈴木' });
+  assert.equal(r.found, 1);
+  assert.deepEqual(r.customers[0].orders.map((o) => o.date), ['2025-10-01', '2025-03-01']);
+  assert.deepEqual(r.customers[0].usual_items, [{ title: 'とらふぐ刺身', times: 2 }]);
+  const none = await call(client, 'base_customer_history', { query: 'nobody@example.com' });
+  assert.equal(none.found, 0);
+});
+
 await test('商品検索：全角半角を区別せず複数語AND', async () => {
   const r = await call(client, 'base_find_items', { query: '商品１２' });
   assert.deepEqual(r.items.map((i) => i.item_id).slice(0, 3), [12, 120, 121]);
@@ -210,7 +249,7 @@ await test('商品更新：内容を変えたら同じトークンは使えな�
 
 await test('定型プロンプトが出る', async () => {
   const names = (await client.listPrompts()).prompts.map((p) => p.name);
-  assert.deepEqual(names.sort(), ['growth_plan', 'restock_plan', 'shipping_check', 'weekly_report']);
+  assert.deepEqual(names.sort(), ['customer_followup', 'growth_plan', 'restock_plan', 'shipping_check', 'weekly_report']);
   const p = await client.getPrompt({ name: 'restock_plan', arguments: { threshold: '2' } });
   assert.match(p.messages[0].content.text, /threshold=2/);
 });
@@ -241,6 +280,8 @@ await new Promise((r) => proc.stdout.once('data', r));
 await test('HTTP版：秘密URLで呼べる／違うURLは404', async () => {
   const c = new Client({ name: 'test', version: '1' });
   await c.connect(new StreamableHTTPClientTransport(new URL(`http://127.0.0.1:${port}/mcp/${secret}`)));
+  const names = (await c.listTools()).tools.map((t) => t.name);
+  assert.ok(!names.includes('base_customers'), 'リモート版では既定でお客さま情報ツールを出さない');
   const r = await call(c, 'base_sales_summary', { period: 'yesterday' });
   assert.equal(r.sales_total, 5000);
   await c.close();
