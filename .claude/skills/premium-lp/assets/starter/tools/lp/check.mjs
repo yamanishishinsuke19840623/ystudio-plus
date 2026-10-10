@@ -1,4 +1,5 @@
-// 動作確認: /yamanishi-suisan/ をデスクトップ・スマホ・動き控えめで開き、
+// 動作確認（premium-lp スターター）。ページに無いセクションは自動で飛ばす。
+// 動作確認: /__PAGE__/ をデスクトップ・スマホ・動き控えめで開き、
 // オープニング → 各演出の途中までスクロールしてスクショを撮り、エラーや隠れたままの要素がないかを調べる
 // 使い方: OUT_DIR=スクショの保存先 node check-yamanishi.mjs
 import { chromium } from "playwright-core";
@@ -18,7 +19,7 @@ const server = createServer(async (req, res) => {
     res.writeHead(404).end();
   }
 }).listen(0);
-const url = `http://127.0.0.1:${server.address().port}/yamanishi-suisan/`;
+const url = `http://127.0.0.1:${server.address().port}/__PAGE__/`;
 const out = process.env.OUT_DIR || ".";
 // [名前, 要素id(または selector), セクション内の進み具合 0〜1]
 const shots = [
@@ -54,16 +55,18 @@ for (const [name, viewport, reduced, touch] of [["desktop", { width: 1440, heigh
     hidden: [...document.querySelectorAll("[data-up], .ch, .item, footer .giant span")].filter((e) => parseFloat(getComputedStyle(e).opacity) < 0.99).length,
     overflowX: document.documentElement.scrollWidth > innerWidth,
     atBottom: Math.abs(scrollY + innerHeight - document.body.scrollHeight) < 5,
-    banYear: document.getElementById("ban-year").textContent,
+    banYear: document.getElementById("ban-year")?.textContent ?? null,
+    banTo: document.getElementById("ban-year")?.dataset.to ?? null,
   }));
   for (const [i, [label, sel, at]] of shots.entries()) {
+    if (!(await page.locator(sel).count())) continue;
     await page.evaluate(([sel, at]) => {
       const el = document.querySelector(sel);
       const top = el.getBoundingClientRect().top + scrollY;
       window.scrollTo(0, top + Math.max(0, el.offsetHeight - innerHeight) * at);
     }, [sel, at]);
     await page.waitForTimeout(900);
-    if (label === "lineup" && name === "desktop") {
+    if (label === "lineup" && name === "desktop" && (await page.locator(".item").count()) > 1) {
       const box = await page.locator(".item").nth(1).boundingBox();
       await page.mouse.move(box.x + box.width * 0.4, box.y + box.height / 2, { steps: 8 });
       await page.waitForTimeout(700);
@@ -73,12 +76,15 @@ for (const [name, viewport, reduced, touch] of [["desktop", { width: 1440, heigh
   // PV: ボタンで再生が始まるか（この Chromium が H.264 を再生できる場合のみ時間が進む）
   const pv = await page.evaluate(async () => {
     const v = document.getElementById("pv");
+    if (!v) return null;
     document.querySelector(".frame .play").click();
     await new Promise((r) => setTimeout(r, 2500));
     return { playing: document.querySelector(".frame").classList.contains("playing"), time: v.currentTime, src: v.currentSrc.split("/").pop(), error: v.error && v.error.code };
   });
   state.pv = pv;
-  const ok = errors.length === 0 && state.pv.time > 0.5 && state.hidden === 0 && !state.overflowX && state.banYear === "1888";
+  // 年号カウンターがあるなら最後まで進んでいるか（終わりの年は data-to に書く。無ければ問わない）
+  const banOk = state.banYear === null || !state.banTo || state.banYear === state.banTo;
+  const ok = errors.length === 0 && (state.pv === null || state.pv.time > 0.5) && state.hidden === 0 && !state.overflowX && banOk;
   failed ||= !ok;
   console.log(ok ? "OK " : "NG ", name, JSON.stringify({ errors, ...state }));
   await page.close();

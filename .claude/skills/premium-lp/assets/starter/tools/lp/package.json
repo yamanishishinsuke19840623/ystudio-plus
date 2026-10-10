@@ -1,0 +1,18 @@
+{
+  "name": "lp-tools",
+  "private": true,
+  "type": "module",
+  "description": "__PAGE__/ のアニメーション（Motion＋Lenis）をビルドし、Chromiumで動作確認する",
+  "scripts": {
+    "build": "esbuild src/app.js --bundle --minify --format=esm --target=es2020 --outfile=../../__PAGE__/app.js",
+    "check": "node check.mjs"
+  },
+  "dependencies": {
+    "lenis": "1.3.26",
+    "motion": "14.1.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "playwright-core": "1.56.1"
+  }
+}
