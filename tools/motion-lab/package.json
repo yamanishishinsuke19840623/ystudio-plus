@@ -1,0 +1,17 @@
+{
+  "name": "motion-lab",
+  "private": true,
+  "type": "module",
+  "description": "Motion(旧 Framer Motion)でアニメーション特化ページ /motion-lab/ をつくる",
+  "scripts": {
+    "build": "esbuild src/main.js --bundle --minify --format=esm --target=es2020 --outfile=../../motion-lab/app.js",
+    "check": "node check.mjs"
+  },
+  "dependencies": {
+    "motion": "^14.1.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "playwright-core": "^1.64.0"
+  }
+}
