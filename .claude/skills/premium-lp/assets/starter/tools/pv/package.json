@@ -1,0 +1,13 @@
+{
+  "name": "pv-tools",
+  "private": true,
+  "type": "module",
+  "description": "__PAGE__/media/pv.mp4 を pv.html から描画して作る（60秒・曲と連動）",
+  "scripts": {
+    "render": "node render.mjs",
+    "stills": "node stills.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "1.56.1"
+  }
+}

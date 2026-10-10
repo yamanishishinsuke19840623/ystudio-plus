@@ -1,6 +1,6 @@
 # 演出カタログ（山西水産LPで使った「おっ！」となる動き）
 
-コードは `tools/motion-lab/src/yamanishi.js`。関数名＝演出名。ビルドは `npm run build:yamanishi`。
+コードはスターターの `tools/lp/src/app.js`（ystudio-plus では `tools/motion-lab/src/yamanishi.js`）。関数名＝演出名。HTML/CSS 側の作りは `assets/starter/page/index.html`。
 共通ルール: 動かすのは transform / opacity（filter少し）。`prefers-reduced-motion` では何も動かさず最終状態を見せる。
 初期状態で隠すのは `.js` クラス配下だけ（app.js が2.5秒で読めなければ解除）。
 

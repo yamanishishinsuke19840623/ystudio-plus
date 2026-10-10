@@ -1,4 +1,4 @@
-# 60秒PVの作り方（`tools/yamanishi-pv/`）
+# 60秒PVの作り方（スターターの `tools/pv/`、ystudio-plus では `tools/yamanishi-pv/`）
 
 外部の動画生成AI（Pollo AI 等）や素材サイトはこの環境から使えない前提。
 **実写真＋筆文字アニメを1コマずつ描画**して、テーマソングと合わせる。
@@ -13,7 +13,7 @@
 | `stills.mjs` | 指定した時刻だけ静止画を書き出す（全部描く前の確認用。`PV_TIMES=1,6.5,18 OUT_DIR=...`） |
 
 ```
-cd tools/yamanishi-pv && npm install
+cd tools/pv && npm install
 OUT_DIR=<scratchpad>/stills PV_TIMES=1,4,6.5,18.5,37,58 node stills.mjs   # まず静止画で確認
 node render.mjs                                                           # 約4〜5分
 ```
@@ -33,6 +33,12 @@ node render.mjs                                                           # 約4
 - 字幕は写真の中の文字と矛盾させない。
 - 住所や町名など、本人が出したくない情報は入れない（山西水産は「富任町」NG）。
 - 字幕・名札も筆文字（`.disp` に同色ふち）。名札はステッカー風（太枠＋ずらし影）。
+
+## 別の会社で使うとき
+
+- `pv.html` の各 `<section class="sc">` が1場面。文言・写真をその会社の事実に入れ替え、場面の数が変わったら `scenes` の時刻表と `renderStoryboard` の該当部分を合わせる。
+- `music.js` の譜面（`intro`/`amero`/`bmero`/`sabi` とメロディ）を差し替える。テーマソングが無ければ、コード進行だけ（mel を null）でも成立する。
+- 先に `npm run stills` で主要な時刻の静止画を見てから、`npm run render`（約4〜5分）。
 
 ## 書き出しと確認
 
