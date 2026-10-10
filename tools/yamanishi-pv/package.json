@@ -1,0 +1,13 @@
+{
+  "name": "yamanishi-pv",
+  "private": true,
+  "type": "module",
+  "description": "山西水産 ブランドPV（75秒）を pv.html から描画して yamanishi-suisan/media/pv.mp4 を作る",
+  "scripts": {
+    "render": "node render.mjs",
+    "stills": "node stills.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.56.1"
+  }
+}
