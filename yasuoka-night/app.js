@@ -42,7 +42,7 @@ const scene = new THREE.Scene();
 scene.fog = new THREE.FogExp2(0x070a18, 0.0018);
 
 const camera = new THREE.PerspectiveCamera(40, innerWidth / innerHeight, 1, 4000);
-const HOME = { pos: new THREE.Vector3(230, 210, 250), target: new THREE.Vector3(5, 0, 0) };
+const HOME = { pos: new THREE.Vector3(250, 220, 230), target: new THREE.Vector3(30, 0, -50) };
 camera.position.copy(HOME.pos);
 
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -211,6 +211,77 @@ for (let i = 0; i < 2; i++) {
 }
 scene.add(train);
 
+// ── 山（響灘の反対側） ──
+// 竜王山：山頂の座標と標高は Wikipedia 掲載値（検索で確認）。
+// 鋤先山（すきざきやま、583m）：山頂の座標は未確認のため、所在地「大字蒲生野」の代表点付近におおよそで置く。
+const PEAKS = [
+  { ...fromLL(34.068306, 130.935611), name: '竜王山', kana: 'りゅうおうざん', m: 613.9, r: 30 },
+  { ...(({ x, z }) => ({ x, z }))(DATA.towns.find(t => t.name === '蒲生野') || fromLL(34.0428, 130.9410)), name: '鋤先山', kana: 'すきざきやま', m: 583, r: 26, approx: true },
+];
+const [P0, P1] = PEAKS;
+const VSCALE = 1.0; // 高さは横と同じ縮尺（1単位=15m）
+function terrainH(x, z) {
+  let h = 0;
+  PEAKS.forEach(p => {
+    const d2 = (x - p.x) ** 2 + (z - p.z) ** 2;
+    h = Math.max(h, (p.m / DATA.unitMeters) * VSCALE * Math.exp(-d2 / (2 * p.r * p.r)));
+  });
+  // 2つの山をつなぐ尾根（形はイメージ）
+  const ax = P1.x - P0.x, az = P1.z - P0.z, L2 = ax * ax + az * az;
+  const t = clamp01(((x - P0.x) * ax + (z - P0.z) * az) / L2);
+  const rx = P0.x + ax * t - x, rz = P0.z + az * t - z;
+  const ridge = (P0.m * (1 - t) + P1.m * t) / DATA.unitMeters * 0.62 * VSCALE * Math.exp(-(rx * rx + rz * rz) / (2 * 20 * 20));
+  h = Math.max(h, ridge);
+  // 谷筋のでこぼこ（イメージ）
+  const n = Math.sin(x * 0.11 + z * 0.07) * Math.sin(z * 0.13 - x * 0.05) + 0.5 * Math.sin(x * 0.23 - z * 0.19);
+  return h > 0.3 ? h * (1 + 0.12 * n) : h;
+}
+{
+  const cx = (P0.x + P1.x) / 2, cz = (P0.z + P1.z) / 2;
+  const geo = new THREE.PlaneGeometry(420, 520, 210, 260);
+  geo.rotateX(-Math.PI / 2);
+  geo.translate(cx, 0, cz);
+  const pos = geo.attributes.position;
+  for (let i = 0; i < pos.count; i++) pos.setY(i, terrainH(pos.getX(i), pos.getZ(i)) - 0.05);
+  geo.computeVertexNormals();
+  const mat = new THREE.ShaderMaterial({
+    uniforms: { uNight: seaU.uNight, fogColor: { value: scene.fog.color }, fogDensity: { value: scene.fog.density * 0.45 } },
+    fog: true,
+    vertexShader: `
+      varying float vH; varying vec3 vN; varying vec3 vW;
+      #include <fog_pars_vertex>
+      void main(){ vH = position.y; vN = normal; vec4 w = modelMatrix*vec4(position,1.); vW = w.xyz;
+        vec4 mvPosition = viewMatrix*w; gl_Position = projectionMatrix*mvPosition;
+        #include <fog_vertex>
+      }`,
+    fragmentShader: `
+      uniform float uNight; varying float vH; varying vec3 vN; varying vec3 vW;
+      #include <fog_pars_fragment>
+      void main(){
+        if (vH < 0.35) discard;
+        float shade = clamp(dot(normalize(vN), normalize(vec3(-0.6, 0.7, 0.2))), 0., 1.);
+        vec3 c = mix(vec3(.03,.04,.08), vec3(.008,.012,.025), uNight) + vec3(.025,.03,.055) * shade;
+        // 等高線（100mごと）
+        float stp = 50. / ${DATA.unitMeters.toFixed(1)};
+        float f = abs(fract(vH / stp + .5) - .5) * stp;
+        float line = 1. - smoothstep(0., fwidth(vH) * 1.2 + 0.02, f);
+        float major = step(.5, abs(fract(vH / (stp * 2.) + .25) - .5));
+        c += vec3(.15,.6,.75) * line * mix(.18, .5, major) * smoothstep(.35, 3., vH);
+        gl_FragColor = vec4(c, 1.);
+        #include <fog_fragment>
+      }`,
+  });
+  scene.add(new THREE.Mesh(geo, mat));
+  // 山頂の目印
+  PEAKS.forEach(p => {
+    const y = terrainH(p.x, p.z);
+    const ring = new THREE.Mesh(new THREE.RingGeometry(2.2, 2.7, 40), new THREE.MeshBasicMaterial({ color: new THREE.Color(0x3fd0ff).multiplyScalar(1.6), transparent: true, opacity: 0.85, side: THREE.DoubleSide, depthWrite: false }));
+    ring.rotation.x = -Math.PI / 2; ring.position.set(p.x, y + 0.3, p.z);
+    scene.add(ring);
+    p.ring = ring; p.y = y;
+  });
+}
+
 // ── 家並み ──
 function windowTexture(rows, cols, w, h) {
   const c = document.createElement('canvas'); c.width = w; c.height = h;
@@ -240,6 +311,7 @@ function boxWithFlatRoof() {
 const houses = [], flats = [];
 DATA.buildings.forEach(([x, z, w, d, h, rot, isFlat]) => {
   if (Math.hypot(x - YG.x, z - YG.z) < 10.5) return; // やすらガーデンの敷地ぶん空ける
+  if (terrainH(x, z) > 1.2) return; // 山の斜面には置かない
   const on = 17.3 + rnd() * 1.7;
   let off = 21 + Math.pow(rnd(), 0.8) * 5.2;
   if (rnd() < 0.03) off = 99;
@@ -326,6 +398,7 @@ function addLabel(html, pos, cls = '') {
   return el;
 }
 STATIONS.forEach(s => addLabel(`<div class="tag"><i>JR</i>${s.name}</div><div class="sub en">${s.en}</div>`, new THREE.Vector3(s.x, 4, s.z), s.main ? 'big' : ''));
+PEAKS.forEach(p => addLabel(`<div class="tag"><i class="mt">▲</i>${p.name}</div><div class="sub">${p.kana} · ${p.m}m${p.approx ? '（位置はおおよそ）' : ''}</div>`, new THREE.Vector3(p.x, p.y + 4, p.z), 'mt'));
 addLabel('<div class="tag">響灘</div><div class="sub en">Hibikinada</div>', new THREE.Vector3(FX0 - 60, 2, -40), 'sea');
 const ygLabel = addLabel('<div class="tag"><i class="pk">★</i>やすらガーデン</div><div class="sub" id="ygSub">富任町五丁目</div>', new THREE.Vector3(YG.x, 6, YG.z), 'yg');
 // 町名（町丁目の代表点の平均位置）
@@ -347,7 +420,7 @@ function updateLabels() {
 let fly = null;
 function flyTo(pos, target) {
   controls.autoRotate = false;
-  fly = { p0: camera.position.clone(), t0: controls.target.clone(), p1: pos, t1: target, s: performance.now() };
+  fly = { p0: camera.position.clone(), t0: controls.target.clone(), p1: pos, t1: target, s: performance.now(), d: arguments[2] };
 }
 const closeView = (x, z, dist = 1) => [new THREE.Vector3(x + 45 * dist, 38 * dist, z + 42 * dist), new THREE.Vector3(x, 0, z)];
 
@@ -384,12 +457,23 @@ const YG_INFO = `
   </dl>
   <p class="src">出典：山口県観光サイト（yamaguchi-tourism.jp）の掲載情報を検索で確認。最新の情報は施設へ。地図上の位置は「富任町五丁目」の代表点で、建物の形はイメージです。</p>`;
 
+const MT_INFO = `
+  <div class="ph en">Mountains</div>
+  <div class="pt">竜王山・鋤先山</div>
+  <p>響灘の反対側、安岡の東から北にかけての山並み。</p>
+  <dl>
+    <dt>竜王山</dt><dd>613.9m（下関市吉見）</dd>
+    <dt>鋤先山</dt><dd>583m（大字蒲生野）。山頂が鋤で削り取ったような形から、安岡のシンボルとされる</dd>
+  </dl>
+  <p class="src">竜王山の位置と標高は Wikipedia・山と溪谷オンラインの掲載値を検索で確認。鋤先山は山頂の座標が確認できていないため、大字蒲生野の代表点付近におおよそで置いています。山の形と尾根はイメージ、等高線は50mごと。</p>`;
+
 const VIEWS = [
   { name: '全体を見る', en: 'Overview', c: '#ffffff', go: () => [HOME.pos.clone(), HOME.target.clone()] },
   { name: 'やすらガーデン', en: 'Yasura Garden', c: '#ff4f9a', go: () => closeView(YG.x, YG.z, 0.8), info: YG_INFO },
   { name: '安岡駅のまわり', en: 'Yasuoka Sta.', c: '#4dffc3', go: () => closeView(yas.x, yas.z) },
   { name: '海から陸を見る', en: 'From the sea', c: '#3fd0ff', go: () => [new THREE.Vector3(-260, 55, -10), new THREE.Vector3(10, 0, -10)] },
   { name: '陸から響灘を見る', en: 'To Hibikinada', c: '#ffb347', go: () => [new THREE.Vector3(110, 36, 10), new THREE.Vector3(-160, 0, -30)] },
+  { name: '竜王山と鋤先山', en: 'Mountains', c: '#7dd3fc', go: () => [new THREE.Vector3(-150, 70, -60), new THREE.Vector3((P0.x + P1.x) / 2, 12, (P0.z + P1.z) / 2)], info: MT_INFO },
   { name: '真上から', en: 'Top down', c: '#a78bfa', go: () => [new THREE.Vector3(0, 560, 1), new THREE.Vector3(0, 0, 0)] },
 ];
 const spList = document.getElementById('spList');
@@ -491,7 +575,7 @@ function loop() {
   ygRing.scale.setScalar(1 + k * 0.35);
 
   if (fly) {
-    const f = clamp01((now - fly.s) / 1500), e = f < 0.5 ? 4 * f * f * f : 1 - Math.pow(-2 * f + 2, 3) / 2;
+    const f = clamp01((now - fly.s) / (fly.d || 1500)), e = f < 0.5 ? 4 * f * f * f : 1 - Math.pow(-2 * f + 2, 3) / 2;
     camera.position.lerpVectors(fly.p0, fly.p1, e);
     controls.target.lerpVectors(fly.t0, fly.t1, e);
     if (f >= 1) fly = null;
@@ -510,5 +594,13 @@ addEventListener('resize', () => {
 });
 
 if (innerWidth < 760) camera.position.set(260, 300, 360);
+// 表紙から入ったら、17:00 から上空を降りてくる
+document.getElementById('enter')?.addEventListener('click', () => {
+  simT = 17;
+  camera.position.set(-40, 620, 120);
+  controls.target.set(0, 0, 0);
+  flyTo(innerWidth < 760 ? new THREE.Vector3(260, 300, 360) : HOME.pos.clone(), HOME.target.clone(), 3200);
+  setTimeout(() => { if (!fly) controls.autoRotate = true; }, 3400);
+});
 setTime(simT);
 loop();

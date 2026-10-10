@@ -5,8 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <link rel="icon" href="data:,">
-<title>安岡 響灘の夜 | Yスタジオ＋</title>
+<title>安岡 夜景マップ | Yスタジオ＋</title>
 <meta name="description" content="下関市・安岡のまちを、夕暮れから夜明け前まで3Dの夜景マップで眺める試作。海岸線・駅・町名は公開データの位置にもとづいています。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="安岡 夜景マップ">
+<meta property="og:description" content="下関市・安岡の夜を、夕暮れから夜明け前まで3Dで眺める夜景マップ。やすらガーデン、竜王山・鋤先山も。">
+<meta property="og:url" content="https://ystudio.yamanisi.co.jp/yasuoka-night/">
+<meta property="og:image" content="https://ystudio.yamanisi.co.jp/yasuoka-night/ogp.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ystudio.yamanisi.co.jp/yasuoka-night/ogp.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
@@ -72,6 +81,16 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
 #about h3{font-size:10px;color:var(--rail);margin:12px 0 2px;}
 #about .x{position:absolute;top:10px;right:12px;background:none;border:0;color:var(--text);font-size:20px;cursor:pointer;}
 
+/* 表紙（イラスト） */
+#cover{position:fixed;inset:0;z-index:30;display:grid;place-items:center;overflow:hidden;background:#060a1c;transition:opacity .9s ease,visibility .9s;}
+#cover.hide{opacity:0;visibility:hidden;}
+#cover .bg{position:absolute;inset:-40px;background:url(cover.jpg) center/cover;filter:blur(28px) brightness(.55);transform:scale(1.1);}
+#cover .card{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;padding:16px;max-width:100%;}
+#cover img{display:block;width:min(86vh,92vw);height:auto;max-height:calc(100vh - 120px);object-fit:contain;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 0 1px rgba(255,230,170,.18);}
+#cover button{font:inherit;font-weight:700;font-size:15px;letter-spacing:.08em;color:#1a1408;background:linear-gradient(180deg,#ffe9b0,#f2c86a);border:0;border-radius:999px;padding:12px 30px;cursor:pointer;box-shadow:0 0 24px rgba(255,210,120,.45);}
+#cover button:focus-visible{outline:2px solid #fff;outline-offset:3px;}
+#cover small{font-size:10px;color:rgba(255,240,210,.6);}
+
 /* 3D上のラベル */
 .lb{position:absolute;left:0;top:0;transform:translate(-50%,-100%);white-space:nowrap;display:flex;flex-direction:column;align-items:center;gap:3px;transition:opacity .3s;}
 .lb .tag{display:flex;align-items:center;gap:5px;background:rgba(5,7,15,.82);border:1px solid var(--line);border-radius:4px;padding:3px 7px;font-size:10px;font-weight:700;}
@@ -83,6 +102,9 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
 .lb.yg .tag{font-size:13px;border-color:rgba(255,79,154,.7);box-shadow:0 0 14px rgba(255,79,154,.5);}
 .lb.yg .tag i.pk{background:var(--pink);color:#fff;}
 .lb.yg .sub{color:#ffb3d1;}
+.lb.mt .tag{border-color:rgba(63,208,255,.45);}
+.lb.mt .tag i.mt{background:none;color:var(--sea);font-size:9px;padding:0;}
+.lb.mt .sub{color:rgba(160,220,255,.7);}
 .lb.tw .town{font-size:10px;color:rgba(220,228,255,.55);letter-spacing:.2em;text-shadow:0 0 6px #000;}
 
 /* スポット情報 */
@@ -116,13 +138,21 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
 </style>
 </head>
 <body>
+<div id="cover">
+  <div class="bg"></div>
+  <div class="card">
+    <img src="cover.jpg" alt="安岡 夜景マップ　ようこそ 安岡へ このまちで、いい出会いを。（夜の安岡のイメージイラスト）" width="1254" height="1254">
+    <button id="enter">3Dマップをひらく</button>
+    <small>イラストはイメージです。3Dマップは実際の海岸線・駅・町名の位置で描いています。</small>
+  </div>
+</div>
 <div id="stage"></div>
 <div id="labels"></div>
 
 <header id="title" class="panel">
   <div class="mark">安</div>
   <div>
-    <h1>安岡 響灘の夜</h1>
+    <h1>安岡 夜景マップ</h1>
     <p class="en">Yasuoka — after sunset</p>
   </div>
 </header>
@@ -158,9 +188,9 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
     <h2>この地図について</h2>
     <p>下関市・安岡の夜を、夕暮れから夜明け前まで眺めるための試作です。</p>
     <h3 class="en">Real data</h3>
-    <p>・海岸線：国土数値情報 行政区域データ（国土交通省、2020年）<br>・駅の位置：駅データ.jp（open-data-jp-railway-stations 経由）<br>・町名の位置：町丁目の代表点（Geolonia 住所データ）<br>・やすらガーデン：住所（富任町5丁目10-1）の町丁目の代表点に置いています。施設の正確な位置ではありません</p>
+    <p>・海岸線：国土数値情報 行政区域データ（国土交通省、2020年）<br>・駅の位置：駅データ.jp（open-data-jp-railway-stations 経由）<br>・町名の位置：町丁目の代表点（Geolonia 住所データ）<br>・やすらガーデン：住所（富任町5丁目10-1）の町丁目の代表点に置いています。施設の正確な位置ではありません<br>・竜王山：山頂の座標と標高（613.9m）は Wikipedia 掲載値。鋤先山（583m）は山頂の座標が未確認のため、大字蒲生野の代表点付近におおよそで置いています</p>
     <h3 class="en">Not real</h3>
-    <p>・建物ひとつひとつの形と配置は、町の代表点の近くほど家が多くなるように置いたイメージです<br>・道は町と町をつないだ模式の線で、実際の道路ではありません<br>・線路は駅どうしを結んだ近似の線です<br>・家の灯りの数と点く時間、列車の動き、沖の船の灯りは演出です（実際のダイヤではありません）</p>
+    <p>・建物ひとつひとつの形と配置は、町の代表点の近くほど家が多くなるように置いたイメージです<br>・道は町と町をつないだ模式の線で、実際の道路ではありません<br>・山の形と尾根はイメージです（高さは標高に合わせています）<br>・線路は駅どうしを結んだ近似の線です<br>・家の灯りの数と点く時間、列車の動き、沖の船の灯りは演出です（実際のダイヤではありません）</p>
     <h3 class="en">Next</h3>
     <p>OpenStreetMap などの建物・道路データを取り込めば、家並みと道も実際の形で描けます。</p>
   </div>
@@ -171,6 +201,9 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
   "three": "./vendor/three.module.min.js",
   "three/addons/": "./vendor/addons/"
 } }
+</script>
+<script>
+document.getElementById('enter').onclick = () => document.getElementById('cover').classList.add('hide');
 </script>
 <script type="module" src="app.js"></script>
 </body>
