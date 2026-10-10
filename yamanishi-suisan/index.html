@@ -12,11 +12,11 @@
 <meta property="og:image" content="img/spread.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@400;700;900&family=Yusei+Magic&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Yuji+Syuku&family=Zen+Kaku+Gothic+New:wght@400;700;900&family=Yusei+Magic&display=swap" rel="stylesheet">
 <style>
 :root{
   --paper:#f4efe4;--paper2:#ebe3d3;--sumi:#1b1a18;--shu:#e0442a;--sora:#cfe0ee;--kinari:#f6d9a8;
-  --disp:'Dela Gothic One','Zen Kaku Gothic New',sans-serif;
+  --disp:'Yuji Syuku','Zen Kaku Gothic New',serif;
   --body:'Zen Kaku Gothic New','Hiragino Sans',sans-serif;
   --hand:'Yusei Magic','Zen Kaku Gothic New',sans-serif;
 }
@@ -45,13 +45,16 @@ img{display:block;max-width:100%;}
 .head .buy{background:var(--shu);color:#fff;border:2px solid var(--sumi);border-radius:999px;padding:10px 22px;font-weight:900;font-size:14px;letter-spacing:.1em;box-shadow:3px 3px 0 var(--sumi);transition:transform .2s,box-shadow .2s;}
 .head .buy:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--sumi);}
 
+/* 筆文字（Yuji Syuku）を、同じ色の細いふちで太らせて極太毛筆に寄せる */
+.h2,.hero .lead b,.hero .catch p,.gen .num,.gen h3,.ban .year,.ban .what,.market .belt.b1 span,.market .fact b,.card .no,.card h3,.item .nm,.owner blockquote,.shop-row .nm,.contact .tel,footer .giant,.item .n{-webkit-text-stroke:.035em currentColor;paint-order:stroke fill;}
+
 /* ── HERO：写真入りの「ふく」に吸い込まれる ── */
 .hero{position:relative;height:320vh;}
 .hero .stage{position:sticky;top:0;height:100svh;overflow:hidden;background:var(--paper);}
 .hero .type{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;will-change:transform;}
 .hero .big{font-family:var(--disp);font-size:clamp(170px,40vw,560px);line-height:.9;letter-spacing:-.04em;white-space:nowrap;
   background:url(img/spread.jpg) 50% 55%/cover;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
-  -webkit-text-stroke:2px var(--sumi);}
+  -webkit-text-stroke:.02em var(--sumi);}
 .hero .full{position:absolute;inset:0;opacity:0;will-change:opacity,transform;}
 .hero .full img{width:100%;height:100%;object-fit:cover;}
 .hero .full::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(0,0,0,.6));}
@@ -386,7 +389,7 @@ footer .fine a{text-decoration:underline;text-underline-offset:3px;}
       </div>
       <div class="contact">
         <div data-up><b>PHONE</b><a class="tel" href="tel:083-258-0032">083-258-0032</a></div>
-        <div data-up><b>ADDRESS</b>〒759-6613<br>山口県下関市富任町1-1-5</div>
+        <div data-up><b>WEB</b><a href="https://lp.yamanisi.co.jp/" target="_blank" rel="noopener">lp.yamanisi.co.jp</a></div>
         <div data-up><b>SNS</b><a href="https://www.youtube.com/@shimofugu" target="_blank" rel="noopener">YouTube</a>　<a href="https://www.instagram.com/yamanishisuisan/" target="_blank" rel="noopener">Instagram</a>　<a href="https://www.tiktok.com/@fuguyayamachan" target="_blank" rel="noopener">TikTok</a></div>
       </div>
     </div>

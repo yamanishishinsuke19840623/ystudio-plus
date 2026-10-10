@@ -11,16 +11,16 @@
   文言・数字・写真はすべて lp.yamanisi.co.jp と song.html に公開済みのものだけ。
   ブラウザで直接開くと、下のスライダーで任意の時刻を確認できる。
 -->
-<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@700;900&family=Yusei+Magic&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Yuji+Syuku&family=Zen+Kaku+Gothic+New:wght@700;900&family=Yusei+Magic&display=swap" rel="stylesheet">
 <style>
 :root{--paper:#f4efe4;--sumi:#1b1a18;--shu:#e0442a;--sora:#cfe0ee;--kinari:#f6d9a8;
-  --disp:'Dela Gothic One',sans-serif;--body:'Zen Kaku Gothic New',sans-serif;--hand:'Yusei Magic',sans-serif;}
+  --disp:'Yuji Syuku',serif;--body:'Zen Kaku Gothic New',sans-serif;--hand:'Yusei Magic',sans-serif;}
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{background:#000;}
 #v{position:relative;width:1280px;height:720px;overflow:hidden;background:var(--paper);color:var(--sumi);font-family:var(--body);}
 .sc{position:absolute;inset:0;overflow:hidden;visibility:hidden;}
 .abs{position:absolute;}
-.disp{font-family:var(--disp);font-weight:400;}
+.disp{font-family:var(--disp);font-weight:400;-webkit-text-stroke:.035em currentColor;paint-order:stroke fill;}
 .ch{display:inline-block;}
 .photo{position:absolute;inset:0;}
 .photo img{width:100%;height:100%;object-fit:cover;}
@@ -41,10 +41,10 @@ html,body{background:#000;}
     <div id="s1-say" class="abs" style="left:0;right:0;top:490px;text-align:center;font-family:var(--hand);font-size:40px;color:var(--shu)">ぷくっ</div>
   </section>
 
-  <!-- S2 5–10 下関、富任町。 -->
+  <!-- S2 5–10 ふくの本場、下関。 -->
   <section class="sc" id="s2">
     <img id="s2-logo" class="abs" src="../../yamanishi-suisan/img/logo.jpg" style="left:60px;top:44px;width:130px;mix-blend-mode:multiply">
-    <div id="s2-big" class="abs disp chars" style="left:0;right:0;top:230px;text-align:center;font-size:150px;line-height:1">下関、富任町。</div>
+    <div id="s2-big" class="abs disp chars" style="left:0;right:0;top:250px;text-align:center;font-size:124px;line-height:1">ふくの本場、下関。</div>
     <div id="s2-sub" class="abs" style="left:0;right:0;top:460px;text-align:center;font-weight:900;font-size:30px;letter-spacing:.2em">明治十二年創業　下関ふぐ老舗問屋</div>
     <div id="s2-name" class="abs disp" style="left:0;right:0;top:520px;text-align:center;font-size:64px;color:var(--shu)">山西水産</div>
   </section>
@@ -52,9 +52,9 @@ html,body{background:#000;}
   <!-- S3 10–30 四代（5秒ずつ） -->
   <section class="sc gen" id="g1" style="background:var(--paper)">
     <div class="abs disp num" style="left:90px;top:80px;font-size:480px;line-height:1">初</div>
-    <div class="abs txt" style="left:690px;top:200px;width:520px">
+    <div class="abs txt" style="left:660px;top:200px;width:600px">
       <div style="font-weight:900;font-size:26px;letter-spacing:.14em">明治12年（1879）〜</div>
-      <div class="disp" style="font-size:54px;line-height:1.3;margin:14px 0 22px">宇之助の代<br>「渡海人」として起業</div>
+      <div class="disp" style="font-size:46px;line-height:1.3;margin:14px 0 22px">宇之助の代<br>「渡海人」として起業</div>
       <span class="tag">漁業・運搬</span>
     </div>
   </section>
@@ -76,9 +76,9 @@ html,body{background:#000;}
   </section>
   <section class="sc gen" id="g4" style="background:var(--shu);color:#fff">
     <div class="abs disp num" style="left:90px;top:80px;font-size:480px;line-height:1">四</div>
-    <div class="abs txt" style="left:690px;top:200px;width:540px">
+    <div class="abs txt" style="left:660px;top:200px;width:600px">
       <div style="font-weight:900;font-size:26px;letter-spacing:.14em">平成23年（2011）〜</div>
-      <div class="disp" style="font-size:54px;line-height:1.3;margin:14px 0 22px">4代目やまちゃん<br>EC・AI・地域産業へ</div>
+      <div class="disp" style="font-size:46px;line-height:1.3;margin:14px 0 22px">4代目やまちゃん<br>EC・AI・地域産業へ</div>
       <span class="tag">EC・AI・地域産業</span>
     </div>
   </section>
@@ -198,7 +198,7 @@ function renderAt(t) {
     $("#s1").style.clipPath = `circle(${(1 - inOut(rng(t, 4.45, 5))) * 80}% at 50% 50%)`;
   }
 
-  // S2 下関、富任町。
+  // S2 ふくの本場、下関。
   if (t >= 5 && t < 10) {
     $("#s2-logo").style.transform = `scale(${outBack(rng(t, 5, 5.5))})`;
     dropChars($("#s2-big"), t, 5.2, 0.12);
