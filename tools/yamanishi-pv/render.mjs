@@ -75,7 +75,7 @@ const code = await new Promise((r) => ff.on("close", r));
 
 // ── カバー画像（サビの1カット目）──
 if (!process.env.PV_ONLY) {
-  await page.evaluate(() => window.renderAt(53));
+  await page.evaluate(() => window.renderAt(38));
   await v.screenshot({ path: path.join(OUT, "pv-poster.jpg"), type: "jpeg", quality: 88 });
 }
 await browser.close();

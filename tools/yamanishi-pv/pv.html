@@ -4,10 +4,12 @@
 <meta charset="UTF-8">
 <title>山西水産 PV（描画用）</title>
 <!--
-  山西水産 ブランドPV（75秒・16:9）の「絵コンテ兼レンダリング用ページ」。
+  山西水産 ブランドPV（60秒・16:9）の「絵コンテ兼レンダリング用ページ」。
   render.mjs が window.renderAt(秒) を1コマずつ呼んでスクショし、ffmpeg で MP4 にする。
   時間割はテーマソング「潮風と、ふくと。」デモ（96BPM・1小節2.5秒）の
-  イントロ4小節／Aメロ8小節／Bメロ8小節／サビ10小節 に合わせている。
+  イントロ2小節／Aメロ前半4小節／Bメロ8小節／サビ10小節（計24小節＝60秒）に合わせている。
+  絵コンテは75秒版の時間で書いてあり、renderAt(t) が60秒の時刻を75秒版の時刻に読み替えて描く
+  （イントロとAメロは2倍速に詰め、Bメロ以降は15秒前にずらす）。
   文言・数字・写真はすべて lp.yamanisi.co.jp と song.html に公開済みのものだけ。
   ブラウザで直接開くと、下のスライダーで任意の時刻を確認できる。
 -->
@@ -131,11 +133,11 @@ html,body{background:#000;}
     <div id="s8-url" class="abs" style="left:0;right:0;top:620px;text-align:center;font-weight:900;font-size:22px;letter-spacing:.1em">lp.yamanisi.co.jp</div>
   </section>
 </div>
-<input id="scrub" type="range" min="0" max="75" step="0.01" value="0">
+<input id="scrub" type="range" min="0" max="60" step="0.01" value="0">
 
 <script>
 // ── 時間割（秒）。1小節 = 2.5秒、1拍 = 0.625秒 ──
-const BEAT = 0.625, BAR = 2.5, DURATION = 75;
+const BEAT = 0.625, BAR = 2.5, DURATION = 60;
 const $ = (s) => document.querySelector(s);
 const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
 const rng = (t, a, b) => clamp((t - a) / (b - a));
@@ -177,7 +179,7 @@ function dropChars(el, t, start, gap = 0.06, from = -90) {
   });
 }
 
-function renderAt(t) {
+function renderStoryboard(t) {
   for (const s of scenes) s.el.style.visibility = t >= s.a && t < s.b ? "visible" : "hidden";
 
   // S1 ロゴ登場 → 拍に合わせて2回ぷくっ
@@ -281,6 +283,13 @@ function renderAt(t) {
       $(id).style.opacity = k; $(id).style.transform = `translateY(${(1 - outCubic(k)) * 24}px)`;
     }
   }
+}
+// 60秒の時刻 → 絵コンテ（75秒版）の時刻
+//   0〜5秒  : オープニング＋「ふくの本場、下関。」（イントロ2小節。2倍速）
+//   5〜15秒 : 四代（Aメロ前半4小節。1代1小節、2倍速）
+//   15秒〜  : 1592→1888 以降はそのまま（15秒前にずらすだけ）
+function renderAt(t) {
+  renderStoryboard(t < 15 ? t * 2 : t + 15);
 }
 window.renderAt = renderAt;
 window.DURATION = DURATION;

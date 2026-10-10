@@ -1,4 +1,4 @@
-// テーマソング「潮風と、ふくと。」デモ（イントロ＋Aメロ＋Bメロ＋サビ、96BPM・約75秒）を
+// テーマソング「潮風と、ふくと。」デモを60秒に詰めて（イントロ2小節＋Aメロ前半4小節＋Bメロ＋サビ、96BPM・24小節）
 // OfflineAudioContext で音にする。譜面は song.html のデモと同じ。
 // PV用に、メロディをフルート寄りの音色にし、軽いリズムと残響を足している。
 // render.mjs がブラウザ内で window.renderSong() を呼び、16bit WAV（base64）を受け取る。
@@ -14,8 +14,8 @@
   const sabiMel = [[9, 1], [12, 1], [12, 1], [9, 1], [11, 1], [14, 1], [14, 1], [11, 1], [7, 1], [11, 1], [7, 1], [4, 1], [9, 1], [12, 1], [9, 1], [4, 1],
     [9, 1], [12, 1], [12, 1], [9, 1], [11, 1], [14, 1], [14, 1], [11, 1], [14, 1], [12, 1], [9, 1], [5, 1], [7, 1], [9, 1], [11, 1], [14, 1], [16, 1], [14, 1], [12, 2], [12, 4]];
   const SECTIONS = [
-    { chords: intro, mel: null, drums: 0 },
-    { chords: amero, mel: ameroMel, drums: 1 },
+    { chords: intro.slice(0, 2), mel: null, drums: 0 },
+    { chords: amero.slice(0, 4), mel: ameroMel.slice(0, 16), drums: 1 },
     { chords: bmero, mel: bPhrase.concat(bPhrase), drums: 1 },
     { chords: sabi, mel: sabiMel, drums: 2 },
   ];
