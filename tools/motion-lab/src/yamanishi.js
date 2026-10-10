@@ -1,14 +1,17 @@
-// 山西水産 ブランドサイト — Motion（旧 Framer Motion）+ Lenis（なめらかスクロール）
-import { animate, inView, scroll, stagger, hover, press } from "motion";
+// 山西水産 — 「顔の見えるふぐ屋」のアニメーションサイト
+// Motion（旧 Framer Motion）+ Lenis（なめらかスクロール）
+import { animate, inView, scroll, stagger, hover } from "motion";
 import Lenis from "lenis";
 
 const root = document.documentElement;
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
-const wide = matchMedia("(min-width: 821px)").matches;
+const wide = matchMedia("(min-width: 861px)").matches;
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-const EASE = [0.22, 1, 0.36, 1];
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const range = (p, a, b) => clamp((p - a) / (b - a));
+const SPRING = { type: "spring", stiffness: 380, damping: 16 };
 
 window.__motionReady = true;
 
@@ -16,31 +19,21 @@ if (reduce) {
   root.classList.remove("js");
 } else {
   const lenis = smoothScroll();
-  splitHeadings();
-  const t = $(".hero .tate .t");
-  t.innerHTML = [...t.textContent].map((c) => `<span class="c">${c}</span>`).join("");
-  opening(lenis).then(heroIn);
+  splitChars();
   heroScroll();
-  bubbles();
+  opening(lenis).then(heroIn);
+  generations();
+  ban();
+  market(lenis);
+  cards();
   reveals();
-  fukuMorph();
-  history();
-  fuguDraw();
-  channels();
-  counters();
-  songFill();
-  rail();
-  headerTheme();
-  if (fine) {
-    cursor();
-    magnetic();
-    tilt();
-  }
+  owner();
+  footerPuff();
+  if (fine) lineupFloat();
 }
 
-// ── なめらかスクロール（ページ内リンクも Lenis で移動） ──
 function smoothScroll() {
-  const lenis = new Lenis({ lerp: 0.09, wheelMultiplier: 0.9 });
+  const lenis = new Lenis({ lerp: 0.1 });
   const raf = (t) => {
     lenis.raf(t);
     requestAnimationFrame(raf);
@@ -52,291 +45,286 @@ function smoothScroll() {
       const el = id === "#top" ? 0 : $(id);
       if (el === null) return;
       e.preventDefault();
-      lenis.scrollTo(el, { duration: 1.6 });
+      lenis.scrollTo(el, { duration: 1.4 });
     })
   );
   return lenis;
 }
 
-// 見出しを単語（読点・改行）ごとに包み、下からせり上げる準備をする
-function splitHeadings() {
-  $$(".split").forEach((h) => {
+// 見出しを1文字ずつに分ける（読み上げ用に元の文は aria-label に残す）
+function splitChars() {
+  $$(".h2, .chars").forEach((h) => {
     h.setAttribute("aria-label", h.textContent.trim());
-    h.innerHTML = h.innerHTML
-      .split(/<br\s*\/?>/)
-      .map((line) => line.split(/(?<=、|。)/).map((w) => `<span class="w" aria-hidden="true"><span>${w}</span></span>`).join(""))
-      .join("<br>");
+    const walk = (node) => {
+      for (const c of [...node.childNodes]) {
+        if (c.nodeType === Node.TEXT_NODE) {
+          const f = document.createDocumentFragment();
+          for (const ch of c.textContent) {
+            const s = document.createElement("span");
+            s.className = "ch";
+            s.setAttribute("aria-hidden", "true");
+            s.textContent = ch;
+            f.append(s);
+          }
+          c.replaceWith(f);
+        } else if (c.nodeType === Node.ELEMENT_NODE && c.tagName !== "BR") walk(c);
+      }
+    };
+    walk(h);
+    $$(".ch", h).forEach((s) => (s.style.opacity = 0));
   });
 }
 
-// ── オープニング: 「福」が浮かび、0→147 を数えて幕が上がる ──
+// ── オープニング：ロゴのふぐが「ぷくっ」と2回膨らんで、丸く抜けてヒーローへ ──
 async function opening(lenis) {
   const loader = $("#loader");
-  if (sessionStorageGet("ys-opened")) {
+  if (store("ys-fugu")) {
     loader.remove();
     return;
   }
   lenis.stop();
-  const num = $("#ld-num");
-  animate("#loader .kanji span", { opacity: [0, 1], scale: [1.25, 1], filter: ["blur(24px)", "blur(0px)"] }, { duration: 1.4, ease: EASE });
-  animate("#loader .meta, #loader .count", { opacity: [0, 1], y: [12, 0] }, { delay: stagger(0.15, { startDelay: 0.5 }), duration: 0.9, ease: EASE });
-  await animate(0, 147, { duration: 1.9, delay: 0.3, ease: [0.6, 0, 0.2, 1], onUpdate: (v) => (num.textContent = Math.round(v)) });
-  await animate("#loader .mark", { opacity: 0, y: -20 }, { duration: 0.5, ease: "easeIn" });
-  await animate(loader, { clipPath: ["inset(0 0 0% 0)", "inset(0 0 100% 0)"] }, { duration: 1.1, ease: [0.76, 0, 0.24, 1] });
+  const fish = $(".fish", loader), say = $(".say", loader);
+  await animate(fish, { scale: [0, 1], rotate: [-25, 0] }, { type: "spring", stiffness: 260, damping: 14 });
+  for (const big of [1.18, 1.38]) {
+    animate(say, { opacity: [0, 1], scale: [0.6, 1], y: [8, 0] }, SPRING);
+    await animate(fish, { scaleX: [1, big * 1.05, big], scaleY: [1, big * 0.92, big] }, { duration: 0.42, ease: [0.34, 1.56, 0.64, 1] });
+    await animate(fish, { scaleX: 1, scaleY: 1 }, { duration: 0.28 });
+  }
+  say.textContent = "いらっしゃい！";
+  animate(say, { opacity: [0, 1], scale: [0.6, 1] }, SPRING);
+  await animate(fish, { scale: [1, 1.6], opacity: [1, 0] }, { duration: 0.45, delay: 0.25, ease: "easeIn" });
+  await animate(loader, { clipPath: ["circle(75% at 50% 50%)", "circle(0% at 50% 50%)"] }, { duration: 0.8, ease: [0.7, 0, 0.3, 1] });
   loader.remove();
-  sessionStorageSet("ys-opened", "1");
+  store("ys-fugu", "1");
   lenis.start();
 }
 
 function heroIn() {
-  const t = $(".hero .tate .t");
-  animate(".hero .photo", { scale: [1.18, 1.04] }, { duration: 2.6, ease: EASE });
-  animate($$(".c", t), { opacity: [0, 1], y: [-30, 0], filter: ["blur(12px)", "blur(0px)"] }, { delay: stagger(0.12, { startDelay: 0.3 }), duration: 1.2, ease: EASE });
-  animate(".hero .tate .sub", { opacity: [0, 1] }, { delay: 1.3, duration: 1.2 });
-  animate(".hero .info > *", { opacity: [0, 1], y: [24, 0] }, { delay: stagger(0.12, { startDelay: 1.1 }), duration: 1, ease: EASE });
-  animate(".scroll-cue i", { y: ["-100%", "100%"] }, { duration: 1.8, repeat: Infinity, ease: [0.65, 0, 0.35, 1], delay: 2 });
+  animate(".hero .big", { scale: [0.4, 1], y: [120, 0], rotate: [-8, 0] }, { type: "spring", stiffness: 140, damping: 13 });
+  animate(".stamp", { scale: [0, 1], rotate: [-120, 0] }, { type: "spring", stiffness: 200, damping: 12, delay: 0.35 });
+  animate(".hero .lead, .hero .scroll", { opacity: [0, 1], y: [20, 0] }, { delay: stagger(0.1, { startDelay: 0.5 }), duration: 0.6 });
 }
 
-// ヒーローの写真がゆっくり沈み、文字が離れていく（パララックス）
+// ── HERO：写真が入った「ふく」の字の中へ、スクロールで吸い込まれる ──
 function heroScroll() {
   const hero = $(".hero");
-  const opt = { target: hero, offset: ["start start", "end start"] };
-  scroll(animate(".hero .photo img", { y: ["0%", "18%"] }, { ease: "linear" }), opt);
-  scroll(animate(".hero .tate", { y: [0, -120], opacity: [1, 0] }, { ease: "linear" }), opt);
-  scroll(animate(".hero .info", { y: [0, 60], opacity: [1, 0] }, { ease: "linear" }), opt);
-}
-
-// 海の泡（ヒーローの canvas。画面外では止める）
-function bubbles() {
-  const cv = $("#bubbles");
-  const ctx = cv.getContext("2d");
-  let w, h, dpr, run = true;
-  const N = wide ? 46 : 22;
-  const resize = () => {
-    dpr = Math.min(devicePixelRatio, 2);
-    w = cv.clientWidth;
-    h = cv.clientHeight;
-    cv.width = w * dpr;
-    cv.height = h * dpr;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  };
-  resize();
-  addEventListener("resize", resize);
-  const ps = Array.from({ length: N }, () => seed({}, true));
-  function seed(p, any) {
-    p.x = Math.random() * w;
-    p.y = any ? Math.random() * h : h + 20;
-    p.r = 1 + Math.random() * 3.6;
-    p.v = 0.25 + Math.random() * 0.7;
-    p.ph = Math.random() * 6.28;
-    p.a = 0.15 + Math.random() * 0.35;
-    return p;
-  }
-  inView(cv, () => {
-    run = true;
-    requestAnimationFrame(tick);
-    return () => (run = false);
-  });
-  function tick(t) {
-    if (!run) return;
-    ctx.clearRect(0, 0, w, h);
-    for (const p of ps) {
-      p.y -= p.v;
-      p.x += Math.sin(t / 1400 + p.ph) * 0.25;
-      if (p.y < -10) seed(p);
-      const fade = Math.min(1, p.y / (h * 0.5));
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, 6.283);
-      ctx.strokeStyle = `rgba(242,237,227,${p.a * fade})`;
-      ctx.lineWidth = 0.8;
-      ctx.stroke();
+  const type = $(".type", hero), big = $(".big", hero);
+  const full = $(".full", hero), cat = $(".catch", hero);
+  const fades = $$(".stamp, .lead, .scroll", hero);
+  // 文字の線の「中」に向かってズームすると、画面いっぱいが写真になる。
+  // 実際のフォントで文字を描いて、いちばん太い線のまん中を拡大の中心にする
+  const setOrigin = () => {
+    const r = big.getBoundingClientRect();
+    const cs = getComputedStyle(big);
+    const w = Math.ceil(big.offsetWidth), h = Math.ceil(big.offsetHeight);
+    if (!w || !h) return;
+    const cv = document.createElement("canvas");
+    cv.width = w;
+    cv.height = h;
+    const ctx = cv.getContext("2d", { willReadFrequently: true });
+    ctx.font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+    if ("letterSpacing" in ctx) ctx.letterSpacing = cs.letterSpacing;
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "center";
+    ctx.fillText(big.textContent, w / 2, h / 2);
+    const data = ctx.getImageData(0, 0, w, h).data;
+    let best = { d: 0, x: w / 2, y: h / 2 };
+    const step = Math.max(2, Math.round(h / 120));
+    for (let y = Math.round(h * 0.2); y < h * 0.8; y += step) {
+      let run = 0;
+      for (let x = 0; x < w; x++) {
+        run = data[(y * w + x) * 4 + 3] > 128 ? run + 1 : 0;
+        if (run > best.d) best = { d: run, x: x - run / 2, y };
+      }
     }
-    requestAnimationFrame(tick);
-  }
-}
+    // 拡大中でも位置がずれないよう、変形前のレイアウト位置で計算する
+    const left = (type.offsetWidth - w) / 2, top = (type.offsetHeight - h) / 2;
+    type.style.transformOrigin = `${left + best.x}px ${top + best.y}px`;
+    void r;
+  };
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(setOrigin);
+  addEventListener("resize", setOrigin);
 
-// whileInView 相当: 見出しはせり上げ、その他はふわっと
-function reveals() {
-  inView(".split", (h) => {
-    animate($$(".w > span", h), { y: ["110%", "0%"] }, { delay: stagger(0.09), duration: 1.1, ease: EASE });
-  }, { amount: 0.4 });
-  inView("[data-reveal]", (el) => {
-    animate(el, { opacity: [0, 1], y: [30, 0] }, { duration: 1.1, ease: EASE });
-  }, { margin: "0px 0px -10% 0px" });
-}
-
-// ── 「不遇」→「福」: スクロール量に応じて文字が溶けて入れ替わる ──
-function fukuMorph() {
-  const sec = $(".fuku");
-  const from = $(".from", sec), to = $(".to", sec);
-  const caps = $$(".cap p", sec);
-  const clamp = (v) => Math.max(0, Math.min(1, v));
   scroll((p) => {
-    const a = clamp((p - 0.18) / 0.3); // 0→1 で入れ替わる
-    from.style.opacity = 1 - a;
-    from.style.filter = `blur(${a * 22}px)`;
-    from.style.transform = `translateY(-50%) scale(${1 + a * 0.15})`;
-    from.style.letterSpacing = `${0.06 + a * 0.4}em`;
-    to.style.opacity = a;
-    to.style.filter = `blur(${(1 - a) * 22}px)`;
-    to.style.transform = `translateY(-50%) scale(${0.85 + a * 0.15})`;
-    caps.forEach((c, i) => {
-      const b = clamp((p - 0.45 - i * 0.1) / 0.12);
-      c.style.opacity = b;
-      c.style.transform = `translateY(${(1 - b) * 16}px)`;
+    const z = range(p, 0.04, 0.55);
+    type.style.transform = `scale(${Math.pow(40, z * z)})`;
+    type.style.opacity = 1 - range(p, 0.44, 0.55);
+    full.style.opacity = range(p, 0.34, 0.5);
+    full.style.transform = `scale(${1.3 - 0.3 * range(p, 0.34, 0.85)})`;
+    const c = range(p, 0.58, 0.72);
+    cat.style.opacity = c;
+    cat.style.transform = `translateY(${(1 - c) * 40}px)`;
+    fades.forEach((f) => (f.style.opacity = 1 - range(p, 0, 0.08)));
+  }, { target: hero, offset: ["start start", "end end"] });
+}
+
+// ── 四代：縦スクロールで、色の違う5枚が横に流れる ──
+function generations() {
+  if (!wide) {
+    inView(".gen", (g) => {
+      animate($(".num", g), { scale: [0.3, 1], rotate: [-20, 0] }, { type: "spring", stiffness: 160, damping: 12 });
+    }, { amount: 0.3 });
+    return;
+  }
+  const sec = $(".gens"), track = $(".track", sec), bar = $(".bar i", sec);
+  const nums = $$(".gen .num", sec);
+  scroll((p) => {
+    const max = track.scrollWidth - innerWidth;
+    track.style.transform = `translateX(${-p * max}px)`;
+    bar.style.transform = `scaleX(${p})`;
+    // いま正面にあるパネルの漢数字は大きく、出入りするものは傾ける
+    const pos = p * (nums.length - 1);
+    nums.forEach((n, i) => {
+      const d = clamp(i - pos, -1, 1);
+      n.style.transform = `translateX(${d * 24}vw) rotate(${d * -24}deg) scale(${1 - Math.abs(d) * 0.45})`;
     });
   }, { target: sec, offset: ["start start", "end end"] });
 }
 
-// ── 歴史: 大きな「147」が横に流れ、年表の線が伸びる ──
-function history() {
-  const sec = $(".years");
-  scroll(animate(".years .big", { x: ["8%", "-12%"] }, { ease: "linear" }), { target: sec, offset: ["start end", "end start"] });
-  const line = $(".tl .line");
-  const prop = wide ? "scaleX" : "scaleY";
-  scroll(animate(line, { [prop]: [0, 1] }, { ease: "linear" }), { target: $(".tl"), offset: ["start 85%", "end 60%"] });
-  inView(".tl ol", (ol) => {
-    animate($$("li", ol), { opacity: [0, 1], y: [30, 0] }, { delay: stagger(0.14), duration: 1, ease: EASE });
-  }, { amount: 0.2 });
-}
-
-// ── 線画のふく: スクロールに合わせて筆で描かれていく ──
-function fuguDraw() {
-  const svg = $(".fugu");
-  const paths = $$(".draw", svg);
-  paths.forEach((p) => {
-    const len = p.getTotalLength();
-    p.style.strokeDasharray = len;
-    p.style.strokeDashoffset = len;
+// ── 300年の禁：1592 から 1888 へ、スクロールで年号が進み、禁が解ける ──
+function ban() {
+  const sec = $(".ban");
+  const yr = $("#ban-year"), who = $("#ban-who"), what = $("#ban-what"), note = $("#ban-note");
+  const xs = $$(".mark path", sec), o = $(".mark circle", sec);
+  [...xs, o].forEach((el) => {
+    const len = el.getTotalLength();
+    el.style.strokeDasharray = len;
+    el.style.strokeDashoffset = len;
   });
-  scroll((pr) => {
-    paths.forEach((p, i) => {
-      const len = parseFloat(p.style.strokeDasharray);
-      const start = (i / paths.length) * 0.45;
-      const k = Math.max(0, Math.min(1, (pr - start) / 0.4));
-      p.style.strokeDashoffset = len * (1 - k);
-    });
-  }, { target: svg, offset: ["start 90%", "end 40%"] });
-  inView(svg, () => {
-    animate($$(".spot", svg), { opacity: [0, 1], scale: [0, 1] }, { delay: stagger(0.08, { startDelay: 0.9 }), type: "spring", bounce: 0.5 });
-  }, { amount: 0.8 });
-  // ふくがゆらゆら泳ぐ
-  animate(svg, { y: [0, -10, 0], rotate: [0, -1.5, 0] }, { duration: 6, repeat: Infinity, ease: "easeInOut" });
-}
-
-// ── 販路: 2列がスクロール方向に逆向きに流れる ──
-function channels() {
-  const sec = $(".zenkoku");
-  $$(".row", sec).forEach((row) => {
-    row.append(...[...row.children].map((c) => {
-      const d = c.cloneNode(true);
-      d.setAttribute("aria-hidden", "true");
-      return d;
-    }));
-    const dir = Number(row.dataset.dir);
-    scroll(animate(row, { x: dir > 0 ? ["0%", "-30%"] : ["-30%", "0%"] }, { ease: "linear" }), { target: sec, offset: ["start end", "end start"] });
-  });
-}
-
-function counters() {
-  inView("[data-count]", (el) => {
-    const to = Number(el.dataset.count);
-    animate(0, to, { duration: 2, ease: [0.16, 1, 0.3, 1], onUpdate: (v) => (el.textContent = Math.round(v).toLocaleString("ja-JP")) });
-  }, { amount: 0.8 });
-}
-
-// ── 歌詞: 1行ずつ、スクロールで左から灯る ──
-function songFill() {
-  $$(".song .ln").forEach((ln) => {
-    scroll((p) => (ln.style.backgroundPosition = `${100 - p * 100}% 0`), { target: ln, offset: ["start 85%", "end 55%"] });
-  });
-}
-
-// 明るいセクションの上ではヘッダーの文字を墨色に切り替える
-function headerTheme() {
-  const head = $(".head");
-  const lights = $$("[data-light]");
-  const check = () => {
-    const y = head.offsetHeight / 2;
-    head.classList.toggle("light", lights.some((s) => {
-      const r = s.getBoundingClientRect();
-      return r.top <= y && r.bottom >= y;
-    }));
+  const texts = {
+    a: ["1592年　豊臣秀吉", "ふぐ食禁止の令", "朝鮮出兵に向かう兵士がふぐを食べて命を落とし、戦力を失ったためとされています。"],
+    b: ["それから約300年", "ふぐは、禁じられた。", "豊臣秀吉の「ふぐ食禁止の令」から、およそ300年。"],
+    c: ["明治21年（1888年）　伊藤博文", "山口県で、ふぐ食を解禁。", "一人の女将の勇気と一人の政治家の決断が、300年の禁を解きました。"],
   };
-  scroll(check);
-  check();
+  let phase = "";
+  const setPhase = (k) => {
+    if (k === phase) return;
+    phase = k;
+    [who.textContent, what.textContent, note.textContent] = texts[k];
+    animate([who, what], { opacity: [0, 1], y: [14, 0] }, { duration: 0.4 });
+    sec.classList.toggle("lifted", k === "c");
+    if (k === "c") animate(yr.parentElement, { scale: [1.25, 1], rotate: [-4, 0] }, { type: "spring", stiffness: 300, damping: 10 });
+  };
+  scroll((p) => {
+    // バツ印が描かれる → 年号が進む → 1888 で丸に変わる
+    const draw = range(p, 0.02, 0.14);
+    xs.forEach((x, i) => {
+      const len = parseFloat(x.style.strokeDasharray);
+      x.style.strokeDashoffset = len * (1 - range(draw, i * 0.5, i * 0.5 + 0.5));
+      x.style.opacity = 1 - range(p, 0.68, 0.72);
+    });
+    const t = range(p, 0.16, 0.7);
+    const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    yr.textContent = Math.round(1592 + (1888 - 1592) * eased);
+    const len = parseFloat(o.style.strokeDasharray);
+    o.style.strokeDashoffset = len * (1 - range(p, 0.72, 0.86));
+    setPhase(p < 0.16 ? "a" : p < 0.7 ? "b" : "c");
+  }, { target: sec, offset: ["start start", "end end"] });
 }
 
-function rail() {
-  scroll(animate("#rail i", { scaleY: [0, 1] }, { ease: "linear" }));
-}
-
-// ── カーソル: 金の輪が遅れてついてくる。リンク上で膨らむ ──
-function cursor() {
-  const ring = $("#cursor"), dot = $("#dot"), label = $("b", ring);
-  let shown = false;
-  addEventListener("pointermove", (e) => {
-    if (!shown) {
-      shown = true;
-      animate([ring, dot], { opacity: 1 }, { duration: 0.4 });
+// ── 南風泊市場：流れ続ける帯。スクロールが速いほど速く、斜めに傾く ──
+function market(lenis) {
+  const belts = $$(".market .belt");
+  const pos = [0, 0];
+  let skew = 0, visible = false;
+  inView(".market", () => {
+    visible = true;
+    return () => (visible = false);
+  });
+  const tick = () => {
+    if (visible) {
+      const v = lenis.velocity || 0;
+      skew += (clamp(v * 0.6, -14, 14) - skew) * 0.12;
+      belts.forEach((b, i) => {
+        const half = b.scrollWidth / 2;
+        const dir = i ? 1 : -1;
+        pos[i] = (pos[i] + 0.6 + Math.abs(v) * 0.5) % half;
+        const x = dir < 0 ? -pos[i] : pos[i] - half;
+        b.style.transform = `translateX(${x}px) skewX(${-skew * dir}deg)`;
+      });
     }
-    animate(dot, { x: e.clientX, y: e.clientY }, { duration: 0 });
-    animate(ring, { x: e.clientX, y: e.clientY }, { type: "spring", stiffness: 260, damping: 26, mass: 0.5 });
-  });
-  hover("a, .btn", (el) => {
-    const big = el.matches(".lk");
-    animate(ring, { scale: big ? 2.2 : 1.6, backgroundColor: big ? "rgba(200,163,90,.95)" : "rgba(200,163,90,.15)" }, { duration: 0.35 });
-    if (big) animate(label, { opacity: 1 }, { duration: 0.3 });
-    return () => {
-      animate(ring, { scale: 1, backgroundColor: "rgba(200,163,90,0)" }, { duration: 0.35 });
-      animate(label, { opacity: 0 }, { duration: 0.2 });
-    };
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+// ── 三つの約束：カードが上に重なり、下のカードは少し奥に沈む ──
+function cards() {
+  const cs = $$(".card");
+  cs.forEach((c, i) => {
+    const img = $(".ph img", c);
+    if (wide) scroll(animate(img, { y: ["-10%", "0%"] }, { ease: "linear" }), { target: c, offset: ["start end", "end start"] });
+    const next = cs[i + 1];
+    if (!next) return;
+    scroll(animate(c, { scale: [1, 0.9], rotate: [0, i % 2 ? 2 : -2] }, { ease: "linear" }), { target: next, offset: ["start end", "start 30%"] });
   });
 }
 
-function magnetic() {
-  $$("[data-magnetic]").forEach((el) => {
-    const move = (e) => {
-      const r = el.getBoundingClientRect();
-      animate(el, { x: (e.clientX - r.left - r.width / 2) * 0.25, y: (e.clientY - r.top - r.height / 2) * 0.35 }, { type: "spring", stiffness: 300, damping: 20 });
-    };
-    hover(el, () => {
-      el.addEventListener("pointermove", move);
-      return () => {
-        el.removeEventListener("pointermove", move);
-        animate(el, { x: 0, y: 0 }, { type: "spring", stiffness: 240, damping: 14 });
-      };
-    });
-    press(el, () => {
-      animate(el, { scale: 0.95 }, { duration: 0.15 });
-      return () => animate(el, { scale: 1 }, { type: "spring", stiffness: 500, damping: 18 });
-    });
+// 見出しは1文字ずつ跳ねて落ちてくる。本文はふわっと
+function reveals() {
+  inView(".h2, .chars", (h) => {
+    const chs = $$(".ch", h);
+    animate(chs, { opacity: [0, 1], y: [-60, 0] }, { delay: stagger(0.03), type: "spring", stiffness: 420, damping: 15 });
+    chs.forEach((c, i) => animate(c, { rotate: [(Math.random() - 0.5) * 50, 0] }, { delay: i * 0.03, type: "spring", stiffness: 300, damping: 10 }));
+  }, { amount: 0.5 });
+  inView("[data-up]", (el) => {
+    animate(el, { opacity: [0, 1], y: [30, 0] }, { duration: 0.7, ease: [0.22, 1, 0.36, 1] });
+  }, { margin: "0px 0px -10% 0px" });
+  $$(".item").forEach((el) => (el.style.opacity = 0));
+  inView(".item", (el) => {
+    animate(el, { opacity: [0, 1], x: [-40, 0] }, { type: "spring", stiffness: 200, damping: 20 });
+  }, { amount: 0.4 });
+  inView(".kicker", (k) => {
+    animate(k, { scale: [0, 1], rotate: [-30, -3] }, SPRING);
   });
 }
 
-function tilt() {
-  $$("[data-tilt]").forEach((card) => {
-    const move = (e) => {
-      const r = card.getBoundingClientRect();
-      const px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
-      card.style.setProperty("--mx", `${px * 100}%`);
-      card.style.setProperty("--my", `${py * 100}%`);
-      animate(card, { rotateY: (px - 0.5) * 8, rotateX: (0.5 - py) * 8, transformPerspective: 800 }, { type: "spring", stiffness: 200, damping: 20 });
-    };
-    hover(card, () => {
-      card.addEventListener("pointermove", move);
-      return () => {
-        card.removeEventListener("pointermove", move);
-        animate(card, { rotateX: 0, rotateY: 0 }, { type: "spring", stiffness: 160, damping: 16 });
-      };
-    });
+// ── ラインナップ：行に乗ると、その商品の写真がカーソルについてくる ──
+function lineupFloat() {
+  const fl = $("#float"), imgs = $$("img", fl);
+  let lastX = 0, rot = 0;
+  addEventListener("pointermove", (e) => {
+    const dx = e.clientX - lastX;
+    lastX = e.clientX;
+    rot += (clamp(dx * 0.8, -18, 18) - rot) * 0.3;
+    animate(fl, { x: e.clientX, y: e.clientY, rotate: rot }, { type: "spring", stiffness: 220, damping: 22, mass: 0.6 });
   });
+  hover(".item", (item) => {
+    imgs.forEach((im, i) => im.classList.toggle("on", i === Number(item.dataset.img)));
+    animate(fl, { opacity: 1, scale: 1 }, { type: "spring", stiffness: 300, damping: 18 });
+    return () => animate(fl, { opacity: 0, scale: 0.6 }, { duration: 0.2 });
+  });
+}
+
+function owner() {
+  const sec = $(".owner");
+  scroll(animate(".owner .photo", { rotate: [-8, 3], y: [80, -40] }, { ease: "linear" }), { target: sec, offset: ["start end", "end start"] });
+  inView(".owner .sticker", (s) => {
+    animate(s, { scale: [0, 1.15, 1], rotate: [30, 4] }, { duration: 0.6, delay: 0.3 });
+  });
+}
+
+// ── フッター：「山西水産」の4文字が、ふぐみたいにぷくっと膨らんで出てくる ──
+function footerPuff() {
+  const chars = $$("footer .giant span");
+  chars.forEach((c) => (c.style.opacity = 0));
+  inView("footer .giant", () => {
+    animate(chars, { opacity: [0, 1], scale: [0, 1.3, 1], y: [80, 0] }, { delay: stagger(0.08), duration: 0.7, ease: [0.34, 1.56, 0.64, 1] });
+  }, { amount: 0.5 });
+  if (fine) {
+    hover(chars, (c) => {
+      animate(c, { scaleX: 1.25, scaleY: 1.15 }, { type: "spring", stiffness: 500, damping: 9 });
+      return () => animate(c, { scaleX: 1, scaleY: 1 }, { type: "spring", stiffness: 500, damping: 9 });
+    });
+  }
 }
 
 // プライベートブラウズ等で storage が使えなくても止まらないように
-function sessionStorageGet(k) {
-  try { return sessionStorage.getItem(k); } catch { return null; }
-}
-function sessionStorageSet(k, v) {
-  try { sessionStorage.setItem(k, v); } catch {}
+function store(k, v) {
+  try {
+    if (v === undefined) return sessionStorage.getItem(k);
+    sessionStorage.setItem(k, v);
+  } catch {
+    return null;
+  }
 }
