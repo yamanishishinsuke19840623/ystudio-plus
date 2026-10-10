@@ -258,7 +258,7 @@ export function createServer({
   allowWrite = process.env.BASE_ALLOW_WRITE === '1',
   allowCustomerData = true,
 } = {}) {
-  const server = new McpServer({ name: 'base-shop', version: '0.6.0' });
+  const server = new McpServer({ name: 'base-shop', version: '0.7.0' });
 
   const ok = (data) => ({ content: [{ type: 'text', text: JSON.stringify(data, null, 2) }] });
   const fail = (e) => ({ isError: true, content: [{ type: 'text', text: e.message }] });
@@ -778,6 +778,100 @@ export function createServer({
         });
       }, { write: true });
 
+    // ---- 商品の新規登録 ----
+    // 食品表示の項目。値は必ずユーザーから聞いたものだけを入れる（推測で埋めない）
+    const FOOD_LABEL = [
+      ['name', '名称'], ['ingredients', '原材料名'], ['allergens', 'アレルギー'], ['amount', '内容量'],
+      ['expiry', '消費期限・賞味期限'], ['storage', '保存方法'], ['maker', '製造者・加工者'],
+    ];
+    const foodLabelSchema = z.object(Object.fromEntries(
+      FOOD_LABEL.map(([k, label]) => [k, z.string().optional().describe(label)])
+    )).optional().describe('食品表示。ユーザーが教えてくれた内容だけを入れる。分からない項目は入れない');
+    const normTitle = (t) => String(t ?? '').normalize('NFKC').toLowerCase().replace(/\s+/g, '');
+
+    const buildNewItem = (it, existing) => {
+      const warnings = [];
+      const label = it.food_label ?? {};
+      const missing = FOOD_LABEL.filter(([k]) => !label[k]?.trim()).map(([, l]) => l);
+      if (missing.length) warnings.push(`食品表示が足りません：${missing.join('・')}（分かる内容をユーザーに確認してください）`);
+      const labelLines = FOOD_LABEL.filter(([k]) => label[k]?.trim()).map(([k, l]) => `${l}：${label[k].trim()}`);
+      const detail = [it.description?.trim(), labelLines.length ? `【商品情報】\n${labelLines.join('\n')}` : '']
+        .filter(Boolean).join('\n\n');
+      const dup = existing.find((e) => normTitle(e.title) === normTitle(it.title));
+      if (dup) warnings.push(`同じ名前の商品がすでにあります（item_id ${dup.item_id}「${dup.title}」）。二重登録でないか確認してください`);
+      if (!it.image_urls?.length) warnings.push('画像がありません。登録後にBASEの管理画面から追加できます');
+      // 登録時は必ず非公開。管理画面で確認してから base_update_item(visible:true) で公開する
+      const params = { title: it.title, price: it.price, stock: it.stock, detail, visible: 0, identifier: it.identifier };
+      return { params, image_urls: it.image_urls ?? [], warnings };
+    };
+
+    tool('base_create_items',
+      '商品を新しく登録する（POST /1/items/add、画像は /1/items/add_image）。最大20件まとめて。' +
+      '登録時は必ず「非公開」になるので、BASEの管理画面で見た目を確認してから base_update_item で公開する。' +
+      '食品表示（原材料・アレルギー・期限・保存方法など）はユーザーから聞いた内容だけを入れ、推測で埋めないこと。' +
+      '必ずプレビュー（警告も見せる）→ユーザー確認→confirm_token付き実行の順で使う。バリエーション（サイズ違いなど）にはまだ対応していない',
+      {
+        items: z.array(z.object({
+          title: z.string().min(1).max(200).describe('商品名（検索されやすい言葉を含める）'),
+          price: z.number().int().min(1).describe('税込価格（円）'),
+          stock: z.number().int().min(0).describe('在庫数'),
+          description: z.string().optional().describe('商品説明（食品表示以外の本文）'),
+          food_label: foodLabelSchema,
+          identifier: z.string().optional().describe('品番（任意）'),
+          image_urls: z.array(z.string().url()).max(20).optional().describe('商品画像のURL（https、公開されているもの）'),
+        })).min(1).max(20),
+        confirm_token: confirmToken,
+      },
+      async ({ items, confirm_token }) => {
+        const { list: existing } = await getAllItems({ fresh: true });
+        const plan = items.map((it) => buildNewItem(it, existing));
+        const titles = items.map((it) => normTitle(it.title));
+        titles.forEach((t, i) => {
+          if (titles.indexOf(t) !== i) plan[i].warnings.push('今回の登録の中に同じ名前の商品が2つあります');
+        });
+        return twoStep({
+          confirm_token,
+          action: '商品の新規登録',
+          key: JSON.stringify(plan.map(({ params, image_urls }) => ({ params, image_urls }))),
+          preview: {
+            will_create: plan.map(({ params, image_urls, warnings }) => ({
+              title: params.title, price: params.price, stock: params.stock, visible: '非公開で登録',
+              detail: params.detail, images: image_urls.length, warnings,
+            })),
+            total_warnings: plan.reduce((a, p) => a + p.warnings.length, 0),
+          },
+          execute: async () => {
+            const results = [];
+            for (const p of plan) {
+              let itemId;
+              try {
+                const res = await send('商品の新規登録', '/1/items/add', p.params);
+                itemId = (res.item ?? res).item_id;
+                if (itemId === undefined) throw new Error(`登録結果に item_id がありません: ${JSON.stringify(res).slice(0, 200)}`);
+              } catch (e) {
+                // 途中で失敗したら止める（残りは送らない）
+                results.push({ title: p.params.title, ok: false, error: e.message });
+                return { results, stopped_at: results.length, not_attempted: plan.length - results.length };
+              }
+              const imageErrors = [];
+              for (const [i, url] of p.image_urls.entries()) {
+                try {
+                  await send('商品画像の追加', '/1/items/add_image', { item_id: itemId, image_no: i + 1, image_url: url });
+                } catch (e) {
+                  imageErrors.push(`画像${i + 1}: ${e.message.split('\n')[0]}`);
+                }
+              }
+              results.push({
+                title: p.params.title, ok: true, item_id: itemId, visible: '非公開',
+                images_added: p.image_urls.length - imageErrors.length,
+                ...(imageErrors.length ? { image_errors: imageErrors } : {}),
+              });
+            }
+            return { results, next: 'BASEの管理画面で見た目を確認し、よければ base_update_item で visible:true にして公開してください' };
+          },
+        });
+      }, { write: true });
+
     tool('base_update_order_status',
       '注文商品のステータスを「発送済み」または「キャンセル」に変更する（POST /1/orders/edit_status）。' +
       'キャンセルは取り消せない可能性が高いので特に慎重に。必ずプレビュー→ユーザー確認→confirm_token付き実行の順で使う',
@@ -863,6 +957,22 @@ export function createServer({
         '4. Gmail の下書き作成ツールが使えるなら下書きとして保存する。使えなければ本文を表示する。どちらの場合も絶対に送信はしない\n' +
         'お客さまの個人情報は、この作業以外に使わないこと。',
       { note: z.string().optional().describe('今回伝えたいこと（例：今季のとらふぐ入荷、年末の受付締切）') });
+  }
+
+  if (allowWrite) {
+    prompt('new_item', '商品登録', '写真やメモから商品ページの下書きを作り、確認してから非公開で登録する',
+      ({ memo }) =>
+        'BASEに新しい商品を登録する手伝いをしてください。\n' +
+        (memo ? `メモ：${memo}\n` : '') +
+        '1. 写真やメモから、商品名・価格・在庫・説明文の下書きを作る\n' +
+        '   - 商品名には検索されやすい言葉（例：「とらふぐ 刺身 ○人前 ギフト」）を入れる\n' +
+        '   - 産地・天然/養殖・人数・量・発送方法などは、ユーザーが言ったことだけを書く。分からなければ聞く\n' +
+        '2. 食品表示（名称・原材料名・アレルギー・内容量・消費期限/賞味期限・保存方法・製造者/加工者）を一つずつユーザーに確認する。推測で埋めない\n' +
+        '3. base_find_items で似た名前の商品がないか確かめる\n' +
+        '4. base_create_items を confirm_token なしで呼び、プレビューと警告を見せる\n' +
+        '5. ユーザーが了承したら confirm_token を付けて登録する（非公開で登録される）\n' +
+        '6. 「BASEの管理画面で見た目を確認してから公開してください」と伝える。公開はユーザーに言われてから base_update_item で行う',
+      { memo: z.string().optional().describe('商品のメモ（例：とらふぐ刺身 4人前 12000円 在庫10）') });
   }
 
   return server;
