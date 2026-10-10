@@ -175,4 +175,6 @@ npm test
 - **書き込みのパラメータ**：`edit_stock`（`item_id`・`stock`・`variation_id`・`variation_stock`）、`edit`、`edit_status`（`unique_key`・`order_item_id`・`status`・`add_comment`）の項目名
 - **認証まわり**：複数スコープの区切り方（スペース区切りで送信）とトークンの有効期限
 
+確認済み（2026-10-10、本物のBASEで）：OAuth の認証はこの実装で通る。トークン切れは 401 ではなく `400 invalid_request`「アクセストークンが無効です」で返る（自動更新はこれに対応済み）。
+
 確認済みの事実：エンドポイント一覧・スコープ名・レート制限（5,000回/時・100,000回/日）は、BASE公式のgistに記載があります。
