@@ -9,9 +9,10 @@ description: Motion（旧 Framer Motion）と 21st.dev のコンポーネント�
 React は使わず、**Motion のバニラJS版**（`motion` パッケージ。Framer Motion と同じエンジン）を
 `tools/motion-lab/` で1ファイルにまとめ、ページと一緒に置く。CDN には頼らない。
 
-- 見本ページ: `motion-lab/index.html`（公開URL `/motion-lab/`）
-- アニメーションのソース: `tools/motion-lab/src/main.js` → `npm run build` で `motion-lab/app.js` に出力
-- 動作確認: `cd tools/motion-lab && npm run check`（Chromium でデスクトップ/スマホ/動き控えめの3通りを開き、エラー・隠れたままの要素・横はみ出しを検査）
+- 見本ページ: `motion-lab/index.html`（`/motion-lab/`）、山西水産ブランドサイト `yamanishi-suisan/index.html`（`/yamanishi-suisan/`）
+- アニメーションのソース: `tools/motion-lab/src/main.js`・`src/yamanishi.js` → `npm run build` で各フォルダの `app.js` に出力
+- 動作確認: `cd tools/motion-lab && npm run check`（Chromium でデスクトップ/スマホ/動き控えめの3通りを開き、エラー・隠れたままの要素・横はみ出しを検査。スクショは `OUT_DIR` に保存）
+- 高級感の型（山西水産で使用）: Lenis のなめらかスクロール、オープニング、縦書き＋明朝、スクロール連動の文字モーフ・線画・歌詞の点灯、紙の粒子、金のカーソル
 
 ## 進め方
 

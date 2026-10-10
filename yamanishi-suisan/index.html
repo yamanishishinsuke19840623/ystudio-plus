@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:,">
+<title>山西水産 | ふくと生きる。下関のふく問屋</title>
+<meta name="description" content="明治十二年創業、下関のふく問屋 山西水産株式会社。「ふぐ」ではなく「ふく」。不遇ではなく、福を届けたいから。">
+<meta property="og:title" content="山西水産 | ふくと生きる。">
+<meta property="og:description" content="明治十二年創業、下関のふく問屋 山西水産株式会社。">
+<meta property="og:image" content="../kanmon-kaigi/harbor.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;600;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Noto+Sans+JP:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#08121d;--ink2:#0e1d2c;--sea:#12334a;--washi:#f2ede3;--washi2:#e6dfd0;
+  --gold:#c8a35a;--shu:#b5372a;--text:#efe9dd;--sub:rgba(239,233,221,.62);--line:rgba(239,233,221,.14);
+  --mincho:'Shippori Mincho B1','Hiragino Mincho ProN','Yu Mincho',serif;
+  --serif-en:'Cormorant Garamond',serif;
+  --sans:'Noto Sans JP',sans-serif;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html.lenis,html.lenis body{height:auto;}
+.lenis.lenis-smooth{scroll-behavior:auto!important;}
+body{background:var(--ink);color:var(--text);font-family:var(--sans);font-size:15px;line-height:2;letter-spacing:.06em;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+a{color:inherit;text-decoration:none;}
+img{display:block;max-width:100%;}
+.en{font-family:var(--serif-en);letter-spacing:.18em;}
+.min{font-family:var(--mincho);}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+
+/* JS が動くときだけ初期状態で隠す（読めなければ app.js 側の保険で解除） */
+.js [data-reveal]{opacity:0;}
+.js .split .w{display:inline-block;overflow:hidden;vertical-align:top;}
+.js .split .w>span{display:inline-block;transform:translateY(110%);}
+.js .hero .c,.js .hero .tate .sub,.js .hero .info>*{opacity:0;}
+
+/* 紙の質感（全面の粒子） */
+.grain{position:fixed;inset:-50%;width:200%;height:200%;pointer-events:none;z-index:90;opacity:.07;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");}
+
+/* ── オープニング ── */
+#loader{position:fixed;inset:0;z-index:100;background:var(--ink);display:grid;place-items:center;}
+.no-loader #loader{display:none;}
+#loader .mark{position:relative;text-align:center;}
+#loader .kanji{font-family:var(--mincho);font-weight:800;font-size:clamp(120px,22vw,240px);line-height:1;color:var(--washi);}
+#loader .kanji span{display:inline-block;}
+#loader .meta{margin-top:18px;font-size:12px;color:var(--sub);}
+#loader .count{font-family:var(--serif-en);font-size:13px;color:var(--gold);letter-spacing:.3em;}
+
+/* ── 右端のスクロール目盛り ── */
+#rail{position:fixed;right:22px;top:50%;height:160px;width:1px;margin-top:-80px;background:var(--line);z-index:40;}
+#rail i{position:absolute;inset:0;background:var(--gold);transform-origin:50% 0;transform:scaleY(0);}
+
+/* ── カスタムカーソル ── */
+#cursor{position:fixed;left:0;top:0;width:44px;height:44px;margin:-22px 0 0 -22px;border:1px solid rgba(200,163,90,.7);border-radius:50%;pointer-events:none;z-index:95;opacity:0;display:grid;place-items:center;}
+#cursor b{font:600 10px/1 var(--serif-en);letter-spacing:.2em;color:var(--ink);opacity:0;}
+#dot{position:fixed;left:0;top:0;width:5px;height:5px;margin:-2.5px 0 0 -2.5px;border-radius:50%;background:var(--gold);pointer-events:none;z-index:96;opacity:0;}
+
+/* ── ヘッダー ── */
+.head{position:fixed;inset:0 0 auto 0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:22px 28px;color:var(--washi);transition:color .5s,background-color .5s;}
+.head.light{color:var(--ink);}
+.logo{display:flex;align-items:center;gap:12px;font-family:var(--mincho);font-weight:600;font-size:16px;letter-spacing:.2em;}
+.seal{width:30px;height:30px;background:var(--shu);color:#fff;display:grid;place-items:center;font-size:11px;line-height:1.05;writing-mode:vertical-rl;letter-spacing:0;border-radius:3px;}
+.head nav{display:flex;gap:26px;font-size:12px;}
+.head nav a{position:relative;}
+.head nav a::after{content:"";position:absolute;left:0;bottom:2px;width:100%;height:1px;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .5s var(--ease);}
+.head nav a:hover::after{transform:scaleX(1);transform-origin:left;}
+
+/* ── HERO ── */
+.hero{position:relative;height:100svh;min-height:600px;overflow:hidden;}
+.hero .photo{position:absolute;inset:0;will-change:transform;}
+.hero .photo img{width:100%;height:100%;object-fit:cover;filter:saturate(.75) contrast(1.05) brightness(.82);}
+.hero .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,18,29,.45) 0%,rgba(8,18,29,.1) 35%,rgba(8,18,29,.85) 100%);}
+#bubbles{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
+.hero .tate{position:absolute;right:clamp(40px,10vw,150px);top:50%;translate:0 -52%;writing-mode:vertical-rl;font-family:var(--mincho);font-weight:800;font-size:clamp(44px,min(7.4vw,8.6vh),104px);line-height:1.3;letter-spacing:.14em;white-space:nowrap;color:var(--washi);text-shadow:0 2px 40px rgba(0,0,0,.35);}
+.hero .tate .c{display:inline-block;}
+.hero .tate .sub{display:block;margin-right:.6em;font-size:.2em;font-weight:400;letter-spacing:.5em;color:var(--washi2);}
+.hero .info{position:absolute;left:clamp(24px,6vw,80px);bottom:clamp(36px,8vh,80px);}
+.hero .info .en{font-size:12px;color:var(--gold);}
+.hero .info h1{font-family:var(--mincho);font-weight:600;font-size:clamp(20px,2.6vw,30px);letter-spacing:.24em;margin:6px 0 8px;}
+.hero .info p{font-size:13px;color:var(--sub);}
+.scroll-cue{position:absolute;left:50%;bottom:28px;translate:-50% 0;width:1px;height:64px;background:var(--line);overflow:hidden;}
+.scroll-cue i{position:absolute;inset:0;background:var(--washi);transform:translateY(-100%);}
+
+/* ── 共通セクション ── */
+.sec{position:relative;padding:clamp(110px,16vw,200px) 0;}
+.eyebrow{display:flex;align-items:center;gap:14px;font-size:12px;color:var(--gold);margin-bottom:30px;}
+.eyebrow::before{content:"";width:36px;height:1px;background:var(--gold);}
+.h2{font-family:var(--mincho);font-weight:600;font-size:clamp(28px,4.6vw,54px);line-height:1.6;letter-spacing:.12em;}
+.body{color:var(--sub);max-width:34em;margin-top:28px;}
+
+/* ── ふぐ → ふく（スクロールで文字が入れ替わる） ── */
+.fuku{height:260vh;position:relative;background:var(--washi);color:var(--ink);}
+.fuku .pin{position:sticky;top:0;height:100svh;display:grid;place-items:center;overflow:hidden;}
+.fuku .stage{position:relative;width:100%;text-align:center;}
+.fuku .word{font-family:var(--mincho);font-weight:800;font-size:clamp(110px,24vw,330px);line-height:1;letter-spacing:.06em;}
+.fuku .from,.fuku .to{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);}
+.fuku .from{color:#9a958b;}
+.fuku .to{color:var(--shu);}
+.js .fuku .to,.js .fuku .cap p{opacity:0;}
+html:not(.js) .fuku .from{display:none;}
+.fuku .yomi{display:block;font-size:.12em;font-weight:600;letter-spacing:.6em;margin-top:.3em;}
+.fuku .cap{position:absolute;left:0;right:0;bottom:clamp(40px,10vh,90px);text-align:center;font-family:var(--mincho);font-size:clamp(15px,1.7vw,19px);line-height:2.1;color:#2a2a2a;}
+.fuku .tag{position:absolute;left:0;right:0;top:clamp(80px,14vh,130px);text-align:center;font-size:12px;color:#8a7a5a;}
+
+/* ── 百四十七年 ── */
+.years{background:var(--ink);overflow:hidden;}
+.years .big{font-family:var(--serif-en);font-weight:400;font-size:clamp(140px,30vw,420px);line-height:.8;color:transparent;-webkit-text-stroke:1px rgba(200,163,90,.55);letter-spacing:-.02em;position:absolute;right:-2vw;top:clamp(60px,10vw,120px);pointer-events:none;will-change:transform;}
+.years .lyric{font-family:var(--mincho);font-size:clamp(18px,2.2vw,24px);line-height:2.3;margin-top:36px;color:var(--washi2);}
+.years .lyric small{display:block;font-size:11px;color:var(--sub);font-family:var(--sans);letter-spacing:.14em;}
+.tl{position:relative;margin-top:110px;}
+.tl ol{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:20px;}
+.tl::before{content:"";position:absolute;left:0;right:0;top:9px;height:1px;background:var(--line);}
+.tl .line{position:absolute;left:0;right:0;top:9px;height:1px;background:var(--gold);transform-origin:0 50%;transform:scaleX(0);}
+.tl li{list-style:none;position:relative;padding-top:42px;}
+.tl li::before{content:"";position:absolute;left:0;top:4px;width:11px;height:11px;border-radius:50%;background:var(--ink);border:1px solid var(--gold);}
+.tl .y{font-family:var(--mincho);font-size:14px;color:var(--gold);letter-spacing:.14em;}
+.tl h3{font-family:var(--mincho);font-weight:600;font-size:18px;margin:8px 0 10px;line-height:1.6;}
+.tl p{font-size:12.5px;color:var(--sub);line-height:1.9;}
+
+/* ── 一匹一匹（線画のふく） ── */
+.ippiki{background:linear-gradient(180deg,var(--ink) 0%,var(--sea) 100%);text-align:center;overflow:hidden;}
+.fugu{width:min(560px,86vw);margin:0 auto 50px;overflow:visible;}
+.fugu path,.fugu circle,.fugu ellipse{fill:none;stroke:var(--washi);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+.fugu .spot{fill:var(--washi);stroke:none;opacity:0;}
+.fugu .eye-in{fill:var(--washi);stroke:none;}
+.ippiki .h2{font-size:clamp(26px,4vw,46px);}
+.ippiki .body{margin:28px auto 0;}
+
+/* ── 全国の食卓へ（販路） ── */
+.zenkoku{background:var(--washi);color:var(--ink);overflow:hidden;}
+.zenkoku .eyebrow{color:#8a6a2a;}
+.zenkoku .eyebrow::before{background:#8a6a2a;}
+.zenkoku .body{color:#4b4840;}
+.rows{margin-top:80px;display:grid;gap:18px;}
+.row{display:flex;gap:18px;width:max-content;will-change:transform;}
+.chip{flex:none;padding:22px 36px;border:1px solid rgba(8,18,29,.18);border-radius:999px;font-family:var(--mincho);font-weight:600;font-size:clamp(18px,2.4vw,28px);letter-spacing:.1em;white-space:nowrap;background:rgba(255,255,255,.4);}
+.chip.own{background:var(--ink);color:var(--washi);border-color:var(--ink);}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin-top:90px;background:rgba(8,18,29,.14);border:1px solid rgba(8,18,29,.14);}
+.fact{background:var(--washi);padding:40px 30px;}
+.fact .n{font-family:var(--serif-en);font-size:clamp(44px,6vw,72px);line-height:1;color:var(--ink);font-variant-numeric:lining-nums tabular-nums;}
+.fact .n small{font-family:var(--mincho);font-size:.32em;margin-left:6px;letter-spacing:.1em;}
+.fact .l{margin-top:16px;font-size:13px;color:#4b4840;line-height:1.8;}
+
+/* ── 歌（スクロールで歌詞が灯る） ── */
+.song{background:var(--ink);}
+.song .lines{margin-top:60px;}
+.song .ln{font-family:var(--mincho);font-weight:600;font-size:clamp(26px,4.6vw,58px);line-height:1.7;letter-spacing:.14em;color:rgba(239,233,221,.14);background:linear-gradient(90deg,var(--washi) 0 50%,rgba(239,233,221,.14) 50% 100%);background-size:200% 100%;background-position:100% 0;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.song .ln.last{color:var(--gold);background-image:linear-gradient(90deg,var(--gold) 0 50%,rgba(200,163,90,.18) 50% 100%);}
+.song .meta{margin-top:50px;display:flex;flex-wrap:wrap;gap:22px;align-items:center;font-size:13px;color:var(--sub);}
+
+/* ── ボタン ── */
+.btn{position:relative;display:inline-flex;align-items:center;gap:14px;padding:18px 34px;border:1px solid var(--gold);border-radius:999px;font-size:14px;letter-spacing:.14em;overflow:hidden;isolation:isolate;will-change:transform;}
+.btn::before{content:"";position:absolute;inset:0;background:var(--gold);transform:translateY(101%);transition:transform .6s var(--ease);z-index:-1;border-radius:inherit;}
+.btn:hover::before{transform:translateY(0);}
+.btn:hover{color:var(--ink);}
+.btn .arr{transition:transform .5s var(--ease);}
+.btn:hover .arr{transform:translateX(5px);}
+
+/* ── お買い求め ── */
+.shop{background:radial-gradient(120% 80% at 50% 0%,var(--sea) 0%,var(--ink) 60%);text-align:center;}
+.shop .h2{font-size:clamp(30px,5.4vw,64px);}
+.links{margin-top:70px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;text-align:left;}
+.lk{position:relative;display:block;padding:34px 30px;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:rgba(255,255,255,.02);will-change:transform;}
+.lk::after{content:"";position:absolute;inset:0;background:radial-gradient(300px circle at var(--mx,50%) var(--my,50%),rgba(200,163,90,.16),transparent 60%);opacity:0;transition:opacity .4s;}
+.lk:hover::after{opacity:1;}
+.lk .k{font-size:11px;color:var(--gold);}
+.lk h3{font-family:var(--mincho);font-weight:600;font-size:22px;margin:10px 0 6px;letter-spacing:.12em;}
+.lk p{font-size:12.5px;color:var(--sub);}
+.lk .go{position:absolute;right:26px;top:30px;font-family:var(--serif-en);font-size:22px;color:var(--gold);transition:transform .5s var(--ease);}
+.lk:hover .go{transform:translate(4px,-4px);}
+
+footer{border-top:1px solid var(--line);padding:60px 0 40px;font-size:12px;color:var(--sub);}
+footer .f{display:flex;flex-wrap:wrap;justify-content:space-between;gap:24px;align-items:flex-end;}
+footer .name{font-family:var(--mincho);font-size:20px;color:var(--text);letter-spacing:.2em;margin-bottom:8px;}
+footer a{color:var(--gold);}
+
+@media (max-width:820px){
+  .head nav{display:none;}
+  #rail{display:none;}
+  .hero .tate{right:24px;top:42%;font-size:clamp(40px,12vw,64px);}
+  .tl{margin-top:70px;padding-left:26px;}
+  .tl ol{grid-template-columns:1fr;gap:0;}
+  .tl::before,.tl .line{left:5px;right:auto;top:0;bottom:0;width:1px;height:auto;}
+  .tl .line{transform-origin:50% 0;transform:scaleY(0);}
+  .tl li{padding:0 0 36px;}
+  .tl li::before{left:-26px;top:8px;}
+  .facts,.links{grid-template-columns:1fr;}
+  .fuku{height:220vh;}
+}
+@media (prefers-reduced-motion:reduce){
+  .fuku{height:auto;}
+  .fuku .pin{position:static;height:auto;padding:120px 0;display:block;}
+  .fuku .from{display:none;}
+  .fuku .to,.fuku .cap p{opacity:1;}
+  .fuku .from,.fuku .to,.fuku .cap,.fuku .tag{position:static;transform:none;}
+  .fuku .cap{margin-top:40px;}
+  .song .ln{background-position:0 0;}
+}
+</style>
+<script>
+// 動きの準備。app.js が読めない・動き控えめ設定のときは、最初から全部読める状態にする
+(function(d){
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) { d.classList.add('no-loader'); return; }
+  d.classList.add('js');
+  setTimeout(function(){ if(!window.__motionReady){ d.classList.remove('js'); d.classList.add('no-loader'); } }, 2500);
+})(document.documentElement);
+</script>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<div id="cursor" aria-hidden="true"><b>VIEW</b></div><div id="dot" aria-hidden="true"></div>
+<div id="rail" aria-hidden="true"><i></i></div>
+
+<div id="loader" aria-hidden="true">
+  <div class="mark">
+    <div class="kanji"><span>福</span></div>
+    <div class="meta min">下関　ふく問屋</div>
+    <div class="count">MEIJI 12 — <span id="ld-num">0</span> YEARS</div>
+  </div>
+</div>
+
+<header class="head">
+  <a class="logo" href="#top"><span class="seal">山西</span>山西水産</a>
+  <nav class="en">
+    <a href="#fuku">FUKU</a><a href="#history">HISTORY</a><a href="#zenkoku">ONLINE</a><a href="#song">SONG</a><a href="#shop">SHOP</a>
+  </nav>
+</header>
+
+<main id="top">
+  <section class="hero" aria-label="山西水産">
+    <div class="photo"><img src="../kanmon-kaigi/harbor.jpg" alt="下関の街並みと関門海峡を進む船" fetchpriority="high"></div>
+    <div class="veil"></div>
+    <canvas id="bubbles" aria-hidden="true"></canvas>
+    <p class="tate" aria-label="ふくと生きる。下関のふく問屋"><span class="sub">下関のふく問屋</span><span class="t">ふくと生きる。</span></p>
+    <div class="info">
+      <div class="en">SHIMONOSEKI — SINCE MEIJI 12</div>
+      <h1>山西水産株式会社</h1>
+      <p>明治十二年創業　老舗ふく問屋</p>
+    </div>
+    <div class="scroll-cue" aria-hidden="true"><i></i></div>
+  </section>
+
+  <section class="fuku" id="fuku" data-light aria-label="ふぐではなく、ふく">
+    <div class="pin">
+      <div class="tag en">WHY "FUKU"</div>
+      <div class="stage">
+        <div class="word from" aria-hidden="true">不遇<span class="yomi">ふぐ</span></div>
+        <div class="word to">福<span class="yomi">ふく</span></div>
+        <div style="visibility:hidden" class="word" aria-hidden="true">福<span class="yomi">ふく</span></div>
+      </div>
+      <div class="cap">
+        <p>下関では「ふぐ」を「不遇」に通じるのを避け、</p>
+        <p>「福」に通じる「ふく」と呼びます。</p>
+        <p>不遇じゃなくて、福を届けたいから。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec years" id="history">
+    <div class="big" aria-hidden="true">147</div>
+    <div class="wrap">
+      <div class="eyebrow en" data-reveal>HISTORY</div>
+      <h2 class="h2 split">祖父から父へ、<br>父から僕へ。</h2>
+      <p class="lyric" data-reveal>受け継ぐ暖簾　百四十七年<br>変わらないもの　変えていくもの<small>— テーマソング「潮風と、ふくと。」より</small></p>
+      <div class="tl"><span class="line" aria-hidden="true"></span><ol>
+        <li data-reveal><div class="y">明治十二年</div><h3>創業</h3><p>下関で、ふく問屋として始まる。</p></li>
+        <li data-reveal><div class="y">〜2018</div><h3>四代目 承継</h3><p>山西伸典が四代目として承継。地域ブランドを守りながら、経営改革に挑む。</p></li>
+        <li data-reveal><div class="y">EC参入後</div><h3>楽天優良ショップ受賞</h3><p>ネット通販で、ふくを全国に届ける仕組みを構築。</p></li>
+        <li data-reveal><div class="y">〜2023</div><h3>10モール＋自社サイト</h3><p>受注処理・在庫連携・帳票作成を自動化し、多店舗展開を1人で実現。</p></li>
+        <li data-reveal><div class="y">2024</div><h3>AI・DXで業務改革</h3><p>6種の業務を自動化。月30時間超の削減を自社で実証。</p></li>
+      </ol></div>
+    </div>
+  </section>
+
+  <section class="sec ippiki" id="ippiki" aria-label="一匹一匹、心を込めて">
+    <div class="wrap">
+      <svg class="fugu" viewBox="0 0 560 300" aria-hidden="true">
+        <!-- 胴 -->
+        <path class="draw" d="M120 150 C 130 70, 260 40, 350 70 C 410 90, 440 125, 445 150 C 440 178, 410 212, 350 230 C 260 258, 130 230, 120 150 Z"/>
+        <!-- 尾びれ -->
+        <path class="draw" d="M445 150 C 470 120, 500 100, 530 92 C 518 125, 518 175, 530 208 C 500 200, 470 180, 445 150"/>
+        <path class="draw" d="M470 140 L 512 112 M470 160 L 512 188"/>
+        <!-- 背びれ・尻びれ -->
+        <path class="draw" d="M330 66 C 345 40, 372 34, 388 44 C 380 60, 372 72, 372 84"/>
+        <path class="draw" d="M330 234 C 345 260, 372 266, 388 256 C 380 240, 372 228, 372 216"/>
+        <!-- 胸びれ -->
+        <path class="draw" d="M230 160 C 250 140, 278 142, 290 156 C 276 176, 250 182, 230 160 Z"/>
+        <!-- 口・えら -->
+        <path class="draw" d="M122 156 C 112 156, 106 150, 110 144"/>
+        <path class="draw" d="M205 112 C 222 140, 222 176, 205 200"/>
+        <!-- 目 -->
+        <circle class="draw" cx="172" cy="128" r="15"/>
+        <circle class="eye-in" cx="175" cy="127" r="6"/>
+        <!-- 斑点 -->
+        <circle class="spot" cx="300" cy="105" r="5"/><circle class="spot" cx="330" cy="125" r="4"/><circle class="spot" cx="270" cy="92" r="3.5"/>
+        <circle class="spot" cx="360" cy="108" r="3.5"/><circle class="spot" cx="315" cy="150" r="3"/><circle class="spot" cx="390" cy="135" r="3"/>
+        <!-- 腹の線 -->
+        <path class="draw" d="M150 190 C 210 222, 300 228, 380 206" style="opacity:.5"/>
+      </svg>
+      <h2 class="h2 split">一匹一匹、<br>心を込めて。</h2>
+      <p class="body" data-reveal>海からのふく、今日もあなたに。<br>下関から届けたいのは、美味しさだけじゃない、幸せのかたち。</p>
+    </div>
+  </section>
+
+  <section class="sec zenkoku" id="zenkoku" data-light>
+    <div class="wrap">
+      <div class="eyebrow en" data-reveal>ONLINE STORES</div>
+      <h2 class="h2 split">下関から、<br>全国の食卓へ。</h2>
+      <p class="body" data-reveal>10のモールと自社サイト。多店舗展開を、1人で。<br>それを支えているのは、RPAによる自動化・DX・AI活用です。</p>
+    </div>
+    <div class="rows" aria-label="販売先">
+      <div class="row" data-dir="1">
+        <span class="chip">楽天市場</span><span class="chip">Amazon</span><span class="chip">Yahoo!</span><span class="chip">auPAYマーケット</span><span class="chip">ギフトモール</span>
+      </div>
+      <div class="row" data-dir="-1">
+        <span class="chip">メルカリShops</span><span class="chip">TikTok SHOP</span><span class="chip">TEMU</span><span class="chip">ふるさと納税</span><span class="chip own">自社サイト</span>
+      </div>
+    </div>
+    <div class="wrap">
+      <div class="facts">
+        <div class="fact" data-reveal><div class="n"><span data-count="10">10</span><small>モール＋自社サイト</small></div><div class="l">多店舗展開を1人で運営</div></div>
+        <div class="fact" data-reveal><div class="n"><span data-count="30">30</span><small>時間超／月</small></div><div class="l">自動化による業務削減（自社実証 2023〜2024年）</div></div>
+        <div class="fact" data-reveal><div class="n"><span data-count="1330">1,330</span><small>人</small></div><div class="l">YouTube「@shimofugu — 山西水産チャンネル」登録者</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec song" id="song">
+    <div class="wrap">
+      <div class="eyebrow en" data-reveal>THEME SONG</div>
+      <h2 class="h2 split">潮風と、ふくと。</h2>
+      <div class="lines">
+        <p class="ln">海からのふく　今日もあなたに</p>
+        <p class="ln">一匹一匹　心を込めて</p>
+        <p class="ln">下関から　届けたいのは</p>
+        <p class="ln">美味しさだけじゃない　幸せのかたち</p>
+        <p class="ln last">ふくと生きる　山西水産</p>
+      </div>
+      <div class="meta" data-reveal>
+        <a class="btn" data-magnetic href="../song.html">曲を聴く・歌詞を見る <span class="arr">→</span></a>
+        <span>山西水産株式会社 オリジナルテーマソング／作詞・作曲・制作：Yスタジオ＋</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec shop" id="shop">
+    <div class="wrap">
+      <div class="eyebrow en" data-reveal style="justify-content:center">SHOP &amp; CONTACT</div>
+      <h2 class="h2 split">ふくを、あなたの食卓に。</h2>
+      <div class="links">
+        <a class="lk" data-tilt href="https://www.rakuten.co.jp/yamanishisuisan/" target="_blank" rel="noopener"><span class="go">↗</span><div class="k en">RAKUTEN</div><h3>楽天市場店</h3><p>楽天優良ショップ受賞のお店</p></a>
+        <a class="lk" data-tilt href="https://lp.yamanisi.co.jp/" target="_blank" rel="noopener"><span class="go">↗</span><div class="k en">COMPANY</div><h3>会社のご案内</h3><p>下関のふく老舗問屋</p></a>
+        <a class="lk" data-tilt href="https://www.youtube.com/@shimofugu" target="_blank" rel="noopener"><span class="go">↗</span><div class="k en">YOUTUBE</div><h3>@shimofugu</h3><p>ふく屋の日常を発信</p></a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap f">
+    <div>
+      <div class="name">山西水産株式会社</div>
+      〒759-6613 山口県下関市富任町1-1-5
+    </div>
+    <div><a href="../">Yスタジオ＋</a>　·　<a href="../privacy.html">プライバシーポリシー</a></div>
+  </div>
+</footer>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

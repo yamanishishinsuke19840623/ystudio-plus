@@ -2,12 +2,15 @@
   "name": "motion-lab",
   "private": true,
   "type": "module",
-  "description": "Motion(旧 Framer Motion)でアニメーション特化ページ /motion-lab/ をつくる",
+  "description": "Motion（旧 Framer Motion）でアニメーション特化ページ（/motion-lab/・/yamanishi-suisan/）をつくる",
   "scripts": {
-    "build": "esbuild src/main.js --bundle --minify --format=esm --target=es2020 --outfile=../../motion-lab/app.js",
-    "check": "node check.mjs"
+    "build": "npm run build:lab && npm run build:yamanishi",
+    "check": "node check.mjs && node check-yamanishi.mjs",
+    "build:lab": "esbuild src/main.js --bundle --minify --format=esm --target=es2020 --outfile=../../motion-lab/app.js",
+    "build:yamanishi": "esbuild src/yamanishi.js --bundle --minify --format=esm --target=es2020 --outfile=../../yamanishi-suisan/app.js"
   },
   "dependencies": {
+    "lenis": "^1.3.26",
     "motion": "^14.1.0"
   },
   "devDependencies": {
