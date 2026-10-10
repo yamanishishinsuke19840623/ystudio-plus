@@ -33,22 +33,40 @@ if (reduce) {
   if (fine) lineupFloat();
 }
 
+// なめらかスクロール。指で動かす端末では使わず、ブラウザ本来のスクロールにする
+// （スマホで Lenis や長い固定区間があると「スクロールしにくい」と言われたため）
 function smoothScroll() {
+  const jump = (lenis) =>
+    $$('a[href^="#"]').forEach((a) =>
+      a.addEventListener("click", (e) => {
+        const id = a.getAttribute("href");
+        const el = id === "#top" ? 0 : $(id);
+        if (el === null) return;
+        e.preventDefault();
+        if (lenis) lenis.scrollTo(el, { duration: 1.4 });
+        else window.scrollTo({ top: el === 0 ? 0 : el.getBoundingClientRect().top + scrollY, behavior: "smooth" });
+      })
+    );
+  if (!fine) {
+    // Lenis と同じ形（stop/start/velocity）だけ持つ代わり
+    const native = { velocity: 0, stop() { root.style.overflow = "hidden"; }, start() { root.style.overflow = ""; } };
+    let last = scrollY;
+    const tick = () => {
+      native.velocity = native.velocity * 0.8 + (scrollY - last) * 0.2;
+      last = scrollY;
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+    jump(null);
+    return native;
+  }
   const lenis = new Lenis({ lerp: 0.1 });
   const raf = (t) => {
     lenis.raf(t);
     requestAnimationFrame(raf);
   };
   requestAnimationFrame(raf);
-  $$('a[href^="#"]').forEach((a) =>
-    a.addEventListener("click", (e) => {
-      const id = a.getAttribute("href");
-      const el = id === "#top" ? 0 : $(id);
-      if (el === null) return;
-      e.preventDefault();
-      lenis.scrollTo(el, { duration: 1.4 });
-    })
-  );
+  jump(lenis);
   return lenis;
 }
 
@@ -101,12 +119,14 @@ async function opening(lenis) {
 }
 
 function heroIn() {
-  animate(".hero .big", { scale: [0.4, 1], y: [120, 0], rotate: [-8, 0] }, { type: "spring", stiffness: 140, damping: 13 });
+  // 墨がにじむように「ふく」が左から書かれ、最後に朱の落款がドンと押される
+  animate(".hero .big", { clipPath: ["inset(-10% 100% -10% 0)", "inset(-10% 0% -10% 0)"], filter: ["blur(14px)", "blur(0px)"], opacity: [0.2, 1] }, { duration: 1.5, ease: [0.65, 0, 0.35, 1] });
+  animate(".hero .hanko", { opacity: [0, 1], scale: [2.4, 1], rotate: [-24, -6] }, { delay: 1.45, type: "spring", stiffness: 500, damping: 18 });
   animate(".stamp", { scale: [0, 1], rotate: [-120, 0] }, { type: "spring", stiffness: 200, damping: 12, delay: 0.35 });
   animate(".hero .lead, .hero .scroll", { opacity: [0, 1], y: [20, 0] }, { delay: stagger(0.1, { startDelay: 0.5 }), duration: 0.6 });
 }
 
-// ── HERO：写真が入った「ふく」の字の中へ、スクロールで吸い込まれる ──
+// ── HERO：墨の「ふく」の線の中へ、スクロールで吸い込まれる（墨一色 → 料理の写真へ）──
 function heroScroll() {
   const hero = $(".hero");
   const type = $(".type", hero), big = $(".big", hero);

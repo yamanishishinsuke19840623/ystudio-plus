@@ -30,8 +30,8 @@ const shots = [
 
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium" });
 let failed = false;
-for (const [name, viewport, reduced] of [["desktop", { width: 1440, height: 900 }, false], ["mobile", { width: 390, height: 844 }, false], ["reduced", { width: 1440, height: 900 }, true]]) {
-  const page = await browser.newPage({ viewport, reducedMotion: reduced ? "reduce" : "no-preference" });
+for (const [name, viewport, reduced, touch] of [["desktop", { width: 1440, height: 900 }, false], ["mobile", { width: 390, height: 844 }, false, true], ["reduced", { width: 1440, height: 900 }, true]]) {
+  const page = await browser.newPage({ viewport, reducedMotion: reduced ? "reduce" : "no-preference", ...(touch ? { isMobile: true, hasTouch: true } : {}) });
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
   page.on("console", (m) => m.type() === "error" && !/fonts\.g/.test(m.location().url) && errors.push(m.text()));

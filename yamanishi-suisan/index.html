@@ -49,12 +49,17 @@ img{display:block;max-width:100%;}
 .h2,.hero .lead b,.hero .catch p,.gen .num,.gen h3,.ban .year,.ban .what,.market .belt.b1 span,.market .fact b,.card .no,.card h3,.item .nm,.owner blockquote,.shop-row .nm,.contact .tel,footer .giant,.item .n{-webkit-text-stroke:.035em currentColor;paint-order:stroke fill;}
 
 /* ── HERO：写真入りの「ふく」に吸い込まれる ── */
-.hero{position:relative;height:320vh;}
+.hero{position:relative;height:260vh;}
 .hero .stage{position:sticky;top:0;height:100svh;overflow:hidden;background:var(--paper);}
 .hero .type{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;will-change:transform;}
-.hero .big{font-family:var(--disp);font-size:clamp(170px,40vw,560px);line-height:.9;letter-spacing:-.04em;white-space:nowrap;
-  background:url(img/spread.jpg) 50% 55%/cover;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
-  -webkit-text-stroke:.02em var(--sumi);}
+.hero .word{position:relative;display:inline-block;}
+.hero .big{font-family:var(--disp);font-size:clamp(170px,40vw,560px);line-height:.9;letter-spacing:-.02em;white-space:nowrap;color:var(--sumi);
+  -webkit-text-stroke:.03em var(--sumi);paint-order:stroke fill;}
+/* 朱の落款（社名の判子） */
+.hero .hanko{position:absolute;left:100%;margin-left:.15em;bottom:.1em;width:clamp(58px,8vw,104px);aspect-ratio:1;display:grid;place-items:center;background:var(--shu);color:var(--paper);border-radius:8px;
+  font-family:var(--disp);font-size:clamp(22px,3vw,40px);line-height:1.05;writing-mode:vertical-rl;letter-spacing:.04em;rotate:-6deg;
+  box-shadow:inset 0 0 0 3px var(--shu),inset 0 0 0 5px var(--paper);font-size:clamp(20px,2.8vw,38px);}
+.js .hero .hanko{opacity:0;}
 .hero .full{position:absolute;inset:0;opacity:0;will-change:opacity,transform;}
 .hero .full img{width:100%;height:100%;object-fit:cover;}
 .hero .full::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(0,0,0,.6));}
@@ -94,7 +99,7 @@ img{display:block;max-width:100%;}
 @media (max-width:860px){.frame .play span{padding:12px 22px;font-size:15px;}}
 
 /* ── 四代：縦スクロールで横に流れる ── */
-.gens{position:relative;height:520vh;}
+.gens{position:relative;height:460vh;}
 .gens .pin{position:sticky;top:0;height:100svh;overflow:hidden;}
 .gens .track{display:flex;height:100%;width:max-content;will-change:transform;}
 .gen{flex:0 0 100vw;height:100%;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);align-items:center;gap:4vw;padding:90px 6vw 50px;}
@@ -113,7 +118,7 @@ img{display:block;max-width:100%;}
 .gens .bar i{position:absolute;inset:0;background:currentColor;transform-origin:0 50%;transform:scaleX(0);}
 
 /* ── 300年の禁：年号がスクロールで進む ── */
-.ban{position:relative;height:340vh;}
+.ban{position:relative;height:300vh;}
 .ban .pin{position:sticky;top:0;height:100svh;overflow:hidden;display:grid;place-items:center;background:var(--sumi);color:var(--paper);transition:background-color .7s,color .7s;}
 .ban.lifted .pin{background:var(--shu);color:#fff;}
 .ban .center{text-align:center;position:relative;padding:0 20px;}
@@ -220,6 +225,9 @@ footer .fine a{text-decoration:underline;text-underline-offset:3px;}
   .owner .grid{grid-template-columns:1fr;}
   .contact{grid-template-columns:1fr;}
   .stamp{top:auto;bottom:100px;}
+  .hero{height:200vh;}
+  .hero .hanko{left:auto;right:0;margin-left:0;bottom:auto;top:100%;margin-top:.2em;}
+  .ban{height:230vh;}
   .hero .scroll{display:none;}
 }
 @media (prefers-reduced-motion:reduce){
@@ -262,7 +270,7 @@ footer .fine a{text-decoration:underline;text-underline-offset:3px;}
   <!-- HERO -->
   <section class="hero" aria-label="山西水産 本場の海から、あなたの食卓へ。">
     <div class="stage">
-      <div class="type" aria-hidden="true"><div class="big">ふく</div></div>
+      <div class="type" aria-hidden="true"><div class="word"><div class="big">ふく</div><span class="hanko">山西<br>水産</span></div></div>
       <div class="full"><img src="img/spread.jpg" alt="山西水産のふぐ料理（ふぐ刺し・唐揚げ・鍋など）"></div>
       <div class="catch"><p>本場の海から、<br>あなたの食卓へ。</p><small>四代にわたり受け継がれた、ふぐの技と誇り。</small></div>
       <div class="stamp" aria-label="創業147年">
