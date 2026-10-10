@@ -1054,6 +1054,15 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
 .mo-flow b{font-family:'Inter',sans-serif;font-size:11px;color:var(--gold);min-width:22px;}
 .mo-link{display:inline-block;font-size:13px;font-weight:700;color:var(--gold);text-decoration:none;border-bottom:1px solid currentColor;margin-right:18px;}
 .mo-side{display:grid;gap:24px;}
+.map-sec{background:var(--black);}
+.map-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:40px;align-items:start;}
+@media(max-width:860px){.map-grid{grid-template-columns:1fr;}}
+.map-media{display:block;aspect-ratio:1/1;background:#060a1c;}
+.map-media img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .6s ease;}
+.map-media:hover img{transform:scale(1.03);}
+.map-data{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:14px 0 18px;font-size:13px;}
+.map-data dt{font-family:'Inter',sans-serif;font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;padding-top:3px;}
+.map-data dd{margin:0;color:var(--sub);line-height:1.7;}
 
 
 /* ══ SCROLL PROGRESS BAR ══ */
@@ -1496,6 +1505,7 @@ footer .related-sites__arrow{width:18px;height:18px;flex:0 0 18px;color:var(--re
     <a href="#fde">APPROACH</a>
     <a href="#results">RESULTS</a>
     <a href="#motion">MOTION</a>
+    <a href="#map">3D MAP</a>
     <a href="#plans">PLAN</a>
     <a href="#profile">PROFILE</a>
     <a href="#faq">FAQ</a>
@@ -1510,6 +1520,7 @@ footer .related-sites__arrow{width:18px;height:18px;flex:0 0 18px;color:var(--re
 <nav class="mob-nav" id="mob-nav">
   <a href="#fde" onclick="closeMob()">APPROACH</a>
   <a href="#results" onclick="closeMob()">RESULTS</a>
+  <a href="#map" onclick="closeMob()">3D MAP</a>
   <a href="#plans" onclick="closeMob()">PLAN</a>
   <a href="#profile" onclick="closeMob()">PROFILE</a>
   <a href="#faq" onclick="closeMob()">FAQ</a>
@@ -2049,6 +2060,47 @@ footer .related-sites__arrow{width:18px;height:18px;flex:0 0 18px;color:var(--re
             </ol>
             <a class="mo-link" href="kanmon-reel.html">リールを作る →</a>
             <a class="mo-link" href="showreel.html">ショーリールを見る →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- MAP -->
+<section class="sec map-sec" id="map">
+  <div class="container">
+    <div class="sec-label reveal"><div class="sec-label-line"></div><span class="sec-label-text">3D Map</span></div>
+    <h2 class="sec-title reveal">まちの夜を、<br><span class="light">3Dで眺める。</span></h2>
+    <p class="sec-desc reveal">制作例のひとつです。下関市・安岡の夜を、夕暮れから夜明け前まで3Dで眺める「安岡 夜景マップ」をつくりました。公開データの海岸線・駅・町名の位置に、やすらガーデンや竜王山・鋤先山を重ねています。</p>
+    <div class="map-grid">
+      <div class="mo-card reveal">
+        <a class="map-media" href="yasuoka-night/" aria-label="安岡 夜景マップをひらく">
+          <img src="yasuoka-night/cover.jpg" alt="安岡 夜景マップ（夜の安岡のイメージイラスト）" width="1254" height="1254" loading="lazy">
+        </a>
+      </div>
+      <div class="mo-side">
+        <div class="mo-card reveal">
+          <div class="mo-body">
+            <div class="mo-tag">Works · Yasuoka Night Map</div>
+            <div class="mo-title">安岡 夜景マップ</div>
+            <p class="mo-text">時間のスライダーを動かすと、夕焼けの響灘から家の灯りが点いては消えていく様子を見られます。やすらガーデンは掲載されている営業時間に合わせて灯りが変わります。</p>
+            <dl class="map-data">
+              <dt>Real</dt><dd>海岸線（国土数値情報）、JR山陰本線の駅の位置、町名の位置</dd>
+              <dt>Image</dt><dd>建物ひとつひとつの形と配置、道、灯りの時間はイメージ</dd>
+              <dt>Tech</dt><dd>three.js（WebGL）。スマホのブラウザでそのまま動きます</dd>
+            </dl>
+            <a class="mo-link" href="yasuoka-night/">夜景マップをひらく →</a>
+          </div>
+        </div>
+        <div class="mo-card reveal">
+          <div class="mo-body">
+            <div class="mo-tag">For your town</div>
+            <div class="mo-title">あなたのまちでも、つくれます</div>
+            <p class="mo-text">商店街、観光地、イベント会場。地図データと、まちの人が知っている場所を組み合わせて、見て楽しい地図にします。</p>
+            <a class="mo-link" href="#contact">相談してみる →</a>
           </div>
         </div>
       </div>
