@@ -105,7 +105,17 @@ async function refresh(tokens) {
   return refreshing;
 }
 
-// BASE API を呼ぶ。401 のときは1回だけリフレッシュして再試行する
+// 本文は日本語が \uXXXX でエスケープされて届くので、JSONとして読んでから判定する
+async function isTokenError(res) {
+  try {
+    const b = JSON.parse(await res.text());
+    return b.error === 'invalid_token' || /アクセストークン/.test(b.error_description ?? '');
+  } catch {
+    return false;
+  }
+}
+
+// BASE API を呼ぶ。トークン切れのときは1回だけリフレッシュして再試行する
 export async function callApi(method, path, params = {}) {
   let tokens = await loadTokens();
   const clean = Object.fromEntries(
@@ -126,7 +136,9 @@ export async function callApi(method, path, params = {}) {
   };
 
   let res = await send(tokens.access_token);
-  if (res.status === 401) {
+  // BASE は期限切れでも 401 ではなく 400 invalid_request「アクセストークンが無効です」を返す（2026-10-10 実機で確認）
+  const expired = res.status === 401 || (res.status === 400 && (await isTokenError(res.clone())));
+  if (expired) {
     tokens = await refresh(tokens);
     res = await send(tokens.access_token);
   }

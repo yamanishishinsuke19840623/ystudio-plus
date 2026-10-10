@@ -72,7 +72,8 @@ async function handle(req, res) {
     refreshCount++;
     return send(200, { access_token: 'good', refresh_token: 'r2', expires_in: 3600 });
   }
-  if (req.headers.authorization !== 'Bearer good') return send(401, { error: 'invalid_token' });
+  // 本物のBASEと同じく、期限切れは 400 invalid_request で返す
+  if (req.headers.authorization !== 'Bearer good') return send(400, { error: 'invalid_request', error_description: 'アクセストークンが無効です。' });
   const limit = Number(url.searchParams.get('limit') ?? 20), offset = Number(url.searchParams.get('offset') ?? 0);
   if (url.pathname === '/1/users/me') return send(200, { user: { shop_name: 'テストショップ' } });
   if (url.pathname === '/1/items') return send(200, { items: items.slice(offset, offset + limit) });
@@ -335,7 +336,10 @@ await test('HTTP版：秘密URLで呼べる／違うURLは404', async () => {
 // ---- セットアップ（npm run setup） ----
 await test('setup：入力→.env保存→BASE許可→接続チェック→Claude Desktop登録（既存設定を保持・バックアップ）', async () => {
   const home = await mkdtemp(join(tmpdir(), 'base-mcp-home-'));
-  const desktopDir = join(home, '.config', 'Claude');
+  // 本物の Claude Desktop 設定に触れないよう、OSごとの置き場所を仮のホームの中に向ける
+  const desktopDir = process.platform === 'win32' ? join(home, 'AppData', 'Roaming', 'Claude')
+    : process.platform === 'darwin' ? join(home, 'Library', 'Application Support', 'Claude')
+      : join(home, '.config', 'Claude');
   await mkdir(desktopDir, { recursive: true });
   await writeFile(join(desktopDir, 'claude_desktop_config.json'), JSON.stringify({ mcpServers: { other: { command: 'x' } }, theme: 'dark' }));
   const envPath = join(home, 'base.env');
@@ -344,7 +348,7 @@ await test('setup：入力→.env保存→BASE許可→接続チェック→Clau
   const sdir = await mkdtemp(join(tmpdir(), 'base-mcp-setup-'));
   const { BASE_CLIENT_ID, BASE_CLIENT_SECRET, BASE_REDIRECT_URI, ...rest } = env;
   const child = spawn(process.execPath, [join(root, 'setup.mjs')], {
-    env: { ...rest, HOME: home, PATH: dirname(process.execPath), BASE_ENV_PATH: envPath, BASE_DATA_DIR: sdir, BASE_TOKEN_PATH: join(sdir, 'tokens.json'), BASE_SETUP_NO_BROWSER: '1' },
+    env: { ...rest, HOME: home, USERPROFILE: home, APPDATA: join(home, 'AppData', 'Roaming'), PATH: dirname(process.execPath), BASE_ENV_PATH: envPath, BASE_DATA_DIR: sdir, BASE_TOKEN_PATH: join(sdir, 'tokens.json'), BASE_SETUP_NO_BROWSER: '1' },
     stdio: ['pipe', 'pipe', 'inherit'],
   });
   child.stdin.end('myid\nmysecret\ny\ny\n');

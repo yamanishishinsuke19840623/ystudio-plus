@@ -48,8 +48,9 @@ export function authorize({ open = true } = {}) {
         return;
       }
       const finish = (status, msg, err) => {
-        res.writeHead(status, { 'Content-Type': 'text/plain; charset=utf-8' }).end(msg);
+        res.writeHead(status, { 'Content-Type': 'text/plain; charset=utf-8', Connection: 'close' }).end(msg);
         server.close();
+        server.closeAllConnections(); // ブラウザの keep-alive 接続が残ってプロセスが終われなくなるのを防ぐ
         err ? reject(err) : resolve();
       };
       if (url.searchParams.get('state') !== state) return finish(400, 'state が一致しません。もう一度やり直してください。', new Error('state が一致しません'));

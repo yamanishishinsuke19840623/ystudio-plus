@@ -27,6 +27,8 @@ npm install
 npm run setup
 ```
 
+Windows の PowerShell で「スクリプトの実行が無効になっているため npm.ps1 を読み込むことができません」と出たら、`npm` を `npm.cmd` に変えて実行してください（`npm.cmd install`、`npm.cmd run setup`）。
+
 `npm run setup` は次の順に進みます。
 
 1. client_id と client_secret を聞く（secret は入力しても画面に出ません）→ `.env` に保存
