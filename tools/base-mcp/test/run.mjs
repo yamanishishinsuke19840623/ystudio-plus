@@ -72,7 +72,8 @@ async function handle(req, res) {
     refreshCount++;
     return send(200, { access_token: 'good', refresh_token: 'r2', expires_in: 3600 });
   }
-  if (req.headers.authorization !== 'Bearer good') return send(401, { error: 'invalid_token' });
+  // 本物のBASEと同じく、期限切れは 400 invalid_request で返す
+  if (req.headers.authorization !== 'Bearer good') return send(400, { error: 'invalid_request', error_description: 'アクセストークンが無効です。' });
   const limit = Number(url.searchParams.get('limit') ?? 20), offset = Number(url.searchParams.get('offset') ?? 0);
   if (url.pathname === '/1/users/me') return send(200, { user: { shop_name: 'テストショップ' } });
   if (url.pathname === '/1/items') return send(200, { items: items.slice(offset, offset + limit) });
