@@ -77,6 +77,19 @@ img{display:block;max-width:100%;}
 .h2 .ch,.chars .ch{display:inline-block;}
 .p{max-width:36em;margin-top:26px;font-size:16px;line-height:2.05;}
 
+/* ── PV ── */
+.movie{background:var(--paper);padding:clamp(90px,12vw,150px) 0;}
+.movie .head3{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:44px;}
+.movie .meta{font-size:13px;font-weight:700;letter-spacing:.08em;line-height:1.9;}
+.frame{position:relative;border:3px solid var(--sumi);border-radius:24px;overflow:hidden;box-shadow:10px 10px 0 var(--sumi);background:var(--sumi);aspect-ratio:16/9;will-change:transform;}
+.frame video{display:block;width:100%;height:100%;}
+.frame .play{position:absolute;inset:0;display:grid;place-items:center;background:rgba(27,26,24,.18);border:0;cursor:pointer;color:var(--sumi);font:inherit;}
+.frame .play span{display:flex;align-items:center;gap:14px;background:var(--shu);color:#fff;border:3px solid var(--sumi);border-radius:999px;padding:18px 34px;font-weight:900;font-size:clamp(16px,2vw,22px);letter-spacing:.12em;box-shadow:5px 5px 0 var(--sumi);transition:transform .2s,box-shadow .2s;}
+.frame .play:hover span{transform:translate(-2px,-2px) scale(1.04);box-shadow:7px 7px 0 var(--sumi);}
+.frame .play i{font-style:normal;font-size:1.3em;line-height:1;}
+.frame.playing .play{display:none;}
+@media (max-width:860px){.frame .play span{padding:12px 22px;font-size:15px;}}
+
 /* ── 四代：縦スクロールで横に流れる ── */
 .gens{position:relative;height:520vh;}
 .gens .pin{position:sticky;top:0;height:100svh;overflow:hidden;}
@@ -264,6 +277,20 @@ footer .fine a{text-decoration:underline;text-underline-offset:3px;}
     </div>
   </section>
 
+  <!-- PV -->
+  <section class="movie" id="movie" aria-label="山西水産 PV">
+    <div class="wrap">
+      <div class="head3">
+        <div><span class="kicker">Brand Movie</span><h2 class="h2">75秒で、<br>山西水産。</h2></div>
+        <p class="meta" data-up>BGM：オリジナルテーマソング「潮風と、ふくと。」<br>四代の歴史・ふぐ解禁の地・商品・やまちゃん</p>
+      </div>
+      <div class="frame" data-up>
+        <video id="pv" poster="media/pv-poster.jpg" preload="none" playsinline><source src="media/pv.mp4" type="video/mp4"><source src="media/pv.webm" type="video/webm"></video>
+        <button class="play" type="button" aria-label="PVを再生する（音が出ます）"><span><i>▶</i>PVを見る（音が出ます）</span></button>
+      </div>
+    </div>
+  </section>
+
   <!-- 四代 -->
   <section class="gens" id="story" aria-label="四代の歴史">
     <div class="pin">
@@ -376,6 +403,15 @@ footer .fine a{text-decoration:underline;text-underline-offset:3px;}
   </div>
 </footer>
 
+<script>
+// PV: ボタンを押したら音ありで再生。動画の操作バーはそのまま使える
+(function(){
+  var f=document.querySelector('.frame'),v=document.getElementById('pv'),b=f&&f.querySelector('.play');
+  if(!b)return;
+  b.addEventListener('click',function(){f.classList.add('playing');var p=v.play();if(p&&p.catch)p.catch(function(){});});
+  v.addEventListener('play',function(){f.classList.add('playing');v.controls=true;});
+})();
+</script>
 <script type="module" src="app.js"></script>
 </body>
 </html>

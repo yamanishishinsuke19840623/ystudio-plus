@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>山西水産 PV（描画用）</title>
+<!--
+  山西水産 ブランドPV（75秒・16:9）の「絵コンテ兼レンダリング用ページ」。
+  render.mjs が window.renderAt(秒) を1コマずつ呼んでスクショし、ffmpeg で MP4 にする。
+  時間割はテーマソング「潮風と、ふくと。」デモ（96BPM・1小節2.5秒）の
+  イントロ4小節／Aメロ8小節／Bメロ8小節／サビ10小節 に合わせている。
+  文言・数字・写真はすべて lp.yamanisi.co.jp と song.html に公開済みのものだけ。
+  ブラウザで直接開くと、下のスライダーで任意の時刻を確認できる。
+-->
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@700;900&family=Yusei+Magic&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f4efe4;--sumi:#1b1a18;--shu:#e0442a;--sora:#cfe0ee;--kinari:#f6d9a8;
+  --disp:'Dela Gothic One',sans-serif;--body:'Zen Kaku Gothic New',sans-serif;--hand:'Yusei Magic',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{background:#000;}
+#v{position:relative;width:1280px;height:720px;overflow:hidden;background:var(--paper);color:var(--sumi);font-family:var(--body);}
+.sc{position:absolute;inset:0;overflow:hidden;visibility:hidden;}
+.abs{position:absolute;}
+.disp{font-family:var(--disp);font-weight:400;}
+.ch{display:inline-block;}
+.photo{position:absolute;inset:0;}
+.photo img{width:100%;height:100%;object-fit:cover;}
+.shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(0,0,0,.66));}
+.tag{display:inline-block;border:3px solid currentColor;border-radius:999px;padding:4px 18px;font-weight:900;font-size:20px;letter-spacing:.12em;}
+.sticker{background:var(--paper);color:var(--sumi);border:3px solid var(--sumi);border-radius:18px;box-shadow:6px 6px 0 var(--sumi);}
+#scrub{display:block;width:1280px;margin-top:8px;}
+#s1,#s2,#s8{background:var(--paper);}
+.lyr .chars{text-shadow:0 4px 24px rgba(0,0,0,.45);}
+</style>
+</head>
+<body>
+<div id="v">
+
+  <!-- S1 0–5 オープニング：ロゴのふぐが膨らむ -->
+  <section class="sc" id="s1">
+    <img id="s1-logo" class="abs" src="../../yamanishi-suisan/img/logo.jpg" style="left:490px;top:170px;width:300px;mix-blend-mode:multiply">
+    <div id="s1-say" class="abs" style="left:0;right:0;top:490px;text-align:center;font-family:var(--hand);font-size:40px;color:var(--shu)">ぷくっ</div>
+  </section>
+
+  <!-- S2 5–10 下関、富任町。 -->
+  <section class="sc" id="s2">
+    <img id="s2-logo" class="abs" src="../../yamanishi-suisan/img/logo.jpg" style="left:60px;top:44px;width:130px;mix-blend-mode:multiply">
+    <div id="s2-big" class="abs disp chars" style="left:0;right:0;top:230px;text-align:center;font-size:150px;line-height:1">下関、富任町。</div>
+    <div id="s2-sub" class="abs" style="left:0;right:0;top:460px;text-align:center;font-weight:900;font-size:30px;letter-spacing:.2em">明治十二年創業　下関ふぐ老舗問屋</div>
+    <div id="s2-name" class="abs disp" style="left:0;right:0;top:520px;text-align:center;font-size:64px;color:var(--shu)">山西水産</div>
+  </section>
+
+  <!-- S3 10–30 四代（5秒ずつ） -->
+  <section class="sc gen" id="g1" style="background:var(--paper)">
+    <div class="abs disp num" style="left:90px;top:80px;font-size:480px;line-height:1">初</div>
+    <div class="abs txt" style="left:690px;top:200px;width:520px">
+      <div style="font-weight:900;font-size:26px;letter-spacing:.14em">明治12年（1879）〜</div>
+      <div class="disp" style="font-size:54px;line-height:1.3;margin:14px 0 22px">宇之助の代<br>「渡海人」として起業</div>
+      <span class="tag">漁業・運搬</span>
+    </div>
+  </section>
+  <section class="sc gen" id="g2" style="background:var(--sora)">
+    <div class="abs disp num" style="left:90px;top:80px;font-size:480px;line-height:1">二</div>
+    <div class="abs txt" style="left:660px;top:200px;width:600px">
+      <div style="font-weight:900;font-size:26px;letter-spacing:.14em">昭和24年（1949）〜</div>
+      <div class="disp" style="font-size:46px;line-height:1.3;margin:14px 0 22px">克己の代<br>山西水産株式会社を設立</div>
+      <span class="tag">水産加工・仲卸</span>
+    </div>
+  </section>
+  <section class="sc gen" id="g3" style="background:var(--kinari)">
+    <div class="abs disp num" style="left:90px;top:80px;font-size:480px;line-height:1">三</div>
+    <div class="abs txt" style="left:660px;top:200px;width:600px">
+      <div style="font-weight:900;font-size:26px;letter-spacing:.14em">昭和47年（1972）〜</div>
+      <div class="disp" style="font-size:46px;line-height:1.3;margin:14px 0 22px">克之助の代<br>中国で「シマフグ」と出会う</div>
+      <span class="tag">ふぐ専門化</span>
+    </div>
+  </section>
+  <section class="sc gen" id="g4" style="background:var(--shu);color:#fff">
+    <div class="abs disp num" style="left:90px;top:80px;font-size:480px;line-height:1">四</div>
+    <div class="abs txt" style="left:690px;top:200px;width:540px">
+      <div style="font-weight:900;font-size:26px;letter-spacing:.14em">平成23年（2011）〜</div>
+      <div class="disp" style="font-size:54px;line-height:1.3;margin:14px 0 22px">4代目やまちゃん<br>EC・AI・地域産業へ</div>
+      <span class="tag">EC・AI・地域産業</span>
+    </div>
+  </section>
+
+  <!-- S4 30–35 1592→1888 -->
+  <section class="sc" id="s4" style="background:var(--sumi);color:var(--paper)">
+    <div class="abs" style="left:0;right:0;top:150px;text-align:center">
+      <div id="s4-year" class="disp" style="position:relative;display:inline-block;font-size:300px;line-height:1;font-variant-numeric:tabular-nums">
+        <span id="s4-num">1592</span>
+        <svg id="s4-mark" viewBox="0 0 200 200" style="position:absolute;left:50%;top:50%;width:330px;height:330px;margin:-165px 0 0 -165px;overflow:visible">
+          <path id="s4-x1" d="M52 52 L148 148" fill="none" stroke="#e0442a" stroke-width="9" stroke-linecap="round"/>
+          <path id="s4-x2" d="M148 52 L52 148" fill="none" stroke="#e0442a" stroke-width="9" stroke-linecap="round"/>
+          <circle id="s4-o" cx="100" cy="100" r="66" fill="none" stroke="#1b1a18" stroke-width="9"/>
+        </svg>
+      </div>
+      <div id="s4-who" style="font-weight:900;font-size:30px;letter-spacing:.14em;margin-top:6px">1592年　豊臣秀吉</div>
+      <div id="s4-what" class="disp" style="font-size:52px;margin-top:4px">ふぐ食禁止の令</div>
+    </div>
+  </section>
+
+  <!-- S5 35–40 南風泊市場 -->
+  <section class="sc" id="s5">
+    <div id="s5-b1" class="abs disp" style="top:120px;left:0;white-space:nowrap;font-size:150px;line-height:1.1">世界で唯一の、<span style="color:var(--shu)">ふぐ専門</span>市場。世界で唯一の、<span style="color:var(--shu)">ふぐ専門</span>市場。</div>
+    <div id="s5-b2" class="abs disp" style="top:330px;left:0;white-space:nowrap;font-size:150px;line-height:1.1;color:transparent;-webkit-text-stroke:3px var(--sumi)">南風泊市場　はえどまり　南風泊市場　はえどまり　</div>
+    <div id="s5-cap" class="abs" style="left:0;right:0;top:560px;text-align:center;font-weight:900;font-size:30px;letter-spacing:.16em">下関・南風泊市場から、直接買付。</div>
+  </section>
+
+  <!-- S6 40–50 商品 -->
+  <section class="sc prod" id="p1"><div class="photo"><img src="../../yamanishi-suisan/img/p1.jpg"></div><div class="abs sticker lbl" style="left:60px;bottom:60px;padding:16px 28px"><div style="font-weight:900;font-size:18px;letter-spacing:.16em;color:var(--shu)">PREMIUM · とらふぐ</div><div class="disp" style="font-size:52px">ふぐ刺し（薄造り）</div></div></section>
+  <section class="sc prod" id="p2"><div class="photo"><img src="../../yamanishi-suisan/img/p2.jpg"></div><div class="abs sticker lbl" style="left:60px;bottom:60px;padding:16px 28px"><div style="font-weight:900;font-size:18px;letter-spacing:.16em;color:var(--shu)">SIGNATURE · 鍋</div><div class="disp" style="font-size:52px">てっちり鍋セット</div></div></section>
+  <section class="sc prod" id="p3"><div class="photo"><img src="../../yamanishi-suisan/img/p4.jpg"></div><div class="abs sticker lbl" style="left:60px;bottom:60px;padding:16px 28px"><div style="font-weight:900;font-size:18px;letter-spacing:.16em;color:var(--shu)">EVERYDAY · 揚げ物</div><div class="disp" style="font-size:52px">ふぐの唐揚げ</div></div></section>
+  <section class="sc prod" id="p4"><div class="photo"><img src="../../yamanishi-suisan/img/p5.jpg"></div><div class="abs sticker lbl" style="left:60px;bottom:60px;padding:16px 28px"><div style="font-weight:900;font-size:18px;letter-spacing:.16em;color:var(--shu)">LUXURY · クエ</div><div class="disp" style="font-size:52px">クエ鍋セット</div></div></section>
+  <section class="sc prod" id="p5"><div class="photo"><img src="../../yamanishi-suisan/img/p6.jpg"></div><div class="abs sticker lbl" style="left:60px;bottom:60px;padding:16px 28px"><div style="font-weight:900;font-size:18px;letter-spacing:.16em;color:var(--shu)">ORIGINAL · ご飯</div><div class="disp" style="font-size:52px">ふぐ炊き込みご飯</div></div></section>
+  <section class="sc prod" id="p6"><div class="photo"><img src="../../yamanishi-suisan/img/p3.jpg"></div><div class="abs sticker lbl" style="left:60px;bottom:60px;padding:16px 28px"><div style="font-weight:900;font-size:18px;letter-spacing:.16em;color:var(--shu)">SEASONAL · あんこう</div><div class="disp" style="font-size:52px">あんこう鍋</div></div></section>
+
+  <!-- S7 50–70 サビの歌詞（5秒ずつ） -->
+  <section class="sc lyr" id="l1"><div class="photo"><img src="../../yamanishi-suisan/img/spread.jpg"></div><div class="shade"></div><div class="abs disp chars" style="left:0;right:0;bottom:90px;text-align:center;color:#fff;font-size:76px">海からのふく　今日もあなたに</div></section>
+  <section class="sc lyr" id="l2"><div class="photo"><img src="../../yamanishi-suisan/img/tataki.jpg"></div><div class="shade"></div><div class="abs disp chars" style="left:0;right:0;bottom:90px;text-align:center;color:#fff;font-size:76px">一匹一匹　心を込めて</div></section>
+  <section class="sc lyr" id="l3"><div class="photo"><img src="../../yamanishi-suisan/img/yamachan.jpg" style="object-position:50% 30%"></div><div class="shade"></div><div class="abs disp chars" style="left:0;right:0;bottom:90px;text-align:center;color:#fff;font-size:76px">下関から　届けたいのは</div></section>
+  <section class="sc lyr" id="l4"><div class="photo"><img src="../../yamanishi-suisan/img/sashimi.jpg"></div><div class="shade"></div><div class="abs disp chars" style="left:0;right:0;bottom:90px;text-align:center;color:#fff;font-size:68px">美味しさだけじゃない　幸せのかたち</div></section>
+
+  <!-- S8 70–75 エンドカード -->
+  <section class="sc" id="s8">
+    <img id="s8-logo" class="abs" src="../../yamanishi-suisan/img/logo.jpg" style="left:540px;top:60px;width:200px;mix-blend-mode:multiply">
+    <div id="s8-big" class="abs disp chars" style="left:0;right:0;top:300px;text-align:center;font-size:100px;line-height:1">ふくと生きる　<span style="color:var(--shu)">山西水産</span></div>
+    <div id="s8-sub" class="abs" style="left:0;right:0;top:450px;text-align:center;font-weight:900;font-size:26px;letter-spacing:.16em">下関ふぐ老舗問屋 · 明治12年（1879年）創業</div>
+    <div id="s8-shop" class="abs" style="left:0;right:0;top:540px;text-align:center">
+      <span class="tag" style="font-size:22px;margin:0 8px">楽天市場</span><span class="tag" style="font-size:22px;margin:0 8px">Yahoo!ショッピング</span><span class="tag" style="font-size:22px;margin:0 8px">BASE</span>
+    </div>
+    <div id="s8-url" class="abs" style="left:0;right:0;top:620px;text-align:center;font-weight:900;font-size:22px;letter-spacing:.1em">lp.yamanisi.co.jp</div>
+  </section>
+</div>
+<input id="scrub" type="range" min="0" max="75" step="0.01" value="0">
+
+<script>
+// ── 時間割（秒）。1小節 = 2.5秒、1拍 = 0.625秒 ──
+const BEAT = 0.625, BAR = 2.5, DURATION = 75;
+const $ = (s) => document.querySelector(s);
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const rng = (t, a, b) => clamp((t - a) / (b - a));
+const outCubic = (x) => 1 - Math.pow(1 - x, 3);
+const inOut = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+const outBack = (x, s = 1.9) => 1 + (s + 1) * Math.pow(x - 1, 3) + s * Math.pow(x - 1, 2);
+// 減衰する揺れ（ばね）: 0 で 0、1 に向かって行き過ぎてから落ち着く
+const spring = (x, k = 9, d = 5) => (x <= 0 ? 0 : 1 - Math.exp(-d * x) * Math.cos(k * x));
+
+// 見出しを1文字ずつに分けておく
+document.querySelectorAll(".chars").forEach((el) => {
+  const walk = (n) => [...n.childNodes].forEach((c) => {
+    if (c.nodeType === 3) {
+      const f = document.createDocumentFragment();
+      for (const ch of c.textContent) { const s = document.createElement("span"); s.className = "ch"; s.textContent = ch; f.append(s); }
+      c.replaceWith(f);
+    } else if (c.nodeType === 1) walk(c);
+  });
+  walk(el);
+});
+
+const scenes = [
+  ["#s1", 0, 5], ["#s2", 5, 10],
+  ["#g1", 10, 15], ["#g2", 15, 20], ["#g3", 20, 25], ["#g4", 25, 30],
+  ["#s4", 30, 35], ["#s5", 35, 40],
+  // 商品: 最初と最後は長め、真ん中は1拍x2 で刻む
+  ["#p1", 40, 42.5], ["#p2", 42.5, 43.75], ["#p3", 43.75, 45], ["#p4", 45, 46.25], ["#p5", 46.25, 47.5], ["#p6", 47.5, 50],
+  ["#l1", 50, 55], ["#l2", 55, 60], ["#l3", 60, 65], ["#l4", 65, 70],
+  ["#s8", 70, 75.01],
+].map(([sel, a, b]) => ({ el: $(sel), a, b }));
+
+// 文字を1つずつ落とす（start から gap 秒おき）
+function dropChars(el, t, start, gap = 0.06, from = -90) {
+  el.querySelectorAll(".ch").forEach((c, i) => {
+    const x = clamp((t - start - i * gap) / 0.55);
+    const y = (1 - spring(x * 1.4, 10, 5)) * from;
+    c.style.opacity = x > 0 ? 1 : 0;
+    c.style.transform = `translateY(${y}px) rotate(${(1 - spring(x * 1.4, 8, 4)) * (i % 2 ? 14 : -14)}deg)`;
+  });
+}
+
+function renderAt(t) {
+  for (const s of scenes) s.el.style.visibility = t >= s.a && t < s.b ? "visible" : "hidden";
+
+  // S1 ロゴ登場 → 拍に合わせて2回ぷくっ
+  if (t < 5) {
+    const pop = outBack(rng(t, 0.2, 0.9));
+    let sx = pop, sy = pop;
+    for (const [at, big] of [[1.875, 1.18], [3.125, 1.36]]) {
+      const k = rng(t, at, at + 0.5);
+      if (k > 0 && k < 1) { const b = Math.sin(k * Math.PI) * (big - 1); sx += b * 1.1; sy += b * 0.85; }
+    }
+    $("#s1-logo").style.transform = `scale(${sx},${sy}) rotate(${(1 - outCubic(rng(t, 0.2, 0.9))) * -25}deg)`;
+    const say = $("#s1-say");
+    say.textContent = t < 4.2 ? "ぷくっ" : "いらっしゃい！";
+    const sp = t < 4.2 ? Math.max(rng(t, 1.875, 2.1) * (1 - rng(t, 2.9, 3.0)), rng(t, 3.125, 3.35)) : rng(t, 4.2, 4.4);
+    say.style.opacity = sp;
+    say.style.transform = `scale(${0.6 + 0.4 * outBack(sp)})`;
+    // 最後の1拍で丸く抜ける
+    $("#s1").style.clipPath = `circle(${(1 - inOut(rng(t, 4.45, 5))) * 80}% at 50% 50%)`;
+  }
+
+  // S2 下関、富任町。
+  if (t >= 5 && t < 10) {
+    $("#s2-logo").style.transform = `scale(${outBack(rng(t, 5, 5.5))})`;
+    dropChars($("#s2-big"), t, 5.2, 0.12);
+    const k = rng(t, 6.6, 7.1), k2 = rng(t, 7.5, 8.1);
+    $("#s2-sub").style.opacity = k; $("#s2-sub").style.transform = `translateY(${(1 - outCubic(k)) * 30}px)`;
+    $("#s2-name").style.opacity = k2; $("#s2-name").style.transform = `scale(${0.4 + 0.6 * outBack(k2)})`;
+  }
+
+  // S3 四代：右から朱の幕が横切って切り替わる。漢数字は大きく叩きつける
+  ["#g1", "#g2", "#g3", "#g4"].forEach((id, i) => {
+    const a = 10 + i * 5;
+    if (t < a || t >= a + 5) return;
+    const el = $(id);
+    el.style.clipPath = `inset(0 0 0 ${(1 - inOut(rng(t, a, a + 0.45))) * 100}%)`;
+    const n = el.querySelector(".num");
+    const k = rng(t, a + 0.35, a + 0.95);
+    n.style.transform = `scale(${2.6 - 1.6 * spring(k * 1.3, 10, 6)}) rotate(${(1 - spring(k * 1.3, 8, 5)) * -20}deg)`;
+    n.style.opacity = k > 0 ? 1 : 0;
+    const tx = el.querySelector(".txt");
+    const k2 = rng(t, a + 0.9, a + 1.5);
+    tx.style.opacity = k2; tx.style.transform = `translateX(${(1 - outCubic(k2)) * 80}px)`;
+    // ゆっくり寄る
+    el.style.transform = `scale(${1 + rng(t, a, a + 5) * 0.04})`;
+  });
+
+  // S4 1592 →（約300年）→ 1888
+  if (t >= 30 && t < 35) {
+    const len = 136, olen = 2 * Math.PI * 66;
+    $("#s4-x1").style.strokeDasharray = len; $("#s4-x2").style.strokeDasharray = len;
+    $("#s4-x1").style.strokeDashoffset = len * (1 - rng(t, 30.3, 30.6));
+    $("#s4-x2").style.strokeDashoffset = len * (1 - rng(t, 30.6, 30.9));
+    const c = inOut(rng(t, 31.25, 33.4));
+    $("#s4-num").textContent = Math.round(1592 + (1888 - 1592) * c);
+    const lifted = t >= 33.4;
+    $("#s4").style.background = lifted ? "#e0442a" : "#1b1a18";
+    $("#s4").style.color = lifted ? "#fff" : "#f4efe4";
+    $("#s4-x1").style.opacity = $("#s4-x2").style.opacity = lifted ? 0 : 1;
+    $("#s4-o").style.strokeDasharray = olen;
+    $("#s4-o").style.strokeDashoffset = olen * (1 - rng(t, 33.45, 33.9));
+    $("#s4-who").textContent = t < 31.25 ? "1592年　豊臣秀吉" : !lifted ? "それから約300年" : "明治21年（1888年）　伊藤博文";
+    $("#s4-what").textContent = t < 31.25 ? "ふぐ食禁止の令" : !lifted ? "ふぐは、禁じられた。" : "山口県で、ふぐ食を解禁。";
+    const pop = lifted ? spring(rng(t, 33.4, 34.2) * 1.4, 12, 5) : 1;
+    $("#s4-year").style.transform = `scale(${lifted ? 1.25 - 0.25 * pop : 1})`;
+  }
+
+  // S5 南風泊市場：2本の帯が逆向きに流れる
+  if (t >= 35 && t < 40) {
+    const k = t - 35;
+    $("#s5-b1").style.transform = `translateX(${-k * 260}px) skewX(${-8 + rng(t, 35, 36) * 8}deg)`;
+    $("#s5-b2").style.transform = `translateX(${-1500 + k * 260}px)`;
+    const c = rng(t, 36.25, 36.8);
+    $("#s5-cap").style.opacity = c; $("#s5-cap").style.transform = `translateY(${(1 - outCubic(c)) * 24}px)`;
+  }
+
+  // S6 商品：写真はゆっくり寄り、名札が跳ねて出る
+  document.querySelectorAll(".prod").forEach((p, i) => {
+    const s = scenes.find((x) => x.el === p);
+    if (t < s.a || t >= s.b) return;
+    const k = rng(t, s.a, s.b);
+    p.querySelector("img").style.transform = `scale(${1.12 - 0.1 * k}) translateX(${(i % 2 ? -1 : 1) * k * 20}px)`;
+    const l = rng(t, s.a + 0.08, s.a + 0.5);
+    p.querySelector(".lbl").style.transform = `translateY(${(1 - spring(l * 1.3, 10, 5)) * 120}px) rotate(${-3 + (1 - l) * -6}deg)`;
+  });
+
+  // S7 サビ：写真の上に歌詞が1文字ずつ落ちてくる
+  document.querySelectorAll(".lyr").forEach((l, i) => {
+    const a = 50 + i * 5;
+    if (t < a || t >= a + 5) return;
+    l.querySelector("img").style.transform = `scale(${1.15 - 0.12 * rng(t, a, a + 5)})`;
+    l.style.opacity = rng(t, a, a + 0.3);
+    dropChars(l.querySelector(".chars"), t, a + 0.15, 0.07, -70);
+  });
+
+  // S8 エンドカード
+  if (t >= 70) {
+    $("#s8-logo").style.transform = `scale(${outBack(rng(t, 70, 70.6)) + Math.sin(rng(t, 71.25, 71.75) * Math.PI) * 0.2})`;
+    dropChars($("#s8-big"), t, 70.3, 0.07);
+    for (const [id, at] of [["#s8-sub", 71.6], ["#s8-shop", 72.2], ["#s8-url", 72.6]]) {
+      const k = rng(t, at, at + 0.5);
+      $(id).style.opacity = k; $(id).style.transform = `translateY(${(1 - outCubic(k)) * 24}px)`;
+    }
+  }
+}
+window.renderAt = renderAt;
+window.DURATION = DURATION;
+const scrub = $("#scrub");
+scrub.addEventListener("input", () => renderAt(Number(scrub.value)));
+renderAt(0);
+</script>
+</body>
+</html>

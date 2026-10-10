@@ -12,7 +12,8 @@ const server = createServer(async (req, res) => {
   let p = decodeURIComponent(new URL(req.url, "http://x").pathname);
   if (p.endsWith("/")) p += "index.html";
   try {
-    res.writeHead(200, { "content-type": types[extname(p)] || "application/octet-stream" }).end(await readFile(join(root, p)));
+    const body = await readFile(join(root, p));
+    res.writeHead(200, { "content-type": types[extname(p)] || "application/octet-stream" }).end(body);
   } catch {
     res.writeHead(404).end();
   }
@@ -22,7 +23,7 @@ const out = process.env.OUT_DIR || ".";
 // [名前, 要素id(または selector), セクション内の進み具合 0〜1]
 const shots = [
   ["hero-zoom", ".hero", 0.3], ["hero-photo", ".hero", 0.75],
-  ["gens-1", "#story", 0.0], ["gens-3", "#story", 0.55],
+  ["movie", "#movie", 0], ["gens-1", "#story", 0.0], ["gens-3", "#story", 0.55],
   ["ban-a", "#why", 0.12], ["ban-b", "#why", 0.45], ["ban-c", "#why", 0.9],
   ["market", ".market", 0], ["promise", "#promise", 0.55], ["lineup", "#lineup", 0], ["owner", "#owner", 0], ["shop", "#shop", 0], ["footer", "footer", 0],
 ];
@@ -69,7 +70,15 @@ for (const [name, viewport, reduced] of [["desktop", { width: 1440, height: 900 
     }
     await page.screenshot({ path: `${out}/ys-${name}-${String(i + 2).padStart(2, "0")}-${label}.png` });
   }
-  const ok = errors.length === 0 && state.hidden === 0 && !state.overflowX && state.banYear === "1888";
+  // PV: ボタンで再生が始まるか（この Chromium が H.264 を再生できる場合のみ時間が進む）
+  const pv = await page.evaluate(async () => {
+    const v = document.getElementById("pv");
+    document.querySelector(".frame .play").click();
+    await new Promise((r) => setTimeout(r, 2500));
+    return { playing: document.querySelector(".frame").classList.contains("playing"), time: v.currentTime, src: v.currentSrc.split("/").pop(), error: v.error && v.error.code };
+  });
+  state.pv = pv;
+  const ok = errors.length === 0 && state.pv.time > 0.5 && state.hidden === 0 && !state.overflowX && state.banYear === "1888";
   failed ||= !ok;
   console.log(ok ? "OK " : "NG ", name, JSON.stringify({ errors, ...state }));
   await page.close();

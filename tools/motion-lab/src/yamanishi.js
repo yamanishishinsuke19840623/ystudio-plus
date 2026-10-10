@@ -22,6 +22,7 @@ if (reduce) {
   splitChars();
   heroScroll();
   opening(lenis).then(heroIn);
+  movie();
   generations();
   ban();
   market(lenis);
@@ -156,6 +157,11 @@ function heroScroll() {
     cat.style.transform = `translateY(${(1 - c) * 40}px)`;
     fades.forEach((f) => (f.style.opacity = 1 - range(p, 0, 0.08)));
   }, { target: hero, offset: ["start start", "end end"] });
+}
+
+// ── PV：額縁が傾いた状態から、スクロールでまっすぐ大きくなる ──
+function movie() {
+  scroll(animate(".frame", { scale: [0.82, 1], rotate: [-4, 0] }, { ease: "linear" }), { target: $(".movie"), offset: ["start end", "center center"] });
 }
 
 // ── 四代：縦スクロールで、色の違う5枚が横に流れる ──
