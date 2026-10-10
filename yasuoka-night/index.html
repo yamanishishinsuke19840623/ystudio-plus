@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex">
 <link rel="icon" href="data:,">
 <title>安岡 響灘の夜 | Yスタジオ＋</title>
-<meta name="description" content="下関市・安岡のまちを、夕暮れから夜明け前まで3Dの夜景マップで眺める試作。位置関係のみ参考にした模式図です。">
+<meta name="description" content="下関市・安岡のまちを、夕暮れから夜明け前まで3Dの夜景マップで眺める試作。海岸線・駅・町名は公開データの位置にもとづいています。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
@@ -80,6 +80,20 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
 .lb.sea .tag{background:none;border:0;font-size:22px;font-weight:900;letter-spacing:.4em;color:var(--sea);text-shadow:0 0 12px rgba(63,208,255,.8);}
 .lb.sea .sub{color:rgba(63,208,255,.7);letter-spacing:.3em;}
 .lb.big .tag{font-size:13px;border-color:rgba(77,255,195,.5);box-shadow:0 0 12px rgba(77,255,195,.35);}
+.lb.yg .tag{font-size:13px;border-color:rgba(255,79,154,.7);box-shadow:0 0 14px rgba(255,79,154,.5);}
+.lb.yg .tag i.pk{background:var(--pink);color:#fff;}
+.lb.yg .sub{color:#ffb3d1;}
+.lb.tw .town{font-size:10px;color:rgba(220,228,255,.55);letter-spacing:.2em;text-shadow:0 0 6px #000;}
+
+/* スポット情報 */
+#info{display:none;top:330px;right:14px;width:250px;padding:14px;font-size:11px;line-height:1.7;color:var(--sub);}
+#info.open{display:block;}
+#info .pt{color:var(--text);font-size:15px;}
+#info dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:8px 0;}
+#info dt{color:var(--dim);font-size:10px;}
+#info dd{color:var(--text);}
+#info .src{font-size:9px;color:var(--dim);line-height:1.6;}
+#info .x{position:absolute;top:6px;right:10px;background:none;border:0;color:var(--text);font-size:18px;cursor:pointer;}
 
 @media (max-width:760px){
   #title{top:10px;left:10px;}
@@ -88,7 +102,12 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
   #stations .list{display:flex;gap:4px;overflow-x:auto;}
   .st{border-top:0;padding:4px 6px;flex:none;width:auto;}
   .st small{display:none;}
-  #spots{display:none;}
+  #spots{top:auto;bottom:178px;left:10px;right:10px;width:auto;padding:6px;}
+  #spots .ph,#spots .pt{display:none;}
+  #spList{display:flex;gap:2px;overflow-x:auto;}
+  .sp{flex:none;width:auto;padding:4px 6px;}
+  .sp small,.sp .bar{display:none;}
+  #info{top:auto;bottom:230px;left:10px;right:10px;width:auto;max-height:40vh;overflow:auto;}
   #time{bottom:10px;width:calc(100% - 20px);padding:10px 12px;}
   #clock{font-size:22px;}
   #note{top:66px;bottom:auto;left:10px;right:auto;text-align:left;}
@@ -111,7 +130,7 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
 <aside id="stations" class="panel">
   <div class="ph en">JR San'in Line</div>
   <div class="pt">安岡まわりの駅</div>
-  <p class="pn">山陰本線の駅の並びをもとにしています。タップするとその駅へ寄ります。時刻表は載せていません。</p>
+  <p class="pn">山陰本線の駅の位置は公開データから。タップするとその駅へ寄ります。時刻表は載せていません。</p>
   <div class="list" id="stList"></div>
 </aside>
 
@@ -129,19 +148,21 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
   <div class="ticks"><span>17:00</span><span>19:00</span><span>21:00</span><span>23:00</span><span>1:00</span><span>3:00</span><span>5:00</span></div>
 </section>
 
-<div id="note"><span>模式図です。建物・道路の配置は実際のものではありません。</span><br><button id="aboutBtn">この地図について</button></div>
+<aside id="info" class="panel"></aside>
+
+<div id="note"><span>海岸線・駅・町名は実際の位置。建物と道はイメージです。</span><br><button id="aboutBtn">この地図について</button></div>
 
 <div id="about">
   <div class="box panel">
     <button class="x" id="aboutClose" aria-label="閉じる">×</button>
     <h2>この地図について</h2>
     <p>下関市・安岡の夜を、夕暮れから夜明け前まで眺めるための試作です。</p>
-    <h3 class="en">Based on</h3>
-    <p>・JR山陰本線の駅の並び（綾羅木 → 梶栗郷台地 → 安岡 → 福江）<br>・まちの西側が海（響灘）に面していること</p>
+    <h3 class="en">Real data</h3>
+    <p>・海岸線：国土数値情報 行政区域データ（国土交通省、2020年）<br>・駅の位置：駅データ.jp（open-data-jp-railway-stations 経由）<br>・町名の位置：町丁目の代表点（Geolonia 住所データ）<br>・やすらガーデン：住所（富任町5丁目10-1）の町丁目の代表点に置いています。施設の正確な位置ではありません</p>
     <h3 class="en">Not real</h3>
-    <p>・建物、道路、家の灯りの数や点灯時刻はすべて演出です<br>・駅どうしの距離や海岸線の形は実際とは異なります<br>・列車の動きと沖の船の灯りはイメージで、実際のダイヤや漁の様子ではありません</p>
+    <p>・建物ひとつひとつの形と配置は、町の代表点の近くほど家が多くなるように置いたイメージです<br>・道は町と町をつないだ模式の線で、実際の道路ではありません<br>・線路は駅どうしを結んだ近似の線です<br>・家の灯りの数と点く時間、列車の動き、沖の船の灯りは演出です（実際のダイヤではありません）</p>
     <h3 class="en">Next</h3>
-    <p>国土地理院やOpenStreetMapの地図データを取り込めば、実際の建物・道路の配置で描き直せます。</p>
+    <p>OpenStreetMap などの建物・道路データを取り込めば、家並みと道も実際の形で描けます。</p>
   </div>
 </div>
 
