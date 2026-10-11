@@ -21,7 +21,7 @@
 //  3  5.0–7.5  ホイップパン     : 子どもたちの写真2枚を、ブレながら横に振って切り替え ＋「子どもから大人まで、」
 //  4  7.5–10   クレーンアップ   : 校庭の輪の写真が下から昇る ＋ スピードランプの数字（20回以上・5,000人以上・13会場）
 //  5  10–12.5  ラックフォーカス : ぼけた夜空の泡にピントが合う ＋「その夜を、きっとずっと覚えてる。」
-//  6  12.5–15  締め             : ロゴ・「学校・PTA・地域イベントへ」・LINEで相談 → フェードアウト
+//  6  12.5–15  締め             : ロゴ・「学校・PTA・地域イベントへ」・「お気軽に、カオスやストリートのインスタグラムDMへ」→ フェードアウト
 // 文言はすべて /nightbubble/ のページに載っている事実・言葉から。
 const W = 1080, H = 1920, BAR = 2.5, BEAT = BAR / 4;
 window.DURATION = 15;
@@ -141,6 +141,20 @@ function tag(s, px, py, a = 1, scale = 1) {
   x.fillStyle = C.ink; x.textAlign = "center"; x.textBaseline = "middle"; x.fillText(s, 0, 3);
   x.restore();
 }
+// 2行のステッカー
+function tag2(lines, px, py, a = 1, scale = 1) {
+  if (a <= 0) return;
+  x.save();
+  x.globalAlpha = a;
+  x.translate(px, py); x.scale(scale, scale); x.rotate(-0.035);
+  x.font = "900 62px 'Zen Maru Gothic'";
+  const w = Math.max(...lines.map((l) => x.measureText(l).width)) + 100, h = lines.length * 82 + 44;
+  rr(-w / 2 + 10, -h / 2 + 10, w, h, 40); x.fillStyle = C.ink; x.fill();
+  rr(-w / 2, -h / 2, w, h, 40); x.fillStyle = C.moon; x.fill(); x.lineWidth = 7; x.strokeStyle = C.ink; x.stroke();
+  x.fillStyle = C.ink; x.textAlign = "center"; x.textBaseline = "middle";
+  lines.forEach((l, i) => x.fillText(l, 0, (i - (lines.length - 1) / 2) * 82 + 3));
+  x.restore();
+}
 const pop = (t, at, d = 0.35) => ({ a: range(t, at, at + 0.12), scale: back(range(t, at, at + d)) });
 
 // ── 各場面 ──
@@ -258,9 +272,11 @@ function s6(t) {
   }
   text("学校・PTA・地域イベントへ", W / 2, 1120, 66, pop(t, 12.5 + BEAT));
   text("出張ナイトバブルショー", W / 2, 1250, 88, { ...pop(t, 12.5 + BEAT * 1.5), color: C.moon });
-  tag("LINEで相談受付中", W / 2, 1450, range(t, 12.5 + BEAT * 2, 12.5 + BEAT * 2 + 0.1), back(range(t, 12.5 + BEAT * 2, 12.5 + BEAT * 2 + 0.35)));
-  text("ystudio.yamanisi.co.jp/nightbubble", W / 2, 1600, 40, { ...pop(t, 12.5 + BEAT * 2.5), font: "700", stroke: false });
-  text("Yスタジオ＋ ナイトバブル事業部", W / 2, 1720, 38, { ...pop(t, 12.5 + BEAT * 2.5), font: "700", stroke: false, color: "#c9ccd4" });
+  // お問い合わせ：カオスやストリートの Instagram DM（本人の指定の言葉どおり）
+  text("お気軽に、", W / 2, 1400, 64, { ...pop(t, 12.5 + BEAT * 2), font: "400", fam: "Yusei Magic" });
+  const at = 12.5 + BEAT * 2.4;
+  tag2(["カオスやストリートの", "インスタグラムDMへ"], W / 2, 1560, range(t, at, at + 0.1), back(range(t, at, at + 0.35)));
+  text("Yスタジオ＋ ナイトバブル事業部", W / 2, 1760, 38, { ...pop(t, 12.5 + BEAT * 3), font: "700", stroke: false, color: "#c9ccd4" });
   // 最後に夜へ溶ける
   const f = range(t, 14.3, 15);
   if (f > 0) { x.fillStyle = `rgba(7,9,15,${f})`; x.fillRect(0, 0, W, H); }
