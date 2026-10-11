@@ -152,9 +152,8 @@ function heroIn() {
 // ── ヒーロー（ドリーイン＋ドリーズーム）：泡の中へ寄っていくほど、中の夜空は引いて広がる ──
 function hero() {
   const sec = $(".hero"), stick = $(".stick", sec);
-  const copy = $(".copy", sec), cat = $(".catch", sec), hint = $(".hint", sec), ring = $(".ring", sec);
-  // 泡はずっとゆらゆら息をしている
-  animate($(".bub", ring), { scale: [1, 1.04, 0.98, 1], rotate: [0, 4, -3, 0] }, { duration: 5, repeat: Infinity, ease: "easeInOut" });
+  const copy = $(".copy", sec), cat = $(".catch", sec), hint = $(".hint", sec), ring = $(".ring", sec), photo = $(".photo", sec);
+  const orb = makeOrb($(".orb", ring));
   scroll((p) => {
     const w = stick.clientWidth, h = stick.clientHeight;
     const r0 = Math.min(w, h) * (wide ? 0.2 : 0.22);
@@ -166,8 +165,11 @@ function hero() {
     stick.style.setProperty("--r", r + "px");
     stick.style.setProperty("--cx", cx0 + (50 - cx0) * z + "%");
     stick.style.setProperty("--cy", cy0 + (50 - cy0) * z + "%");
-    stick.style.setProperty("--z", (1.45 - 0.45 * z).toFixed(4));
-    ring.style.opacity = 1 - range(p, 0.3, 0.5);
+    stick.style.setProperty("--z", (1.25 - 0.25 * z).toFixed(4));
+    // 最初は描いたシャボン玉。寄っていくと、膜の向こうに本物の写真が見えてくる
+    photo.style.opacity = range(z, 0.06, 0.32);
+    ring.style.opacity = 1 - range(z, 0.22, 0.5);
+    orb.active = z < 0.5;
     copy.style.opacity = 1 - range(p, 0.02, 0.18);
     copy.style.transform = `translateY(${-range(p, 0, 0.2) * 60}px)`;
     copy.style.pointerEvents = p > 0.15 ? "none" : "";
@@ -176,6 +178,101 @@ function hero() {
     cat.style.opacity = c;
     cat.style.transform = `translateY(${(1 - c) * 40}px)`;
   }, { target: sec, offset: ["start start", "end end"] });
+}
+
+// ── 描いたシャボン玉：透明な膜に、虹色の干渉色がゆっくり流れる（写真を拡大しないので、どの大きさでもくっきり）──
+function makeOrb(cv) {
+  const ctx = cv.getContext("2d");
+  const film = document.createElement("canvas"), fx = film.getContext("2d");
+  const state = { active: true };
+  let S = 0;
+  const size = () => {
+    const d = Math.min(devicePixelRatio || 1, 2);
+    S = Math.round(cv.clientWidth * d);
+    if (!S) return;
+    cv.width = cv.height = film.width = film.height = S;
+  };
+  const draw = (t) => {
+    if (!S) return;
+    const c = S / 2, r = S / 2 / 1.12;
+    ctx.clearRect(0, 0, S, S);
+    // ゆらゆら（膜がわずかに伸び縮み）
+    ctx.save();
+    ctx.translate(c, c);
+    ctx.scale(1 + Math.sin(t * 1.3) * 0.012, 1 - Math.sin(t * 1.3) * 0.012);
+    ctx.translate(-c, -c);
+    // 本体：中心はほぼ透明、ふちほど白く光る
+    let g = ctx.createRadialGradient(c - r * 0.12, c - r * 0.15, r * 0.1, c, c, r);
+    g.addColorStop(0, "rgba(255,255,255,0.015)");
+    g.addColorStop(0.72, "rgba(170,210,255,0.06)");
+    g.addColorStop(0.93, "rgba(220,235,255,0.22)");
+    g.addColorStop(1, "rgba(255,255,255,0.42)");
+    ctx.beginPath(); ctx.arc(c, c, r, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
+    // 干渉色：色の塊をゆっくり回して、ふちに寄せる
+    fx.globalCompositeOperation = "source-over";
+    fx.clearRect(0, 0, S, S);
+    const hues = [190, 300, 50, 140, 260, 20];
+    hues.forEach((h, k) => {
+      const a = t * 0.35 + k * 1.047 + Math.sin(t * 0.5 + k) * 0.4;
+      const bx = c + Math.cos(a) * r * 0.62, by = c + Math.sin(a) * r * 0.62;
+      const bg = fx.createRadialGradient(bx, by, 0, bx, by, r * 0.75);
+      bg.addColorStop(0, `hsla(${h + Math.sin(t * 0.7 + k) * 25},100%,62%,0.55)`);
+      bg.addColorStop(1, `hsla(${h},100%,62%,0)`);
+      fx.fillStyle = bg;
+      fx.fillRect(0, 0, S, S);
+    });
+    // 膜の模様（うずを巻く細い帯）
+    fx.lineWidth = r * 0.05;
+    for (let k = 0; k < 3; k++) {
+      fx.beginPath();
+      fx.ellipse(c, c + r * 0.2 * Math.sin(t * 0.4 + k * 2), r * (0.5 + k * 0.13), r * (0.22 + k * 0.08), t * 0.25 + k, 0, Math.PI * 2);
+      fx.strokeStyle = `hsla(${(t * 30 + k * 110) % 360},100%,70%,0.09)`;
+      fx.stroke();
+    }
+    // ふちに寄せるマスク（中心は透明）
+    fx.globalCompositeOperation = "destination-in";
+    const m = fx.createRadialGradient(c, c, r * 0.35, c, c, r);
+    m.addColorStop(0, "rgba(0,0,0,0.12)");
+    m.addColorStop(0.75, "rgba(0,0,0,0.55)");
+    m.addColorStop(0.97, "rgba(0,0,0,1)");
+    m.addColorStop(1, "rgba(0,0,0,0)");
+    fx.fillStyle = m;
+    fx.fillRect(0, 0, S, S);
+    ctx.globalCompositeOperation = "screen";
+    ctx.drawImage(film, 0, 0);
+    ctx.globalCompositeOperation = "source-over";
+    // ふちの細い光
+    const cg = ctx.createConicGradient(t * 0.4, c, c);
+    ["#9ff6ff", "#ffb3ec", "#fff7a8", "#b0ffc6", "#c7b6ff", "#9ff6ff"].forEach((col, i, a) => cg.addColorStop(i / (a.length - 1), col));
+    ctx.beginPath(); ctx.arc(c, c, r * 0.985, 0, Math.PI * 2);
+    ctx.lineWidth = Math.max(1.5, r * 0.018); ctx.strokeStyle = cg; ctx.globalAlpha = 0.85; ctx.stroke();
+    ctx.globalAlpha = 1;
+    // 映り込み：左上の窓（大）と右下の小さな光
+    ctx.save();
+    ctx.translate(c - r * 0.42, c - r * 0.45);
+    ctx.rotate(-0.75);
+    g = ctx.createLinearGradient(0, -r * 0.12, 0, r * 0.12);
+    g.addColorStop(0, "rgba(255,255,255,0.75)");
+    g.addColorStop(1, "rgba(255,255,255,0.05)");
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.ellipse(0, 0, r * 0.26, r * 0.1, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+    ctx.beginPath(); ctx.arc(c + r * 0.5, c + r * 0.52, r * 0.05, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(255,255,255,0.45)"; ctx.fill();
+    ctx.beginPath(); ctx.arc(c, c, r * 0.9, 0.15 * Math.PI, 0.42 * Math.PI);
+    ctx.lineWidth = r * 0.035; ctx.strokeStyle = "rgba(255,255,255,0.28)"; ctx.lineCap = "round"; ctx.stroke();
+    ctx.restore();
+  };
+  size();
+  addEventListener("resize", size);
+  if (window.ResizeObserver) new ResizeObserver(size).observe(cv);
+  const t0 = performance.now();
+  const loop = (now) => {
+    if (state.active) draw((now - t0) / 1000);
+    requestAnimationFrame(loop);
+  };
+  requestAnimationFrame(loop);
+  return state;
 }
 
 // ── 数字（スピードランプ）：一気に回って、最後だけゆっくり止まる ──

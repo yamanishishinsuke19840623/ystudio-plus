@@ -27,6 +27,7 @@ scroll((p) => {
   stick.style.setProperty("--cx", 73 + (50 - 73) * z + "%");      // 文字にかからない位置から中央へ
 }, { target: hero, offset: ["start start", "end end"] });
 ```
+小さい円の中に写真を拡大して入れると粗く見える。最初は canvas で描いたシャボン玉（`nightbubble.js` の `makeOrb`）にして、円が広がるにつれて写真を `opacity` でフェードインさせる。
 文字の線の中へ入る版は `premium-lp`（山西水産の `heroScroll`。canvas で一番太い線の中心を拡大の中心にする）。
 
 ## 07 クレーンアップ（下から昇って止まる）
