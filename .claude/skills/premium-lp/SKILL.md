@@ -76,7 +76,7 @@ cd tools/lp && npm install && npm run build && OUT_DIR=<スクショ置き場> n
 | 9 | 購入 | モール・自社EC・電話・SNS | 行が朱で塗りつぶされる |
 | 10 | フッター | 社名を巨大な筆文字で | 1文字ずつぷくっ |
 
-- **演出はカメラワークの名前で決める**（`references/camera-work.md`）。「いい感じに」ではなく
+- **演出はカメラワークの名前で決める**（`camera-work` スキル）。「いい感じに」ではなく
   「ヒーローはドリーズーム、ギャラリーはパン＋ホイップパン＋ラックフォーカス」と名前で書き、関数のコメントにも残す。
 - 大技は3つまで（例: 文字に吸い込まれる・年号カウンター・横年表）。大技は必ず**その会社の事実**と組にする
   （年号カウンターは「禁止令と解禁の年」という事実があるから効く。無い会社に付けても空振り）。
@@ -119,7 +119,7 @@ cd tools/lp && npm install && npm run build && OUT_DIR=<スクショ置き場> n
 | `references/animation-recipes.md` | 演出を選ぶ・調整するとき。関数名・数値・スマホ/動き控えめ時の扱い |
 | `references/pv-pipeline.md` | PVを作る・長さを変えるとき |
 | `references/review-checklist.md` | 公開前、ユーザーに見せる前 |
-| `references/camera-work.md` | 演出を名前で決める・頼むとき（カメラワーク＆切り替え24と、Webでの作り方） |
+| `../camera-work/`（スキル） | 演出を名前で決める・頼むとき（カメラワーク＆切り替え24、Webでの作り方、貼れるコード） |
 | `references/yamanishi-case.md` | 山西水産を触るとき／お客さんの反応の実例を知りたいとき |
 | `references/nightbubble-case.md` | ナイトバブルを触るとき／イベント・サービス業（老舗でない）での作り方、踏んだ穴 |
 | `assets/starter/` | `scripts/init-project.sh` が展開する完成形のコード一式 |

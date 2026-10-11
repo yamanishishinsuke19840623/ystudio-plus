@@ -4,7 +4,7 @@
   （Instagram のプロフィールのリンクが `nightbubble.html` を指しているため。差し替えは本人OK後）
 - コード: `nightbubble/index.html`（HTML/CSS）、`tools/motion-lab/src/nightbubble.js`（動き）→ `nightbubble/app.js`、
   `nightbubble/game.js`（旧ページのシャボン玉わりゲームを移植＋予定の日付チェック）、`tools/motion-lab/check-nightbubble.mjs`
-- 依頼: 「新しい、100万円以上するサイトにバージョンアップして！」＋カメラワーク24のチートシート（→ `camera-work.md`）
+- 依頼: 「新しい、100万円以上するサイトにバージョンアップして！」＋カメラワーク24のチートシート（→ `camera-work` スキル）
 
 ## 事実（FACT）— すべて旧 `nightbubble.html` から。新しく足した事実は無い
 - Yスタジオ＋ ナイトバブル事業部／運営 山西水産株式会社（Yスタジオ＋）代表 山西伸典／活動エリア 下関市および周辺
