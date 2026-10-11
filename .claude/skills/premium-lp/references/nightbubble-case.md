@@ -1,7 +1,7 @@
 # 実例: ナイトバブルショー（2026-10 制作）
 
-- 新ページ: `nightbubble/`（https://ystudio.yamanisi.co.jp/nightbubble/ 公開後。noindex）。旧ページ `nightbubble.html` はそのまま残してある
-  （Instagram のプロフィールのリンクが `nightbubble.html` を指しているため。差し替えは本人OK後）
+- 公開: https://ystudio.yamanisi.co.jp/nightbubble/ （2026-10 本人OKで公開、noindex 解除）。旧 `nightbubble.html` は新ページへの転送ページ
+  （Instagram のプロフィールのリンク `nightbubble.html?utm_…` もクエリごと新ページへ送る）。サイト内のリンクは `nightbubble/` に直した
 - コード: `nightbubble/index.html`（HTML/CSS）、`tools/motion-lab/src/nightbubble.js`（動き）→ `nightbubble/app.js`、
   `nightbubble/game.js`（旧ページのシャボン玉わりゲームを移植＋予定の日付チェック）、`tools/motion-lab/check-nightbubble.mjs`
 - 依頼: 「新しい、100万円以上するサイトにバージョンアップして！」＋カメラワーク24のチートシート（→ `camera-work` スキル）
@@ -51,7 +51,6 @@
 - チェックでは Google Fonts だけ通す（`page.route` で fonts.g* 以外の外部を止める）と、本番に近い見た目でスクショできる
 
 ## 残っている宿題（本人確認）
-- 旧 `nightbubble.html` を新ページに置き換えるか（Instagram のリンク先。置き換えるなら旧URLから新URLへ転送）
 - `kaosuya-nightbubble-09.jpg`（=`kiyosue-1.jpg`）がどのイベントの写真か
 - 料金の目安を載せるか（現状「規模による・まずは相談」のまま）
 - 60秒PV（`pv-pipeline.md`）を作るか。今回は本物のYouTube動画を主役にした
