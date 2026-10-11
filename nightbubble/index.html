@@ -93,7 +93,7 @@ html:not(.js) #loader{display:none}
   radial-gradient(2px 2px at 78% 30%,#fff9 50%,transparent),radial-gradient(1px 1px at 88% 62%,#fff6 50%,transparent),
   radial-gradient(1.5px 1.5px at 6% 86%,#fff5 50%,transparent),radial-gradient(1px 1px at 52% 46%,#fff4 50%,transparent)}
 .hero .photo{position:absolute;inset:0;clip-path:circle(var(--r,17vmin) at var(--cx,50%) var(--cy,52%));will-change:clip-path}
-.hero .photo img{width:100%;height:100%;object-fit:cover;transform:scale(var(--z,1.25))}
+.hero .photo img{width:100%;height:100%;object-fit:cover;object-position:55% 62%;transform:scale(var(--z,1.25));transform-origin:55% 62%}
 .hero .ring{position:absolute;left:calc(var(--cx,50%) - var(--r,17vmin));top:calc(var(--cy,52%) - var(--r,17vmin));width:calc(var(--r,17vmin)*2);height:calc(var(--r,17vmin)*2);border-radius:50%}
 .hero .ring .orb{position:absolute;left:-6%;top:-6%;width:112%;height:112%}
 .js .hero .photo{opacity:0}
@@ -401,7 +401,7 @@ footer{background:var(--night);padding:clamp(70px,9vw,110px) 0 40px;overflow:hid
 <section class="hero on-dark" aria-label="ナイトバブルショー">
   <div class="stick">
     <div class="stars"></div>
-    <div class="photo"><img src="img/crowd.jpg" alt="目の前の大きなシャボン玉を見つめる子どもたち"></div>
+    <div class="photo"><img src="img/hero.jpg" alt="夜空いっぱいのシャボン玉の中に立つ、シャボン玉おじさん やまちゃん（Kaosuya Night Bubble 2025・安岡小学校）"></div>
     <div class="ring" aria-hidden="true"><canvas class="orb"></canvas></div>
     <div class="copy">
       <h1><span class="l1">はじめての</span><span class="l2"><em>夜</em>に、なる。</span></h1>
