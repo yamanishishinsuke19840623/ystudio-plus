@@ -196,6 +196,16 @@ html:not(.js) .hero .catch{position:relative;opacity:1;background:none;padding-t
 .yt:hover::after{transform:scale(1.1)}
 .yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .frame .yt{height:100%}
+.pv{display:grid;grid-template-columns:minmax(0,380px) 1fr;gap:clamp(30px,5vw,70px);align-items:center;margin:10px 0 clamp(60px,8vw,100px)}
+.phone{position:relative;aspect-ratio:9/16;border:3px solid var(--paper);border-radius:34px;overflow:hidden;box-shadow:10px 10px 0 var(--moon);background:#000;transform-origin:50% 70%}
+.phone video{display:block;width:100%;height:100%;object-fit:cover}
+.phone .play{position:absolute;inset:0;border:0;background:transparent;cursor:pointer}
+.phone .play::after{content:"";position:absolute;left:50%;top:50%;width:92px;height:92px;margin:-46px;border-radius:50%;background:var(--moon) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5v14l11-7z' fill='%2315161a'/%3E%3C/svg%3E") 56% 50%/44% no-repeat;border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);transition:transform .2s}
+.phone .play:hover::after{transform:scale(1.1)}
+.phone.playing .play{display:none}
+.pvtxt .big{font-family:var(--maru);font-weight:900;font-size:clamp(34px,5vw,68px);line-height:1.25;margin:.5em 0 .4em}
+.pvtxt .big em{font-style:normal;color:var(--moon)}
+.pvtxt .hand{color:var(--sub);font-size:17px}
 .ytgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:28px}
 .ytgrid .yt{border-radius:14px;overflow:hidden;border:2.5px solid var(--line)}
 .ytgrid .yt::after{width:44px;height:44px;margin:-22px;border-width:2.5px;box-shadow:3px 3px 0 var(--ink)}
@@ -335,6 +345,8 @@ footer{background:var(--night);padding:clamp(70px,9vw,110px) 0 40px;overflow:hid
   .shot img,.shot.tall img{height:52vh;max-width:84vw}
   .shot.title{display:none}
   .ytgrid{grid-template-columns:repeat(2,1fr)}
+  .pv{grid-template-columns:1fr;justify-items:center;text-align:center}
+  .phone{width:min(78vw,360px)}
   .sched .row{grid-template-columns:1fr;gap:10px}
   .sched .badge{justify-self:start}
   .steps{grid-template-columns:1fr;gap:30px}
@@ -541,6 +553,20 @@ footer{background:var(--night);padding:clamp(70px,9vw,110px) 0 40px;overflow:hid
   <div class="wrap">
     <span class="tag">Movie</span>
     <h2 class="h2" id="movies-h"><span class="ln">音と光と、</span><span class="ln"><em>シャボン玉</em>。</span></h2>
+    <div class="pv">
+      <div class="phone">
+        <video id="pv" preload="none" playsinline poster="media/nightbubble-pv15-poster.jpg" aria-label="ナイトバブル 15秒PV">
+          <source src="media/nightbubble-pv15.mp4" type="video/mp4">
+          <source src="media/nightbubble-pv15.webm" type="video/webm">
+        </video>
+        <button class="play" type="button" aria-label="15秒PVを音ありで再生"></button>
+      </div>
+      <div class="pvtxt">
+        <span class="tag">15秒PV</span>
+        <p class="big"><span class="ln"><em>15</em>秒で、</span><span class="ln">のぞいてみて。</span></p>
+        <p class="hand">音が出ます。再生ボタンを押してね。</p>
+      </div>
+    </div>
     <div class="frame"><button class="yt" data-id="mLgAN-oA-G0" aria-label="ナイトバブルの動画を再生"></button></div>
     <div class="ytgrid">
       <button class="yt" data-id="sBEbhyXzJac" aria-label="ナイトバブルの動画2を再生"></button>

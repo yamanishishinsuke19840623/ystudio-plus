@@ -278,6 +278,8 @@ function reel(lenis) {
 
 // ── 動画（ダッチアングル→正面）：斜めに傾いた額縁が、スクロールでまっすぐ大きくなる ──
 function movie() {
+  // 縦のPVも、傾いたスマホが正面を向く
+  scroll(animate(".phone", { scale: [0.86, 1], rotate: [7, 0] }, { ease: "linear" }), { target: $(".phone"), offset: ["start end", "center center"] });
   scroll(animate(".frame", { scale: [0.82, 1], rotate: [-6, 0] }, { ease: "linear" }), { target: $(".frame"), offset: ["start end", "center center"] });
 }
 

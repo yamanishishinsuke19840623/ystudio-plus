@@ -74,7 +74,14 @@ for (const [name, viewport, reduced, mobile] of [
     await page.waitForTimeout(1200);
     await page.screenshot({ path: `${out}/${name}-06b-reel-mid.png` });
   }
-  const ok = errors.length === 0 && state.hidden === 0 && !state.overflowX && state.counts === "20,5,000,13" && !state.loader;
+  // 15秒PV：ボタンで再生が始まるか
+  await page.evaluate(() => document.querySelector(".pv").scrollIntoView());
+  await page.waitForTimeout(300);
+  await page.click(".phone .play");
+  await page.waitForTimeout(1500);
+  state.pv = await page.evaluate(() => { const v = document.getElementById("pv"); return { time: +v.currentTime.toFixed(2), src: v.currentSrc.split("/").pop(), error: v.error && v.error.code }; });
+  await page.screenshot({ path: `${out}/${name}-pv.png` });
+  const ok = state.pv.time > 0.3 && errors.length === 0 && state.hidden === 0 && !state.overflowX && state.counts === "20,5,000,13" && !state.loader;
   failed ||= !ok;
   console.log(ok ? "OK " : "NG ", name, JSON.stringify({ errors, ...state }));
   await ctx.close();
