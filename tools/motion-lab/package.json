@@ -4,10 +4,11 @@
   "type": "module",
   "description": "Motion（旧 Framer Motion）でアニメーション特化ページ（/motion-lab/・/yamanishi-suisan/）をつくる",
   "scripts": {
-    "build": "npm run build:lab && npm run build:yamanishi",
-    "check": "node check.mjs && node check-yamanishi.mjs",
+    "build": "npm run build:lab && npm run build:yamanishi && npm run build:nightbubble",
+    "check": "node check.mjs && node check-yamanishi.mjs && node check-nightbubble.mjs",
     "build:lab": "esbuild src/main.js --bundle --minify --format=esm --target=es2020 --outfile=../../motion-lab/app.js",
-    "build:yamanishi": "esbuild src/yamanishi.js --bundle --minify --format=esm --target=es2020 --outfile=../../yamanishi-suisan/app.js"
+    "build:yamanishi": "esbuild src/yamanishi.js --bundle --minify --format=esm --target=es2020 --outfile=../../yamanishi-suisan/app.js",
+    "build:nightbubble": "esbuild src/nightbubble.js --bundle --minify --format=esm --target=es2020 --outfile=../../nightbubble/app.js"
   },
   "dependencies": {
     "lenis": "^1.3.26",

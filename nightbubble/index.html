@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="ja" class="js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://ystudio.yamanisi.co.jp/nightbubble/">
+<meta property="og:url" content="https://ystudio.yamanisi.co.jp/nightbubble/">
+<title>ナイトバブルショー 下関 | 学校・PTA・地域イベントへの出張バブル演出 | Yスタジオ＋</title>
+<meta name="description" content="下関市で活動するシャボン玉おじさんやまちゃんのナイトバブルショー。学校行事・PTA・地域イベントへ、無数のシャボン玉が夜空を彩る演出をお届けします。昼のシャボン玉ショーも対応。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ナイトバブルショー 下関 | Yスタジオ＋ ナイトバブル事業部">
+<meta property="og:description" content="はじめての夜に、なる。学校・PTA・地域イベントへ、無数のシャボン玉の夜をお届けします。">
+<meta property="og:image" content="https://ystudio.yamanisi.co.jp/nightbubble/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#07090f">
+<link rel="icon" href="img/moon.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Yusei+Magic&display=swap" rel="stylesheet">
+<script>
+  // app.js が読めない・遅いときは、隠していた要素をすべて見せる
+  setTimeout(function () { if (!window.__motionReady) document.documentElement.classList.remove("js"); }, 2500);
+</script>
+<style>
+:root{
+  --night:#07090f; --night2:#10131b; --paper:#f3eee3; --ink:#15161a;
+  --moon:#ffcf3a; --sub:#a9adb8; --line:#2a2e39; --logo:#010c26;
+  --maru:"Zen Maru Gothic",system-ui,sans-serif;
+  --kaku:"Zen Kaku Gothic New",system-ui,sans-serif;
+  --hand:"Yusei Magic",var(--kaku);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--night);color:var(--paper);font-family:var(--kaku);font-size:16px;line-height:1.9;overflow-x:clip;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{color:inherit}
+button{font:inherit;color:inherit}
+.wrap{width:min(1160px,100% - 40px);margin-inline:auto}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+::selection{background:var(--moon);color:var(--ink)}
+
+/* ── 共通パーツ ── */
+.tag{display:inline-flex;align-items:center;gap:.5em;font-family:var(--maru);font-weight:900;font-size:13px;letter-spacing:.08em;background:var(--moon);color:var(--ink);border:2.5px solid var(--ink);border-radius:999px;padding:.25em 1em;box-shadow:3px 3px 0 var(--ink)}
+.on-dark .tag{border-color:var(--paper);box-shadow:3px 3px 0 var(--paper)}
+.h2{font-family:var(--maru);font-weight:900;font-size:clamp(34px,6.4vw,76px);line-height:1.18;letter-spacing:.01em;margin:.45em 0 .35em}
+.h2 .ch{display:inline-block}
+.ln{display:inline-block;white-space:nowrap}
+.h2 em{font-style:normal;color:var(--moon)}
+.paper .h2 em{color:var(--ink);background:linear-gradient(transparent 62%,var(--moon) 62%)}
+.lead{font-size:clamp(15px,1.6vw,18px);color:var(--sub);max-width:40em}
+.paper .lead{color:#55575e}
+.hand{font-family:var(--hand)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.6em;font-family:var(--maru);font-weight:900;font-size:17px;text-decoration:none;border:3px solid var(--ink);border-radius:999px;padding:.85em 1.7em;background:var(--moon);color:var(--ink);box-shadow:5px 5px 0 var(--ink);transition:transform .18s,box-shadow .18s;cursor:pointer;white-space:nowrap}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink)}
+.btn:active{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink)}
+.btn.line{background:#06c755;color:#fff}
+.btn.ghost{background:var(--paper)}
+.on-dark .btn{border-color:var(--paper);box-shadow:5px 5px 0 var(--paper)}
+.on-dark .btn:hover{box-shadow:7px 7px 0 var(--paper)}
+.btns{display:flex;flex-wrap:wrap;gap:16px}
+section{position:relative}
+.sec{padding:clamp(96px,13vw,170px) 0}
+.paper{background:var(--paper);color:var(--ink)}
+.bub{position:absolute;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle at 30% 28%,rgba(255,255,255,.5) 0 4%,transparent 6%),
+    radial-gradient(circle at 50% 50%,transparent 58%,rgba(255,255,255,.18) 70%,rgba(255,255,255,.45) 100%);
+  box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.35)}
+.bub::after{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 40deg,#7ff3ff55,#ff9be455,#fff59a55,#9dffb555,#7ff3ff55);mix-blend-mode:screen;-webkit-mask:radial-gradient(circle,transparent 62%,#000 72%);mask:radial-gradient(circle,transparent 62%,#000 72%)}
+
+/* ── ヘッダー ── */
+.top{position:fixed;inset:0 0 auto;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:14px clamp(14px,3vw,32px);pointer-events:none}
+.top>*{pointer-events:auto}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--maru);font-weight:900;font-size:14px;letter-spacing:.06em;text-shadow:0 1px 8px rgba(0,0,0,.6)}
+.brand img{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--paper)}
+.top .btn{font-size:14px;padding:.55em 1.2em;box-shadow:3px 3px 0 var(--paper);border-color:var(--paper);border-width:2.5px}
+#progress{position:fixed;left:0;top:0;height:4px;width:100%;background:var(--moon);transform-origin:0 50%;transform:scaleX(0);z-index:60}
+
+/* ── オープニング ── */
+#loader{position:fixed;inset:0;z-index:100;background:var(--logo);display:grid;place-items:center;overflow:hidden}
+#loader .moon{width:min(62vw,420px);aspect-ratio:520/380;background:url(img/moon.jpg) center/cover;-webkit-mask:radial-gradient(closest-side,#000 70%,transparent);mask:radial-gradient(closest-side,#000 70%,transparent)}
+#loader .blow{position:absolute;left:50%;top:50%;width:120px;height:120px;margin:-60px 0 0 -60px}
+#loader .blow .bub{inset:0}
+#loader .pop{position:absolute;left:50%;top:50%;font-family:var(--maru);font-weight:900;font-size:clamp(40px,9vw,90px);color:var(--moon);transform:translate(-50%,-50%);opacity:0;white-space:nowrap}
+#loader .drop{position:absolute;left:50%;top:50%;width:10px;height:10px;border-radius:50%;background:#fff;opacity:0}
+html:not(.js) #loader{display:none}
+
+/* ── ヒーロー ── */
+.hero{height:260vh;background:var(--night)}
+.hero .stick{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;display:grid;place-items:center}
+.hero .stars{position:absolute;inset:0;background:
+  radial-gradient(1.5px 1.5px at 12% 22%,#fff8 50%,transparent),radial-gradient(1px 1px at 28% 68%,#fff6 50%,transparent),
+  radial-gradient(1.5px 1.5px at 44% 14%,#fff7 50%,transparent),radial-gradient(1px 1px at 62% 80%,#fff5 50%,transparent),
+  radial-gradient(2px 2px at 78% 30%,#fff9 50%,transparent),radial-gradient(1px 1px at 88% 62%,#fff6 50%,transparent),
+  radial-gradient(1.5px 1.5px at 6% 86%,#fff5 50%,transparent),radial-gradient(1px 1px at 52% 46%,#fff4 50%,transparent)}
+.hero .photo{position:absolute;inset:0;clip-path:circle(var(--r,17vmin) at var(--cx,50%) var(--cy,52%));will-change:clip-path}
+.hero .photo img{width:100%;height:100%;object-fit:cover;transform:scale(var(--z,1.25))}
+.hero .ring{position:absolute;left:calc(var(--cx,50%) - var(--r,17vmin));top:calc(var(--cy,52%) - var(--r,17vmin));width:calc(var(--r,17vmin)*2);height:calc(var(--r,17vmin)*2);border-radius:50%}
+.hero .ring .bub{inset:0}
+.hero .copy{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(90px,13vh,130px) clamp(18px,4vw,56px) clamp(28px,6vh,56px);pointer-events:none}
+.hero .copy>*{pointer-events:auto}
+.hero h1{font-family:var(--maru);font-weight:900;font-size:clamp(46px,8vw,124px);line-height:1.04;letter-spacing:-.01em}
+.hero h1 .l1,.hero h1 .l2{display:block}
+.hero h1 .l2 em{font-style:normal;color:var(--moon)}
+.hero .sub{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:20px}
+.hero .sub p{max-width:30em;color:#d6d8de;font-size:15px}
+.hero .catch{position:absolute;inset:auto 0 0;padding:0 clamp(18px,4vw,56px) clamp(40px,8vh,80px);opacity:0;background:linear-gradient(transparent,rgba(0,0,0,.65));padding-top:30vh}
+.hero .catch p{font-family:var(--maru);font-weight:900;font-size:clamp(30px,5.4vw,72px);line-height:1.3;text-shadow:0 2px 20px rgba(0,0,0,.6)}
+.hero .catch small{display:block;font-family:var(--kaku);font-weight:500;font-size:15px;margin-top:14px;color:#e8e9ee}
+.hero .hint{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);font-family:var(--hand);font-size:13px;color:var(--sub)}
+html:not(.js) .hero{height:auto}
+html:not(.js) .hero .stick{height:auto;min-height:100vh}
+html:not(.js) .hero .photo{clip-path:none;opacity:.35}
+html:not(.js) .hero .catch{position:relative;opacity:1;background:none;padding-top:0}
+
+/* ── 数字 ── */
+.nums{background:var(--paper);color:var(--ink)}
+.nums .grid{display:grid;grid-template-columns:repeat(4,1fr);border-top:3px solid var(--ink);border-bottom:3px solid var(--ink)}
+.num{padding:clamp(28px,4vw,48px) clamp(14px,2vw,26px);border-left:3px solid var(--ink)}
+.num:first-child{border-left:0}
+.num b{display:block;white-space:nowrap;font-family:var(--maru);font-weight:900;font-size:clamp(40px,6vw,92px);line-height:1;letter-spacing:-.03em}
+.num b small{font-size:.34em;letter-spacing:0;margin-left:.08em}
+.num>span{display:block;margin-top:12px;font-weight:700;font-size:14px}
+.num:nth-child(4) b{color:transparent;-webkit-text-stroke:3px var(--ink)}
+
+/* ── 主催者目線 ── */
+.why{background:var(--paper);color:var(--ink);padding-top:clamp(60px,8vw,110px)}
+.why .quote{font-family:var(--maru);font-weight:900;font-size:clamp(26px,4.4vw,56px);line-height:1.45}
+.why .quote mark{background:var(--moon);color:var(--ink);padding:0 .15em;border:3px solid var(--ink);border-radius:.3em;box-shadow:4px 4px 0 var(--ink);display:inline-block;transform:rotate(-1.5deg)}
+.why .cols{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(28px,5vw,70px);align-items:center;margin-top:clamp(40px,6vw,70px)}
+.why .cols p{font-size:16px;margin-bottom:1em}
+.why .cols strong{background:linear-gradient(transparent 60%,var(--moon) 60%)}
+.why .pic{position:relative}
+.why .pic img{border:3px solid var(--ink);border-radius:20px;box-shadow:8px 8px 0 var(--ink);aspect-ratio:4/3;object-fit:cover;width:100%}
+.why .pic .note{position:absolute;right:-6px;bottom:-24px;background:var(--paper);border:3px solid var(--ink);border-radius:14px;padding:.6em .9em;font-family:var(--hand);font-size:15px;line-height:1.5;transform:rotate(3deg);box-shadow:4px 4px 0 var(--ink)}
+.why .pic .note b{font-family:var(--maru);font-weight:900;font-size:1.5em}
+
+/* ── 会場の泡 ── */
+.venues{background:var(--night);overflow:hidden}
+.venues .head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:20px}
+.venues .big13{font-family:var(--maru);font-weight:900;font-size:clamp(110px,20vw,280px);line-height:.8;color:var(--moon);letter-spacing:-.04em}
+.venues .big13 small{font-size:.22em;color:var(--paper);letter-spacing:0;margin-left:.1em}
+.field{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(10px,1.6vw,22px);margin-top:clamp(40px,6vw,70px)}
+.v{position:relative;flex:none;width:var(--s,180px);height:var(--s,180px);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 calc(var(--s,180px)*.1)}
+.v .bub{inset:0}
+.v small{font-size:11px;color:var(--moon);font-weight:700;letter-spacing:.06em;position:relative}
+.v b{font-family:var(--maru);font-weight:900;font-size:var(--f,16px);line-height:1.35;position:relative}
+.v i{font-style:normal;font-size:11px;color:var(--sub);position:relative;margin-top:2px}
+.v.host{--s:230px}
+.v.host .bub{box-shadow:inset 0 0 0 3px var(--moon)}
+
+/* ── お悩み ── */
+.worry{background:var(--paper);color:var(--ink)}
+.worry ul{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:40px}
+.worry li{position:relative;border:3px solid var(--ink);border-radius:999px;padding:1.1em 1.4em;font-weight:700;font-size:16px;line-height:1.5;background:#fff;box-shadow:4px 4px 0 var(--ink);text-align:center}
+.worry li::before{content:"？";font-family:var(--maru);font-weight:900;display:inline-grid;place-items:center;width:1.7em;height:1.7em;border-radius:50%;background:var(--ink);color:var(--paper);margin-right:.5em;font-size:.9em}
+.worry li.popped{background:transparent;border-style:dashed;box-shadow:none;color:#9a9a9a;text-decoration:line-through 2px}
+.worry .answer{margin-top:clamp(50px,7vw,80px);text-align:center}
+.worry .answer .big{font-family:var(--maru);font-weight:900;font-size:clamp(30px,5.4vw,64px);line-height:1.3}
+.worry .answer .big em{font-style:normal;background:var(--ink);color:var(--moon);padding:0 .2em;border-radius:.2em}
+
+/* ── 理由（重なるカード）── */
+.reasons{background:var(--night)}
+.stack{margin-top:50px;display:grid;gap:28px}
+.card{position:sticky;top:clamp(80px,12vh,120px);display:grid;grid-template-columns:1fr 1fr;min-height:min(70vh,560px);background:var(--paper);color:var(--ink);border:3px solid var(--paper);border-radius:28px;overflow:hidden;box-shadow:0 -10px 40px rgba(0,0,0,.45);transform-origin:50% 0}
+.card:nth-child(2){top:calc(clamp(80px,12vh,120px) + 18px)}
+.card:nth-child(3){top:calc(clamp(80px,12vh,120px) + 36px)}
+.card:nth-child(4){top:calc(clamp(80px,12vh,120px) + 54px)}
+.card .txt{padding:clamp(28px,4vw,56px);display:flex;flex-direction:column;justify-content:center}
+.card .no{font-family:var(--maru);font-weight:900;font-size:clamp(64px,8vw,120px);line-height:.9;color:var(--moon);-webkit-text-stroke:3px var(--ink);paint-order:stroke fill}
+.card h3{font-family:var(--maru);font-weight:900;font-size:clamp(24px,2.9vw,38px);line-height:1.35;margin:.5em 0 .6em}
+.card p{font-size:16px;color:#3c3d42}
+.card .img{position:relative;overflow:hidden;border-left:3px solid var(--ink)}
+.card .img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+/* ── 横に流れるギャラリー ── */
+.reel{background:var(--night);height:480vh}
+.reel .stick{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;display:flex;flex-direction:column;justify-content:center;padding-top:60px}
+.reel .head{padding:0 clamp(18px,4vw,56px);display:flex;justify-content:space-between;align-items:flex-end;gap:20px}
+.reel .head .h2{margin:0}
+.reel .bar{height:4px;background:var(--line);margin:22px clamp(18px,4vw,56px) 0;border-radius:4px;overflow:hidden}
+.reel .bar i{display:block;height:100%;background:var(--moon);transform-origin:0 50%;transform:scaleX(0)}
+.track{display:flex;gap:clamp(16px,2vw,28px);padding:clamp(24px,4vh,40px) clamp(18px,4vw,56px);will-change:transform;align-items:center}
+.shot{flex:none;position:relative;margin:0}
+.shot img{height:min(56vh,520px);width:auto;border-radius:20px;border:3px solid var(--paper);object-fit:cover;background:var(--night2)}
+.shot.tall img{height:min(62vh,580px)}
+.shot figcaption{position:absolute;left:14px;bottom:14px;font-family:var(--maru);font-weight:900;font-size:13px;background:var(--paper);color:var(--ink);border:2.5px solid var(--ink);border-radius:999px;padding:.25em .9em}
+.shot.title{width:min(80vw,440px);font-family:var(--maru);font-weight:900;font-size:clamp(30px,3.4vw,46px);line-height:1.3;padding-right:2vw}
+.shot.title span{display:block;font-size:14px;color:var(--moon);letter-spacing:.06em;margin-bottom:.6em}
+.shot.title i{font-style:normal;display:block;font-family:var(--kaku);font-weight:500;font-size:15px;color:var(--sub);margin-top:1em;line-height:1.8}
+
+/* ── 動画 ── */
+.movies{background:var(--night);padding-top:clamp(40px,6vw,80px)}
+.frame{position:relative;border:3px solid var(--paper);border-radius:24px;overflow:hidden;box-shadow:10px 10px 0 var(--moon);background:#000;aspect-ratio:16/9;transform-origin:50% 60%}
+.yt{position:relative;display:block;width:100%;aspect-ratio:16/9;border:0;padding:0;background:#000 center/cover;cursor:pointer}
+.yt::after{content:"";position:absolute;left:50%;top:50%;width:76px;height:76px;margin:-38px;border-radius:50%;background:var(--moon) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5v14l11-7z' fill='%2315161a'/%3E%3C/svg%3E") 56% 50%/44% no-repeat;border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);transition:transform .2s}
+.yt:hover::after{transform:scale(1.1)}
+.yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.frame .yt{height:100%}
+.ytgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:28px}
+.ytgrid .yt{border-radius:14px;overflow:hidden;border:2.5px solid var(--line)}
+.ytgrid .yt::after{width:44px;height:44px;margin:-22px;border-width:2.5px;box-shadow:3px 3px 0 var(--ink)}
+.ig{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;align-items:center}
+.ig span{font-size:14px;color:var(--sub);margin-right:6px}
+.ig a{font-family:var(--maru);font-weight:900;font-size:14px;text-decoration:none;border:2.5px solid var(--paper);border-radius:999px;padding:.35em 1em;transition:background .2s,color .2s}
+.ig a:hover{background:var(--paper);color:var(--ink)}
+
+/* ── 日程 ── */
+.sched{background:var(--moon);color:var(--ink);padding:clamp(70px,9vw,110px) 0}
+.sched .row{display:grid;grid-template-columns:auto 1fr auto;gap:clamp(18px,4vw,50px);align-items:center;border:3px solid var(--ink);border-radius:28px;background:var(--paper);padding:clamp(20px,3vw,36px) clamp(22px,3.4vw,44px);box-shadow:8px 8px 0 var(--ink);margin-top:30px}
+.sched .date{font-family:var(--maru);font-weight:900;font-size:clamp(50px,7vw,96px);line-height:1;letter-spacing:-.03em}
+.sched .date small{font-size:.3em;letter-spacing:0;margin-left:.2em;vertical-align:.4em}
+.sched .where b{display:block;font-family:var(--maru);font-weight:900;font-size:clamp(22px,2.8vw,34px)}
+.sched .badge{font-family:var(--maru);font-weight:900;background:var(--ink);color:var(--moon);border-radius:999px;padding:.5em 1.3em;white-space:nowrap}
+.sched .badge.done{background:transparent;color:#777;border:2.5px dashed #777}
+.sched .hand{font-size:20px;margin-top:8px}
+
+/* ── 流れ ── */
+.flow{background:var(--paper);color:var(--ink)}
+.steps{position:relative;margin-top:50px;display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.steps svg{position:absolute;left:0;top:34px;width:100%;height:20px;overflow:visible}
+.steps svg path{fill:none;stroke:var(--ink);stroke-width:3;stroke-dasharray:4 9;stroke-linecap:round}
+.step{position:relative}
+.step .dot{width:68px;height:68px;border-radius:50%;background:var(--moon);border:3px solid var(--ink);display:grid;place-items:center;font-family:var(--maru);font-weight:900;font-size:24px;box-shadow:4px 4px 0 var(--ink);position:relative}
+.step h3{font-family:var(--maru);font-weight:900;font-size:21px;margin:18px 0 8px}
+.step p{font-size:15px;color:#3c3d42}
+
+/* ── やまちゃん ── */
+.me{background:var(--night)}
+.me .grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(30px,5vw,80px);align-items:center}
+.me .pics{position:relative;aspect-ratio:4/5}
+.me .pics img{position:absolute;border:3px solid var(--paper);border-radius:22px;object-fit:cover}
+.me .pics .a{inset:0 22% 18% 0;width:78%;height:82%;transform:rotate(-3deg)}
+.me .pics .b{right:0;bottom:0;width:52%;height:52%;transform:rotate(4deg);box-shadow:8px 8px 0 var(--moon)}
+.me .pics .sticker{position:absolute;left:-10px;bottom:6%;width:128px;height:128px;border-radius:50%;background:var(--moon);color:var(--ink);border:3px solid var(--ink);display:grid;place-items:center;text-align:center;font-family:var(--maru);font-weight:900;font-size:15px;line-height:1.3;transform:rotate(-12deg);box-shadow:4px 4px 0 var(--ink)}
+.me .name{font-family:var(--maru);font-weight:900;font-size:clamp(54px,8vw,110px);line-height:1;margin:.25em 0 .1em}
+.me .name small{font-size:.26em;color:var(--moon);margin-left:.3em;letter-spacing:.04em}
+.me .role{color:var(--sub);font-size:14px}
+@media (max-width:860px){.me .name small{display:block;margin:.6em 0 0}}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0}
+.chips span{font-size:13px;font-weight:700;border:2px solid var(--paper);border-radius:999px;padding:.2em .85em}
+.chips span:nth-child(3n+1){background:var(--moon);color:var(--ink);border-color:var(--moon)}
+.me p{color:#d8dae0;font-size:15.5px}
+.me p strong{color:var(--moon)}
+
+/* ── ゲーム ── */
+.game{background:var(--night2)}
+.game-wrap{position:relative;margin-top:36px;border:3px solid var(--paper);border-radius:24px;overflow:hidden;background:#05060a;box-shadow:8px 8px 0 var(--moon)}
+.game-ui{display:flex;justify-content:space-around;align-items:center;padding:10px 16px;border-bottom:3px solid var(--paper);background:var(--night)}
+.game-stat{font-size:12px;color:var(--sub);text-align:center;font-weight:700}
+.game-stat span{display:block;font-family:var(--maru);font-size:28px;font-weight:900;color:var(--moon);line-height:1.15}
+#game-canvas{display:block;width:100%;height:420px;cursor:crosshair;touch-action:none}
+.game-overlay{position:absolute;inset:66px 0 0 0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(5,6,10,.86);padding:20px;text-align:center}
+.game-overlay.hidden{display:none}
+.g-title{font-family:var(--maru);font-weight:900;font-size:clamp(26px,5vw,40px);color:var(--moon)}
+.g-sub{font-size:14px;color:#d6d8de;line-height:1.8}
+.g-rank-tbl{border-collapse:collapse;font-size:14px;min-width:240px;border:2px solid var(--line)}
+.g-rank-tbl th{font-size:11px;color:var(--sub);padding:6px 12px;text-align:left}
+.g-rank-tbl td{padding:6px 12px;border-top:1px solid var(--line)}
+.g-rank-current td{color:var(--moon);font-weight:700}
+
+/* ── FAQ ── */
+.faq{background:var(--paper);color:var(--ink)}
+.faq details{border:3px solid var(--ink);border-radius:20px;background:#fff;margin-top:16px;box-shadow:4px 4px 0 var(--ink);overflow:hidden}
+.faq summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:14px;padding:18px 22px;font-family:var(--maru);font-weight:900;font-size:clamp(16px,1.9vw,20px)}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::before{content:"Q";flex:none;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--moon);border:2.5px solid var(--ink)}
+.faq summary::after{content:"+";margin-left:auto;font-size:26px;transition:transform .25s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{padding:0 22px 20px 72px;font-size:15px;color:#3c3d42}
+
+/* ── お問い合わせ ── */
+.contact{background:var(--night)}
+.contact .grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:clamp(30px,5vw,70px);align-items:start}
+.contact .h2{font-size:clamp(34px,4.6vw,62px)}
+.contact .side p{color:#d6d8de;margin-bottom:1em}
+.contact .side .btns{flex-direction:column;align-items:flex-start;margin-top:26px}
+form.form{background:var(--paper);color:var(--ink);border:3px solid var(--paper);border-radius:28px;padding:clamp(22px,3.4vw,40px);box-shadow:10px 10px 0 var(--moon);display:grid;gap:18px}
+.form label{display:grid;gap:6px;font-weight:700;font-size:14px}
+.form label i{font-style:normal;font-size:11px;background:var(--ink);color:var(--moon);border-radius:4px;padding:0 .5em;margin-left:.4em}
+.form input,.form select,.form textarea{font:inherit;font-size:16px;border:2.5px solid var(--ink);border-radius:12px;padding:.7em .9em;background:#fff;color:var(--ink);width:100%}
+.form input:focus,.form select:focus,.form textarea:focus{outline:3px solid var(--moon);outline-offset:1px}
+.form .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form .btn{justify-self:start}
+.form .pp{font-size:12px;color:#66686e;line-height:1.7}
+
+/* ── 最後の呼びかけ ── */
+.cta{background:var(--moon);color:var(--ink);text-align:center;overflow:hidden}
+.cta .h2{font-size:clamp(38px,7vw,96px)}
+.cta p{font-weight:500;max-width:34em;margin:0 auto 34px}
+.cta .btns{justify-content:center}
+
+/* ── フッター ── */
+footer{background:var(--night);padding:clamp(70px,9vw,110px) 0 40px;overflow:hidden}
+.giant{font-family:var(--maru);font-weight:900;font-size:min(23vw,250px);line-height:.92;letter-spacing:-.02em;white-space:nowrap;text-align:center}
+.giant .ch{display:inline-block;transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+.giant .ch:nth-child(odd){color:var(--moon)}
+.foot{display:grid;grid-template-columns:auto 1fr 1fr;gap:clamp(24px,4vw,60px);margin-top:clamp(50px,7vw,80px);padding-top:40px;border-top:2px solid var(--line);font-size:14px;color:var(--sub)}
+.foot img{width:150px;border-radius:16px;border:2px solid var(--line)}
+.foot h4{font-family:var(--maru);color:var(--paper);font-size:15px;margin-bottom:8px}
+.related{margin-top:50px}
+.related h4{font-family:var(--maru);font-size:15px;margin-bottom:14px}
+.related .list{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.related a{display:flex;align-items:center;gap:12px;text-decoration:none;border:2px solid var(--line);border-radius:14px;padding:10px 14px;font-size:13px;line-height:1.5;color:var(--sub);transition:border-color .2s,background .2s}
+.related a:hover{border-color:var(--moon);background:var(--night2)}
+.related a b{display:block;color:var(--paper);font-size:14px}
+.related a .ic{flex:none;width:38px;height:38px;border-radius:50%;background:var(--paper);color:var(--ink);display:grid;place-items:center;font-family:var(--maru);font-weight:900;font-size:12px}
+.copyright{margin-top:40px;font-size:12px;color:#6d717c;text-align:center}
+
+/* ── 動きで隠す初期状態（.js のときだけ）── */
+.js [data-reveal]{opacity:0}
+
+/* ── スマホ ── */
+@media (max-width:860px){
+  .nums .grid{grid-template-columns:1fr 1fr}
+  .num:nth-child(3){border-left:0}
+  .num:nth-child(n+3){border-top:3px solid var(--ink)}
+  .why .cols,.me .grid,.contact .grid{grid-template-columns:1fr}
+  .why .pic{margin:0 6px 30px 0}
+  .why .quote{font-size:21px}
+  .num b{font-size:38px}
+  .worry ul{grid-template-columns:1fr}
+  .card{grid-template-columns:1fr;min-height:0;top:72px}
+  .card:nth-child(2){top:84px}.card:nth-child(3){top:96px}.card:nth-child(4){top:108px}
+  .card .img{border-left:0;border-top:3px solid var(--ink);aspect-ratio:16/10;order:-1}
+  .card .txt{padding:22px 22px 26px}
+  .card .no{font-size:52px}
+  .card h3{margin:.3em 0 .4em}
+  .card p{font-size:15px}
+  .reel{height:auto}
+  .reel .stick{position:relative;height:auto;padding:90px 0 60px}
+  .reel .bar{display:none}
+  .track{overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .track::-webkit-scrollbar{display:none}
+  .shot{scroll-snap-align:center}
+  .shot img,.shot.tall img{height:52vh;max-width:84vw}
+  .shot.title{display:none}
+  .ytgrid{grid-template-columns:repeat(2,1fr)}
+  .sched .row{grid-template-columns:1fr;gap:10px}
+  .sched .badge{justify-self:start}
+  .steps{grid-template-columns:1fr;gap:30px}
+  .steps svg{display:none}
+  .step{display:grid;grid-template-columns:68px 1fr;gap:4px 18px}
+  .step .dot{grid-row:span 2}
+  .step h3{margin:6px 0 0}
+  .me .pics{max-width:420px}
+  .form .two{grid-template-columns:1fr}
+  .faq details p{padding-left:22px}
+  .foot{grid-template-columns:1fr}
+  .related .list{grid-template-columns:1fr}
+  .hero{height:200vh}
+  .hero .sub{flex-direction:column;align-items:flex-start}
+  .hero .sub .btns{gap:12px}
+  .hero .sub .btn{font-size:15px;padding:.75em 1.3em}
+  .top .brand span{display:none}
+  .v{--s:132px;--f:13px}
+  .v.host{--s:168px}
+  #game-canvas{height:340px}
+}
+@media (max-width:420px){.v{--s:112px;--f:12px}.v.host{--s:150px}}
+@media (prefers-reduced-motion:reduce){
+  .hero{height:auto}.hero .stick{height:auto;min-height:100vh}
+  .hero .photo{clip-path:none;opacity:.35}
+  .hero .catch{position:relative;opacity:1;background:none;padding-top:0}
+  .reel{height:auto}.reel .stick{position:relative;height:auto;padding:100px 0}
+  .track{overflow-x:auto}
+  .card{position:relative;top:0!important}
+  #loader{display:none}
+}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<div id="loader" aria-hidden="true">
+  <div class="moon"></div>
+  <div class="blow"><span class="bub"></span></div>
+  <div class="pop">パチン！</div>
+</div>
+
+<header class="top">
+  <a class="brand" href="#top"><img src="img/moon.jpg" alt=""><span>Yスタジオ＋ ナイトバブル事業部</span></a>
+  <a class="btn line" href="https://line.me/ti/p/~shimonoseki-fugu" target="_blank" rel="noopener">LINEで相談</a>
+</header>
+
+<main id="top">
+
+<!-- ヒーロー：シャボン玉の中をのぞくと、本物の夜が広がる -->
+<section class="hero on-dark" aria-label="ナイトバブルショー">
+  <div class="stick">
+    <div class="stars"></div>
+    <div class="photo"><img src="img/sky.jpg" alt="夜空いっぱいに舞う無数のシャボン玉と、見上げる人たち"></div>
+    <div class="ring" aria-hidden="true"><span class="bub"></span></div>
+    <div class="copy">
+      <h1><span class="l1">はじめての</span><span class="l2"><em>夜</em>に、なる。</span></h1>
+      <div class="sub">
+        <p>地域イベント・学校行事・お祭りに、無数のシャボン玉が夜空を彩るナイトバブルショーを。<br>夜も昼も対応。まずはお気軽にご相談ください。</p>
+        <div class="btns">
+          <a class="btn line" href="https://line.me/ti/p/~shimonoseki-fugu" target="_blank" rel="noopener">LINEで問い合わせる</a>
+          <a class="btn ghost" href="#contact">お問い合わせフォーム</a>
+        </div>
+      </div>
+    </div>
+    <div class="catch">
+      <p>その夜を、<br>きっとずっと覚えてる。</p>
+      <small>下関の学校・PTA・地域イベントへ。シャボン玉おじさん やまちゃんが伺います。</small>
+    </div>
+    <div class="hint" aria-hidden="true">スクロールして、のぞいてみて</div>
+  </div>
+</section>
+
+<!-- 数字 -->
+<section class="nums" aria-label="これまでの実績">
+  <div class="wrap">
+    <div class="grid">
+      <div class="num" data-reveal><b><span data-count="20">20</span><small>回以上</small></b><span>下関市内 開催実績</span></div>
+      <div class="num" data-reveal><b><span data-count="5000">5,000</span><small>人以上</small></b><span>延べ来場者数</span></div>
+      <div class="num" data-reveal><b><span data-count="13">13</span><small>会場</small></b><span>会場・イベントで開催</span></div>
+      <div class="num" data-reveal><b>∞</b><span>子どもたちの笑顔</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 主催者目線 -->
+<section class="why sec" aria-labelledby="why-h">
+  <div class="wrap">
+    <span class="tag" data-reveal>🫧 About</span>
+    <p class="quote" id="why-h" data-reveal><span class="ln">自治会も、</span><span class="ln">PTAも、</span><span class="ln">学校も、</span><br><span class="ln">みんな</span><span class="ln">「シャボン玉を買いたい」</span><span class="ln">わけじゃない。</span><br><span class="ln">ただ、</span><span class="ln"><mark>イベントを成功させたい</mark>だけ。</span></p>
+    <div class="cols">
+      <div data-reveal>
+        <p>やまちゃんはシャボン玉おじさんであると同時に、<strong>地域イベントの主催者</strong>でもあります。</p>
+        <p>下関・安岡地区でキッチンカーなど51店舗・音楽グループ24グループが集まる地域フェスを主催してきた経験から、「主催者が本当に困ること・安心したいこと」を誰よりも知っています。</p>
+        <p>だから、ただ「演じて帰る」のではなく、イベントを成功させる視点で一緒に考えられます。</p>
+      </div>
+      <div class="pic" data-reveal>
+        <img src="img/ground.jpg" alt="夜の校庭で、光に照らされたシャボン玉と大勢の観客" loading="lazy">
+        <div class="note"><b>51</b>店舗 × <b>24</b>グループ<br>の地域フェスを主催</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 13会場 -->
+<section class="venues sec on-dark" aria-labelledby="venues-h">
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <span class="tag">Achievements</span>
+        <h2 class="h2" id="venues-h"><span class="ln">ここで、</span><span class="ln"><em>夜</em>をつくって</span><span class="ln">きました。</span></h2>
+      </div>
+      <div class="big13" data-reveal>13<small>会場</small></div>
+    </div>
+    <div class="field">
+      <div class="v"><span class="bub"></span><small>市立小学校</small><b>下関市立<br>安岡小学校</b></div>
+      <div class="v"><span class="bub"></span><small>市立小学校</small><b>下関市立<br>垢田小学校</b></div>
+      <div class="v"><span class="bub"></span><small>市立小学校</small><b>下関市立<br>山の田小学校</b></div>
+      <div class="v"><span class="bub"></span><small>市立小学校</small><b>下関市立<br>清末小学校</b></div>
+      <div class="v"><span class="bub"></span><small>市立中学校</small><b>下関市立<br>東部中学校</b></div>
+      <div class="v"><span class="bub"></span><small>市立小学校</small><b>下関市立<br>向井小学校</b></div>
+      <div class="v"><span class="bub"></span><small>市立小学校</small><b>下関市立<br>本村小学校</b></div>
+      <div class="v host"><span class="bub"></span><small>フェス主催</small><b>カオスやストリート<br>ミュージック<br>フェスティバル</b><i>下関市安岡 / 主催</i></div>
+      <div class="v"><span class="bub"></span><small>幼稚園</small><b>泉幼稚園</b></div>
+      <div class="v"><span class="bub"></span><small>保育園</small><b>みそら保育園</b></div>
+      <div class="v"><span class="bub"></span><small>公園イベント</small><b>彦島老の山公園<br>ナイスビューデーズ</b></div>
+      <div class="v"><span class="bub"></span><small>駅前イベント</small><b>下関駅前<br>エキマチ広場</b></div>
+      <div class="v"><span class="bub"></span><small>セミナー登壇</small><b>山口県<br>セミナーパーク講師</b><i>2025.07.21</i></div>
+    </div>
+  </div>
+</section>
+
+<!-- お悩み -->
+<section class="worry sec" aria-labelledby="worry-h">
+  <div class="wrap">
+    <span class="tag">For Organizers</span>
+    <h2 class="h2" id="worry-h">こんなお悩み、<br><em>ありませんか？</em></h2>
+    <p class="lead">PTA・自治会・学校・地域イベント担当者の方から、よくいただく声です。</p>
+    <ul>
+      <li>毎年同じイベントになっている</li>
+      <li>子ども向け企画が少ない</li>
+      <li>写真映えする企画を探している</li>
+      <li>地域の人が自然に集まる企画が欲しい</li>
+      <li>夜のイベントに目玉企画が欲しい</li>
+      <li>子どもだけでなく大人も楽しめる企画がない</li>
+    </ul>
+    <div class="answer" data-reveal>
+      <p class="big"><span class="ln">その悩み、</span><br><span class="ln"><em>ナイトバブル</em>が</span><span class="ln">解決します。</span></p>
+      <p class="lead" style="margin:18px auto 0">無数のシャボン玉が空を彩るあの瞬間、会場にいた全員が笑顔になります。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 主催者が安心できる理由 -->
+<section class="reasons sec on-dark" aria-labelledby="reasons-h">
+  <div class="wrap">
+    <span class="tag">Experience</span>
+    <h2 class="h2" id="reasons-h"><span class="ln">主催者が</span><span class="ln"><em>安心できる</em>理由</span></h2>
+    <div class="stack">
+      <article class="card">
+        <div class="txt"><div class="no">01</div><h3>地域の人が自然と笑顔になる</h3><p>「やってよかった」と言われるイベントになります。無数のシャボン玉が空を彩るあの瞬間、子どもから大人まで、会場全体が笑顔に包まれます。</p></div>
+        <div class="img"><img src="img/crowd.jpg" alt="大きなシャボン玉を見上げる子どもたち" loading="lazy"></div>
+      </article>
+      <article class="card">
+        <div class="txt"><div class="no">02</div><h3>子どもから大人まで全員が楽しめる</h3><p>幼児もお年寄りも、高校生も大学生も、親御さんも。シャボン玉という存在は年齢を選びません。会場全体が同じ瞬間に笑顔になります。</p></div>
+        <div class="img"><img src="img/reach.jpg" alt="シャボン玉に手を伸ばす人たち" loading="lazy"></div>
+      </article>
+      <article class="card">
+        <div class="txt"><div class="no">03</div><h3>毎年呼ばれるイベントになる</h3><p>「また来年もやって！」という声が生まれます。定例開催3年目を迎えた会場が生まれるほど、リピートされる企画力があります。</p></div>
+        <div class="img"><img src="img/ring.jpg" alt="夕暮れの校庭で、輪になってショーを囲む大勢の人たち" loading="lazy"></div>
+      </article>
+      <article class="card">
+        <div class="txt"><div class="no">04</div><h3>主催者の気持ちが分かります</h3><p>地域フェスを主催してきた経験から、「当日トラブルが怖い」「段取りが不安」という気持ちを熟知。機材・設営・撤収まで一人で完結し、主催者の負担をゼロに近づけます。</p></div>
+        <div class="img"><img src="img/ojisan.jpg" alt="長い棒でシャボン玉を飛ばすやまちゃん" loading="lazy"></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ギャラリー：横に流れる -->
+<section class="reel on-dark" aria-labelledby="reel-h">
+  <div class="stick">
+    <div class="head">
+      <div><span class="tag">Gallery</span><h2 class="h2" id="reel-h"><span class="ln">実際の雰囲気を</span><br><span class="ln">感じてみよう</span></h2></div>
+    </div>
+    <div class="bar"><i></i></div>
+    <div class="track">
+      <div class="shot title"><span>写真では伝わらない感動があります。</span>会場の照明に照らされた、無数のシャボン玉。<i>歓声をあげる子どもたち。スマホを向ける保護者。地域の人たちが自然と笑顔になる時間。そんな景色をお届けしています。</i></div>
+      <figure class="shot"><img src="img/ground.jpg" alt="夜の校庭に集まった大勢の観客" loading="lazy"><figcaption>カオスや ホタル祭り 2026</figcaption></figure>
+      <figure class="shot"><img src="img/crowd.jpg" alt="大きなシャボン玉と子どもたち" loading="lazy"><figcaption>カオスや ホタル祭り 2026</figcaption></figure>
+      <figure class="shot tall"><img src="img/tall.jpg" alt="ステージから飛ぶシャボン玉" loading="lazy"><figcaption>カオスや ホタル祭り 2026</figcaption></figure>
+      <figure class="shot"><img src="img/back.jpg" alt="シャボン玉を見上げる観客" loading="lazy"><figcaption>カオスや ホタル祭り 2026</figcaption></figure>
+      <figure class="shot tall"><img src="img/moon1.jpg" alt="夜空に舞うシャボン玉" loading="lazy"><figcaption>ナイトバブル＆お月見 2024</figcaption></figure>
+      <figure class="shot"><img src="img/moon2.jpg" alt="シャボン玉の中で遊ぶ子どもたち" loading="lazy"><figcaption>ナイトバブル＆お月見 2024</figcaption></figure>
+      <figure class="shot tall"><img src="img/moon3.jpg" alt="ライトに照らされて噴き上がるシャボン玉" loading="lazy"><figcaption>ナイトバブル＆お月見 2024</figcaption></figure>
+      <figure class="shot"><img src="img/day2.jpg" alt="昼の屋外で大量のシャボン玉を飛ばすやまちゃん" loading="lazy"><figcaption>昼のシャボン玉ショー</figcaption></figure>
+      <figure class="shot"><img src="img/day1.jpg" alt="夕方の広場に浮かぶ大きなシャボン玉" loading="lazy"><figcaption>昼のシャボン玉ショー</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- 動画 -->
+<section class="movies sec on-dark" aria-labelledby="movies-h">
+  <div class="wrap">
+    <span class="tag">Movie</span>
+    <h2 class="h2" id="movies-h"><span class="ln">音と光と、</span><span class="ln"><em>シャボン玉</em>。</span></h2>
+    <div class="frame"><button class="yt" data-id="mLgAN-oA-G0" aria-label="ナイトバブルの動画を再生"></button></div>
+    <div class="ytgrid">
+      <button class="yt" data-id="sBEbhyXzJac" aria-label="ナイトバブルの動画2を再生"></button>
+      <button class="yt" data-id="dbzmUQM1sGQ" aria-label="ナイトバブルの動画3を再生"></button>
+      <button class="yt" data-id="XiiJ9TxZCj4" aria-label="ナイトバブルの動画4を再生"></button>
+      <button class="yt" data-id="Q53WN_Jm4Ss" aria-label="ナイトバブルの動画5を再生"></button>
+      <button class="yt" data-id="sHCamH8fmsE" aria-label="ナイトバブルの動画6を再生"></button>
+    </div>
+    <div class="ig">
+      <span>Instagramでも見られます</span>
+      <a href="https://www.instagram.com/reel/DZDSYRYy9T4/" target="_blank" rel="noopener">リール 1</a>
+      <a href="https://www.instagram.com/p/DYsn2HazAnd/" target="_blank" rel="noopener">投稿 2</a>
+      <a href="https://www.instagram.com/reel/DYrxoUuy_vx/" target="_blank" rel="noopener">リール 3</a>
+      <a href="https://www.instagram.com/reel/DWLcGgREo2R/" target="_blank" rel="noopener">リール 4</a>
+    </div>
+  </div>
+</section>
+
+<!-- 今年の予定 -->
+<section class="sched" aria-labelledby="sched-h">
+  <div class="wrap">
+    <span class="tag">下関 開催予定 2026</span>
+    <h2 class="h2" id="sched-h"><span class="ln">今年の</span><span class="ln">下関スケジュール</span></h2>
+    <p class="hand">山西です！ナイトバブル＆シャボン玉のお誘いです！</p>
+    <div class="row" data-date="2026-11-20" data-reveal>
+      <div class="date">11/20<small>金</small></div>
+      <div class="where"><b>やすらガーデン</b>日中開催 12:00〜15:00ごろ</div>
+      <span class="badge">受付中</span>
+    </div>
+  </div>
+</section>
+
+<!-- 流れ -->
+<section class="flow sec" aria-labelledby="flow-h">
+  <div class="wrap">
+    <span class="tag">How to Book</span>
+    <h2 class="h2" id="flow-h">ご依頼の<em>流れ</em></h2>
+    <p class="lead">お問い合わせから当日まで、スムーズにサポートします。</p>
+    <div class="steps">
+      <svg viewBox="0 0 1000 20" preserveAspectRatio="none" aria-hidden="true"><path d="M40 10 C 300 -6, 700 26, 960 10"/></svg>
+      <div class="step" data-reveal><div class="dot">01</div><h3>お問い合わせ</h3><p>LINEまたはフォームからお気軽にご連絡ください。希望日程・会場・参加人数の目安を教えていただけるとスムーズです。</p></div>
+      <div class="step" data-reveal><div class="dot">02</div><h3>日程・内容の打合せ</h3><p>日時・場所・演出内容・所要時間などを確認します。屋外・体育館・ホールなど、幅広い会場に対応可能です。</p></div>
+      <div class="step" data-reveal><div class="dot">03</div><h3>準備・設営</h3><p>機材一式を持参し、当日30〜60分ほどで設営完了。特別な会場準備は不要です。</p></div>
+      <div class="step" data-reveal><div class="dot">04</div><h3>当日ショー</h3><p>無数のシャボン玉と光・音楽で会場を彩ります。子どもから大人まで熱狂する、他にはない非日常体験をお届けします。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- やまちゃん -->
+<section class="me sec on-dark" aria-labelledby="me-h">
+  <div class="wrap grid">
+    <div class="pics" data-reveal>
+      <img class="a" src="img/day2-s.jpg" alt="シャボン玉ショーをするやまちゃん" loading="lazy">
+      <img class="b" src="img/face.jpg" alt="山西伸典（やまちゃん）の写真" loading="lazy">
+      <div class="sticker">シャボン玉<br>おじさん</div>
+    </div>
+    <div>
+      <span class="tag">About Me</span>
+      <h2 class="name" id="me-h">やまちゃん<small>Shabon-dama Ojisan</small></h2>
+      <p class="role">山西 伸典 — 下関市 山西水産 4代目 / Yスタジオ＋ 代表</p>
+      <div class="chips">
+        <span>下関市密着</span><span>ふぐ屋4代目</span><span>AI × バブル</span><span>山口大学 ゲスト講師</span><span>出版著者</span><span>地域学校協働推進委員</span><span>小学校PTA 8年目</span><span>カオスやストリート 主催</span>
+      </div>
+      <p>明治12年創業の老舗ふぐ問屋・山西水産の4代目として下関で生まれ育ちました。PTA活動8年目、地域学校協働推進委員として地域の子どもたちと向き合い続けるなかで、「子どもたちに忘れられない思い出を届けたい」という想いからナイトバブルを始めました。</p>
+      <p>さらに、Yスタジオ＋として「カオスやストリートミュージックフェスティバル」を主催。下関・安岡地区でキッチンカーなど51店舗・音楽グループ24グループが集まる地域フェスを運営してきた経験があるからこそ、<strong>主催者が感じる不安や苦労</strong>を理解した上で対応できます。「演じて帰るだけ」では終わりません。お気軽にお声がけください。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ゲーム -->
+<section class="game sec on-dark" id="game" aria-labelledby="game-h">
+  <div class="wrap">
+    <span class="tag">Mini Game</span>
+    <h2 class="h2" id="game-h">シャボン玉を<em>割ろう！</em></h2>
+    <p class="lead">タップ／クリックでシャボン玉を割ってスコアを競おう！</p>
+    <div class="game-wrap">
+      <div class="game-ui">
+        <div class="game-stat"><span id="g-score">0</span>スコア</div>
+        <div class="game-stat"><span id="g-timer">20</span>残り秒</div>
+        <div class="game-stat"><span id="g-best">0</span>ベスト</div>
+      </div>
+      <canvas id="game-canvas"></canvas>
+      <div class="game-overlay" id="game-overlay">
+        <p class="g-title">🫧 シャボン玉わりゲーム</p>
+        <p class="g-sub">20秒間、シャボン玉をタップして割ろう！<br>ランキング上位を目指せ！</p>
+        <button class="btn" id="g-start-btn">スタート！</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq sec" id="faq" aria-labelledby="faq-h">
+  <div class="wrap">
+    <span class="tag">FAQ</span>
+    <h2 class="h2" id="faq-h">よくある<em>ご質問</em></h2>
+    <p class="lead">ご依頼前によくいただく質問をまとめました。</p>
+    <details><summary>雨天の場合はどうなりますか？</summary><p>体育館・ホール・屋根のある屋外など、雨天でも対応できる会場であれば問題ありません。屋外の場合は雨天時の対応（延期・中止等）を事前にご相談しながら決めます。お気軽にご相談ください。</p></details>
+    <details><summary>どのくらいのスペースが必要ですか？</summary><p>目安として幅8m×奥行き6m程度あれば対応可能です。体育館・グラウンド・公園広場など様々な会場での実績があります。詳しくは会場の広さをお知らせいただければ確認します。</p></details>
+    <details><summary>下関市外からの依頼は受けていますか？</summary><p>現在は下関市および周辺エリアを中心に活動しています。遠方へのご依頼は距離・交通費等を考慮した上でご相談ください。まずはお問い合わせください。</p></details>
+    <details><summary>費用はどのくらいかかりますか？</summary><p>会場の規模・演出内容・所要時間によって異なります。まずはお気軽にご相談ください。見積もり・日程相談・会場相談だけでも大歓迎です。</p></details>
+    <details><summary>昼のシャボン玉ショーも対応していますか？</summary><p>はい、対応しています。夜のナイトバブルショーに加えて、日中の屋外・体育館でのシャボン玉ショーも受付中です。学校の運動会や子ども会のイベントにもどうぞ。</p></details>
+  </div>
+</section>
+
+<!-- お問い合わせ -->
+<section class="contact sec on-dark" id="contact" aria-labelledby="contact-h">
+  <div class="wrap grid">
+    <div class="side">
+      <span class="tag">Contact</span>
+      <h2 class="h2" id="contact-h"><span class="ln">ご依頼・</span><br><span class="ln"><em>お問い合わせ</em></span></h2>
+      <p>夜のナイトバブルも、昼のシャボン玉ショーも受付中。学校・保育園・幼稚園・イベント・企業のご担当者様、お気軽にご連絡ください。</p>
+      <p class="hand" style="color:var(--moon);font-size:19px">まずは相談だけでもOK。見積もり・日程・会場のご相談、大歓迎です。</p>
+      <div class="btns"><a class="btn line" href="https://line.me/ti/p/~shimonoseki-fugu" target="_blank" rel="noopener">LINEで問い合わせる</a></div>
+    </div>
+    <form class="form" action="https://formspree.io/f/xqeoawap" method="POST">
+      <div class="two">
+        <label>お名前・ご担当者名<i>必須</i><input type="text" name="name" required autocomplete="name"></label>
+        <label>学校・園・会社名<input type="text" name="organization" autocomplete="organization"></label>
+      </div>
+      <label>メールアドレス<i>必須</i><input type="email" name="email" required autocomplete="email"></label>
+      <div class="two">
+        <label>ご希望の開催日（わかる範囲で）<input type="text" name="date" placeholder="例：11月中旬の土曜"></label>
+        <label>ご希望の時間帯<select name="time">
+          <option value="">選択してください</option>
+          <option>午前（10:00〜12:00ごろ）</option>
+          <option>昼（12:00〜15:00ごろ）</option>
+          <option>夕方（15:00〜18:00ごろ）</option>
+          <option>夜（18:00〜21:00ごろ）</option>
+          <option>未定・相談したい</option>
+        </select></label>
+      </div>
+      <label>ご相談内容<i>必須</i><textarea name="message" rows="5" required placeholder="会場・参加人数の目安・イベントの内容など"></textarea></label>
+      <button class="btn" type="submit">送信する</button>
+      <p class="pp">お問い合わせフォームでご入力いただいた個人情報（氏名・メールアドレス等）は、ご返信・ご連絡のみに使用します。第三者への提供・販売は一切行いません。フォームの送受信にはFormspreeのサービスを利用しています。</p>
+    </form>
+  </div>
+</section>
+
+<!-- 最後のひと押し -->
+<section class="cta sec" aria-labelledby="cta-h">
+  <div class="wrap">
+    <h2 class="h2" id="cta-h"><span class="ln">地域がひとつになる</span><span class="ln">夜を、</span><br><span class="ln">一緒につくり</span><span class="ln">ませんか。</span></h2>
+    <p>日程・予算・会場のご相談だけでも大歓迎です。まずはお気軽にLINEでご連絡ください。夜のナイトバブルも、昼のシャボン玉ショーも対応しています。</p>
+    <div class="btns">
+      <a class="btn line" href="https://line.me/ti/p/~shimonoseki-fugu" target="_blank" rel="noopener">LINEで問い合わせる</a>
+      <a class="btn ghost" href="#contact">お問い合わせフォーム</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="on-dark">
+  <div class="wrap">
+    <div class="giant" aria-label="NIGHT BUBBLE">NIGHT<br>BUBBLE</div>
+    <div class="foot">
+      <img src="img/logo.jpg" alt="NIGHT BUBBLE はじめての夜になる" loading="lazy">
+      <div>
+        <h4>Yスタジオ＋ ナイトバブル事業部</h4>
+        <p>下関市を拠点に活動するバブルエンターテインメント事業部。地域イベント・学校行事・PTA行事に無数のシャボン玉をお届けします。</p>
+      </div>
+      <div>
+        <h4>運営情報</h4>
+        <p>山西水産株式会社（Yスタジオ＋）<br>代表：山西 伸典<br>山口県下関市<br>活動エリア：下関市および周辺</p>
+      </div>
+    </div>
+    <div class="related">
+      <h4>関連事業・活動のご案内</h4>
+      <div class="list">
+        <a href="../index.html"><span class="ic">AI</span><span><b>Yスタジオ＋ AI事業</b>AI活用・業務改善のご相談</span></a>
+        <a href="https://lp.yamanisi.co.jp/" target="_blank" rel="noopener"><span class="ic">山西</span><span><b>山西水産</b>下関のふぐ老舗問屋・会社のご案内</span></a>
+        <a href="../training.html"><span class="ic">DX</span><span><b>AI・DX研修パッケージ</b>仕事で使えるAI活用を、社内研修に</span></a>
+        <a href="https://kaosuya.yamanisi.co.jp/" target="_blank" rel="noopener"><span class="ic">KS</span><span><b>カオスやストリート</b>音楽・マルシェ・地域交流のイベント</span></a>
+        <a href="https://yamanishishinsuke19840623.github.io/yamanishi-shinsuke/" target="_blank" rel="noopener"><span class="ic">山西</span><span><b>山西伸典 プロフィール</b>AI・魚・教育・地域への取り組み</span></a>
+        <a href="https://my.prairie.cards/u/yamanisisinsuke" target="_blank" rel="noopener"><span class="ic">PC</span><span><b>山西伸典 プレーリーカード</b>デジタル名刺・プロフィールはこちら</span></a>
+        <a href="../song.html"><span class="ic">♪</span><span><b>オリジナルテーマソング</b>「潮風と、ふくと。」歌詞・コード譜・試聴</span></a>
+        <a href="https://www.amazon.co.jp/dp/B0HCTJZHPJ" target="_blank" rel="noopener"><span class="ic">著書</span><span><b>危機感しかなかった。147年続いたふぐ屋の話</b>山西伸典の家業と挑戦の歩みを読む — Amazonで書籍を見る</span></a>
+        <a href="../privacy.html"><span class="ic">PP</span><span><b>プライバシーポリシー</b>個人情報の取り扱いについて</span></a>
+      </div>
+    </div>
+    <p class="copyright">© 2025–2026 山西水産株式会社 Yスタジオ＋ ナイトバブル事業部. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="game.js" defer></script>
+<script type="module" src="app.js"></script>
+</body>
+</html>

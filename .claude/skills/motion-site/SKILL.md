@@ -57,3 +57,7 @@ React は使わず、**Motion のバニラJS版**（`motion` パッケージ。F
 
 - Framer Motion スキル（MIT）: `claude plugin marketplace add Schoepplake/framer-motion-skill` → `claude plugin install framer-motion@framer-motion-skill`
 - 21st.dev Magic MCP（チャットから 21st.dev 風部品を生成。API キーが必要、無料枠に月の回数上限あり）: `npx @21st-dev/cli@latest install claude --api-key <key>`
+
+## 演出の決め方
+
+動きは「おしゃれに」ではなく**カメラワークの名前**で決める（ドリーズーム・ホイップパン・ラックフォーカス等）。→ `camera-work` スキル
