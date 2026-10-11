@@ -46,3 +46,8 @@ node render.mjs                                                           # 約4
 - 音: `ffmpeg -af volumedetect` で平均 -15dB 前後、最後がフェードアウト。**耳では聴けていない**ことはユーザーに正直に伝える
 - 主要な時刻のフレームを書き出して目で確認（`ffmpeg -ss <秒> -frames:v 1`）
 - ページ埋め込みは `<video preload="none" playsinline>` に MP4 → WebM の順で `<source>`。再生ボタンで音あり再生、再生後に controls を出す
+
+## 縦の短尺（15秒リール）を作るとき
+- 見本: `tools/nightbubble-pv/`。DOM ではなく **canvas 1枚**に描き、`toDataURL` で1コマずつ ffmpeg に流す（速い。15秒で約1分）
+- 1080x1920。横写真を全画面に引き伸ばすと粗いので、**縦写真は全画面・横写真はカード**にする
+- 小節ごとにカメラワークを1つ（`camera-work` スキル）。最後の1小節はロゴ＋問い合わせ先（LINE・URL）で締める

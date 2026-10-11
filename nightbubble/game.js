@@ -251,3 +251,14 @@
     if(d<today){var b=row.querySelector('.badge');if(b){b.textContent='開催済み ✓';b.classList.add('done');}row.style.opacity='.7';}
   });
 })();
+
+// ── 15秒PV：ボタンで音ありで再生。再生後は操作バーを出す ──
+(function(){
+  var v=document.getElementById('pv'); if(!v) return;
+  var box=v.parentElement, btn=box.querySelector('.play');
+  btn.addEventListener('click',function(){
+    v.muted=false; v.controls=true; box.classList.add('playing');
+    var p=v.play(); if(p&&p.catch) p.catch(function(){ box.classList.remove('playing'); });
+  });
+  v.addEventListener('ended',function(){ v.controls=false; box.classList.remove('playing'); });
+})();
