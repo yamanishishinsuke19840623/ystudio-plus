@@ -37,6 +37,7 @@ copy "$STARTER/tools/lp/package.json"  "$ROOT/tools/lp/package.json"
 for f in pv.html music.js render.mjs stills.mjs package.json; do
   copy "$STARTER/tools/pv/$f" "$ROOT/tools/pv/$f"
 done
+copy "$STARTER/404.html"               "$ROOT/404.html"   # SNSで付く見えない文字・句読点入りURLを正しいページへ
 mkdir -p "$ROOT/$PAGE/img" "$ROOT/$PAGE/media"
 grep -qs '^\.tmp/$' "$ROOT/tools/pv/.gitignore" || echo ".tmp/" >> "$ROOT/tools/pv/.gitignore"
 
