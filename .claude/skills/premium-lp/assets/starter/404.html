@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>ページが見つかりません | Yスタジオ＋</title>
+<script>
+// SNS（Facebook・LINE など）でリンクを共有すると、URLの最後に目に見えない文字
+// （ワードジョイナー U+2060、ゼロ幅スペース U+200B など）や、文の句読点・カッコがくっつくことがある。
+// 例: /yamanishi-suisan/%E2%81%A0 → 本当は /yamanishi-suisan/
+// それらを取り除いたURLが別物なら、正しいページへすぐ移動する。
+(function () {
+  var raw;
+  try { raw = decodeURIComponent(location.pathname); } catch (e) { raw = location.pathname; }
+  var clean = raw
+    // 目に見えない文字（ゼロ幅・ワードジョイナー・BOM・方向制御・ソフトハイフン・全角/半角スペース）を全部消す
+    .replace(/[\u00AD\u200B-\u200F\u2028-\u202F\u205F-\u206F\uFEFF\u3000\s]/g, "")
+    // 末尾にくっついた句読点・カッコ・引用符を消す
+    .replace(/[\u3002\u3001\uFF0E\uFF0C,.)\uFF09\u300D\u300F\u3011\u3015>\uFF1E"'\u201D\u2019!\uFF01?\uFF1F]+$/, "");
+  if (clean && clean !== raw) {
+    location.replace(encodeURI(clean) + location.search + location.hash);
+  }
+})();
+</script>
+<style>
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:#f4efe4;color:#1b1a18;font-family:'Hiragino Sans','Noto Sans JP',sans-serif;text-align:center;padding:24px;box-sizing:border-box;}
+h1{font-size:22px;margin:0 0 12px;}
+p{margin:0 0 24px;line-height:1.9;font-size:15px;}
+a{display:inline-block;margin:6px;padding:12px 22px;border:2px solid #1b1a18;border-radius:999px;color:#1b1a18;text-decoration:none;font-weight:700;box-shadow:3px 3px 0 #1b1a18;background:#fff;}
+</style>
+</head>
+<body>
+<main>
+  <h1>ページが見つかりませんでした</h1>
+  <p>URLが途中で切れているか、余計な文字が付いているかもしれません。</p>
+  <a href="/">Yスタジオ＋ トップへ</a>
+  <a href="/yamanishi-suisan/">山西水産</a>
+</main>
+</body>
+</html>
