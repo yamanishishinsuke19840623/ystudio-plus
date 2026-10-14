@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>Yスタジオ＋ セミナー広告</title>
+<meta name="viewport" content="width=1080">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700;900&family=Inter:ital,wght@1,900&display=swap">
+<style>
+/* 1080×1080 フィード広告。左：問いかけ見出し／右：講師写真／中段：資料カード3枚／下段：開催情報＋申込ボタン */
+:root{
+  --navy:#14266e; --blue:#2952c4; --sky:#e9f0fb; --ink:#1a1a2e;
+  --yellow:#f7c52d; --green:#1f7a3d; --green2:#0f5a2a; --line:rgba(20,38,110,.14);
+  --jp:'Noto Sans JP','IPAGothic',sans-serif; --en:'Inter','Noto Sans JP',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#cfd6e4;font-family:var(--jp);color:var(--ink)}
+.ad{width:1080px;height:1080px;position:relative;overflow:hidden;
+  background:linear-gradient(160deg,#ffffff 0%,#f2f6fd 45%,var(--sky) 100%)}
+.ad::before{content:"";position:absolute;right:-40px;top:120px;width:420px;height:420px;
+  background-image:radial-gradient(rgba(41,82,196,.28) 2.2px,transparent 2.6px);background-size:18px 18px;
+  -webkit-mask-image:radial-gradient(circle at 70% 40%,#000 0,transparent 70%);mask-image:radial-gradient(circle at 70% 40%,#000 0,transparent 70%)}
+.ad::after{content:"";position:absolute;left:-120px;top:-160px;width:620px;height:420px;
+  background:linear-gradient(120deg,rgba(41,82,196,.10),transparent 70%);transform:rotate(-18deg)}
+
+.top{position:absolute;left:56px;right:56px;top:44px;display:flex;justify-content:space-between;align-items:center;z-index:3}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;background:var(--navy);color:#fff;font-weight:900;font-size:22px;letter-spacing:.12em;padding:9px 20px;border-radius:4px}
+.eyebrow b{color:var(--yellow)}
+.logo{font-family:var(--en);font-style:italic;font-weight:900;font-size:34px;color:var(--navy);letter-spacing:-.5px}
+.logo span{color:var(--blue)}
+
+h1{position:absolute;left:52px;top:112px;z-index:3;font-weight:900;color:var(--navy);
+  font-size:92px;line-height:1.12;letter-spacing:-.02em;transform:skewX(-8deg);transform-origin:left;
+  text-shadow:0 3px 0 #fff,0 0 1px #fff}
+h1 .l2{display:block;padding-left:22px}
+h1 .l3{display:block;padding-left:120px;font-size:104px}
+h1 em{font-style:normal;color:var(--blue)}
+
+.photo{position:absolute;right:46px;top:150px;width:300px;height:330px;z-index:2;border-radius:14px;overflow:hidden;
+  box-shadow:0 18px 40px rgba(20,38,110,.22);border:5px solid #fff}
+.photo img{width:100%;height:100%;object-fit:cover;object-position:52% 18%}
+.photo figcaption{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent,rgba(13,25,80,.92) 45%);
+  color:#fff;padding:36px 14px 12px;font-size:15px;line-height:1.45;font-weight:700}
+.photo figcaption strong{display:block;font-size:24px;font-weight:900;letter-spacing:.06em}
+
+/* 資料カード */
+.cards{position:absolute;left:40px;right:40px;top:508px;height:250px;z-index:2}
+.card{position:absolute;background:#fff;border:1px solid var(--line);box-shadow:0 10px 26px rgba(20,38,110,.16);padding:14px 16px;border-radius:4px}
+.card h3{font-size:14px;font-weight:900;color:var(--navy);border-bottom:2px solid var(--navy);padding-bottom:6px;margin-bottom:8px;display:flex;justify-content:space-between}
+.card h3 i{font-family:var(--en);font-style:italic;font-size:12px;color:var(--blue)}
+.c1{left:0;top:30px;width:320px;height:210px;transform:rotate(-2deg)}
+.c3{right:0;top:22px;width:320px;height:210px;transform:rotate(2deg)}
+.c2{left:340px;top:0;width:340px;height:244px;z-index:2}
+table{width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums}
+th{background:var(--navy);color:#fff;font-weight:700;padding:4px 5px;text-align:left}
+td{padding:4.5px 5px;border-bottom:1px solid var(--line)}
+td.r{color:#c0392b;font-weight:900;text-align:right}
+.note{font-size:10px;color:#666;margin-top:6px}
+.prof li{list-style:none;font-size:13px;padding:5px 0;border-bottom:1px dashed var(--line);display:flex;gap:8px}
+.prof li b{color:var(--blue);min-width:62px}
+.sub .big{display:flex;gap:8px;margin:4px 0 8px}
+.sub .big div{flex:1;background:var(--sky);border-radius:4px;text-align:center;padding:8px 2px}
+.sub .big strong{display:block;font-size:30px;font-weight:900;color:var(--navy);line-height:1.1;font-family:var(--en);font-style:italic}
+.sub .big span{font-size:11px;font-weight:700}
+.sub p{font-size:12px;line-height:1.7}
+
+/* 下段 */
+.title{position:absolute;left:0;right:0;top:782px;z-index:3;text-align:center;font-weight:900;font-size:40px;color:var(--navy);letter-spacing:.04em}
+.title small{display:inline-block;font-size:22px;background:var(--yellow);color:var(--ink);padding:2px 12px;margin-right:12px;vertical-align:6px;border-radius:3px}
+.info{position:absolute;left:96px;right:96px;top:846px;z-index:3;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.info div{border:3px solid var(--navy);border-radius:8px;background:#fff;padding:8px 14px;display:flex;align-items:center;gap:12px}
+.info b{font-size:20px;background:var(--navy);color:#fff;padding:2px 10px;border-radius:3px;white-space:nowrap}
+.info span{font-size:22px;font-weight:900}
+.info span.tbd{color:#c0392b;font-size:19px;border-bottom:3px dashed #c0392b}
+.cta{position:absolute;left:70px;right:70px;top:942px;height:104px;z-index:3;border-radius:60px;
+  background:linear-gradient(180deg,#2b9a52 0%,var(--green) 55%,var(--green2) 100%);
+  box-shadow:0 8px 0 #0a3f1d,0 16px 30px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;gap:28px;
+  color:#fff;font-size:56px;font-weight:900;letter-spacing:.22em}
+.cta svg{width:54px;height:54px}
+</style>
+</head>
+<body>
+<div class="ad" id="ad">
+  <div class="top">
+    <div class="eyebrow">AI・DX <b>実践</b>セミナー</div>
+    <div class="logo">Y<span>スタジオ</span>＋</div>
+  </div>
+
+  <h1>AI導入、<span class="l2">結局<em>どの業務</em>から</span><span class="l3">始める？</span></h1>
+
+  <figure class="photo">
+    <img src="../shinsuke.jpg" alt="講師 山西伸典">
+    <figcaption>講師<strong>山西 伸典</strong>山西水産株式会社 代表取締役<br>創業147年 ふく問屋4代目</figcaption>
+  </figure>
+
+  <div class="cards">
+    <div class="card c1 prof">
+      <h3>講師プロフィール <i>PROFILE</i></h3>
+      <ul>
+        <li><b>家業</b>創業147年 ふく問屋の4代目</li>
+        <li><b>登壇</b>IVS2026 京都「老舗とAI」</li>
+        <li><b>講義</b>下関市・山口大学</li>
+        <li><b>著書</b>『知られざる軌跡』</li>
+        <li><b>支援</b>2021年からYスタジオ＋</li>
+      </ul>
+    </div>
+    <div class="card c2">
+      <h3>自社で実証した業務削減 <i>CASE</i></h3>
+      <table>
+        <tr><th>業務</th><th>導入前</th><th>導入後</th><th style="text-align:right">削減</th></tr>
+        <tr><td>季節キーワード更新</td><td>4時間</td><td>5分</td><td class="r">98%↓</td></tr>
+        <tr><td>経費精算（毎月）</td><td>月4時間</td><td>20分</td><td class="r">92%↓</td></tr>
+        <tr><td>支払予定表作成</td><td>月2時間</td><td>20分</td><td class="r">92%↓</td></tr>
+        <tr><td>ネットショップ管理</td><td>週4時間</td><td>週1時間</td><td class="r">75%↓</td></tr>
+        <tr><td>4モール一括商品管理</td><td>週4時間</td><td>週1時間</td><td class="r">75%↓</td></tr>
+      </table>
+      <p class="note">※山西水産株式会社にて稼働中のシステム</p>
+    </div>
+    <div class="card c3 sub">
+      <h3>研修費は助成金も活用可 <i>SUBSIDY</i></h3>
+      <div class="big">
+        <div><strong>75%</strong><span>経費助成（最大）</span></div>
+        <div><strong>¥1,000</strong><span>賃金助成／人・時</span></div>
+      </div>
+      <p>人材開発支援助成金（事業展開等リスキリング支援コース）は令和8年度末までの時限措置。対象可否は労働局・社労士へ要確認。</p>
+    </div>
+  </div>
+
+  <div class="title"><small>自社で月30時間超を削減</small>老舗の現場から学ぶ AI活用</div>
+
+  <div class="info">
+    <div><b>日時</b><span class="tbd">要確認</span></div>
+    <div><b>会場</b><span class="tbd">要確認</span></div>
+    <div><b>参加費</b><span class="tbd">要確認</span></div>
+  </div>
+
+  <div class="cta">セミナーに申し込む
+    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+  </div>
+</div>
+</body>
+</html>
