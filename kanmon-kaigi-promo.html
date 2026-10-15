@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>関門カイギ プロモリール</title>
+<meta name="description" content="関門カイギのインスタグラムリール用15秒プロモーション（1080×1920）。#1〜#9のゲスト写真と関門の港の写真で構成。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Mono:wght@500&family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@700&display=swap">
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#111318;--ink:#f7f7f3;--sub:#9aa0aa;--red:#e8321e;--blue:#1f3bd6;
+  --f-body:"Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP",sans-serif;
+  --f-mono:"DM Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);color:var(--ink);}
+body{font-family:var(--f-body);min-height:100vh;display:flex;flex-direction:column;align-items:center;gap:14px;padding:20px 16px 40px;}
+.stage{position:relative;width:min(100%,calc((100vh - 140px) * 9 / 16));min-width:240px;aspect-ratio:9/16;background:#000;}
+canvas{width:100%;height:100%;display:block;}
+.bar{display:flex;gap:10px;align-items:center;width:min(100%,540px);font-family:var(--f-mono);font-size:13px;color:var(--sub);}
+button{appearance:none;border:1px solid rgba(247,247,243,.3);background:transparent;color:var(--ink);font:inherit;padding:8px 14px;min-height:40px;cursor:pointer;}
+button:hover{border-color:var(--red);}
+button:focus-visible,input:focus-visible{outline:2px solid var(--red);outline-offset:2px;}
+input[type=range]{flex:1;accent-color:var(--red);}
+body.render{padding:0;display:block;}
+body.render .bar{display:none;}
+body.render .stage{width:1080px;height:1920px;min-width:0;}
+</style>
+</head>
+<body>
+<div class="stage"><canvas id="cv" width="1080" height="1920" aria-label="関門カイギ 15秒プロモーション"></canvas></div>
+<div class="bar">
+  <button id="play" type="button">▶ 再生</button>
+  <input id="seek" type="range" min="0" max="15" step="0.0333" value="0" aria-label="再生位置">
+  <span id="tc">00.00</span>
+</div>
+<script>
+// 関門カイギ 15秒プロモ（インスタグラムリール 1080×1920 / 30fps）
+// 素材はすべて本リポジトリ内のもの:
+//   kanmon-kaigi/harbor.jpg … 各回チラシの背景の関門の港の写真
+//   kanmon-kaigi/faces/*.jpg … 各回チラシ（#1〜#9・特別回）に載っているゲスト等の写真を丸く切り出したもの
+// 文言は関門カイギのチラシとLP（kanmon-kaigi.html）に書かれていることだけを使う。
+// 名前・肩書きはチラシの解像度では読み違えのおそれがあるため出さない。
+const W=1080,H=1920,FPS=30,DUR=15,BEAT=0.5;
+const C={red:'#e8321e',blue:'#1f3bd6',ink:'#111318',paper:'#f7f7f3',sea:'#2f6fa8'};
+const F={disp:'"Dela Gothic One","Hiragino Sans",sans-serif',lat:'"Anton","Impact",sans-serif',mono:'"DM Mono",ui-monospace,monospace',body:'"Zen Kaku Gothic New","Hiragino Sans",sans-serif'};
+
+// 各回の告知（チラシ）から。日付・会場はLPのアーカイブと同じ。
+const EP=[
+  {no:'#1',date:'2025.4.24',where:'しものせき市民活動センター',faces:['01-1','01-2','01-3']},
+  {no:'#2',date:'2025.5.14',where:'しものせき市民活動センター',faces:['02-1','02-2','02-3']},
+  {no:'#3',date:'2025.6.19',where:'しものせき市民活動センター',faces:['03-1','03-2','03-3']},
+  {no:'#4',date:'2025.7.3',where:'しものせき市民活動センター',faces:['04-1','04-2','04-3']},
+  {no:'#5',date:'2025.9.5',where:'しものせき市民活動センター',faces:['05-1','05-2','05-3']},
+  {no:'SPECIAL',date:'2025.9.20',where:'菊川ふれあい会館',sub:'×下関市教育委員会',faces:['05x-1','05x-2','05x-3','05x-4','05x-5','05x-6']},
+  {no:'#6',date:'2025.10.23',where:'しものせき市民活動センター',faces:['06-1','06-2','06-3']},
+  {no:'#7',date:'2025.11.18',where:'しものせき市民活動センター',faces:['07-1','07-2','07-3']},
+  {no:'#8',date:'2026.5.12',where:'しものせき市民活動センター',faces:['08-1','08-2','08-3']},
+  {no:'#9',date:'2026.8.26',where:'しものせき市民活動センター',faces:['09-1','09-2','09-3']},
+];
+const ALLTEXT='関門カイギ ひと・まち・まなびが「想い」でつながる。終わらないカイギ 地域で活躍する、面白い人の話を聞く。ゲストが10分で「想い」をプレゼン そして、交流。次のカイギで会いましょう @kanmon_kaigi KANMON KAIGI COMMUNITY SINCE 2025 STRAIT ARCHIVE MIN / GUEST #→0123456789.×'+EP.map(e=>e.where+(e.sub||'')+e.no).join('');
+const FACE_IDS=['01-1','01-2','01-3','01-4','01-5',...EP.slice(1).flatMap(e=>e.faces)];
+
+// ---------- 読み込み ----------
+const IMG={};
+function load(key,src){return new Promise(r=>{const i=new Image();i.onload=()=>{IMG[key]=i;r();};i.onerror=()=>r();i.src=src;});}
+async function boot(){
+  await Promise.all([
+    load('harbor','kanmon-kaigi/harbor.jpg'),
+    load('logo','kanmon-kaigi/logo-circle.png'),
+    ...FACE_IDS.map(id=>load(id,`kanmon-kaigi/faces/${id}.jpg`)),
+    // Google Fonts は文字ごとに分割配信なので、使う文字をすべて渡して読み込む
+    ...['400px "Dela Gothic One"','400px "Anton"','500px "DM Mono"','700px "Zen Kaku Gothic New"'].map(f=>document.fonts.load(f,ALLTEXT)),
+  ]);
+  await document.fonts.ready;
+  // 黒いロゴを白に
+  const l=document.createElement('canvas');l.width=l.height=200;const lc=l.getContext('2d');
+  if(IMG.logo){lc.drawImage(IMG.logo,0,0,200,200);lc.globalCompositeOperation='source-in';lc.fillStyle=C.paper;lc.fillRect(0,0,200,200);}
+  IMG.logoW=l;
+  // フィルムグレイン
+  const g=document.createElement('canvas');g.width=540;g.height=960;const gc=g.getContext('2d');const d=gc.createImageData(540,960);
+  let s=7;const rnd=()=>((s=(s*16807)%2147483647)/2147483647);
+  for(let i=0;i<d.data.length;i+=4){const v=rnd()*255;d.data[i]=d.data[i+1]=d.data[i+2]=v;d.data[i+3]=255;}
+  gc.putImageData(d,0,0);IMG.grain=g;
+}
+
+// ---------- 道具 ----------
+const cl=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const seg=(t,a,b)=>cl((t-a)/(b-a));
+const lerp=(a,b,k)=>a+(b-a)*k;
+const eOutExpo=k=>k>=1?1:1-Math.pow(2,-10*k);
+const eOutCubic=k=>1-Math.pow(1-k,3);
+const eInOut=k=>k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
+const eInCubic=k=>k*k*k;
+const eBack=k=>{const c=1.9;return 1+(c+1)*Math.pow(k-1,3)+c*Math.pow(k-1,2);};
+function hash(n){const x=Math.sin(n*127.1+311.7)*43758.5453;return x-Math.floor(x);}
+
+function face(ctx,id,x,y,r,o={}){
+  const im=IMG[id];if(!im||r<=0)return;
+  ctx.save();
+  if(o.shadow){ctx.shadowColor='rgba(0,0,0,.35)';ctx.shadowBlur=40;ctx.shadowOffsetY=18;ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=o.ring||C.paper;ctx.fill();ctx.shadowColor='transparent';}
+  ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.closePath();ctx.save();ctx.clip();
+  const z=o.zoom||1.0;const s=r*2*z*1.04;
+  ctx.drawImage(im,x-s/2+(o.dx||0),y-s/2+(o.dy||0),s,s);
+  if(o.tint){ctx.globalCompositeOperation='multiply';ctx.globalAlpha=o.tintA??.75;ctx.fillStyle=o.tint;ctx.fillRect(x-r,y-r,r*2,r*2);}
+  ctx.restore();
+  if(o.ring!==null){ctx.lineWidth=o.ringW||Math.max(4,r*.05);ctx.strokeStyle=o.ring||C.paper;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.stroke();}
+  ctx.restore();
+}
+function cover(ctx,im,x,y,w,h,zoom=1,fx=.5,fy=.5){
+  if(!im)return;const s=Math.max(w/im.width,h/im.height)*zoom;const iw=im.width*s,ih=im.height*s;
+  ctx.drawImage(im,x+(w-iw)*fx,y+(h-ih)*fy,iw,ih);
+}
+function txt(ctx,s,x,y,size,font,color,o={}){
+  ctx.save();ctx.font=`${o.weight||400} ${size}px ${font}`;ctx.fillStyle=color;ctx.textAlign=o.align||'left';ctx.textBaseline=o.base||'alphabetic';
+  if(o.ls)ctx.letterSpacing=o.ls+'px';
+  if(o.stroke){ctx.lineWidth=o.stroke;ctx.strokeStyle=color;ctx.lineJoin='round';ctx.strokeText(s,x,y);}else ctx.fillText(s,x,y);
+  ctx.restore();
+}
+function tw(ctx,s,size,font,ls=0){ctx.save();ctx.font=`400 ${size}px ${font}`;ctx.letterSpacing=ls+'px';const w=ctx.measureText(s).width;ctx.restore();return w;}
+// 黒帯＋白文字（チラシの見出しと同じ考え方のラベル）
+function label(ctx,s,x,y,size,bg,fg,k=1,o={}){
+  const pad=size*.32,w=tw(ctx,s,size,o.font||F.disp,o.ls||0)+pad*2,h=size*1.36;
+  const x0=o.align==='center'?x-w/2:o.align==='right'?x-w:x;
+  ctx.save();ctx.fillStyle=bg;ctx.fillRect(x0,y-h/2,w*k,h);
+  ctx.beginPath();ctx.rect(x0,y-h/2,w*k,h);ctx.clip();
+  txt(ctx,s,x0+pad,y+size*.36,size,o.font||F.disp,fg,{ls:o.ls||0});
+  ctx.restore();return w;
+}
+
+// ---------- シーン ----------
+// 0.0–1.0 写真のストロボ（2コマごとに顔が切り替わる）
+function sStrobe(ctx,t){
+  const i=Math.floor(t*FPS/2);const bgs=[C.red,C.blue,C.ink,C.paper];
+  const bg=bgs[i%4];ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+  const fg=bg===C.paper?C.ink:C.paper;
+  // 背景の巨大アウトライン文字
+  ctx.save();ctx.translate(540,960);ctx.rotate(-Math.PI/2);
+  txt(ctx,'KANMON KAIGI',0,170,430,F.lat,bg===C.paper?'rgba(17,19,24,.16)':'rgba(247,247,243,.22)',{align:'center',stroke:4});
+  ctx.restore();
+  const id=FACE_IDS[(i*7)%FACE_IDS.length];
+  const k=(t*FPS/2)%1;const sh=t>.78?eInCubic(seg(t,.78,1)):0;
+  const r=lerp(470,445,k)*(1-sh*.94);
+  face(ctx,id,540,900,r,{ring:fg,ringW:14,zoom:1.05});
+  // 角のメタ情報
+  txt(ctx,'KANMON KAIGI COMMUNITY',70,190,30,F.mono,fg,{ls:4});
+  txt(ctx,String(i+1).padStart(2,'0')+' / '+String(FACE_IDS.length),1010,190,30,F.mono,fg,{align:'right',ls:4});
+  txt(ctx,'SINCE 2025',70,1520,30,F.mono,fg,{ls:6});
+  // クロスヘア
+  ctx.strokeStyle=fg;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(540,330);ctx.lineTo(540,380);ctx.moveTo(540,1420);ctx.lineTo(540,1470);ctx.stroke();
+}
+// 1.0–2.0 タイトル叩きつけ
+function sTitle(ctx,t){
+  ctx.fillStyle=C.red;ctx.fillRect(0,0,W,H);
+  // 衝撃波リング
+  for(let j=0;j<3;j++){const k=seg(t,j*.07,.6+j*.07);if(k<=0||k>=1)continue;
+    ctx.strokeStyle=`rgba(247,247,243,${.55*(1-k)})`;ctx.lineWidth=18*(1-k)+2;ctx.beginPath();ctx.arc(540,880,80+eOutCubic(k)*900,0,7);ctx.stroke();}
+  // 散る写真
+  const ids=['02-1','03-2','06-3','08-2','09-1','04-2'];
+  ids.forEach((id,j)=>{const a=j/ids.length*Math.PI*2+.4,k=eOutExpo(seg(t,0,.55));const d=lerp(60,560+hash(j)*120,k);
+    const x=540+Math.cos(a)*d,y=880+Math.sin(a)*d*1.35;face(ctx,id,x,y,lerp(20,92,k),{ring:C.paper,ringW:6});});
+  const k1=eOutExpo(seg(t,0,.22));
+  ctx.save();ctx.translate(540,860);ctx.scale(lerp(2.8,1,k1),lerp(2.8,1,k1));
+  txt(ctx,'関門',0,0,360,F.disp,C.paper,{align:'center'});ctx.restore();
+  const k2=eOutExpo(seg(t,.22,.42));
+  ctx.fillStyle=C.blue;ctx.fillRect(0,960,W*k2,330);
+  ctx.save();ctx.beginPath();ctx.rect(0,960,W,330);ctx.clip();
+  txt(ctx,'カイギ',540,1235+lerp(320,0,k2),300,F.disp,C.paper,{align:'center'});ctx.restore();
+  const k3=seg(t,.45,.6);
+  if(k3>0){ctx.globalAlpha=k3;txt(ctx,'KANMON KAIGI COMMUNITY · SINCE 2025',540,1380,30,F.mono,C.paper,{align:'center',ls:5});ctx.globalAlpha=1;}
+}
+// 2.0–3.5 関門の港 ＋ コピー
+function sHarbor(ctx,t){
+  const k=t/1.5;
+  cover(ctx,IMG.harbor,0,0,W,H,lerp(1.18,1.04,eOutCubic(k)),lerp(.72,.42,k),.5);
+  const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'rgba(17,19,24,.35)');g.addColorStop(.45,'rgba(17,19,24,0)');g.addColorStop(1,'rgba(17,19,24,.55)');
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  const lines=[['ひと',0,C.ink],['まち',.25,C.blue],['まなび',.5,C.red]];
+  lines.forEach(([s,a,bg],j)=>{const q=eOutExpo(seg(t,a,a+.2));if(q<=0)return;
+    label(ctx,s,90+j*40,470+j*190,140,bg,C.paper,q);});
+  const q4=eOutExpo(seg(t,.78,.98));
+  if(q4>0)label(ctx,'が「想い」で',90,1100,96,C.paper,C.ink,q4);
+  const q5=eOutExpo(seg(t,1.05,1.25));
+  if(q5>0)label(ctx,'つながる。',90,1260,96,C.paper,C.ink,q5);
+  txt(ctx,'KANMON STRAIT',990,240,30,F.mono,C.paper,{align:'right',ls:6});
+}
+// 3.5–8.5 アーカイブ #1 → #9（1回 0.5秒）
+const EP_BG=[C.blue,C.paper,C.red,C.ink,C.blue,C.red,C.paper,C.ink,C.blue,C.red];
+function sEpisode(ctx,t,n){
+  const e=EP[n],bg=EP_BG[n],fg=bg===C.paper?C.ink:C.paper,acc=bg===C.red?C.ink:bg===C.paper?C.red:C.red;
+  ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+  // 斜めのストライプ
+  ctx.save();ctx.globalAlpha=.08;ctx.fillStyle=fg;ctx.translate(540,960);ctx.rotate(-.35);
+  for(let i=-12;i<12;i++)ctx.fillRect(i*120+((t*240)%120),-1400,40,2800);ctx.restore();
+  // 進捗
+  txt(ctx,'ARCHIVE',70,220,30,F.mono,fg,{ls:6});
+  for(let i=0;i<EP.length;i++){ctx.fillStyle=i<=n?(i===n?acc:fg):'rgba(127,127,127,.35)';ctx.fillRect(1010-(EP.length-i)*34,200,26,i===n?26:10);}
+  const sp=e.no==='SPECIAL';
+  const z=lerp(1.0,1.07,t/.5);
+  ctx.save();ctx.translate(70,sp?560:640);ctx.scale(z,z);
+  txt(ctx,e.no,0,0,sp?250:470,F.lat,fg);ctx.restore();
+  const qd=eOutExpo(seg(t,.04,.2));
+  ctx.save();ctx.beginPath();ctx.rect(70,sp?600:680,1000,140);ctx.clip();
+  txt(ctx,e.date,74,(sp?700:780)+lerp(120,0,qd),104,F.lat,fg,{ls:2});ctx.restore();
+  if(e.sub)label(ctx,e.sub,70,800,60,C.ink,C.paper,qd);
+  const pos=sp?[[220,1040],[540,1080],[860,1040],[220,1360],[540,1400],[860,1360]].map(p=>[...p,142])
+            :[[300,1060,200],[790,1190,218],[400,1450,176]];
+  e.faces.forEach((id,j)=>{const q=seg(t,.03+j*(sp?.03:.06),.2+j*(sp?.03:.06));if(q<=0)return;
+    const r=pos[j][2]*eBack(q);face(ctx,id,pos[j][0],pos[j][1],r,{ring:fg,ringW:10,shadow:true});});
+  if(!sp)txt(ctx,e.where,74,(sp?0:850),34,F.body,fg,{weight:700});
+  else txt(ctx,e.where,74,1560,34,F.body,fg,{weight:700});
+}
+// 8.5–11.0 顔の壁 → ドリーアウト
+function sWall(ctx,t){
+  ctx.fillStyle=C.ink;ctx.fillRect(0,0,W,H);
+  const cols=5,rows=7,gx=212,gy=226,cx=540,cy=900;
+  const k=eInOut(seg(t,0,1.05));const sc=lerp(2.9,1,k);const rot=lerp(-.14,0,k);
+  const focus=17;const fx=cx+((focus%cols)-(cols-1)/2)*gx,fy=cy+(Math.floor(focus/cols)-(rows-1)/2)*gy;
+  ctx.save();ctx.translate(540,900);ctx.rotate(rot);ctx.scale(sc,sc);ctx.translate(-lerp(fx,cx,k),-lerp(fy,cy,k));
+  for(let i=0;i<cols*rows;i++){
+    const c=i%cols,r=Math.floor(i/cols);const drift=(c%2?1:-1)*(t*40);
+    const x=cx+(c-(cols-1)/2)*gx,y=cy+(r-(rows-1)/2)*gy+drift;
+    const b=Math.floor((t-1.0)/BEAT*2);const lit=t>1.0&&hash(i*3.1+b)>.72;
+    face(ctx,FACE_IDS[i%FACE_IDS.length],x,y,96,{ring:lit?C.red:C.paper,ringW:lit?9:5,tint:lit?(hash(i+b)>.5?C.red:C.blue):null,tintA:.55});
+  }
+  ctx.restore();
+  const q=eOutExpo(seg(t,1.05,1.3));
+  if(q>0){
+    ctx.fillStyle=C.red;ctx.fillRect(0,700,W*q,300);
+    ctx.save();ctx.beginPath();ctx.rect(0,700,W*q,300);ctx.clip();
+    txt(ctx,'#1 → #9',540,930,230,F.lat,C.paper,{align:'center',ls:4});ctx.restore();
+  }
+  const q2=eOutExpo(seg(t,1.4,1.6));
+  if(q2>0){label(ctx,'地域で活躍する、',540,1110,70,C.paper,C.ink,q2,{align:'center'});}
+  const q3=eOutExpo(seg(t,1.6,1.8));
+  if(q3>0){label(ctx,'面白い人の話を聞く。',540,1220,70,C.paper,C.ink,q3,{align:'center'});}
+}
+// 11.0–12.5 ひとり10分
+function sTen(ctx,t){
+  ctx.fillStyle=C.blue;ctx.fillRect(0,0,W,H);
+  const cx=540,cy=820;
+  // 周回する顔
+  const n=12;for(let i=0;i<n;i++){const a=i/n*Math.PI*2+t*1.1-Math.PI/2;const q=eBack(seg(t,i*.02,.25+i*.02));
+    face(ctx,FACE_IDS[(i*3+5)%FACE_IDS.length],cx+Math.cos(a)*440,cy+Math.sin(a)*440,72*q,{ring:C.paper,ringW:6});}
+  // タイマーリング
+  ctx.lineCap='round';ctx.lineWidth=28;ctx.strokeStyle='rgba(247,247,243,.2)';ctx.beginPath();ctx.arc(cx,cy,330,0,7);ctx.stroke();
+  const k=eInOut(seg(t,.05,1.3));ctx.strokeStyle=C.red;ctx.beginPath();ctx.arc(cx,cy,330,-Math.PI/2,-Math.PI/2+k*Math.PI*2);ctx.stroke();
+  const qn=eOutExpo(seg(t,0,.2));ctx.save();ctx.translate(cx,cy);ctx.scale(lerp(1.8,1,qn),lerp(1.8,1,qn));
+  txt(ctx,'10',0,120,380,F.lat,C.paper,{align:'center'});ctx.restore();
+  txt(ctx,'MIN / GUEST',cx,cy+200,34,F.mono,C.paper,{align:'center',ls:6});
+  if(t<.8){const q=eOutExpo(seg(t,.15,.35));label(ctx,'ゲストが10分で「想い」をプレゼン',540,1420,58,C.paper,C.ink,q,{align:'center'});}
+  else{const q=eOutExpo(seg(t,.8,.98));label(ctx,'そして、交流。',540,1420,96,C.red,C.paper,q,{align:'center'});}
+}
+// 12.5–15.0 エンドカード
+function sEnd(ctx,t){
+  cover(ctx,IMG.harbor,0,0,W,H,lerp(1.12,1.0,eOutCubic(t/2.5)),.5,.5);
+  ctx.fillStyle='rgba(20,40,120,.62)';ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='rgba(17,19,24,.25)';ctx.fillRect(0,0,W,H);
+  const ql=eBack(seg(t,0,.35));
+  ctx.save();ctx.translate(540,440);ctx.rotate(lerp(-1.2,0,eOutExpo(seg(t,0,.5))));ctx.scale(ql,ql);
+  if(IMG.logoW)ctx.drawImage(IMG.logoW,-130,-130,260,260);ctx.restore();
+  const q1=eOutExpo(seg(t,.12,.35));
+  ctx.save();ctx.beginPath();ctx.rect(0,560,W,200);ctx.clip();
+  txt(ctx,'関門カイギ',540,725+lerp(200,0,q1),156,F.disp,C.paper,{align:'center'});ctx.restore();
+  const q2=eOutExpo(seg(t,.3,.5));
+  if(q2>0)label(ctx,'終わらないカイギ',540,850,84,C.red,C.paper,q2,{align:'center'});
+  const q3=seg(t,.5,.7);
+  if(q3>0){ctx.globalAlpha=q3;txt(ctx,'「ひと・まち・まなび」が「想い」でつながる',540,980,42,F.body,C.paper,{align:'center',weight:700});ctx.globalAlpha=1;}
+  // 顔のマーキー
+  const qm=eOutCubic(seg(t,.4,.8));
+  ctx.save();ctx.globalAlpha=qm;
+  const step=176,off=(t*150)%step;
+  for(let i=-1;i<9;i++){const id=FACE_IDS[(i+40+Math.floor(t*150/step))%FACE_IDS.length];face(ctx,id,i*step+off-20,1140,74,{ring:C.paper,ringW:5});}
+  ctx.restore();
+  const q4=eOutExpo(seg(t,.7,.9));
+  if(q4>0)label(ctx,'次のカイギで会いましょう',540,1310,56,C.paper,C.ink,q4,{align:'center'});
+  const q5=eOutExpo(seg(t,.85,1.05));
+  if(q5>0){ctx.save();ctx.globalAlpha=q5;txt(ctx,'@kanmon_kaigi',540,1450+lerp(30,0,q5),84,F.lat,C.paper,{align:'center',ls:3});ctx.restore();}
+}
+
+const SCENES=[
+  {a:0,b:1,fn:sStrobe},
+  {a:1,b:2,fn:sTitle,in:'flash',shake:1},
+  {a:2,b:3.5,fn:sHarbor,in:'whip'},
+  ...EP.map((e,n)=>({a:3.5+n*.5,b:4+n*.5,fn:(c,t)=>sEpisode(c,t,n),in:n===0?'zoom':'whip',dir:n%2?-1:1})),
+  {a:8.5,b:11,fn:sWall,in:'flash',shake:.6},
+  {a:11,b:12.5,fn:sTen,in:'whipv'},
+  {a:12.5,b:15.01,fn:sEnd,in:'flash',shake:.8},
+];
+
+// ---------- 合成 ----------
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+const bufA=document.createElement('canvas'),bufB=document.createElement('canvas');
+bufA.width=bufB.width=W;bufA.height=bufB.height=H;
+const ca=bufA.getContext('2d'),cb=bufB.getContext('2d');
+function sceneAt(t){for(let i=SCENES.length-1;i>=0;i--)if(t>=SCENES[i].a)return i;return 0;}
+function drawScene(c,i,t){c.save();c.setTransform(1,0,0,1,0,0);SCENES[i].fn(c,cl(t,0,SCENES[i].b-SCENES[i].a));c.restore();}
+
+function draw(t){
+  t=cl(t,0,DUR-1e-4);
+  const i=sceneAt(t),S=SCENES[i],lt=t-S.a;
+  ctx.save();
+  // 手ぶれ（カットの頭だけ）
+  let sx=0,sy=0;
+  if(S.shake&&lt<.35){const a=S.shake*40*Math.pow(1-lt/.35,2);sx=(hash(t*91)-.5)*a;sy=(hash(t*57+3)-.5)*a;}
+  const TR=.13;
+  if(S.in==='whip'&&lt<TR&&i>0){
+    const k=eInOut(lt/TR),d=S.dir||1;
+    drawScene(ca,i-1,SCENES[i-1].b-SCENES[i-1].a);drawScene(cb,i,lt);
+    ctx.fillStyle='#000';ctx.fillRect(0,0,W,H);
+    // 横ブレ（同じ絵をずらして重ねる）
+    const blur=Math.sin(k*Math.PI)*140;
+    for(let j=0;j<6;j++){const o=(j/5-.5)*blur;ctx.globalAlpha=j?1/(j+1):1;
+      ctx.drawImage(bufA,-k*W*d+o,0);ctx.drawImage(bufB,(1-k)*W*d+o,0);}
+    ctx.globalAlpha=1;
+  }else if(S.in==='whipv'&&lt<TR&&i>0){
+    const k=eInOut(lt/TR);
+    drawScene(ca,i-1,SCENES[i-1].b-SCENES[i-1].a);drawScene(cb,i,lt);
+    const blur=Math.sin(k*Math.PI)*180;
+    for(let j=0;j<6;j++){const o=(j/5-.5)*blur;ctx.globalAlpha=j?1/(j+1):1;
+      ctx.drawImage(bufA,0,-k*H+o);ctx.drawImage(bufB,0,(1-k)*H+o);}
+    ctx.globalAlpha=1;
+  }else if(S.in==='zoom'&&lt<.16&&i>0){
+    const k=eOutExpo(lt/.16);
+    drawScene(cb,i,lt);
+    ctx.translate(540,960);ctx.scale(lerp(2.2,1,k),lerp(2.2,1,k));ctx.rotate(lerp(.25,0,k));ctx.translate(-540,-960);
+    ctx.drawImage(bufB,0,0);
+  }else{
+    ctx.translate(sx,sy);
+    if(sx||sy){ctx.fillStyle='#000';ctx.fillRect(-60,-60,W+120,H+120);}
+    drawScene(ctx,i,lt);
+  }
+  ctx.restore();
+  // フラッシュ
+  if(S.in==='flash'&&lt<.12){ctx.fillStyle=`rgba(247,247,243,${1-lt/.12})`;ctx.fillRect(0,0,W,H);}
+  // 拍に合わせた軽いパルス
+  const bp=(t%BEAT)/BEAT;if(t>3.5&&t<12.5&&bp<.08){ctx.fillStyle=`rgba(247,247,243,${.07*(1-bp/.08)})`;ctx.fillRect(0,0,W,H);}
+  // グレイン
+  if(IMG.grain){ctx.save();ctx.globalAlpha=.07;ctx.globalCompositeOperation='overlay';
+    const f=Math.floor(t*FPS);const ox=-hash(f)*540,oy=-hash(f+9)*960;
+    for(let x=ox;x<W;x+=1080)for(let y=oy;y<H;y+=1920)ctx.drawImage(IMG.grain,x,y,1080,1920);
+    ctx.restore();}
+  // 周辺減光
+  const v=ctx.createRadialGradient(540,960,600,540,960,1250);v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(0,0,0,.28)');
+  ctx.fillStyle=v;ctx.fillRect(0,0,W,H);
+}
+
+// ---------- プレイヤー ----------
+window.READY=boot().then(()=>{draw(0);return true;});
+window.draw=draw;
+if(new URLSearchParams(location.search).has('render'))document.body.classList.add('render');
+const btn=document.getElementById('play'),seek=document.getElementById('seek'),tc=document.getElementById('tc');
+let playing=false,t0=0,base=0,raf=0;
+function tick(now){const t=base+(now-t0)/1000;const tt=t%DUR;draw(tt);seek.value=tt;tc.textContent=tt.toFixed(2).padStart(5,'0');raf=requestAnimationFrame(tick);}
+btn.addEventListener('click',()=>{playing=!playing;btn.textContent=playing?'❚❚ 停止':'▶ 再生';
+  if(playing){base=+seek.value;t0=performance.now();raf=requestAnimationFrame(tick);}else cancelAnimationFrame(raf);});
+seek.addEventListener('input',()=>{base=+seek.value;t0=performance.now();if(!playing){draw(base);tc.textContent=base.toFixed(2).padStart(5,'0');}});
+</script>
+</body>
+</html>
