@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>かんもんノート プロモリール</title>
+<meta name="description" content="かんもんノートの記事写真で組んだ、Instagramリール用の15秒プロモーション動画（1080×1920・128BPM）。Canvasで1コマずつ描画し、MP4に書き出す。">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Mono:wght@400;500&family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@500;700;900&display=swap">
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#050c1f;--panel:#0c1630;--line:rgba(160,190,230,.16);
+  --ink:#eef3fa;--sub:#93a3bd;--acc:#3c9ed7;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);color:var(--ink);}
+body{font-family:"Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP",sans-serif;font-size:15px;line-height:1.7;padding:0 16px 56px;}
+.wrap{max-width:980px;margin:0 auto;}
+header{padding:28px 0 18px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px;border-bottom:1px solid var(--line);margin-bottom:20px;}
+.eyebrow{font-family:"DM Mono",monospace;font-size:12px;letter-spacing:.18em;color:var(--acc);}
+h1{font-family:"Dela Gothic One",sans-serif;font-weight:400;font-size:clamp(26px,5vw,42px);line-height:1.2;}
+.meta{font-family:"DM Mono",monospace;font-size:12px;color:var(--sub);}
+.layout{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:28px;align-items:start;}
+@media (max-width:760px){.layout{grid-template-columns:1fr;}}
+.stage{aspect-ratio:9/16;width:100%;background:#000;border-radius:8px;overflow:hidden;border:1px solid var(--line);}
+.stage canvas{display:block;width:100%;height:100%;}
+.ctrl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px;}
+.btn{appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:6px;padding:8px 14px;font:inherit;font-size:13px;cursor:pointer;min-height:38px;}
+.btn.primary{background:var(--acc);border-color:var(--acc);color:#04101f;font-weight:700;}
+.btn:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px;}
+.tc{font-family:"DM Mono",monospace;font-variant-numeric:tabular-nums;font-size:14px;margin-left:auto;}
+input[type=range]{width:100%;accent-color:var(--acc);margin-top:8px;}
+h2{font-family:"DM Mono",monospace;font-weight:500;font-size:12px;letter-spacing:.18em;color:var(--acc);margin:0 0 10px;}
+.cuts{list-style:none;display:grid;gap:6px;font-size:13.5px;margin-bottom:24px;}
+.cuts li{display:grid;grid-template-columns:92px 1fr;gap:10px;border-bottom:1px solid var(--line);padding-bottom:6px;}
+.cuts b{font-family:"DM Mono",monospace;font-weight:400;color:var(--sub);font-variant-numeric:tabular-nums;}
+.note{font-size:12.5px;color:var(--sub);}
+.note li{margin-left:1.2em;}
+video{width:100%;border-radius:8px;border:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="eyebrow">KANMON NOTE / PROMO REEL</div>
+      <h1>かんもんノート 15秒プロモリール</h1>
+    </div>
+    <div class="meta">1080×1920 · 30fps · 128BPM · 15.0s</div>
+  </header>
+  <div class="layout">
+    <div>
+      <div class="stage"><canvas id="c" width="1080" height="1920" aria-label="かんもんノート プロモリールのプレビュー"></canvas></div>
+      <input id="scrub" type="range" min="0" max="15" step="0.0333" value="0" aria-label="再生位置">
+      <div class="ctrl">
+        <button class="btn primary" id="play" type="button">再生</button>
+        <button class="btn" id="sound" type="button" aria-pressed="false">音を鳴らす</button>
+        <span class="tc" id="tc">00:00.00</span>
+      </div>
+    </div>
+    <div>
+      <h2>CUT LIST</h2>
+      <ul class="cuts">
+        <li><b>00.00–01.88</b>関門海峡。スリットが開いて、ドリーイン</li>
+        <li><b>01.88–04.69</b>グルメ。半拍ごとのカット → 記事数カウンター</li>
+        <li><b>04.69–06.56</b>カフェ。3本のストリップが上下に流れる</li>
+        <li><b>06.56–08.44</b>お店・生活。ホイップパンで横に送る</li>
+        <li><b>08.44–09.84</b>まちの人。ラックフォーカス</li>
+        <li><b>09.84–11.72</b>写真の壁からクレーンアウト、カテゴリ別の記事数</li>
+        <li><b>11.72–15.00</b>ロゴ。光が走って kanmonnote.com</li>
+      </ul>
+      <h2>素材と数字</h2>
+      <ul class="note">
+        <li>写真：かんもんノートの記事アイキャッチ（reel-data/img）と、関門海峡の写真（kanmon-kaigi/harbor.jpg）。</li>
+        <li>記事数：kanmonnote.com の WordPress API のカテゴリ別件数（2026年10月12日取得、reel-data/categories.json）。1本の記事が複数カテゴリに入るため、合計はしていません。</li>
+        <li>音：Web Audio で合成した 128BPM のビートと効果音（著作権のある曲は使っていません）。</li>
+      </ul>
+    </div>
+  </div>
+</div>
+<script>
+(() => {
+'use strict';
+const W = 1080, H = 1920, DUR = 15, BPM = 128, B = 60 / BPM; // 32 beats = 15.0s
+const cv = document.getElementById('c'), g = cv.getContext('2d');
+const NAVY = '#06112b', BLUE = '#3c9ed7', PAPER = '#f4f1ea';
+const F_DISP = '"Dela Gothic One","Zen Kaku Gothic New",sans-serif';
+const F_BODY = '"Zen Kaku Gothic New",sans-serif';
+const F_NUM = 'Anton,"Dela Gothic One",sans-serif';
+const F_MONO = '"DM Mono",ui-monospace,monospace';
+
+/* ---------- easing / timing ---------- */
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const seg = (t, a, b) => clamp((t - a) / (b - a));
+const lerp = (a, b, p) => a + (b - a) * p;
+const E = {
+  outExpo: p => p >= 1 ? 1 : 1 - Math.pow(2, -10 * p),
+  inExpo: p => p <= 0 ? 0 : Math.pow(2, 10 * p - 10),
+  inOutCubic: p => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2,
+  outCubic: p => 1 - Math.pow(1 - p, 3),
+  outBack: p => { const c = 1.9; return 1 + (c + 1) * Math.pow(p - 1, 3) + c * Math.pow(p - 1, 2); },
+};
+const T = { // scene boundaries (seconds, on the beat grid)
+  intro: 0, gourmet: 4 * B, cafe: 10 * B, shop: 14 * B, people: 18 * B, wall: 21 * B, end: 25 * B,
+};
+
+/* ---------- photos (facts: kanmonnote.com eyecatches + Kanmon strait) ---------- */
+const SRC = {
+  harbor: ['kanmon-kaigi/harbor.jpg', .40, .55],
+  okonomi: ['reel-data/img/44350.jpg', .5, .5],
+  soba: ['reel-data/img/44438.jpg', .5, .5],
+  mazesoba: ['reel-data/img/46174.jpg', .5, .55],
+  kimbap: ['reel-data/img/46221.jpg', .5, .6],
+  lunch: ['reel-data/img/46270.jpg', .5, .6],
+  snack: ['reel-data/img/47611.jpg', .55, .4],
+  bungu: ['reel-data/img/44411.jpg', .5, .5],
+  cycle: ['reel-data/img/44419.jpg', .5, .4],
+  uco: ['reel-data/img/44429.jpg', .5, .6],
+  coffee: ['reel-data/img/44464.jpg', .5, .5],
+  sampei: ['reel-data/img/44477.jpg', .5, .5],
+  lievre: ['reel-data/img/44484.jpg', .5, .45],
+  honky: ['reel-data/img/44491.jpg', .5, .5],
+  welina: ['reel-data/img/45954.jpg', .6, .45],
+  flower: ['reel-data/img/46042.jpg', .4, .55],
+  yamanishi: ['reel-data/img/47488.jpg', .5, .4, [0, 0, 432, 350]],   // 写真部分だけ（記事の文字帯は使わない）
+  fuguHands: ['reel-data/img/47488.jpg', .5, .5, [437, 0, 331, 175]],
+};
+const IMG = {};
+const loadImg = (k, [src, fx, fy, crop]) => new Promise(res => {
+  const im = new Image();
+  im.onload = () => { IMG[k] = { im, fx, fy, crop: crop || [0, 0, im.naturalWidth, im.naturalHeight] }; res(); };
+  im.onerror = () => res();
+  im.src = src;
+});
+const LOGO = new Image(); LOGO.src = 'kanmonnote-logo.png';
+
+// draw a photo covering the rect (x,y,w,h), with zoom around its focal point and pan offset
+function cover(k, x, y, w, h, zoom = 1, px = 0, py = 0, c = g) {
+  const P = IMG[k]; if (!P) { c.fillStyle = '#1a2440'; c.fillRect(x, y, w, h); return; }
+  const [sx0, sy0, sw0, sh0] = P.crop;
+  const s = Math.max(w / sw0, h / sh0) * zoom;
+  const vw = w / s, vh = h / s;
+  let sx = sx0 + P.fx * sw0 - vw / 2 + px * vw, sy = sy0 + P.fy * sh0 - vh / 2 + py * vh;
+  sx = clamp(sx, sx0, sx0 + sw0 - vw); sy = clamp(sy, sy0, sy0 + sh0 - vh);
+  c.drawImage(P.im, sx, sy, vw, vh, x, y, w, h);
+}
+// pre-blurred, darkened full-frame backgrounds (so a 768px photo never has to fill 1080×1920 sharply)
+const BG = {};
+function makeBg(k) {
+  const o = document.createElement('canvas'); o.width = W / 4; o.height = H / 4;
+  const c = o.getContext('2d');
+  c.filter = 'blur(14px) saturate(1.25)';
+  cover(k, -30, -30, W / 4 + 60, H / 4 + 60, 1, 0, 0, c);
+  c.filter = 'none';
+  c.fillStyle = 'rgba(5,12,31,.55)'; c.fillRect(0, 0, o.width, o.height);
+  BG[k] = o;
+}
+function bg(k, zoom = 1.1, a = 1) {
+  if (!BG[k]) return;
+  g.save(); g.globalAlpha = a;
+  const w = W * zoom, h = H * zoom;
+  g.drawImage(BG[k], (W - w) / 2, (H - h) / 2, w, h);
+  g.restore();
+}
+// photo print: white border + soft shadow, rotated around its center
+function card(k, cx, cy, w, h, { rot = 0, zoom = 1.04, px = 0, py = 0, border = 14, alpha = 1, scale = 1, blur = 0 } = {}) {
+  g.save();
+  g.globalAlpha = alpha;
+  g.translate(cx, cy); g.rotate(rot); g.scale(scale, scale);
+  g.shadowColor = 'rgba(0,0,0,.55)'; g.shadowBlur = 60; g.shadowOffsetY = 26;
+  g.fillStyle = PAPER; g.fillRect(-w / 2 - border, -h / 2 - border, w + border * 2, h + border * 2);
+  g.shadowColor = 'transparent';
+  if (blur > .3) g.filter = `blur(${blur}px)`;
+  cover(k, -w / 2, -h / 2, w, h, zoom, px, py);
+  g.filter = 'none';
+  g.restore();
+}
+
+/* ---------- type ---------- */
+function text(s, x, y, { size = 80, font = F_DISP, color = '#fff', align = 'left', base = 'alphabetic', alpha = 1, track = 0, weight = '' } = {}) {
+  g.save(); g.globalAlpha *= alpha;
+  g.font = `${weight} ${size}px ${font}`.trim(); g.fillStyle = color; g.textAlign = align; g.textBaseline = base;
+  if (track) { try { g.letterSpacing = `${track}px`; } catch (e) {} }
+  g.fillText(s, x, y);
+  g.restore();
+}
+// characters rise out of a mask line, staggered
+function riseText(s, x, y, t0, t, { size = 120, font = F_DISP, color = '#fff', stagger = .035, dur = .42, align = 'left', track = 0 } = {}) {
+  g.save();
+  g.font = `${size}px ${font}`;
+  try { g.letterSpacing = `${track}px`; } catch (e) {}
+  const chars = [...s];
+  const widths = chars.map(ch => g.measureText(ch).width + track);
+  const total = widths.reduce((a, b) => a + b, 0);
+  let cx = align === 'center' ? x - total / 2 : align === 'right' ? x - total : x;
+  g.beginPath(); g.rect(cx - 40, y - size * 1.1, total + 80, size * 1.35); g.clip();
+  g.fillStyle = color; g.textBaseline = 'alphabetic';
+  chars.forEach((ch, i) => {
+    const p = E.outExpo(seg(t, t0 + i * stagger, t0 + i * stagger + dur));
+    g.fillText(ch, cx, y + (1 - p) * size * 1.2);
+    cx += widths[i];
+  });
+  g.restore();
+}
+function hud(t) {
+  // showreel HUD — kept inside Instagram's safe area (top 220 / bottom 420 / right 150)
+  const tc = `${String(Math.floor(t)).padStart(2, '0')}:${String(Math.floor((t % 1) * 30)).padStart(2, '0')}`;
+  const a = 1 - seg(t, T.end + .2, T.end + .6);
+  g.save(); g.globalAlpha = .85 * a;
+  text('KANMON NOTE', 72, 268, { size: 26, font: F_MONO, color: '#fff', track: 6 });
+  text(`REEL ${tc}`, W - 168, 268, { size: 26, font: F_MONO, color: '#fff', align: 'right', track: 4 });
+  g.fillStyle = 'rgba(255,255,255,.25)'; g.fillRect(72, 290, W - 240, 2);
+  g.fillStyle = BLUE; g.fillRect(72, 290, (W - 240) * (t / DUR), 2);
+  g.restore();
+}
+// chapter label: index + big Japanese word + English sub
+function chapter(t, t0, idx, jp, en, { y = 1430, x = 72 } = {}) {
+  const p = E.outExpo(seg(t, t0, t0 + .35));
+  g.save();
+  g.fillStyle = BLUE; g.fillRect(x, y - 178, 120 * p, 8);
+  text(`${idx} / ${en}`, x, y - 196, { size: 28, font: F_MONO, color: '#fff', alpha: p, track: 5 });
+  riseText(jp, x - 6, y, t0 + .03, t, { size: 172, stagger: .045 });
+  g.restore();
+}
+function counter(t, t0, n, label, { x = W - 168, y = 760, size = 300 } = {}) {
+  const p = E.outCubic(seg(t, t0, t0 + .9));
+  const v = Math.round(n * p);
+  const pin = E.outExpo(seg(t, t0, t0 + .25));
+  g.save();
+  g.globalAlpha = pin;
+  text(String(v), x, y, { size, font: F_NUM, color: '#fff', align: 'right' });
+  text(label, x, y + 66, { size: 40, font: F_BODY, weight: 900, color: '#fff', align: 'right' });
+  g.restore();
+}
+
+/* ---------- film texture ---------- */
+const GRAIN = [];
+function makeGrain() {
+  let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  for (let n = 0; n < 6; n++) {
+    const o = document.createElement('canvas'); o.width = 360; o.height = 640;
+    const c = o.getContext('2d'), id = c.createImageData(360, 640);
+    for (let i = 0; i < id.data.length; i += 4) { const v = rnd() * 255; id.data[i] = id.data[i + 1] = id.data[i + 2] = v; id.data[i + 3] = 22; }
+    c.putImageData(id, 0, 0); GRAIN.push(o);
+  }
+}
+function post(t) {
+  // vignette
+  const vg = g.createRadialGradient(W / 2, H / 2, H * .25, W / 2, H / 2, H * .75);
+  vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.5)');
+  g.fillStyle = vg; g.fillRect(0, 0, W, H);
+  // grain
+  const fr = Math.floor(t * 30);
+  g.save(); g.globalCompositeOperation = 'overlay'; g.globalAlpha = .9;
+  g.drawImage(GRAIN[fr % GRAIN.length], 0, 0, W, H);
+  g.restore();
+}
+function flash(t, at, len = .12, color = '255,255,255', peak = .9) {
+  const p = seg(t, at, at + len);
+  if (p <= 0 || p >= 1) return;
+  g.fillStyle = `rgba(${color},${peak * (1 - p)})`; g.fillRect(0, 0, W, H);
+}
+// beat "punch": tiny scale bump on each beat
+const punch = (t, t0, amt = .035) => { const b = ((t - t0) / B) % 1; return 1 + amt * Math.pow(1 - clamp(b * 3), 2); };
+function withZoom(z, fn, cx = W / 2, cy = H / 2) { g.save(); g.translate(cx, cy); g.scale(z, z); g.translate(-cx, -cy); fn(); g.restore(); }
+// whip-pan motion blur: draw fn several times along x
+function smear(fn, dx, n = 6) {
+  if (Math.abs(dx) < 1) { fn(0); return; }
+  g.save();
+  for (let i = 0; i < n; i++) { g.globalAlpha = i === 0 ? 1 : .32; fn(dx * i / n); }
+  g.restore();
+}
+
+/* ---------- scenes ---------- */
+function sIntro(t) {
+  const lt = t - T.intro;
+  g.fillStyle = '#02060f'; g.fillRect(0, 0, W, H);
+  // the strait as a line, then a slit opens on the harbor
+  const line = E.inOutCubic(seg(lt, .05, .55));
+  const open = E.outExpo(seg(lt, .5, 1.25));
+  const slitH = lerp(4, H, open);
+  const dolly = lerp(1.32, 1.06, E.outCubic(seg(lt, .4, 1.9)));
+  g.save();
+  g.beginPath(); g.rect(0, H / 2 - slitH / 2, W, slitH); g.clip();
+  withZoom(dolly, () => cover('harbor', 0, 0, W, H, 1, 0, 0));
+  g.fillStyle = 'rgba(4,10,28,.28)'; g.fillRect(0, 0, W, H);
+  const sky = g.createLinearGradient(0, 0, 0, H); sky.addColorStop(0, 'rgba(3,9,26,.75)'); sky.addColorStop(.42, 'rgba(3,9,26,0)'); sky.addColorStop(.7, 'rgba(3,9,26,0)'); sky.addColorStop(1, 'rgba(3,9,26,.85)');
+  g.fillStyle = sky; g.fillRect(0, 0, W, H);
+  g.restore();
+  if (open < 1) { g.fillStyle = BLUE; g.fillRect(W / 2 - (W / 2) * line, H / 2 - 2, W * line, 4); }
+  text('関門海峡エリアの', 72, 560, { size: 54, font: F_BODY, weight: 900, color: '#fff', alpha: E.outExpo(seg(lt, .75, 1.1)), track: 4 });
+  riseText('情報', 64, 760, .85, lt, { size: 200 });
+  riseText('メディア', 64, 960, .98, lt, { size: 200 });
+  // whip out
+  const out = E.inExpo(seg(lt, 4 * B - .22, 4 * B));
+  if (out > 0) { g.fillStyle = `rgba(6,17,43,${out})`; g.fillRect(0, 0, W, H); }
+}
+
+const GOURMET_CUTS = ['okonomi', 'mazesoba', 'soba', 'kimbap', 'lunch', 'okonomi', 'mazesoba', 'kimbap'];
+const GOURMET_POS = [[-.05, -60], [.04, 20], [-.03, -30], [.05, 40], [-.04, -10], [.03, 10], [-.05, 30], [.04, -20]];
+function sGourmet(t) {
+  const lt = t - T.gourmet;
+  const cut = Math.floor(lt / (B / 2));
+  g.fillStyle = NAVY; g.fillRect(0, 0, W, H);
+  if (lt < 4 * B) {
+    const k = GOURMET_CUTS[cut % GOURMET_CUTS.length];
+    const cl = lt - cut * B / 2;
+    bg(k, 1.15 + .04 * Math.sin(cut));
+    // huge outlined word behind the cards
+    g.save(); g.font = `520px ${F_DISP}`; g.lineWidth = 3; g.strokeStyle = 'rgba(255,255,255,.22)';
+    g.textAlign = 'center'; g.strokeText('食', W / 2 + Math.sin(lt * 2) * 30, 1180); g.restore();
+    const [rot, dy] = GOURMET_POS[cut % GOURMET_POS.length];
+    const pin = E.outBack(seg(cl, 0, .2));
+    const wide = IMG[k] && IMG[k].crop[2] > IMG[k].crop[3];
+    const w = wide ? 900 : 760, h = wide ? 680 : 1000;
+    card(k, W / 2, 930 + dy, w, h, { rot, scale: lerp(1.18, 1, pin), zoom: 1.05 + cl * .3 });
+    flash(lt, cut * B / 2, .07, '255,255,255', cut % 2 ? .25 : .55);
+    chapter(t, T.gourmet + .05, '01', 'グルメ', 'GOURMET');
+  } else {
+    // full-bleed portrait photo + counter
+    const ll = lt - 4 * B;
+    const z = lerp(1.18, 1.04, E.outCubic(seg(ll, 0, 2 * B)));
+    withZoom(z, () => cover('lunch', 0, 0, W, H, 1, 0, -.02));
+    const sh = g.createLinearGradient(0, 0, 0, H); sh.addColorStop(0, 'rgba(6,17,43,.55)'); sh.addColorStop(.45, 'rgba(6,17,43,.1)'); sh.addColorStop(1, 'rgba(6,17,43,.85)');
+    g.fillStyle = sh; g.fillRect(0, 0, W, H);
+    counter(t, T.gourmet + 4 * B, 502, 'グルメの記事', { y: 760 });
+    text('※カテゴリ別の記事数（2026年10月時点）', W - 168, 900, { size: 24, font: F_BODY, weight: 700, color: 'rgba(255,255,255,.8)', align: 'right' });
+    chapter(t, T.gourmet + 4 * B, '01', 'グルメ', 'GOURMET');
+    flash(lt, 4 * B, .14, '255,255,255', .8);
+  }
+  const out = E.inExpo(seg(lt, 6 * B - .2, 6 * B));
+  if (out > 0) { g.fillStyle = `rgba(6,17,43,${out})`; g.fillRect(0, 0, W, H); }
+}
+
+function sCafe(t) {
+  const lt = t - T.cafe;
+  g.fillStyle = NAVY; g.fillRect(0, 0, W, H);
+  bg('honky', 1.1, .9);
+  const strips = ['lievre', 'coffee', 'honky'];
+  const sw = 316, gap = 26, x0 = (W - (sw * 3 + gap * 2)) / 2;
+  const expand = E.inOutCubic(seg(lt, 2 * B, 2 * B + .5));
+  strips.forEach((k, i) => {
+    const p = E.outExpo(seg(lt, i * .08, i * .08 + .7));
+    const dir = i % 2 ? -1 : 1;
+    const drift = (lt * 60) * dir;
+    let x = x0 + i * (sw + gap), y = 380 + (1 - p) * 1400 * dir + drift, w = sw, h = 1180;
+    if (i === 1) { // the middle strip grows into a full card
+      x = lerp(x, 90, expand); w = lerp(sw, W - 180, expand); y = lerp(y, 420, expand); h = lerp(h, 1060, expand);
+    } else {
+      y += expand * 1600 * dir;
+    }
+    g.save(); g.shadowColor = 'rgba(0,0,0,.5)'; g.shadowBlur = 40;
+    g.fillStyle = PAPER; g.fillRect(x - 10, y - 10, w + 20, h + 20); g.restore();
+    cover(i === 1 && expand > .5 ? 'sampei' : k, x, y, w, h, 1.06, 0, (i - 1) * .05);
+  });
+  flash(lt, 2 * B + .25, .1, '255,255,255', .5);
+  counter(t, T.cafe + 2 * B + .3, 161, 'カフェの記事', { y: 300 + 300, size: 230 });
+  chapter(t, T.cafe + .05, '02', 'カフェ', 'CAFE');
+  const out = E.inExpo(seg(lt, 4 * B - .15, 4 * B));
+  if (out > 0) { g.fillStyle = `rgba(6,17,43,${out})`; g.fillRect(0, 0, W, H); }
+}
+
+const SHOP = ['bungu', 'cycle', 'uco', 'flower', 'welina'];
+function sShop(t) {
+  const lt = t - T.shop;
+  const step = (4 * B) / SHOP.length;
+  const i = Math.min(SHOP.length - 1, Math.floor(lt / step));
+  const ll = lt - i * step;
+  g.fillStyle = NAVY; g.fillRect(0, 0, W, H);
+  const k = SHOP[i], prev = SHOP[i - 1];
+  // whip pan: previous photo flies off left, new one arrives from the right
+  const wp = E.outExpo(seg(ll, 0, .28));
+  const dx = (1 - wp) * W * 1.1;
+  bg(k, 1.12);
+  const draw = (key, offx) => card(key, W / 2 + offx, 900, 860, 1000, { rot: i % 2 ? .025 : -.025, zoom: 1.05 + ll * .12 });
+  smear(o => {
+    if (prev && wp < 1) draw(prev, dx - W * 1.1 + o);
+    draw(k, dx + o);
+  }, wp < 1 ? -90 * (1 - wp) : 0, 5);
+  // text swaps from お店 to 生活 when the day-service / flower shop arrives
+  const life = i >= 3;
+  if (!life) {
+    chapter(t, T.shop + .05, '03', 'お店', 'SHOPS');
+    counter(t, T.shop + .3, 262, 'お店の記事', { y: 470 + 130, size: 210 });
+  } else {
+    chapter(t, T.shop + 3 * step + .02, '04', '生活', 'LIFE');
+    counter(t, T.shop + 3 * step + .1, 193, '生活の記事', { y: 470 + 130, size: 210 });
+  }
+  flash(lt, i * step, .06, '255,255,255', .35);
+}
+
+function sPeople(t) {
+  const lt = t - T.people;
+  g.fillStyle = '#02060f'; g.fillRect(0, 0, W, H);
+  const half = 1.5 * B;
+  const k = lt < half ? 'snack' : 'yamanishi';
+  const ll = lt < half ? lt : lt - half;
+  // rack focus: background sharp first, then pull focus to the person
+  const focus = E.outCubic(seg(ll, .05, .45));
+  const z = lerp(1.0, 1.08, ll / half);
+  bg(k, 1.15);
+  const w = 940, h = 1180;
+  card(k, W / 2, 920, w, h, { blur: (1 - focus) * 14, zoom: z, rot: lt < half ? -.02 : .02 });
+  if (lt >= half) {
+    // inset: the hands (same article)
+    const ip = E.outBack(seg(ll, .15, .45));
+    card('fuguHands', W - 300, 1340, 420, 222, { rot: .06, scale: ip, alpha: clamp(ip * 2) });
+  }
+  chapter(t, T.people + .05, '05', 'まちの人', 'PEOPLE');
+  flash(lt, half, .08, '255,255,255', .5);
+}
+
+const WALL = ['okonomi', 'coffee', 'bungu', 'mazesoba', 'lievre', 'cycle', 'soba', 'honky', 'welina', 'kimbap', 'sampei', 'flower', 'lunch', 'uco', 'snack', 'yamanishi', 'okonomi', 'harbor', 'coffee', 'mazesoba'];
+const CATS = [['グルメ', 502], ['イベント', 263], ['お店', 262], ['観光', 256], ['生活', 193], ['食事', 177], ['カフェ', 161]];
+function sWall(t) {
+  const lt = t - T.wall;
+  g.fillStyle = NAVY; g.fillRect(0, 0, W, H);
+  const cols = 4, rows = 5, cw = 300, ch = 300, gap = 16;
+  const gw = cols * cw + (cols - 1) * gap, gh = rows * ch + (rows - 1) * gap;
+  // crane out: start inside one cell, pull back to the whole wall
+  const p = E.inOutCubic(seg(lt, 0, 2.1 * B));
+  const target = [1, 2]; // col,row of the start cell
+  const startZ = Math.max(W / cw, H / ch) * 1.02;
+  const z = Math.exp(lerp(Math.log(startZ), Math.log(.95), p));
+  const fx = lerp(target[0] * (cw + gap) + cw / 2, gw / 2, p), fy = lerp(target[1] * (ch + gap) + ch / 2, gh / 2, p);
+  g.save();
+  g.translate(W / 2, H / 2); g.rotate(lerp(0, -.12, p)); g.scale(z, z); g.translate(-fx, -fy);
+  for (let r = -1; r <= rows; r++) for (let c = -1; c <= cols; c++) {
+    const k = WALL[((r + 1) * (cols + 2) + (c + 1)) % WALL.length];
+    const x = c * (cw + gap), y = r * (ch + gap) + (c % 2 ? lt * -40 : lt * 40);
+    cover(k, x, y, cw, ch, 1.02);
+  }
+  g.restore();
+  g.fillStyle = `rgba(6,17,43,${.25 + .35 * p})`; g.fillRect(0, 0, W, H);
+  // category ticker bands
+  const tp = E.outExpo(seg(lt, 1.2 * B, 1.2 * B + .5));
+  if (tp > 0) {
+    [[640, 1, BLUE, '#fff'], [800, -1, '#fff', NAVY]].forEach(([y, dir, bgc, fg], j) => {
+      g.save(); g.translate(W / 2, y); g.rotate(-.06); g.translate(-W / 2, -y);
+      g.fillStyle = bgc; g.globalAlpha = tp; g.fillRect(-100, y - 62, (W + 200), 124);
+      g.font = `900 64px ${F_BODY}`; g.fillStyle = fg; g.textBaseline = 'middle';
+      const str = CATS.map(([n, v]) => `${n} ${v}`).join('　／　') + '　／　';
+      const sw = g.measureText(str).width;
+      let x = ((lt * 520 * dir) % sw) - sw + (j ? 200 : 0);
+      for (; x < W + 100; x += sw) g.fillText(str, x, y + 2);
+      g.restore();
+    });
+    text('カテゴリ別の記事数（2026年10月時点）', 72, 1010, { size: 30, font: F_BODY, weight: 700, color: '#fff', alpha: tp });
+    riseText('まちの話を、', 64, 1240, T.wall + 1.5 * B - T.wall, lt, { size: 112 });
+    riseText('記事にしています。', 64, 1380, T.wall + 1.5 * B - T.wall + .12, lt, { size: 112 });
+  }
+  // collapse into the end card
+  const out = E.inExpo(seg(lt, 4 * B - .25, 4 * B));
+  if (out > 0) { g.fillStyle = `rgba(255,255,255,${out})`; g.fillRect(0, 0, W, H); }
+}
+
+function sEnd(t) {
+  const lt = t - T.end;
+  g.fillStyle = NAVY; g.fillRect(0, 0, W, H);
+  // harbor drifts at the bottom, very dark
+  g.save(); g.globalAlpha = .55 * E.outCubic(seg(lt, 0, 1.2));
+  const z = lerp(1.1, 1.0, seg(lt, 0, 3.3));
+  withZoom(z, () => cover('harbor', 0, 980, W, 940, 1, 0, 0));
+  const fade = g.createLinearGradient(0, 980, 0, 1500); fade.addColorStop(0, NAVY); fade.addColorStop(1, 'rgba(6,17,43,0)');
+  g.globalAlpha = 1; g.fillStyle = fade; g.fillRect(0, 975, W, 530);
+  g.restore();
+  // strait line
+  const lp = E.outExpo(seg(lt, .05, .6));
+  g.fillStyle = BLUE; g.fillRect(W / 2 - 420 * lp, 1002, 840 * lp, 4);
+  // logo with a light sweep
+  if (LOGO.complete && LOGO.naturalWidth) {
+    const lw = 860, lh = lw * LOGO.naturalHeight / LOGO.naturalWidth;
+    const lpp = E.outExpo(seg(lt, .1, .8));
+    g.save(); g.globalAlpha = lpp;
+    const s = lerp(1.12, 1, lpp);
+    g.translate(W / 2, 720); g.scale(s, s);
+    g.drawImage(LOGO, -lw / 2, -lh / 2, lw, lh);
+    // sweep
+    const sp = seg(lt, .7, 1.4);
+    if (sp > 0 && sp < 1) {
+      g.globalCompositeOperation = 'source-atop';
+      const sx = lerp(-lw, lw, sp);
+      const grd = g.createLinearGradient(sx - 120, 0, sx + 120, 0);
+      grd.addColorStop(0, 'rgba(255,255,255,0)'); grd.addColorStop(.5, 'rgba(255,255,255,.85)'); grd.addColorStop(1, 'rgba(255,255,255,0)');
+      g.fillStyle = grd; g.fillRect(-lw / 2, -lh / 2, lw, lh);
+    }
+    g.restore();
+  }
+  text('関門海峡エリアの情報メディア', W / 2, 940, { size: 46, font: F_BODY, weight: 900, color: '#fff', align: 'center', alpha: E.outExpo(seg(lt, .5, .9)), track: 4 });
+  // url pill
+  const up = E.outBack(seg(lt, 1.0, 1.4));
+  g.save(); g.globalAlpha = clamp(up);
+  g.translate(W / 2, 1150); g.scale(lerp(.8, 1, up), lerp(.8, 1, up));
+  g.fillStyle = '#fff';
+  g.beginPath(); g.roundRect(-330, -58, 660, 116, 58); g.fill();
+  text('kanmonnote.com', 0, 2, { size: 58, font: F_MONO, weight: 500, color: NAVY, align: 'center', base: 'middle' });
+  g.restore();
+  text('記事の続きは、サイトで。', W / 2, 1290, { size: 38, font: F_BODY, weight: 700, color: 'rgba(255,255,255,.9)', align: 'center', alpha: E.outExpo(seg(lt, 1.4, 1.8)) });
+  flash(lt, 0, .3, '255,255,255', 1);
+}
+
+function renderAt(t) {
+  t = clamp(t, 0, DUR - 1e-4);
+  g.save();
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  g.globalAlpha = 1; g.filter = 'none'; g.globalCompositeOperation = 'source-over';
+  let z = 1;
+  if (t >= T.gourmet && t < T.end) z = punch(t, T.gourmet, .028);
+  withZoom(z, () => {
+    if (t < T.gourmet) sIntro(t);
+    else if (t < T.cafe) sGourmet(t);
+    else if (t < T.shop) sCafe(t);
+    else if (t < T.people) sShop(t);
+    else if (t < T.wall) sPeople(t);
+    else if (t < T.end) sWall(t);
+    else sEnd(t);
+  });
+  hud(t);
+  post(t);
+  g.restore();
+}
+
+/* ---------- audio (synthesised, 128 BPM) ---------- */
+function buildAudio(AC, out) {
+  const rate = AC.sampleRate;
+  const noise = AC.createBuffer(1, rate * 2, rate);
+  { let s = 3; const d = noise.getChannelData(0); for (let i = 0; i < d.length; i++) { s = (s * 16807) % 2147483647; d[i] = s / 1073741823.5 - 1; } }
+  const nz = (t, dur, { type = 'highpass', f = 6000, f2 = null, q = 1, gain = .3, a = .001 } = {}) => {
+    const src = AC.createBufferSource(); src.buffer = noise;
+    const fl = AC.createBiquadFilter(); fl.type = type; fl.frequency.setValueAtTime(f, t); if (f2) fl.frequency.exponentialRampToValueAtTime(f2, t + dur); fl.Q.value = q;
+    const gn = AC.createGain(); gn.gain.setValueAtTime(0, t); gn.gain.linearRampToValueAtTime(gain, t + a); gn.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    src.connect(fl); fl.connect(gn); gn.connect(out); src.start(t); src.stop(t + dur + .05);
+  };
+  const tone = (t, f, dur, { type = 'sine', gain = .3, f2 = null, a = .003, lp = null } = {}) => {
+    const o = AC.createOscillator(); o.type = type; o.frequency.setValueAtTime(f, t); if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + dur * .6);
+    const gn = AC.createGain(); gn.gain.setValueAtTime(0, t); gn.gain.linearRampToValueAtTime(gain, t + a); gn.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    let node = o;
+    if (lp) { const fl = AC.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.value = lp; o.connect(fl); node = fl; }
+    node.connect(gn); gn.connect(out); o.start(t); o.stop(t + dur + .05);
+  };
+  const kick = t => { tone(t, 150, .42, { f2: 42, gain: .95 }); nz(t, .03, { f: 3000, gain: .15 }); };
+  const clap = t => { [0, .012, .024].forEach(d => nz(t + d, .16, { type: 'bandpass', f: 1500, q: .8, gain: .38 })); };
+  const hat = (t, o = .14) => nz(t, .05, { f: 8000, gain: o });
+  const whoosh = (t, dur = .35) => nz(t, dur, { type: 'bandpass', f: 400, f2: 5000, q: 2, gain: .32, a: dur * .7 });
+  const impact = t => { tone(t, 70, 1.4, { f2: 30, gain: .9 }); nz(t, .9, { type: 'lowpass', f: 2200, f2: 200, gain: .45 }); };
+  const riser = (t, dur) => { nz(t, dur, { type: 'bandpass', f: 300, f2: 7000, q: 3, gain: .22, a: dur * .95 }); };
+  // Am – F – C – G, one bar each, plucked
+  const prog = [[57, 60, 64, 69], [53, 57, 60, 65], [48, 55, 60, 64], [55, 59, 62, 67]];
+  const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
+  const pluck = (t, m, g = .09) => tone(t, mtof(m), .32, { type: 'sawtooth', gain: g, lp: 2400 });
+  const bass = (t, m, dur) => tone(t, mtof(m - 24), dur, { type: 'triangle', gain: .32, a: .01 });
+
+  // intro: pad-ish plucks + riser
+  [0, 2, 4, 6].forEach((s, i) => pluck(s * B / 2, prog[0][i % 4] + 12, .05));
+  riser(.2, 4 * B - .2); whoosh(4 * B - .35, .35);
+  // groove from beat 4 to beat 25
+  for (let b = 4; b < 25; b++) {
+    const t = b * B;
+    kick(t);
+    if (b % 2 === 1) clap(t);
+    hat(t + B / 2); hat(t + B / 4, .06); hat(t + 3 * B / 4, .06);
+    const ch = prog[Math.floor((b - 4) / 4) % 4];
+    bass(t, ch[0], B * .9);
+    for (let s = 0; s < 4; s++) pluck(t + s * B / 4, ch[(s + b) % 4] + 12, .07);
+  }
+  impact(4 * B);
+  [10, 14, 18].forEach(b => whoosh(b * B - .3, .3));
+  for (let i = 1; i < 5; i++) whoosh(14 * B + i * (4 * B / 5) - .12, .14);
+  impact(21 * B);
+  riser(23 * B, 2 * B);
+  // end: big hit, then a ringing chord
+  impact(25 * B); kick(25 * B);
+  prog[0].forEach(m => { tone(25 * B, mtof(m), 4.2, { type: 'triangle', gain: .09, a: .02 }); tone(25 * B, mtof(m + 12), 3.5, { type: 'sine', gain: .05, a: .02 }); });
+  nz(25 * B + .7, .9, { type: 'bandpass', f: 3000, f2: 9000, q: 4, gain: .12, a: .4 }); // logo sweep shimmer
+}
+async function renderAudio(rate = 48000) {
+  const off = new OfflineAudioContext(2, Math.ceil(rate * DUR), rate);
+  const comp = off.createDynamicsCompressor(); comp.threshold.value = -12; comp.ratio.value = 4; comp.connect(off.destination);
+  const master = off.createGain(); master.gain.value = .75; master.connect(comp);
+  buildAudio(off, master);
+  const buf = await off.startRendering();
+  const ch = [buf.getChannelData(0), buf.getChannelData(1)], n = buf.length;
+  const dv = new DataView(new ArrayBuffer(44 + n * 4));
+  const str = (o, s) => [...s].forEach((c, i) => dv.setUint8(o + i, c.charCodeAt(0)));
+  str(0, 'RIFF'); dv.setUint32(4, 36 + n * 4, true); str(8, 'WAVEfmt '); dv.setUint32(16, 16, true); dv.setUint16(20, 1, true);
+  dv.setUint16(22, 2, true); dv.setUint32(24, rate, true); dv.setUint32(28, rate * 4, true); dv.setUint16(32, 4, true); dv.setUint16(34, 16, true);
+  str(36, 'data'); dv.setUint32(40, n * 4, true);
+  for (let i = 0, o = 44; i < n; i++) for (const c of ch) { dv.setInt16(o, clamp(c[i], -1, 1) * 0x7fff, true); o += 2; }
+  const bytes = new Uint8Array(dv.buffer); let bin = '';
+  for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  return btoa(bin);
+}
+
+/* ---------- preview UI ---------- */
+let playing = false, t0 = 0, cur = 0, live = null;
+const $ = id => document.getElementById(id);
+function frame(now) {
+  if (playing) { cur = (now / 1000 - t0); if (cur >= DUR) { cur = 0; t0 = now / 1000; if (live) startLive(); } $('scrub').value = cur; }
+  renderAt(cur);
+  $('tc').textContent = `${cur.toFixed(2).padStart(5, '0')} / 15.00`;
+  requestAnimationFrame(frame);
+}
+function stopLive() { if (live) { try { live.close(); } catch (e) {} live = null; } }
+function startLive() {
+  stopLive();
+  const AC = new AudioContext(); live = AC;
+  const m = AC.createGain(); m.gain.value = .7; m.connect(AC.destination);
+  buildAudio(AC, m); // the preview always plays sound from the top
+}
+$('play').addEventListener('click', () => {
+  playing = !playing; $('play').textContent = playing ? '一時停止' : '再生';
+  t0 = performance.now() / 1000 - cur;
+  if (playing && $('sound').getAttribute('aria-pressed') === 'true') { cur = 0; t0 = performance.now() / 1000; startLive(); }
+  if (!playing) stopLive();
+});
+$('sound').addEventListener('click', e => {
+  const on = e.currentTarget.getAttribute('aria-pressed') !== 'true';
+  e.currentTarget.setAttribute('aria-pressed', on); e.currentTarget.textContent = on ? '音：オン（頭から再生）' : '音を鳴らす';
+  if (!on) stopLive();
+});
+$('scrub').addEventListener('input', e => { cur = +e.target.value; t0 = performance.now() / 1000 - cur; stopLive(); });
+
+const ready = (async () => {
+  makeGrain();
+  const fonts = document.fonts ? Promise.race([
+    Promise.all([`400 100px "Dela Gothic One"`, `900 100px "Zen Kaku Gothic New"`, `700 100px "Zen Kaku Gothic New"`, `400 100px Anton`, `500 30px "DM Mono"`]
+      .map(f => document.fonts.load(f, '関門海峡エリアの情報メディアグルメカフェお店生活まちの人話を記事にしていますイベント観光食事続きはサイトで※カテゴリ別数年月時点食0123456789'))),
+    new Promise(r => setTimeout(r, 6000))]) : Promise.resolve();
+  await Promise.all([fonts, ...Object.entries(SRC).map(([k, v]) => loadImg(k, v)), new Promise(r => { if (LOGO.complete) r(); else { LOGO.onload = LOGO.onerror = r; } })]);
+  Object.keys(SRC).forEach(makeBg);
+  return true;
+})();
+ready.then(() => requestAnimationFrame(frame));
+window.kanmonPromo = { renderAt, renderAudio, ready, DUR };
+})();
+</script>
+</body>
+</html>
