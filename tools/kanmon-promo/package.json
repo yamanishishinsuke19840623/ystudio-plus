@@ -1,0 +1,13 @@
+{
+  "name": "kanmon-promo",
+  "private": true,
+  "type": "module",
+  "description": "かんもんノート 15秒プロモーションリール（縦 1080x1920・Instagram リール向け）を pv.html から描画して media/ に書き出す",
+  "scripts": {
+    "render": "node render.mjs",
+    "stills": "PV_ONLY=stills node render.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.56.1"
+  }
+}

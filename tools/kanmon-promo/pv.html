@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>かんもんノート 15秒プロモーションリール（絵コンテ兼描画）</title>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700;900&family=Archivo+Black&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#222;color:#eee;font:14px system-ui;display:flex;flex-direction:column;align-items:center;gap:10px;padding:10px}
+  canvas{width:360px;height:640px;background:#000}
+  input{width:360px}
+</style>
+</head>
+<body>
+<!-- 1080x1920（縦）。ブラウザで開くとスライダーで確認できる。render.mjs は window.renderAt(秒) を1コマずつ呼ぶ -->
+<canvas id="v" width="1080" height="1920"></canvas>
+<input id="t" type="range" min="0" max="15" step="0.02" value="0"><span id="tl">0.00s</span>
+<script>
+// ── 絵コンテ（120BPM・1拍0.5秒・1小節2秒。場面の切り替えは小節の頭）──
+//  1  0–2    スマッシュカット : 罫線ノートにペンで海峡の波線 → ロゴの丸が拍で「ぽん」→ 小節頭で丸が画面を抜く
+//  2  2–4    FPV              : 丸の中から料理の写真が8分音符で奥から突っ込んでくる ＋「食べる。」グルメの記事 502本
+//  3  4–6    ズームイン(グリッド): 3×3 のノートのマス目に店の写真が8分音符で埋まる → 真ん中のマスへ寄る ＋「見つける。」
+//  4  6–8    ホイップパン     : 縦長のカフェ写真を1拍ごとに横へ振り抜く（ブレ＋傾き）＋「くつろぐ。」
+//  5  8–10   ラックフォーカス : 人物の写真。奥（ぼけ）→ 手前にピント ＋「会いに行く。」
+//  6  10–12  ジャンプカット   : 同じ枠で写真が16分音符で入れ替わる ＋ スピードランプの記事数 ＋「関門海峡エリアの／情報メディア。」
+//  7  12–15  クレーンアップ   : 写真が上から降ってきて山になり、ロゴがスマッシュイン → kanmonnote.com → 白い紙に戻る（ループで頭へ）
+// 文言・数字はすべて事実から: 「関門海峡エリアの情報メディア」(showreel.html)、記事数は WordPress のカテゴリ件数（reel-data/categories.json 2026-10-04 取得）。
+// 写真は reel-data/img/（かんもんノートの記事のアイキャッチ）。長辺768px前後なので全画面に引き伸ばさず、カード・マス目・動きの中で使う。
+const W = 1080, H = 1920, BEAT = 0.5, BAR = 2;
+window.DURATION = 15;
+const C = { blue: "#3c9ed7", deep: "#1f6fa8", ink: "#33342f", char: "#494a47", paper: "#fbfaf6", line: "#cfe5f4", sun: "#ffd23f" };
+const cv = document.getElementById("v"), x = cv.getContext("2d");
+const IMG = {};
+const SRC = {
+  logo: "../../kanmonnote-logo.png",
+  // 食べる
+  okonomi: "44350.jpg", soba: "44438.jpg", maze: "46174.jpg", kimbap: "46221.jpg", lunch: "46270.jpg", uco: "44429.jpg",
+  // 見つける（お店）
+  bungu: "44411.jpg", cycle: "44419.jpg", stand: "44464.jpg", flower: "46042.jpg", welina: "45954.jpg", sanpei: "44477.jpg",
+  // くつろぐ（カフェ）
+  honky: "44491.jpg",
+  // 会いに行く
+  boo: "47611.jpg", yamanishi: "47488.jpg",
+};
+window.ready = Promise.all(Object.entries(SRC).map(([k, f]) => new Promise((ok) => {
+  const i = new Image();
+  i.onload = () => { IMG[k] = i; ok(); };
+  i.onerror = () => { console.error("画像が読めません: " + f); ok(); };
+  i.src = f.startsWith("../") ? f : "../../reel-data/img/" + f;
+}))).then(() => Promise.all(["900 150px 'Zen Maru Gothic'", "700 60px 'Zen Maru Gothic'", "100px 'Archivo Black'"].map((f) => document.fonts.load(f, "関門食べるKANMON"))));
+
+const FOOD = ["okonomi", "maze", "soba", "kimbap", "lunch", "uco", "okonomi", "maze"];
+const GRID = ["bungu", "cycle", "flower", "stand", "sanpei", "welina", "soba", "kimbap", "maze"];
+const CAFE = ["honky", "lunch", "sanpei", "uco"];
+const STROBE = ["okonomi", "bungu", "maze", "stand", "soba", "flower", "kimbap", "boo", "cycle", "lunch", "welina", "honky", "uco", "sanpei", "maze", "okonomi"];
+const PILE = ["soba", "flower", "boo", "maze", "stand", "kimbap", "honky", "cycle", "okonomi"];
+
+// ── 道具 ──
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const range = (t, a, b) => clamp((t - a) / (b - a));
+const easeOut = (p) => 1 - Math.pow(1 - p, 3);
+const easeIn = (p) => p * p * p;
+const easeInOut = (p) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
+const expoOut = (p) => (p >= 1 ? 1 : 1 - Math.pow(2, -10 * p));
+const back = (p) => { const c = 1.9; return 1 + (c + 1) * Math.pow(p - 1, 3) + c * Math.pow(p - 1, 2); };
+const spring = (p) => (p <= 0 ? 0 : p >= 1 ? 1 : 1 - Math.exp(-6 * p) * Math.cos(11 * p));
+function rnd(seed) { let s = seed; return () => ((s = (s * 16807) % 2147483647) / 2147483647); }
+const pop = (t, at, d = 0.3) => ({ a: range(t, at, at + 0.08), scale: back(range(t, at, at + d)) });
+
+function rr(px, py, w, h, r) { x.beginPath(); x.roundRect(px, py, w, h, r); }
+// 写真を枠いっぱいに（はみ出しは切る）。z は枠の中だけのズーム
+function fill(img, px, py, w, h, z = 1, ox = 0, oy = 0, blur = 0) {
+  if (!img) return;
+  const k = Math.max(w / img.width, h / img.height) * z, iw = img.width * k, ih = img.height * k;
+  x.save();
+  if (blur) x.filter = `blur(${blur}px)`;
+  x.drawImage(img, px + (w - iw) / 2 + ox, py + (h - ih) / 2 + oy, iw, ih);
+  x.restore();
+}
+// 写真カード（白いふち＋青いずらし影）。ノートに貼った写真のイメージ
+function card(img, cx, cy, w, h, { rot = 0, blur = 0, z = 1, a = 1, shadow = C.blue, border = 16, radius = 28 } = {}) {
+  if (a <= 0) return;
+  x.save();
+  x.globalAlpha = a;
+  x.translate(cx, cy);
+  x.rotate(rot);
+  if (shadow) { rr(-w / 2 + 20, -h / 2 + 22, w, h, radius); x.fillStyle = shadow; x.fill(); }
+  rr(-w / 2, -h / 2, w, h, radius); x.fillStyle = "#fff"; x.fill();
+  rr(-w / 2 + border, -h / 2 + border, w - border * 2, h - border * 2, radius * 0.6);
+  x.save(); x.clip();
+  fill(img, -w / 2 + border, -h / 2 + border, w - border * 2, h - border * 2, z, 0, 0, blur);
+  x.restore();
+  x.restore();
+}
+function text(s, px, py, size, { color = "#fff", a = 1, scale = 1, align = "center", weight = "900", fam = "Zen Maru Gothic", stroke = C.ink, sw = 0.14, rot = 0, sx = 1 } = {}) {
+  if (a <= 0 || scale <= 0) return;
+  x.save();
+  x.globalAlpha = a;
+  x.translate(px, py);
+  x.rotate(rot);
+  x.scale(scale * sx, scale);
+  x.font = `${weight} ${size}px '${fam}'`;
+  x.textAlign = align;
+  x.textBaseline = "middle";
+  x.lineJoin = "round";
+  if (stroke) { x.lineWidth = size * sw; x.strokeStyle = stroke; x.strokeText(s, 0, 0); }
+  x.fillStyle = color;
+  x.fillText(s, 0, 0);
+  x.restore();
+}
+// 1文字ずつ、拍に合わせてスタンプのように押す
+function stamp(s, px, py, size, at, step, opt = {}) {
+  x.save(); x.font = `900 ${size}px 'Zen Maru Gothic'`;
+  const ws = [...s].map((c) => x.measureText(c).width), total = ws.reduce((a, b) => a + b, 0);
+  x.restore();
+  let cx = px - total / 2;
+  [...s].forEach((c, i) => {
+    const q = pop(opt.t, at + i * step, 0.28);
+    text(c, cx + ws[i] / 2, py - (1 - easeOut(range(opt.t, at + i * step, at + i * step + 0.2))) * 60, size, { ...opt, ...q });
+    cx += ws[i];
+  });
+}
+// 青いラベル（カテゴリ名＋記事数。数字はスピードランプで回す）
+function label(t, at, name, n, px, py) {
+  const a = range(t, at, at + 0.08);
+  if (a <= 0) return;
+  const q = 1 - Math.pow(1 - range(t, at, at + 0.7), 4);
+  const s = `${name}の記事　${Math.round(n * q)}本`;
+  x.save();
+  x.globalAlpha = a;
+  x.translate(px, py); const sc = back(range(t, at, at + 0.3)); x.scale(sc, sc); x.rotate(-0.03);
+  x.font = "900 54px 'Zen Maru Gothic'";
+  const w = x.measureText(s).width + 90;
+  rr(-w / 2 + 10, -46 + 10, w, 92, 46); x.fillStyle = C.ink; x.fill();
+  rr(-w / 2, -46, w, 92, 46); x.fillStyle = C.blue; x.fill(); x.lineWidth = 6; x.strokeStyle = C.ink; x.stroke();
+  x.fillStyle = "#fff"; x.textAlign = "center"; x.textBaseline = "middle"; x.fillText(s, 0, 3);
+  x.restore();
+}
+// ノートの紙（罫線が流れる）
+function paper(t, dy = 0, alpha = 1) {
+  x.globalAlpha = alpha;
+  x.fillStyle = C.paper; x.fillRect(0, 0, W, H);
+  x.strokeStyle = C.line; x.lineWidth = 3;
+  const gap = 96, off = ((dy % gap) + gap) % gap;
+  for (let y = off - gap; y < H + gap; y += gap) { x.beginPath(); x.moveTo(0, y); x.lineTo(W, y); x.stroke(); }
+  x.strokeStyle = "rgba(60,158,215,0.55)"; x.lineWidth = 4;
+  x.beginPath(); x.moveTo(120, 0); x.lineTo(120, H); x.stroke();
+  x.globalAlpha = 1;
+}
+// 海峡の波線（ペンで描く）。p=描けた割合
+function wave(p, y0, amp, color = C.blue, lw = 18, t = 0) {
+  if (p <= 0) return;
+  x.save();
+  x.strokeStyle = color; x.lineWidth = lw; x.lineCap = "round"; x.lineJoin = "round";
+  x.beginPath();
+  const end = -60 + (W + 120) * p;
+  for (let px = -60; px <= end; px += 8) {
+    const py = y0 + Math.sin(px / 120 + t * 2) * amp + Math.sin(px / 47 - t * 3) * amp * 0.25;
+    px === -60 ? x.moveTo(px, py) : x.lineTo(px, py);
+  }
+  x.stroke();
+  x.restore();
+}
+// ロゴの丸（関門橋のマーク）。png の左端の正方形がマーク
+function mark(cx, cy, r, a = 1) {
+  const L = IMG.logo; if (!L || r <= 0 || a <= 0) return;
+  x.save(); x.globalAlpha = a;
+  x.drawImage(L, 0, 0, L.height, L.height, cx - r, cy - r, r * 2, r * 2);
+  x.restore();
+}
+function vignette(a = 0.5, from = 0.55) {
+  const g = x.createLinearGradient(0, H * from, 0, H);
+  g.addColorStop(0, "rgba(20,30,40,0)"); g.addColorStop(1, `rgba(20,30,40,${a})`);
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+}
+// 走る帯（マーキー）
+function marquee(t, s, py, size, speed, color, bg, rot = -0.06) {
+  x.save();
+  x.translate(W / 2, py); x.rotate(rot);
+  x.fillStyle = bg; x.fillRect(-W, -size * 0.75, W * 2, size * 1.5);
+  x.font = `${size}px 'Archivo Black'`; x.fillStyle = color; x.textBaseline = "middle";
+  const unit = x.measureText(s).width;
+  for (let px = -W - ((t * speed) % unit); px < W; px += unit) x.fillText(s, px, 4);
+  x.restore();
+}
+
+// ── 各場面 ──
+function s1(t) {
+  // スマッシュカット：静かなノート → ロゴの丸がぽん → 小節頭で丸が画面を抜く
+  paper(t, -t * 40);
+  wave(easeInOut(range(t, 0.05, 1.2)), 1120, 46, C.blue, 20, t);
+  wave(easeInOut(range(t, 0.25, 1.35)), 1220, 30, "rgba(60,158,215,0.45)", 12, t + 1);
+  x.save(); x.font = "28px 'Archivo Black'"; x.fillStyle = C.blue; x.textAlign = "left";
+  const head = "KANMON NOTE  —  15 SEC";
+  x.fillText(head.slice(0, Math.floor(range(t, 0.1, 0.9) * head.length)), 160, 150);
+  x.restore();
+  // 拍で丸が2回ふくらむ
+  let r = 0;
+  if (t >= 1.0) r = 150 * back(range(t, 1.0, 1.25));
+  if (t >= 1.5) r = 150 + 90 * back(range(t, 1.5, 1.75));
+  mark(W / 2, 760, r);
+  stamp("関門の", W / 2, 470, 120, 0.5, 0.12, { t, color: C.ink, stroke: false });
+  if (t > 1.75) {
+    // 丸が画面いっぱいに広がって次の場面へ（中は次の写真）
+    const p = easeIn(range(t, 1.75, 2.0));
+    x.save(); x.beginPath(); x.arc(W / 2, 760, 240 + p * 1900, 0, Math.PI * 2); x.clip();
+    fill(IMG.okonomi, 0, 0, W, H, 1.1);
+    x.restore();
+  }
+}
+function s2(t) {
+  // FPV：奥から写真が8分音符で突っ込んでくる
+  const lt = t - 2;
+  x.fillStyle = C.blue; x.fillRect(0, 0, W, H);
+  // 放射状の速度線
+  x.save(); x.translate(W / 2, 900);
+  const r = rnd(5);
+  for (let i = 0; i < 46; i++) {
+    const ang = r() * Math.PI * 2, sp = 0.6 + r() * 0.8, ph = (lt * sp * 2 + r()) % 1;
+    const d0 = 120 + ph * 1400, d1 = d0 + 80 + ph * 260;
+    x.strokeStyle = `rgba(255,255,255,${0.5 * ph})`; x.lineWidth = 3 + ph * 6;
+    x.beginPath(); x.moveTo(Math.cos(ang) * d0, Math.sin(ang) * d0); x.lineTo(Math.cos(ang) * d1, Math.sin(ang) * d1); x.stroke();
+  }
+  x.restore();
+  // 写真は 0.25秒ごとに1枚。奥(0.25倍)から手前(4倍)へ。奥のものから描く
+  for (let k = 7; k >= -2; k--) {
+    const born = k * 0.25, age = lt - born + 0.6; // 出てから 0.85秒で通り抜ける
+    if (age < 0 || age > 0.85) continue;
+    const z = 0.18 * Math.pow(18, age / 0.85);
+    const img = IMG[FOOD[((k % 8) + 8) % 8]];
+    const w = 720 * z, h = 720 * z, a = Math.min(range(age, 0, 0.12), 1 - range(age, 0.7, 0.85));
+    const rot = (k % 2 ? 1 : -1) * 0.05;
+    card(img, W / 2, 900, w, h, { rot, a, border: 16 * z, radius: 30 * z, shadow: C.ink });
+  }
+  stamp("食べる。", W / 2, 1520, 210, 2.0, 0.09, { t, color: "#fff" });
+  label(t, 2.5, "グルメ", 502, W / 2, 1720);
+}
+function s3(t) {
+  // ズームイン：ノートのマス目に写真が埋まり、真ん中のマスへ寄っていく
+  const lt = t - 4;
+  const zin = easeIn(range(t, 5.45, 6.0));
+  const Z = 1 + zin * 2.6; // 真ん中のマスを中心に拡大
+  const gx = 90, gy = 300, cell = 300, gap = 0;
+  const cx0 = gx + cell * 1.5, cy0 = gy + cell * 1.5;
+  x.save();
+  x.translate(W / 2, 760); x.scale(Z, Z); x.translate(-cx0, -cy0);
+  paper(t, 0);
+  x.strokeStyle = C.blue; x.lineWidth = 6;
+  for (let i = 0; i <= 3; i++) {
+    const pl = easeOut(range(lt, i * 0.05, 0.3 + i * 0.05));
+    x.beginPath(); x.moveTo(gx, gy + i * cell); x.lineTo(gx + cell * 3 * pl, gy + i * cell); x.stroke();
+    x.beginPath(); x.moveTo(gx + i * cell, gy); x.lineTo(gx + i * cell, gy + cell * 3 * pl); x.stroke();
+  }
+  // 8分音符で1マスずつ（真ん中は最後）
+  const order = [0, 2, 6, 8, 1, 3, 5, 7, 4];
+  order.forEach((ci, n) => {
+    const at = 4.25 + n * 0.125, q = spring(range(t, at, at + 0.4));
+    if (q <= 0) return;
+    const col = ci % 3, row = Math.floor(ci / 3), s = (cell - 24) * q;
+    x.save();
+    x.translate(gx + col * cell + cell / 2, gy + row * cell + cell / 2);
+    x.rotate((1 - q) * 0.3 * (ci % 2 ? 1 : -1));
+    rr(-s / 2, -s / 2, s, s, 14); x.save(); x.clip();
+    fill(IMG[GRID[ci]], -s / 2, -s / 2, s, s, 1.05 + 0.05 * Math.sin(lt * 4 + ci));
+    x.restore();
+    x.restore();
+  });
+  x.restore();
+  const a = 1 - range(t, 5.5, 5.8);
+  if (a > 0) {
+    stamp("見つける。", W / 2, 1420, 190, 4.5, 0.08, { t, color: "#fff", a });
+    x.globalAlpha = a; label(t, 5.0, "お店", 262, W / 2, 1620); x.globalAlpha = 1;
+  }
+  // 寄りきったところで白く飛ばしてホイップパンへ
+  const f = range(t, 5.8, 6.0);
+  if (f > 0) { x.fillStyle = `rgba(255,255,255,${f})`; x.fillRect(0, 0, W, H); }
+}
+function s4(t) {
+  // ホイップパン：1拍ごとに縦長の写真を横に振り抜く
+  const lt = t - 6;
+  x.fillStyle = C.deep; x.fillRect(0, 0, W, H);
+  marquee(t, "CAFE  ・  KANMON  ・  ", 260, 120, 900, "rgba(255,255,255,0.18)", "rgba(0,0,0,0)", 0);
+  marquee(t, "SHIMONOSEKI  ・  MOJI  ・  ", 1700, 90, -700, "rgba(255,255,255,0.12)", "rgba(0,0,0,0)", 0);
+  const cw = 760, ch = 1000, cy = 900;
+  // 位置は 0.5秒ごとに1枚ずつ左へ。拍の頭の 0.16秒だけ速く振る（その間ブレる）
+  const beatI = Math.floor(lt / BEAT), bp = (lt % BEAT) / BEAT;
+  const sw = easeInOut(clamp(bp / 0.32));
+  const speed = Math.sin(clamp(bp / 0.32) * Math.PI);
+  for (let k = -1; k <= 1; k++) {
+    const idx = beatI + k;
+    if (idx < 0 || idx > 4) continue;
+    const pos = k - sw + 1; // 1 が中央
+    const px = W / 2 + (pos - 1) * (cw + 120);
+    x.save();
+    x.translate(px, cy); x.transform(1, 0, -0.18 * speed, 1, 0, 0); x.translate(-px, -cy);
+    card(IMG[CAFE[Math.min(idx, 3)]], px, cy, cw, ch, { rot: (pos - 1) * 0.06, blur: speed * 22, shadow: C.ink });
+    x.restore();
+  }
+  stamp("くつろぐ。", W / 2, 1560, 190, 6.25, 0.08, { t, color: "#fff" });
+  label(t, 6.9, "カフェ", 161, W / 2, 1760);
+  // 最初の白から抜ける
+  const f = 1 - range(t, 6.0, 6.18);
+  if (f > 0) { x.fillStyle = `rgba(255,255,255,${f})`; x.fillRect(0, 0, W, H); }
+}
+function s5(t) {
+  // ラックフォーカス：奥のぼけた写真 → 手前の写真にピント。2拍目で人を入れ替え
+  const first = t < 9, img = first ? IMG.boo : IMG.yamanishi;
+  const at = first ? 8 : 9, p = range(t, at, at + 0.45);
+  // 奥：同じ写真を大きく、ぼかして暗く（引き伸ばしの粗さはぼけで隠れる）
+  fill(img, 0, 0, W, H, 1.25 + 0.05 * range(t, at, at + 1), 0, 0, 34);
+  x.fillStyle = "rgba(20,40,60,0.35)"; x.fillRect(0, 0, W, H);
+  // 手前のカード：最初はぼけていて、ピントが合う
+  const blur = 26 * (1 - easeOut(p));
+  const w = 980, h = first ? 980 * 512 / 768 + 40 : 980 * 461 / 768 + 40;
+  card(img, W / 2, 820, w, h, { rot: first ? -0.025 : 0.025, blur, z: first ? 1.0 : 1.0, shadow: C.blue, a: range(t, at, at + 0.1) });
+  stamp("会いに行く。", W / 2, 1420, 170, 8.25, 0.08, { t, color: "#fff" });
+  // 山西水産の写真は記事の見出し画像（かんもん企業紹介 No.01）
+  const q = pop(t, 9.25);
+  text(first ? "団体で訪れ、次はひとりで。" : "かんもん企業紹介 No.01", W / 2, 1600, 54, { weight: "700", stroke: C.ink, sw: 0.18, a: first ? pop(t, 8.6).a : q.a, scale: first ? pop(t, 8.6).scale : q.scale });
+  // 小節の終わりに青のワイプ
+  const wp = easeIn(range(t, 9.75, 10));
+  if (wp > 0) { x.fillStyle = C.blue; x.fillRect(W * (1 - wp), 0, W * wp, H); }
+}
+function s6(t) {
+  // ジャンプカット：同じ枠で写真を16分音符で差し替え、記事数をスピードランプ
+  const lt = t - 10;
+  x.fillStyle = C.blue; x.fillRect(0, 0, W, H);
+  marquee(t, "KANMON NOTE  ", 300, 150, 1100, C.blue, "#fff", -0.07);
+  marquee(t, "SHIMONOSEKI × KITAKYUSHU  ", 1560, 92, -1300, "#fff", C.ink, 0.05);
+  const idx = Math.floor(lt / 0.125) % STROBE.length;
+  // 拍の頭でほんの少し大きく（キックに合わせて揺らす）
+  const kick = 1 + 0.04 * (1 - range(lt % BEAT, 0, 0.15));
+  const s = 820 * kick;
+  card(IMG[STROBE[idx]], W / 2, 930, s, s, { rot: (idx % 2 ? 0.02 : -0.02), shadow: C.ink });
+  // 記事数（WordPress のカテゴリ件数）
+  const rows = [["グルメ", 502], ["イベント", 263], ["お店", 262], ["観光", 256]];
+  const ri = Math.min(3, Math.floor(lt / BEAT));
+  const [nm, n] = rows[ri];
+  const q = 1 - Math.pow(1 - range(lt, ri * BEAT, ri * BEAT + 0.4), 4);
+  if (lt < 2 * BAR) {
+    text(String(Math.round(n * q)), W / 2 + 230, 1300, 190, { fam: "Archivo Black", weight: "400", color: C.sun, stroke: C.ink, sw: 0.1, rot: -0.05 });
+    text(nm, W / 2 - 250, 1310, 90, { color: "#fff", rot: -0.05 });
+  }
+  text("関門海峡エリアの", W / 2, 1720, 92, { ...pop(t, 11.0), color: "#fff" });
+  text("情報メディア。", W / 2, 1840, 92, { ...pop(t, 11.5), color: C.sun });
+}
+function s7(t) {
+  // クレーンアップ：写真が降ってきて山に → ロゴがスマッシュイン → 紙に戻る
+  const lt = t - 12;
+  paper(t, lt * 60);
+  const r = rnd(42);
+  PILE.forEach((k, i) => {
+    const at = 12 + i * 0.09, p = range(t, at, at + 0.45);
+    const tx = 200 + r() * 680, ty = 520 + r() * 900, rot = (r() - 0.5) * 0.5, s = 380 + r() * 120;
+    if (p <= 0) return;
+    const y = ty - (1 - easeOut(p)) * 1600;
+    card(IMG[k], tx, y, s, s, { rot: rot * (1 + (1 - p)), shadow: C.blue, border: 12, radius: 18 });
+  });
+  // 写真の上に白いカード → ロゴ
+  const lp = spring(range(t, 12.75, 13.25));
+  if (lp > 0) {
+    x.save(); x.translate(W / 2, 900); x.scale(lp, lp); x.rotate(-0.03 * (1 - lp));
+    rr(-470 + 18, -170 + 18, 940, 340, 40); x.fillStyle = C.blue; x.fill();
+    rr(-470, -170, 940, 340, 40); x.fillStyle = "#fff"; x.fill(); x.lineWidth = 6; x.strokeStyle = C.ink; x.stroke();
+    const L = IMG.logo; if (L) { const lw = 820, lh = lw * L.height / L.width; x.drawImage(L, -lw / 2, -lh / 2, lw, lh); }
+    x.restore();
+  }
+  const bp = easeOut(range(t, 13.15, 13.45));
+  if (bp > 0) {
+    x.save(); x.globalAlpha = bp;
+    rr(W / 2 - 430 + 14, 1130 + 14, 860, 350, 36); x.fillStyle = C.blue; x.fill();
+    rr(W / 2 - 430, 1130, 860, 350, 36); x.fillStyle = "#fff"; x.fill(); x.lineWidth = 6; x.strokeStyle = C.ink; x.stroke();
+    x.restore();
+  }
+  text("最新の記事は", W / 2, 1200, 70, { ...pop(t, 13.25), color: C.ink, stroke: "#fff", sw: 0.22 });
+  text("kanmonnote.com", W / 2, 1310, 80, { ...pop(t, 13.5), fam: "Archivo Black", weight: "400", color: C.blue, stroke: "#fff", sw: 0.2 });
+  text("プロフィールのリンクから", W / 2, 1420, 56, { ...pop(t, 13.75), color: C.ink, stroke: "#fff", sw: 0.22, weight: "700" });
+  // 最後は白い紙に戻して、ループの頭とつなぐ
+  const f = easeInOut(range(t, 14.4, 15));
+  if (f > 0) { paper(t, 0, f); }
+}
+window.renderAt = function (t) {
+  x.setTransform(1, 0, 0, 1, 0, 0);
+  x.globalAlpha = 1; x.filter = "none";
+  [s1, s2, s3, s4, s5, s6, s7][Math.min(6, Math.floor(t / BAR))](t);
+};
+const sl = document.getElementById("t"), tl = document.getElementById("tl");
+window.ready.then(() => { renderAt(0); sl.oninput = () => { renderAt(+sl.value); tl.textContent = (+sl.value).toFixed(2) + "s"; }; });
+</script>
+</body>
+</html>
