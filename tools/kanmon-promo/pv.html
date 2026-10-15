@@ -50,7 +50,7 @@ window.ready = Promise.all(Object.entries(SRC).map(([k, f]) => new Promise((ok) 
 
 const FOOD = ["okonomi", "maze", "soba"];
 const GRID = ["bungu", "cycle", "flower", "stand", "sanpei", "welina", "soba", "kimbap", "maze"];
-const CAFE = ["honky", "lunch", "sanpei", "uco"];
+const CAFE = ["honky", "lunch", "sanpei", "uco", "stand"];
 const STROBE = ["kimbap", "flower", "stand", "welina"];
 const PILE = ["soba", "flower", "boo", "maze", "stand", "kimbap", "honky", "cycle", "okonomi"];
 
@@ -293,7 +293,7 @@ function s4(t) {
     const px = W / 2 + (pos - 1) * (cw + 120);
     x.save();
     x.translate(px, cy); x.transform(1, 0, -0.18 * speed, 1, 0, 0); x.translate(-px, -cy);
-    card(IMG[CAFE[Math.min(idx, 3)]], px, cy, cw, ch, { rot: (pos - 1) * 0.06, blur: speed * 22, shadow: C.ink });
+    card(IMG[CAFE[idx]], px, cy, cw, ch, { rot: (pos - 1) * 0.06, blur: speed * 22, shadow: C.ink });
     x.restore();
   }
   stamp("くつろぐ。", W / 2, 1560, 190, 6.25, 0.08, { t, color: "#fff" });
