@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<link rel="icon" href="img/logo.jpg">
+<title>山西水産 | 下関ふぐ老舗問屋 明治十二年創業</title>
+<meta name="description" content="明治12年（1879年）創業、下関のふぐ老舗問屋 山西水産。本場の海から、あなたの食卓へ。">
+<meta property="og:title" content="山西水産 | 下関ふぐ老舗問屋">
+<meta property="og:description" content="明治12年（1879年）創業。本場の海から、あなたの食卓へ。">
+<meta property="og:image" content="img/spread.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Yuji+Syuku&family=Zen+Kaku+Gothic+New:wght@400;700;900&family=Yusei+Magic&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f4efe4;--paper2:#ebe3d3;--sumi:#1b1a18;--shu:#e0442a;--sora:#cfe0ee;--kinari:#f6d9a8;
+  --disp:'Yuji Syuku','Zen Kaku Gothic New',serif;
+  --body:'Zen Kaku Gothic New','Hiragino Sans',sans-serif;
+  --hand:'Yusei Magic','Zen Kaku Gothic New',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html.lenis,html.lenis body{height:auto;}
+.lenis.lenis-smooth{scroll-behavior:auto!important;}
+body{background:var(--paper);color:var(--sumi);font-family:var(--body);font-size:16px;line-height:1.9;overflow-x:hidden;}
+a{color:inherit;text-decoration:none;}
+img{display:block;max-width:100%;}
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px;}
+
+/* JS が動くときだけ初期状態で隠す（app.js が読めなければ下の保険で解除） */
+.js [data-up]{opacity:0;}
+
+/* ── オープニング：ロゴのふぐが、ぷくっと膨らむ ── */
+#loader{position:fixed;inset:0;z-index:100;background:var(--paper);display:grid;place-items:center;}
+.no-loader #loader{display:none;}
+#loader .fish{width:min(46vw,260px);mix-blend-mode:multiply;}
+#loader .say{margin-top:6px;text-align:center;font-family:var(--hand);font-size:18px;color:var(--shu);opacity:0;}
+
+/* ── ヘッダー ── */
+.head{position:fixed;inset:0 0 auto 0;z-index:60;display:flex;align-items:center;justify-content:space-between;padding:14px 22px;pointer-events:none;}
+.head>*{pointer-events:auto;}
+.head .logo{display:flex;align-items:center;gap:10px;background:var(--paper);border:2px solid var(--sumi);border-radius:999px;padding:4px 16px 4px 4px;font-weight:900;letter-spacing:.12em;font-size:14px;}
+.head .logo img{width:40px;height:40px;border-radius:50%;mix-blend-mode:multiply;object-fit:cover;}
+.head .buy{background:var(--shu);color:#fff;border:2px solid var(--sumi);border-radius:999px;padding:10px 22px;font-weight:900;font-size:14px;letter-spacing:.1em;box-shadow:3px 3px 0 var(--sumi);transition:transform .2s,box-shadow .2s;}
+.head .buy:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--sumi);}
+
+/* 筆文字（Yuji Syuku）を、同じ色の細いふちで太らせて極太毛筆に寄せる */
+.h2,.hero .lead b,.hero .catch p,.gen .num,.gen h3,.ban .year,.ban .what,.market .belt.b1 span,.market .fact b,.card .no,.card h3,.item .nm,.owner blockquote,.shop-row .nm,.contact .tel,footer .giant,.item .n{-webkit-text-stroke:.035em currentColor;paint-order:stroke fill;}
+
+/* ── HERO：写真入りの「ふく」に吸い込まれる ── */
+.hero{position:relative;height:260vh;}
+.hero .stage{position:sticky;top:0;height:100svh;overflow:hidden;background:var(--paper);}
+.hero .type{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;will-change:transform;}
+.hero .word{position:relative;display:inline-block;}
+.hero .big{font-family:var(--disp);font-size:clamp(170px,40vw,560px);line-height:.9;letter-spacing:-.02em;white-space:nowrap;color:var(--sumi);
+  -webkit-text-stroke:.03em var(--sumi);paint-order:stroke fill;}
+/* 朱の落款（社名の判子） */
+.hero .hanko{position:absolute;left:100%;margin-left:.15em;bottom:.1em;width:clamp(58px,8vw,104px);aspect-ratio:1;display:grid;place-items:center;background:var(--shu);color:var(--paper);border-radius:8px;
+  font-family:var(--disp);font-size:clamp(22px,3vw,40px);line-height:1.05;writing-mode:vertical-rl;letter-spacing:.04em;rotate:-6deg;
+  box-shadow:inset 0 0 0 3px var(--shu),inset 0 0 0 5px var(--paper);font-size:clamp(20px,2.8vw,38px);}
+.js .hero .hanko{opacity:0;}
+.hero .full{position:absolute;inset:0;opacity:0;will-change:opacity,transform;}
+.hero .full img{width:100%;height:100%;object-fit:cover;}
+.hero .full::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(0,0,0,.6));}
+.hero .catch{position:absolute;left:0;right:0;bottom:clamp(40px,9vh,90px);text-align:center;color:#fff;opacity:0;padding:0 20px;}
+.hero .catch p{font-family:var(--disp);font-size:clamp(28px,4.6vw,60px);line-height:1.35;}
+.hero .catch small{display:block;margin-top:14px;font-size:14px;letter-spacing:.2em;font-weight:700;}
+.hero .lead{position:absolute;left:24px;bottom:28px;font-weight:700;font-size:13px;letter-spacing:.14em;line-height:1.7;}
+.hero .lead b{display:block;font-family:var(--disp);font-weight:400;font-size:24px;letter-spacing:.08em;}
+.hero .scroll{position:absolute;right:24px;bottom:28px;font-family:var(--hand);font-size:15px;}
+.stamp{position:absolute;right:clamp(16px,7vw,110px);top:clamp(84px,16vh,150px);width:clamp(110px,13vw,170px);aspect-ratio:1;}
+.stamp svg{width:100%;height:100%;overflow:visible;}
+.stamp .ring{animation:spin 18s linear infinite;transform-origin:100px 100px;}
+.stamp .ring text{font:900 11.5px var(--body);letter-spacing:.32em;fill:var(--sumi);}
+.stamp .core{fill:var(--shu);stroke:var(--sumi);stroke-width:2;}
+.stamp .num{font-family:var(--disp);font-size:36px;fill:#fff;}
+.stamp .unit{font:900 11px var(--body);fill:#fff;letter-spacing:.12em;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── セクション共通 ── */
+.sec{position:relative;padding:clamp(100px,14vw,180px) 0;}
+.kicker{display:inline-block;font-family:var(--hand);font-size:18px;color:var(--shu);margin-bottom:14px;transform:rotate(-3deg);}
+.h2{font-family:var(--disp);font-weight:400;font-size:clamp(36px,6.4vw,84px);line-height:1.2;}
+.h2 .ch,.chars .ch{display:inline-block;}
+.p{max-width:36em;margin-top:26px;font-size:16px;line-height:2.05;}
+
+/* ── PV ── */
+.movie{background:var(--paper);padding:clamp(90px,12vw,150px) 0;}
+.movie .head3{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:44px;}
+.movie .meta{font-size:13px;font-weight:700;letter-spacing:.08em;line-height:1.9;}
+.frame{position:relative;border:3px solid var(--sumi);border-radius:24px;overflow:hidden;box-shadow:10px 10px 0 var(--sumi);background:var(--sumi);aspect-ratio:16/9;will-change:transform;}
+.frame video{display:block;width:100%;height:100%;}
+.frame .play{position:absolute;inset:0;display:grid;place-items:center;background:rgba(27,26,24,.18);border:0;cursor:pointer;color:var(--sumi);font:inherit;}
+.frame .play span{display:flex;align-items:center;gap:14px;background:var(--shu);color:#fff;border:3px solid var(--sumi);border-radius:999px;padding:18px 34px;font-weight:900;font-size:clamp(16px,2vw,22px);letter-spacing:.12em;box-shadow:5px 5px 0 var(--sumi);transition:transform .2s,box-shadow .2s;}
+.frame .play:hover span{transform:translate(-2px,-2px) scale(1.04);box-shadow:7px 7px 0 var(--sumi);}
+.frame .play i{font-style:normal;font-size:1.3em;line-height:1;}
+.frame.playing .play{display:none;}
+@media (max-width:860px){.frame .play span{padding:12px 22px;font-size:15px;}}
+
+/* ── 四代：縦スクロールで横に流れる ── */
+.gens{position:relative;height:460vh;}
+.gens .pin{position:sticky;top:0;height:100svh;overflow:hidden;}
+.gens .track{display:flex;height:100%;width:max-content;will-change:transform;}
+.gen{flex:0 0 100vw;height:100%;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);align-items:center;gap:4vw;padding:90px 6vw 50px;}
+.gen .num{font-family:var(--disp);font-size:clamp(180px,30vw,440px);line-height:.85;text-align:center;will-change:transform;}
+.gen.g1{background:var(--paper);}
+.gen.g2{background:var(--sora);}
+.gen.g3{background:var(--kinari);}
+.gen.g4{background:var(--shu);color:#fff;}
+.gen.g5{background:var(--sumi);color:var(--paper);}
+.gen .era{font-weight:900;letter-spacing:.14em;font-size:14px;}
+.gen h3{font-family:var(--disp);font-weight:400;font-size:clamp(26px,3.4vw,44px);line-height:1.35;margin:12px 0 18px;}
+.gen p{font-size:15px;line-height:2;max-width:30em;}
+.gen .tag{display:inline-block;margin-top:22px;border:2px solid currentColor;border-radius:999px;padding:4px 16px;font-weight:900;font-size:13px;letter-spacing:.12em;}
+.gens .label{position:absolute;left:24px;top:86px;z-index:2;font-family:var(--hand);font-size:18px;color:var(--shu);transform:rotate(-3deg);}
+.gens .bar{position:absolute;left:24px;right:24px;bottom:22px;height:3px;background:rgba(0,0,0,.14);z-index:2;}
+.gens .bar i{position:absolute;inset:0;background:currentColor;transform-origin:0 50%;transform:scaleX(0);}
+
+/* ── 300年の禁：年号がスクロールで進む ── */
+.ban{position:relative;height:300vh;}
+.ban .pin{position:sticky;top:0;height:100svh;overflow:hidden;display:grid;place-items:center;background:var(--sumi);color:var(--paper);transition:background-color .7s,color .7s;}
+.ban.lifted .pin{background:var(--shu);color:#fff;}
+.ban .center{text-align:center;position:relative;padding:0 20px;}
+.ban .year{position:relative;font-family:var(--disp);font-size:clamp(80px,24vw,360px);line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;}
+.ban .mark{position:absolute;left:50%;top:50%;width:1.1em;aspect-ratio:1;translate:-50% -50%;pointer-events:none;overflow:visible;}
+.ban .mark path,.ban .mark circle{fill:none;stroke:var(--shu);stroke-width:8;stroke-linecap:round;}
+.ban .mark circle{stroke:var(--sumi);}
+.ban .who{font-weight:900;font-size:clamp(16px,2vw,22px);letter-spacing:.14em;margin-top:6px;}
+.ban .what{font-family:var(--disp);font-size:clamp(24px,3.2vw,42px);margin-top:2px;}
+.ban .note{position:absolute;left:0;right:0;bottom:clamp(28px,7vh,60px);text-align:center;font-size:14px;opacity:.85;padding:0 24px;}
+.ban .side{position:absolute;top:86px;left:24px;font-family:var(--hand);font-size:18px;}
+
+/* ── 南風泊市場：スクロールの速さで傾く帯 ── */
+.market{padding:clamp(90px,12vw,150px) 0;overflow:hidden;}
+.market .belt{display:flex;width:max-content;will-change:transform;}
+.market .belt span{font-family:var(--disp);font-size:clamp(64px,11vw,160px);line-height:1.2;white-space:nowrap;padding-right:.6em;}
+.market .belt span em{font-style:normal;color:var(--shu);}
+.market .belt.b2 span{-webkit-text-stroke:2px var(--sumi);color:transparent;}
+.market .belt.b2 span em{-webkit-text-stroke-color:var(--shu);color:transparent;}
+.market .wrap{margin-top:60px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;}
+.market .fact{border-top:3px solid var(--sumi);padding-top:16px;font-size:14px;line-height:1.9;}
+.market .fact b{display:block;font-family:var(--disp);font-weight:400;font-size:clamp(24px,2.8vw,36px);line-height:1.3;margin-bottom:8px;}
+
+/* ── 三つの約束：カードが積み重なる ── */
+.promise{background:var(--paper2);}
+.cards{margin-top:70px;}
+.card{position:sticky;top:96px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);height:min(72vh,620px);margin-bottom:8vh;background:var(--paper);border:2px solid var(--sumi);border-radius:22px;overflow:hidden;box-shadow:6px 6px 0 var(--sumi);transform-origin:50% 0;will-change:transform;}
+.card:nth-child(2){background:var(--sora);top:116px;}
+.card:nth-child(3){background:var(--kinari);top:136px;margin-bottom:0;}
+.card .tx{padding:clamp(28px,4vw,56px);display:flex;flex-direction:column;justify-content:space-between;gap:24px;}
+.card .no{font-family:var(--disp);font-size:clamp(70px,9vw,120px);line-height:1;color:var(--shu);}
+.card h3{font-family:var(--disp);font-weight:400;font-size:clamp(26px,3.2vw,42px);line-height:1.3;margin-bottom:14px;}
+.card p{font-size:15px;line-height:2;}
+.card .ph{position:relative;overflow:hidden;border-left:2px solid var(--sumi);}
+.card .ph img{width:100%;height:115%;object-fit:cover;will-change:transform;}
+
+/* ── ラインナップ：行にカーソルを乗せると写真がついてくる ── */
+.lineup .head2{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;}
+.list{margin-top:60px;border-top:3px solid var(--sumi);}
+.item{position:relative;display:grid;grid-template-columns:70px minmax(0,1.2fr) minmax(0,1fr) 40px;align-items:center;gap:20px;padding:28px 6px;border-bottom:2px solid var(--sumi);transition:background-color .3s,color .3s,padding .35s;}
+.item .n{font-family:var(--disp);font-size:22px;}
+.item .nm{font-family:var(--disp);font-size:clamp(24px,3.2vw,40px);line-height:1.3;}
+.item .tg{display:block;font-family:var(--body);font-weight:900;font-size:12px;letter-spacing:.16em;color:var(--shu);margin-bottom:2px;}
+.item .ds{font-size:14px;line-height:1.85;}
+.item .ar{font-family:var(--disp);font-size:26px;transition:transform .35s;}
+.item .th{display:none;}
+.item:hover{background:var(--sumi);color:var(--paper);padding-left:22px;}
+.item:hover .tg{color:#ff8a6e;}
+.item:hover .ar{transform:rotate(-45deg);}
+#float{position:fixed;left:0;top:0;width:min(360px,30vw);aspect-ratio:4/3;margin:-135px 0 0 -180px;border-radius:16px;border:2px solid var(--sumi);overflow:hidden;pointer-events:none;z-index:50;opacity:0;scale:.6;box-shadow:6px 6px 0 var(--sumi);background:var(--paper);}
+#float img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .25s;}
+#float img.on{opacity:1;}
+.all{display:inline-flex;align-items:center;gap:10px;border:2px solid var(--sumi);border-radius:999px;padding:12px 24px;font-weight:900;letter-spacing:.1em;font-size:14px;box-shadow:3px 3px 0 var(--sumi);background:var(--paper);transition:transform .2s,box-shadow .2s;}
+.all:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--sumi);}
+
+/* ── やまちゃん ── */
+.owner{background:var(--sora);overflow:hidden;}
+.owner .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6vw;align-items:center;}
+.owner .photo{position:relative;border:2px solid var(--sumi);border-radius:22px;overflow:hidden;box-shadow:8px 8px 0 var(--sumi);will-change:transform;}
+.owner .photo img{width:100%;aspect-ratio:4/3;object-fit:cover;}
+.owner .sticker{position:absolute;right:12px;bottom:16px;background:var(--paper);border:2px solid var(--sumi);border-radius:12px;padding:6px 14px;font-weight:900;font-size:13px;letter-spacing:.1em;rotate:4deg;}
+.owner blockquote{font-family:var(--disp);font-size:clamp(28px,3.8vw,48px);line-height:1.5;}
+.owner cite{display:block;margin-top:22px;font-style:normal;font-weight:900;letter-spacing:.12em;font-size:14px;}
+
+/* ── 購入 ── */
+.shops{margin-top:60px;border-top:3px solid var(--sumi);}
+.shop-row{position:relative;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:clamp(22px,3vw,34px) 6px;border-bottom:2px solid var(--sumi);overflow:hidden;isolation:isolate;transition:color .3s;}
+.shop-row::before{content:"";position:absolute;inset:0;background:var(--shu);transform:scaleY(0);transform-origin:50% 100%;transition:transform .45s cubic-bezier(.22,1,.36,1);z-index:-1;}
+.shop-row:hover::before{transform:scaleY(1);}
+.shop-row:hover{color:#fff;}
+.shop-row .nm{font-family:var(--disp);font-size:clamp(30px,5vw,68px);line-height:1.15;}
+.shop-row .sub{font-weight:900;font-size:13px;letter-spacing:.14em;margin-top:4px;}
+.shop-row .ar{font-family:var(--disp);font-size:clamp(28px,4vw,52px);transition:transform .45s;}
+.shop-row:hover .ar{transform:translateX(10px);}
+.contact{margin-top:70px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;font-size:14px;}
+.contact div{border-top:3px solid var(--sumi);padding-top:14px;}
+.contact b{display:block;font-weight:900;letter-spacing:.16em;font-size:12px;color:var(--shu);}
+.contact .tel{font-family:var(--disp);font-size:26px;}
+.contact a{text-decoration:underline;text-underline-offset:4px;}
+.contact a.tel{text-decoration:none;}
+
+/* ── フッター：「山西水産」がぷくっと出てくる ── */
+footer{background:var(--sumi);color:var(--paper);padding:80px 0 30px;overflow:hidden;}
+footer .giant{display:flex;justify-content:space-between;font-family:var(--disp);font-size:clamp(70px,20vw,300px);line-height:1;padding:0 3vw;}
+footer .giant span{display:inline-block;}
+footer .fine{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;margin-top:40px;font-size:12px;opacity:.8;}
+footer .fine a{text-decoration:underline;text-underline-offset:3px;}
+
+@media (max-width:860px){
+  .gens{height:auto;}
+  .gens .pin{position:static;height:auto;}
+  .gens .track{flex-direction:column;width:auto;}
+  .gen{flex:none;height:auto;grid-template-columns:1fr;gap:6px;padding:80px 24px 64px;}
+  .gen .num{text-align:left;font-size:clamp(130px,40vw,200px);}
+  .gens .bar,.gens .label{display:none;}
+  .market .wrap{grid-template-columns:1fr;}
+  .card,.card:nth-child(2),.card:nth-child(3){grid-template-columns:1fr;grid-template-rows:auto 1fr;top:80px;height:auto;}
+  .card .ph{border-left:none;border-top:2px solid var(--sumi);aspect-ratio:16/10;}
+  .card .ph img{height:100%;}
+  .item{grid-template-columns:84px minmax(0,1fr) 28px;gap:14px;padding:16px 4px;}
+  .item .ds,.item .n{display:none;}
+  .item .th{display:block;width:84px;aspect-ratio:1;border-radius:12px;border:2px solid var(--sumi);overflow:hidden;}
+  .item .th img{width:100%;height:100%;object-fit:cover;}
+  .owner .grid{grid-template-columns:1fr;}
+  .contact{grid-template-columns:1fr;}
+  .stamp{top:auto;bottom:100px;}
+  .hero{height:200vh;}
+  .hero .hanko{left:auto;right:0;margin-left:0;bottom:auto;top:100%;margin-top:.2em;}
+  .ban{height:230vh;}
+  .hero .scroll{display:none;}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero{height:auto;}
+  .hero .stage{height:100svh;}
+  .hero .type{display:none;}
+  .hero .full,.hero .catch{opacity:1;}
+  .stamp .ring{animation:none;}
+  .ban{height:auto;}
+  .ban .pin{position:relative;}
+  .ban .mark{display:none;}
+  .card{position:relative;top:0!important;}
+}
+</style>
+<script>
+// app.js が読めない・動き控えめ設定のときは、最初から全部読める状態にする
+(function(d){
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) { d.classList.add('no-loader'); return; }
+  d.classList.add('js');
+  setTimeout(function(){ if(!window.__motionReady){ d.classList.remove('js'); d.classList.add('no-loader'); } }, 2500);
+})(document.documentElement);
+</script>
+</head>
+<body>
+
+<div id="loader" aria-hidden="true">
+  <div>
+    <img class="fish" src="img/logo.jpg" alt="">
+    <p class="say">ぷくっ</p>
+  </div>
+</div>
+
+<header class="head">
+  <a class="logo" href="#top"><img src="img/logo.jpg" alt="">山西水産</a>
+  <a class="buy" href="#shop">買う</a>
+</header>
+
+<main id="top">
+  <!-- HERO -->
+  <section class="hero" aria-label="山西水産 本場の海から、あなたの食卓へ。">
+    <div class="stage">
+      <div class="type" aria-hidden="true"><div class="word"><div class="big">ふく</div><span class="hanko">山西<br>水産</span></div></div>
+      <div class="full"><img src="img/spread.jpg" alt="山西水産のふぐ料理（ふぐ刺し・唐揚げ・鍋など）"></div>
+      <div class="catch"><p>本場の海から、<br>あなたの食卓へ。</p><small>四代にわたり受け継がれた、ふぐの技と誇り。</small></div>
+      <div class="stamp" aria-label="創業147年">
+        <svg viewBox="0 0 200 200">
+          <defs><path id="circ" d="M100,100 m-82,0 a82,82 0 1,1 164,0 a82,82 0 1,1 -164,0"/></defs>
+          <g class="ring"><text><textPath href="#circ">YAMANISHI SUISAN · SINCE 1879 · 下関 ·</textPath></text></g>
+          <circle class="core" cx="100" cy="100" r="58"/>
+          <text class="unit" x="100" y="80" text-anchor="middle">創業</text>
+          <text class="num" x="100" y="118" text-anchor="middle">147</text>
+          <text class="unit" x="100" y="137" text-anchor="middle">年</text>
+        </svg>
+      </div>
+      <div class="lead"><b>山西水産</b>明治十二年創業　下関ふぐ老舗問屋</div>
+      <div class="scroll">スクロールしてね ↓</div>
+    </div>
+  </section>
+
+  <!-- PV -->
+  <section class="movie" id="movie" aria-label="山西水産 PV">
+    <div class="wrap">
+      <div class="head3">
+        <div><span class="kicker">Brand Movie</span><h2 class="h2">60秒で、<br>山西水産。</h2></div>
+        <p class="meta" data-up>BGM：オリジナルテーマソング「潮風と、ふくと。」<br>四代の歴史・ふぐ解禁の地・商品・やまちゃん</p>
+      </div>
+      <div class="frame" data-up>
+        <video id="pv" poster="media/pv-poster.jpg" preload="none" playsinline><source src="media/pv.mp4" type="video/mp4"><source src="media/pv.webm" type="video/webm"></video>
+        <button class="play" type="button" aria-label="PVを再生する（音が出ます）"><span><i>▶</i>PVを見る（音が出ます）</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 四代 -->
+  <section class="gens" id="story" aria-label="四代の歴史">
+    <div class="pin">
+      <div class="label">四代の物語 →</div>
+      <div class="track">
+        <article class="gen g1"><div class="num">初</div><div><div class="era">明治12年（1879）〜</div><h3>宇之助の代<br>「渡海人」として起業</h3><p>兵庫県淡路島生まれ。廃藩置県後に九州へ渡り、また下関へ。関門から対馬海峡まで、漁と雑品の運搬を担う「渡海人」として名を馳せた。</p><span class="tag">漁業・運搬</span></div></article>
+        <article class="gen g2"><div class="num">二</div><div><div class="era">昭和24年（1949）〜</div><h3>克己の代<br>中国との交易で礎を築く</h3><p>2代目・克己が山西水産株式会社を設立。中国との水産交易を軸に水産加工・仲卸業を展開し、山西水産の礎を築いた。</p><span class="tag">水産加工・仲卸</span></div></article>
+        <article class="gen g3"><div class="num">三</div><div><div class="era">昭和47年（1972）〜</div><h3>克之助の代<br>中国で「シマフグ」と出会う</h3><p>3代目・克之助が水産加工場を設立。1990年、中国への出張先でシマフグと出会い、ふぐの輸入を開始。「下関ふぐの店・山西水産」のルーツがここにある。</p><span class="tag">ふぐ専門化</span></div></article>
+        <article class="gen g4"><div class="num">四</div><div><div class="era">平成23年（2011）〜</div><h3>4代目やまちゃん<br>EC・AI・地域産業へ</h3><p>保険会社を経て28歳でUターン。父の脳梗塞をきっかけに事業を継承。10モール以上でEC展開・楽天上位1%を実現。「顔の見えるふぐ屋」として発信を続ける。</p><span class="tag">EC・AI・地域産業</span></div></article>
+        <article class="gen g5"><div class="num">次</div><div><div class="era">次の100年</div><h3>変わり続けることが、<br>続いてきた理由。</h3><p>下関という地域そのものを、産業として次世代に手渡す。それが山西水産の、次の100年へのビジョンです。</p><span class="tag">人と人・想像の乗船</span></div></article>
+      </div>
+      <div class="bar"><i></i></div>
+    </div>
+  </section>
+
+  <!-- 300年の禁 -->
+  <section class="ban lifted" id="why" aria-label="なぜ、下関なのか">
+    <div class="pin">
+      <div class="side">なぜ、下関なのか。</div>
+      <div class="center">
+        <div class="year"><svg class="mark" viewBox="0 0 200 200" aria-hidden="true"><path class="x1" d="M52 52 L148 148"/><path class="x2" d="M148 52 L52 148"/><circle class="o" cx="100" cy="100" r="64"/></svg><span id="ban-year" data-to="1888">1888</span></div>
+        <div class="who" id="ban-who">明治21年（1888年）　伊藤博文</div>
+        <div class="what" id="ban-what">山口県で、ふぐ食を解禁。</div>
+      </div>
+      <p class="note" id="ban-note">1592年、豊臣秀吉の「ふぐ食禁止の令」から約300年。一人の女将の勇気と一人の政治家の決断が、その禁を解きました。</p>
+    </div>
+  </section>
+
+  <!-- 南風泊市場 -->
+  <section class="market" aria-label="南風泊市場">
+    <div class="belt b1" aria-hidden="true"><span>世界で唯一の、<em>ふぐ専門</em>市場。</span><span>世界で唯一の、<em>ふぐ専門</em>市場。</span></div>
+    <div class="belt b2" aria-hidden="true"><span>南風泊市場 <em>はえどまり</em></span><span>南風泊市場 <em>はえどまり</em></span></div>
+    <div class="wrap">
+      <div class="fact" data-up><b>300年の禁を解いた地</b>初代内閣総理大臣・伊藤博文が春帆楼でふぐを平らげ、翌明治21年（1888年）、山口県内でふぐ食を解禁。</div>
+      <div class="fact" data-up><b>世界唯一の市場</b>下関市内の南風泊市場は、世界で唯一ふぐに特化した卸売市場。</div>
+      <div class="fact" data-up><b>三方を海に</b>瀬戸内海・玄界灘・日本海。豊かな漁場の恵みが、今も山西水産の仕入れを支えています。</div>
+    </div>
+  </section>
+
+  <!-- 三つの約束 -->
+  <section class="sec promise" id="promise">
+    <div class="wrap">
+      <span class="kicker">Our Commitment</span>
+      <h2 class="h2">山西水産が守る、<br>三つの約束。</h2>
+      <div class="cards">
+        <article class="card"><div class="tx"><div class="no">01</div><div><h3>産地直結の鮮度</h3><p>南風泊市場から直接買付を行い、中間流通を最小化。毎朝店長自ら目利きして仕入れた厳選素材のみ。</p></div></div><div class="ph"><img src="img/crate.jpg" alt="市場から仕入れたとらふぐ" loading="lazy"></div></article>
+        <article class="card"><div class="tx"><div class="no">02</div><div><h3>147年の職人技</h3><p>ふぐ処理施設として許可された自社工場で、熟練のふぐ職人が処理。美しい見た目・コリコリした食感・甘み・風味を、最高の状態でお届けします。</p></div></div><div class="ph"><img src="img/hands.jpg" alt="ふぐを捌く職人の手元" loading="lazy"></div></article>
+        <article class="card"><div class="tx"><div class="no">03</div><div><h3>顔の見える販売</h3><p>YouTubeやSNSで仕入れ・加工・調理まで発信。「顔の見えるふぐ屋の主」として、食べる人との距離をゼロに。楽天市場で上位1%の信頼が、その証明です。</p></div></div><div class="ph"><img src="img/yamachan.jpg" alt="ふぐの帽子をかぶった4代目やまちゃん" loading="lazy"></div></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ラインナップ -->
+  <section class="sec lineup" id="lineup">
+    <div class="wrap">
+      <div class="head2">
+        <div><span class="kicker">Lineup</span><h2 class="h2">本場の味を、<br>あなたの食卓へ。</h2></div>
+        <a class="all" href="https://yamanishi.theshop.jp/" target="_blank" rel="noopener">すべての商品を見る →</a>
+      </div>
+      <div class="list">
+        <a class="item" data-img="0" href="https://yamanishi.theshop.jp/items/48364387" target="_blank" rel="noopener"><span class="th"><img src="img/p1.jpg" alt="" loading="lazy"></span><span class="n">01</span><span class="nm"><span class="tg">PREMIUM · とらふぐ</span>ふぐ刺し（薄造り）</span><span class="ds">職人の技が光る薄造り。透き通る美しさとコリコリした食感。</span><span class="ar">→</span></a>
+        <a class="item" data-img="1" href="https://yamanishi.theshop.jp/items/80659147" target="_blank" rel="noopener"><span class="th"><img src="img/p2.jpg" alt="" loading="lazy"></span><span class="n">02</span><span class="nm"><span class="tg">SIGNATURE · 鍋</span>てっちり鍋セット</span><span class="ds">コラーゲン豊富な出汁と、ぷりぷりの身。冬の食卓に欠かせない一品。</span><span class="ar">→</span></a>
+        <a class="item" data-img="2" href="https://yamanishi.theshop.jp/items/18674300" target="_blank" rel="noopener"><span class="th"><img src="img/p3.jpg" alt="" loading="lazy"></span><span class="n">03</span><span class="nm"><span class="tg">SEASONAL · あんこう</span>あんこう鍋</span><span class="ds">玄界灘が育む冬の宝。あんこうの七つ道具を全て味わう鍋。</span><span class="ar">→</span></a>
+        <a class="item" data-img="3" href="https://yamanishi.theshop.jp/items/18674376" target="_blank" rel="noopener"><span class="th"><img src="img/p4.jpg" alt="" loading="lazy"></span><span class="n">04</span><span class="nm"><span class="tg">EVERYDAY · 揚げ物</span>ふぐの唐揚げ</span><span class="ds">ふぐの旨みを凝縮したサクジュワな一品。日常の食卓に本場の味を。</span><span class="ar">→</span></a>
+        <a class="item" data-img="4" href="https://yamanishi.theshop.jp/items/18674343" target="_blank" rel="noopener"><span class="th"><img src="img/p5.jpg" alt="" loading="lazy"></span><span class="n">05</span><span class="nm"><span class="tg">LUXURY · クエ</span>クエ鍋セット</span><span class="ds">WEBメディア「ONE STORY」掲載。高級魚クエが自宅で気軽に。</span><span class="ar">→</span></a>
+        <a class="item" data-img="5" href="https://yamanishi.theshop.jp/items/18674200" target="_blank" rel="noopener"><span class="th"><img src="img/p6.jpg" alt="" loading="lazy"></span><span class="n">06</span><span class="nm"><span class="tg">ORIGINAL · ご飯</span>ふぐ炊き込みご飯</span><span class="ds">朝日放送ABCの人気番組で紹介。ふぐの旨みが染み込んだ特製。</span><span class="ar">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- やまちゃん -->
+  <section class="sec owner" id="owner">
+    <div class="wrap grid">
+      <div class="photo"><img src="img/yamachan.jpg" alt="ふぐの帽子をかぶった4代目 山西伸典" loading="lazy"><span class="sticker">4代目ふぐ店長</span></div>
+      <div>
+        <span class="kicker">Owner's Message</span>
+        <blockquote class="chars">乗る舟は変わっても、<br>船という本質は<br>変わらない。</blockquote>
+        <cite>— 4代目 山西伸典（下関ふぐ屋やまちゃん）</cite>
+        <p class="p" data-up>業界に入って最初に感じたのは、危機感でした。だからこそYouTubeやSNSで顔の見える発信を続け、地域の絆を作ってきました。次の100年に向けて、下関という地域全体を産業として手渡すことが、私の使命だと思っています。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 購入 -->
+  <section class="sec shop" id="shop">
+    <div class="wrap">
+      <span class="kicker">Online Shop</span>
+      <h2 class="h2">全国どこへでも、<br>下関の味を。</h2>
+      <div class="shops">
+        <a class="shop-row" href="https://www.rakuten.co.jp/yamanishisuisan/" target="_blank" rel="noopener"><div><div class="nm">楽天市場</div><div class="sub">★ 優良ショップ 上位1%</div></div><span class="ar">→</span></a>
+        <a class="shop-row" href="https://store.shopping.yahoo.co.jp/yamanishisuisan/" target="_blank" rel="noopener"><div><div class="nm">Yahoo!ショッピング</div><div class="sub">YAHOO! SHOPPING</div></div><span class="ar">→</span></a>
+        <a class="shop-row" href="https://yamanishi.theshop.jp/" target="_blank" rel="noopener"><div><div class="nm">BASE</div><div class="sub">BASE ONLINE SHOP</div></div><span class="ar">→</span></a>
+      </div>
+      <div class="contact">
+        <div data-up><b>PHONE</b><a class="tel" href="tel:083-258-0032">083-258-0032</a></div>
+        <div data-up><b>WEB</b><a href="https://lp.yamanisi.co.jp/" target="_blank" rel="noopener">lp.yamanisi.co.jp</a></div>
+        <div data-up><b>SNS</b><a href="https://www.youtube.com/@shimofugu" target="_blank" rel="noopener">YouTube</a>　<a href="https://www.instagram.com/yamanishisuisan/" target="_blank" rel="noopener">Instagram</a>　<a href="https://www.tiktok.com/@fuguyayamachan" target="_blank" rel="noopener">TikTok</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="float" aria-hidden="true"><img src="img/p1.jpg" alt=""><img src="img/p2.jpg" alt=""><img src="img/p3.jpg" alt=""><img src="img/p4.jpg" alt=""><img src="img/p5.jpg" alt=""><img src="img/p6.jpg" alt=""></div>
+
+<footer>
+  <div class="giant" aria-label="山西水産"><span>山</span><span>西</span><span>水</span><span>産</span></div>
+  <div class="wrap fine">
+    <span>山西水産株式会社　下関ふぐ老舗問屋 · 明治12年（1879年）創業</span>
+    <span><a href="https://lp.yamanisi.co.jp/">公式サイト</a>　<a href="../privacy.html">プライバシーポリシー</a></span>
+  </div>
+</footer>
+
+<script>
+// PV: ボタンを押したら音ありで再生。動画の操作バーはそのまま使える
+(function(){
+  var f=document.querySelector('.frame'),v=document.getElementById('pv'),b=f&&f.querySelector('.play');
+  if(!b)return;
+  b.addEventListener('click',function(){f.classList.add('playing');var p=v.play();if(p&&p.catch)p.catch(function(){});});
+  v.addEventListener('play',function(){f.classList.add('playing');v.controls=true;});
+})();
+</script>
+<script type="module" src="app.js"></script>
+</body>
+</html>

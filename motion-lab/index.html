@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:,">
+<title>Motion Lab | Yスタジオ＋</title>
+<meta name="description" content="Motion（旧 Framer Motion）と 21st.dev 風コンポーネントでつくった、Yスタジオ＋のアニメーション特化ページ。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b1533;--bg2:#10204a;--navy:#1a3a8f;--blue:#2952c4;
+  --accent:#f7c52d;--text:#f4f6ff;--sub:rgba(244,246,255,.68);--line:rgba(244,246,255,.12);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;}
+a{color:inherit;}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px;}
+.en{font-family:'Inter',sans-serif;letter-spacing:.12em;}
+
+/* 動きが始まる前の初期状態（JSが無い・動き控えめ設定なら最初から見える） */
+.js [data-reveal]{opacity:0;}
+
+/* ── スクロール進捗バー ── */
+#progress{position:fixed;inset:0 0 auto 0;height:3px;background:var(--accent);transform-origin:0 50%;transform:scaleX(0);z-index:50;}
+
+/* ── カーソル追従スポットライト ── */
+#spot{position:fixed;left:0;top:0;width:420px;height:420px;margin:-210px 0 0 -210px;border-radius:50%;pointer-events:none;z-index:0;
+  background:radial-gradient(circle,rgba(247,197,45,.13),transparent 65%);opacity:0;}
+
+/* ── HERO（Aurora 背景 + 文字ごとのリビール） ── */
+.hero{position:relative;min-height:100svh;display:flex;align-items:center;overflow:hidden;isolation:isolate;}
+.aurora{position:absolute;inset:-20%;z-index:-1;filter:blur(70px);opacity:.75;}
+.aurora span{position:absolute;border-radius:50%;}
+.aurora .a1{width:46vmax;height:46vmax;left:-6%;top:4%;background:#2952c4;}
+.aurora .a2{width:36vmax;height:36vmax;right:-4%;top:18%;background:#1a3a8f;}
+.aurora .a3{width:26vmax;height:26vmax;left:36%;bottom:-6%;background:rgba(247,197,45,.55);}
+.hero .eyebrow{font-size:12px;color:var(--accent);margin-bottom:22px;}
+.hero h1{font-size:clamp(34px,7vw,76px);font-weight:900;line-height:1.25;letter-spacing:.01em;}
+.hero h1 .ch{display:inline-block;will-change:transform;}
+.hero h1 .hl{color:var(--accent);}
+.hero p.lead{margin-top:24px;max-width:560px;color:var(--sub);font-size:clamp(14px,2vw,17px);}
+.btns{display:flex;flex-wrap:wrap;gap:14px;margin-top:36px;}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:15px 28px;border-radius:999px;font-weight:700;text-decoration:none;font-size:15px;will-change:transform;}
+.btn.primary{background:var(--accent);color:#0b1533;}
+.btn.ghost{border:1px solid var(--line);color:var(--text);background:rgba(255,255,255,.04);}
+.scroll-hint{position:absolute;left:50%;bottom:28px;translate:-50% 0;font-size:11px;color:var(--sub);}
+
+/* ── 流れる帯（Marquee） ── */
+.marquee{border-block:1px solid var(--line);overflow:hidden;padding:18px 0;background:var(--bg2);}
+.marquee-track{display:flex;width:max-content;gap:48px;}
+.marquee-track span{white-space:nowrap;font-weight:700;color:var(--sub);font-size:15px;}
+.marquee-track span b{color:var(--accent);margin-right:8px;font-family:'Inter',sans-serif;}
+
+/* ── セクション共通 ── */
+.sec{padding:120px 0;position:relative;}
+.label{font-size:12px;color:var(--accent);margin-bottom:14px;}
+.sec h2{font-size:clamp(26px,4.4vw,44px);font-weight:900;line-height:1.35;margin-bottom:18px;}
+.sec .desc{color:var(--sub);max-width:620px;}
+
+/* ── カウントアップ数字 ── */
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:48px;}
+.stat{border:1px solid var(--line);border-radius:20px;padding:28px 22px;background:linear-gradient(160deg,rgba(41,82,196,.22),rgba(255,255,255,.02));}
+.stat .num{font-family:'Inter',sans-serif;font-weight:900;font-size:clamp(34px,6vw,58px);line-height:1;color:var(--accent);font-variant-numeric:tabular-nums;}
+.stat .cap{margin-top:12px;font-size:11px;color:var(--sub);}
+
+/* ── 横スクロールの4ステップ（Sticky + scroll連動） ── */
+.hscroll{height:300vh;position:relative;}
+.hscroll .pin{position:sticky;top:0;height:100svh;display:flex;flex-direction:column;justify-content:center;overflow:hidden;}
+.hscroll .row{display:flex;gap:24px;padding-left:max(20px,calc((100vw - 1100px)/2 + 20px));will-change:transform;}
+.step{flex:0 0 min(78vw,420px);height:min(56svh,360px);border-radius:28px;padding:34px;display:flex;flex-direction:column;justify-content:space-between;
+  background:linear-gradient(150deg,var(--navy),var(--bg2));border:1px solid var(--line);}
+.step .no{font-family:'Inter',sans-serif;font-weight:900;font-size:64px;line-height:1;color:rgba(247,197,45,.9);}
+.step h3{font-size:26px;font-weight:900;}
+.step p{color:var(--sub);font-size:14px;}
+
+/* ── 実績カード（Stagger + 3D Tilt） ── */
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:48px;perspective:900px;}
+.card{position:relative;border-radius:22px;padding:26px;border:1px solid var(--line);background:rgba(255,255,255,.03);transform-style:preserve-3d;will-change:transform;overflow:hidden;}
+.card::after{content:"";position:absolute;inset:0;background:radial-gradient(260px circle at var(--mx,50%) var(--my,50%),rgba(247,197,45,.16),transparent 60%);opacity:0;transition:opacity .3s;pointer-events:none;}
+.card:hover::after{opacity:1;}
+.card .tag{font-size:11px;color:var(--accent);}
+.card h3{font-size:16px;margin:10px 0 18px;line-height:1.5;}
+.card .ba{display:flex;align-items:baseline;gap:10px;font-family:'Inter',sans-serif;font-weight:900;}
+.card .ba .b{color:var(--sub);font-size:18px;text-decoration:line-through;text-decoration-thickness:1px;}
+.card .ba .a{color:var(--text);font-size:26px;}
+.card .cut{margin-top:16px;font-size:13px;color:var(--accent);font-weight:700;}
+.bar{margin-top:8px;height:6px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;}
+.bar i{display:block;height:100%;background:var(--accent);transform-origin:0 50%;transform:scaleX(var(--v));}
+.js .bar i{transform:scaleX(0);}
+
+/* ── CTA ── */
+.cta{text-align:center;padding:140px 0 120px;}
+.cta h2{font-size:clamp(28px,5vw,52px);}
+.cta .btns{justify-content:center;}
+.cta .tel{margin-top:20px;color:var(--sub);font-size:13px;}
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--sub);font-size:12px;text-align:center;}
+footer a{text-decoration:none;color:var(--accent);}
+
+@media (max-width:760px){
+  .stats,.cards{grid-template-columns:1fr;}
+  .sec{padding:88px 0;}
+  .hscroll{height:auto;}
+  .hscroll .pin{position:static;height:auto;padding:88px 0;}
+  .hscroll .row{flex-direction:column;padding:0 20px;}
+  .step{flex:none;width:100%;height:auto;gap:28px;}
+  .hero h1{font-size:30px;}
+}
+</style>
+<script>
+// app.js が読めなかったときに中身が隠れたままにならないよう、2秒で元に戻す
+document.documentElement.classList.add('js');
+setTimeout(function(){if(!window.__motionReady)document.documentElement.classList.remove('js');},2000);
+</script>
+</head>
+<body>
+<div id="progress"></div>
+<div id="spot"></div>
+
+<header class="hero">
+  <div class="aurora" aria-hidden="true"><span class="a1"></span><span class="a2"></span><span class="a3"></span></div>
+  <div class="wrap">
+    <div class="eyebrow en" data-reveal>AI FIELD DEPLOYMENT — SHIMONOSEKI · YAMAGUCHI</div>
+    <h1 id="hero-title" aria-label="AI担当者を雇う前に、私を1日借りませんか？">AI担当者を雇う前に、<br><span class="hl">私を1日</span>借りませんか？</h1>
+    <p class="lead" data-reveal>コンサルは提案書を出す。Yスタジオ＋は「実装して、動くまで帰らない」スタイルです。</p>
+    <div class="btns" data-reveal>
+      <a class="btn primary" data-magnetic href="../#contact">無料相談を申し込む →</a>
+      <a class="btn ghost" data-magnetic href="#results">実績を見る</a>
+    </div>
+  </div>
+  <div class="scroll-hint en" aria-hidden="true">SCROLL ↓</div>
+</header>
+
+<div class="marquee" aria-label="プロフィール">
+  <div class="marquee-track">
+    <span><b>01</b>山口大学 平野ゼミ 2年連続登壇</span>
+    <span><b>02</b>自叙伝「知られざる軌跡」出版 2025</span>
+    <span><b>03</b>かんもんノート 関門エリア情報メディア 管理人</span>
+    <span><b>04</b>JOIN083 下関大丸店7F 入居クリエイター</span>
+    <span><b>05</b>YouTube チャンネル登録者 1,330人</span>
+  </div>
+</div>
+
+<section class="sec" id="impact">
+  <div class="wrap">
+    <div class="label en" data-reveal>IMPACT</div>
+    <h2 data-reveal>山西水産で<br>実証済みの数字。</h2>
+    <p class="desc" data-reveal>10モール＋自社サイトの多店舗展開を1人で運営。8年間自社で動かし続けた仕組みだけをご提供します。</p>
+    <div class="stats">
+      <div class="stat" data-reveal><div class="num" data-count="30" data-suffix="h+">30h+</div><div class="cap en">MONTHLY SAVED</div></div>
+      <div class="stat" data-reveal><div class="num" data-count="108" data-prefix="¥" data-suffix="万">¥108万</div><div class="cap en">ANNUAL REDUCTION</div></div>
+      <div class="stat" data-reveal><div class="num" data-count="6" data-prefix="×">×6</div><div class="cap en">LIVE AUTOMATIONS</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="hscroll" id="approach">
+  <div class="pin">
+    <div class="wrap" style="width:100%">
+      <div class="label en">APPROACH — FDE STYLE</div>
+      <h2 style="font-size:clamp(26px,4.4vw,44px);font-weight:900;margin-bottom:36px;">コンサルじゃない。<br>あなたの現場に入る。</h2>
+    </div>
+    <div class="row">
+      <article class="step"><div class="no">01</div><div><h3>現場を見る</h3><p>業務フローを目で確認</p></div></article>
+      <article class="step"><div class="no">02</div><div><h3>設計・実装</h3><p>実証済みの仕組みを現場に投入</p></div></article>
+      <article class="step"><div class="no">03</div><div><h3>スタッフ定着</h3><p>レクチャー・サポート</p></div></article>
+      <article class="step"><div class="no">04</div><div><h3>効果測定</h3><p>月次レポートで改善継続</p></div></article>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="results">
+  <div class="wrap">
+    <div class="label en" data-reveal>RESULTS — BEFORE / AFTER</div>
+    <h2 data-reveal>導入前後の<br>リアルな数字。</h2>
+    <div class="cards">
+      <article class="card" data-tilt><div class="tag en">EC</div><h3>10モール＋自社サイト 受注自動化（1人運営）</h3><div class="ba"><span class="b">週10時間</span><span class="a">週1時間</span></div><div class="cut">▲75% 削減</div><div class="bar"><i style="--v:.75"></i></div></article>
+      <article class="card" data-tilt><div class="tag en">EC</div><h3>季節キーワード更新（年4回）</h3><div class="ba"><span class="b">4時間</span><span class="a">5分</span></div><div class="cut">▲98% 削減</div><div class="bar"><i style="--v:.98"></i></div></article>
+      <article class="card" data-tilt><div class="tag en">EXPENSE</div><h3>経費精算（写真→自動）</h3><div class="ba"><span class="b">月4時間</span><span class="a">20分</span></div><div class="cut">▲92% 削減</div><div class="bar"><i style="--v:.92"></i></div></article>
+      <article class="card" data-tilt><div class="tag en">PAYROLL</div><h3>給与計算・打刻集計</h3><div class="ba"><span class="b">毎月数時間</span><span class="a">完全ゼロ</span></div><div class="cut">▲100% 削減</div><div class="bar"><i style="--v:1"></i></div></article>
+      <article class="card" data-tilt><div class="tag en">ACCOUNTING</div><h3>販売王↔弥生会計 経理連携</h3><div class="ba"><span class="b">月4時間</span><span class="a">20分</span></div><div class="cut">▲92% 削減</div><div class="bar"><i style="--v:.92"></i></div></article>
+      <article class="card" data-tilt><div class="tag en">ACCOUNTING</div><h3>支払予定表の自動転記</h3><div class="ba"><span class="b">月1時間+</span><span class="a">自動完了</span></div><div class="cut">▲95% 削減</div><div class="bar"><i style="--v:.95"></i></div></article>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="wrap">
+    <div class="label en" data-reveal>FREE CONSULTATION</div>
+    <h2 data-reveal>まずは無料相談から。</h2>
+    <p class="desc" data-reveal style="margin:0 auto">下関・山口県内は訪問無料。</p>
+    <div class="btns" data-reveal>
+      <a class="btn primary" data-magnetic href="../#contact">無料相談を申し込む →</a>
+      <a class="btn ghost" data-magnetic href="tel:070-5483-0623">070-5483-0623</a>
+    </div>
+    <p class="tel" data-reveal>受付 平日 9:00〜18:00</p>
+  </div>
+</section>
+
+<footer><a href="../">← Yスタジオ＋ トップへ</a> ・ このページは Motion（旧 Framer Motion）でアニメーションしています</footer>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
