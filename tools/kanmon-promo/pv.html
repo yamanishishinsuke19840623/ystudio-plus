@@ -17,11 +17,11 @@
 <script>
 // ── 絵コンテ（120BPM・1拍0.5秒・1小節2秒。場面の切り替えは小節の頭）──
 //  1  0–2    スマッシュカット : 罫線ノートにペンで海峡の波線 → ロゴの丸が拍で「ぽん」→ 小節頭で丸が画面を抜く
-//  2  2–4    FPV              : 丸の中から料理の写真が8分音符で奥から突っ込んでくる ＋「食べる。」グルメの記事 502本
+//  2  2–4    FPV              : 料理の写真が約0.67秒に1枚、奥から寄ってきて止まる（3枚） ＋「食べる。」グルメの記事 502本
 //  3  4–6    ズームイン(グリッド): 3×3 のノートのマス目に店の写真が8分音符で埋まる → 真ん中のマスへ寄る ＋「見つける。」
 //  4  6–8    ホイップパン     : 縦長のカフェ写真を1拍ごとに横へ振り抜く（ブレ＋傾き）＋「くつろぐ。」
 //  5  8–10   ラックフォーカス : 人物の写真。奥（ぼけ）→ 手前にピント ＋「会いに行く。」
-//  6  10–12  ジャンプカット   : 同じ枠で写真が16分音符で入れ替わる ＋ スピードランプの記事数 ＋「関門海峡エリアの／情報メディア。」
+//  6  10–12  ジャンプカット   : 同じ枠で写真が1拍ごとに入れ替わる（4枚） ＋ スピードランプの記事数 ＋「関門海峡エリアの／情報メディア。」
 //  7  12–15  クレーンアップ   : 写真が上から降ってきて山になり、ロゴがスマッシュイン → kanmonnote.com → 白い紙に戻る（ループで頭へ）
 // 文言・数字はすべて事実から: 「関門海峡エリアの情報メディア」(showreel.html)、記事数は WordPress のカテゴリ件数（reel-data/categories.json 2026-10-04 取得）。
 // 写真は reel-data/img/（かんもんノートの記事のアイキャッチ）。長辺768px前後なので全画面に引き伸ばさず、カード・マス目・動きの中で使う。
@@ -48,10 +48,10 @@ window.ready = Promise.all(Object.entries(SRC).map(([k, f]) => new Promise((ok) 
   i.src = f.startsWith("../") ? f : "../../reel-data/img/" + f;
 }))).then(() => Promise.all(["900 150px 'Zen Maru Gothic'", "700 60px 'Zen Maru Gothic'", "100px 'Archivo Black'"].map((f) => document.fonts.load(f, "関門食べるKANMON"))));
 
-const FOOD = ["okonomi", "maze", "soba", "kimbap", "lunch", "uco", "okonomi", "maze"];
+const FOOD = ["okonomi", "maze", "soba"];
 const GRID = ["bungu", "cycle", "flower", "stand", "sanpei", "welina", "soba", "kimbap", "maze"];
 const CAFE = ["honky", "lunch", "sanpei", "uco"];
-const STROBE = ["okonomi", "bungu", "maze", "stand", "soba", "flower", "kimbap", "boo", "cycle", "lunch", "welina", "honky", "uco", "sanpei", "maze", "okonomi"];
+const STROBE = ["kimbap", "flower", "stand", "welina"];
 const PILE = ["soba", "flower", "boo", "maze", "stand", "kimbap", "honky", "cycle", "okonomi"];
 
 // ── 道具 ──
@@ -208,29 +208,30 @@ function s1(t) {
   }
 }
 function s2(t) {
-  // FPV：奥から写真が8分音符で突っ込んでくる
+  // FPV（ゆっくり版）：奥から写真が1枚ずつ寄ってきて止まる。約0.67秒に1枚・3枚だけ
   const lt = t - 2;
   x.fillStyle = C.blue; x.fillRect(0, 0, W, H);
-  // 放射状の速度線
+  // 放射状の線（ゆっくり・うすく）
   x.save(); x.translate(W / 2, 900);
   const r = rnd(5);
-  for (let i = 0; i < 46; i++) {
-    const ang = r() * Math.PI * 2, sp = 0.6 + r() * 0.8, ph = (lt * sp * 2 + r()) % 1;
-    const d0 = 120 + ph * 1400, d1 = d0 + 80 + ph * 260;
-    x.strokeStyle = `rgba(255,255,255,${0.5 * ph})`; x.lineWidth = 3 + ph * 6;
+  for (let i = 0; i < 28; i++) {
+    const ang = r() * Math.PI * 2, sp = 0.3 + r() * 0.3, ph = (lt * sp + r()) % 1;
+    const d0 = 160 + ph * 1300, d1 = d0 + 60 + ph * 160;
+    x.strokeStyle = `rgba(255,255,255,${0.28 * ph})`; x.lineWidth = 3 + ph * 4;
     x.beginPath(); x.moveTo(Math.cos(ang) * d0, Math.sin(ang) * d0); x.lineTo(Math.cos(ang) * d1, Math.sin(ang) * d1); x.stroke();
   }
   x.restore();
-  // 写真は 0.25秒ごとに1枚。奥(0.25倍)から手前(4倍)へ。奥のものから描く
-  for (let k = 7; k >= -2; k--) {
-    const born = k * 0.25, age = lt - born + 0.6; // 出てから 0.85秒で通り抜ける
-    if (age < 0 || age > 0.85) continue;
-    const z = 0.18 * Math.pow(18, age / 0.85);
-    const img = IMG[FOOD[((k % 8) + 8) % 8]];
-    const w = 720 * z, h = 720 * z, a = Math.min(range(age, 0, 0.12), 1 - range(age, 0.7, 0.85));
-    const rot = (k % 2 ? 1 : -1) * 0.05;
-    card(img, W / 2, 900, w, h, { rot, a, border: 16 * z, radius: 30 * z, shadow: C.ink });
-  }
+  // 1枚目（お好み焼き）は前の場面から続いて、最初から止まっている
+  FOOD.forEach((k, i) => {
+    const at = 2 + i * 0.667 - (i === 0 ? 0.5 : 0);
+    const inP = easeOut(range(t, at, at + 0.45));
+    if (inP <= 0) return;
+    const next = i < FOOD.length - 1 ? 2 + (i + 1) * 0.667 : 99;
+    const outP = easeIn(range(t, next, next + 0.35)); // 次の写真が来たら手前へ抜けて消える
+    const z = (0.25 + 0.75 * inP) * (1 + 0.03 * range(t, at, at + 1.5)) * (1 + 0.5 * outP);
+    const a = range(t, at, at + 0.15) * (1 - outP);
+    card(IMG[k], W / 2, 900, 760 * z, 760 * z, { rot: (i % 2 ? 0.03 : -0.03) * (1 - inP * 0.5), a, border: 16 * z, radius: 30 * z, shadow: C.ink });
+  });
   stamp("食べる。", W / 2, 1520, 210, 2.0, 0.09, { t, color: "#fff" });
   label(t, 2.5, "グルメ", 502, W / 2, 1720);
 }
@@ -321,12 +322,12 @@ function s5(t) {
   if (wp > 0) { x.fillStyle = C.blue; x.fillRect(W * (1 - wp), 0, W * wp, H); }
 }
 function s6(t) {
-  // ジャンプカット：同じ枠で写真を16分音符で差し替え、記事数をスピードランプ
+  // ジャンプカット：同じ枠で写真を1拍（0.5秒）ごとに差し替え、記事数をスピードランプ
   const lt = t - 10;
   x.fillStyle = C.blue; x.fillRect(0, 0, W, H);
   marquee(t, "KANMON NOTE  ", 300, 150, 1100, C.blue, "#fff", -0.07);
   marquee(t, "SHIMONOSEKI × KITAKYUSHU  ", 1560, 92, -1300, "#fff", C.ink, 0.05);
-  const idx = Math.floor(lt / 0.125) % STROBE.length;
+  const idx = Math.min(STROBE.length - 1, Math.floor(lt / BEAT));
   // 拍の頭でほんの少し大きく（キックに合わせて揺らす）
   const kick = 1 + 0.04 * (1 - range(lt % BEAT, 0, 0.15));
   const s = 820 * kick;
