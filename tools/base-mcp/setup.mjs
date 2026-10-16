@@ -176,4 +176,6 @@ console.log(healthy
   : '\n⚠️ 接続チェックで ❌ が出ています。その画面を Claude に見せてください');
 rl.closedByUs = true;
 rl.close();
-process.exit(healthy ? 0 : 1);
+// Windows では入力が開いたまま process.exit すると落ちることがあるので、入力を閉じて自然に終わらせる
+process.stdin.destroy();
+process.exitCode = healthy ? 0 : 1;

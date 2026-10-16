@@ -72,7 +72,8 @@ async function handle(req, res) {
     refreshCount++;
     return send(200, { access_token: 'good', refresh_token: 'r2', expires_in: 3600 });
   }
-  if (req.headers.authorization !== 'Bearer good') return send(401, { error: 'invalid_token' });
+  // 本物のBASEと同じく、期限切れは 400 invalid_request で返す
+  if (req.headers.authorization !== 'Bearer good') return send(400, { error: 'invalid_request', error_description: 'アクセストークンが無効です。' });
   const limit = Number(url.searchParams.get('limit') ?? 20), offset = Number(url.searchParams.get('offset') ?? 0);
   if (url.pathname === '/1/users/me') return send(200, { user: { shop_name: 'テストショップ' } });
   if (url.pathname === '/1/items') return send(200, { items: items.slice(offset, offset + limit) });
@@ -88,6 +89,16 @@ async function handle(req, res) {
     const it = items.find((i) => String(i.item_id) === p.item_id);
     if (p.variation_id) it.variations.find((v) => String(v.variation_id) === p.variation_id).variation_stock = Number(p.variation_stock);
     else it.stock = Number(p.stock);
+  }
+  if (req.method === 'POST' && url.pathname === '/1/items/add') {
+    posts.push({ path: url.pathname, params: Object.fromEntries(new URLSearchParams(body)) });
+    return send(200, { item: { item_id: 9000 + posts.length } });
+  }
+  if (req.method === 'POST' && url.pathname === '/1/items/add_image') {
+    const p = Object.fromEntries(new URLSearchParams(body));
+    posts.push({ path: url.pathname, params: p });
+    if (p.image_url.includes('bad')) return send(400, { error: 'invalid_image' });
+    return send(200, { ok: true });
   }
   if (req.method === 'POST') { posts.push({ path: url.pathname, params: Object.fromEntries(new URLSearchParams(body)) }); return send(200, { ok: true }); }
   send(404, { error: 'not_found' });
@@ -247,9 +258,42 @@ await test('商品更新：内容を変えたら同じトークンは使えな�
   assert.equal(posts.length, 2);
 });
 
+await test('商品の新規登録：プレビューでは送らない・警告（食品表示不足・同名・画像なし）・非公開で登録・画像追加・一部失敗の報告', async () => {
+  const items = [
+    { title: '商品1', price: 5000, stock: 3 }, // 既存と同名・表示なし・画像なし
+    {
+      title: 'とらふぐ刺身 4人前', price: 12000, stock: 10, description: '下関で仕上げたとらふぐ刺身です。',
+      food_label: { name: 'ふぐ刺身', ingredients: 'とらふぐ', allergens: 'なし', amount: '4人前', expiry: '冷凍で30日', storage: '-18℃以下', maker: '山西水産株式会社' },
+      image_urls: ['https://example.com/a.jpg', 'https://example.com/bad.jpg'],
+    },
+  ];
+  const before = posts.length;
+  const preview = await call(client, 'base_create_items', { items });
+  assert.equal(posts.length, before);
+  const [w1, w2] = preview.will_create.map((x) => x.warnings);
+  assert.ok(w1.some((w) => w.startsWith('食品表示が足りません')));
+  assert.ok(w1.some((w) => w.includes('同じ名前の商品がすでにあります')));
+  assert.ok(w1.some((w) => w.startsWith('画像がありません')));
+  assert.deepEqual(w2, []);
+  assert.match(preview.will_create[1].detail, /下関で仕上げたとらふぐ刺身です。\n\n【商品情報】\n名称：ふぐ刺身\n原材料名：とらふぐ/);
+
+  const done = await call(client, 'base_create_items', { items, confirm_token: preview.confirm_token });
+  const sent = posts.slice(before);
+  const adds = sent.filter((p) => p.path === '/1/items/add');
+  assert.equal(adds.length, 2);
+  assert.ok(adds.every((p) => p.params.visible === '0'), '必ず非公開で登録');
+  assert.equal(adds[1].params.price, '12000');
+  const imgs = sent.filter((p) => p.path === '/1/items/add_image');
+  assert.deepEqual(imgs.map((p) => p.params.image_no), ['1', '2']);
+  assert.equal(done.results[1].ok, true);
+  assert.equal(done.results[1].images_added, 1);
+  assert.equal(done.results[1].image_errors.length, 1);
+  assert.match(await readFile(join(dataDir, 'write-log.jsonl'), 'utf8'), /商品の新規登録/);
+});
+
 await test('定型プロンプトが出る', async () => {
   const names = (await client.listPrompts()).prompts.map((p) => p.name);
-  assert.deepEqual(names.sort(), ['customer_followup', 'growth_plan', 'restock_plan', 'shipping_check', 'weekly_report']);
+  assert.deepEqual(names.sort(), ['customer_followup', 'growth_plan', 'new_item', 'restock_plan', 'shipping_check', 'weekly_report']);
   const p = await client.getPrompt({ name: 'restock_plan', arguments: { threshold: '2' } });
   assert.match(p.messages[0].content.text, /threshold=2/);
 });
@@ -267,7 +311,7 @@ await test('BASE_ALLOW_WRITE なしでは書き込みツールが出ない', asy
   await c.connect(new StdioClientTransport({ command: process.execPath, args: [join(root, 'server.mjs')], env: { ...env, BASE_ALLOW_WRITE: '0' } }));
   const names = (await c.listTools()).tools.map((t) => t.name);
   assert.ok(names.includes('base_sales_summary'));
-  assert.ok(!names.some((n) => n.startsWith('base_update_')));
+  assert.ok(!names.some((n) => /^base_(update|create)_/.test(n)));
   await c.close();
 });
 
@@ -292,7 +336,10 @@ await test('HTTP版：秘密URLで呼べる／違うURLは404', async () => {
 // ---- セットアップ（npm run setup） ----
 await test('setup：入力→.env保存→BASE許可→接続チェック→Claude Desktop登録（既存設定を保持・バックアップ）', async () => {
   const home = await mkdtemp(join(tmpdir(), 'base-mcp-home-'));
-  const desktopDir = join(home, '.config', 'Claude');
+  // 本物の Claude Desktop 設定に触れないよう、OSごとの置き場所を仮のホームの中に向ける
+  const desktopDir = process.platform === 'win32' ? join(home, 'AppData', 'Roaming', 'Claude')
+    : process.platform === 'darwin' ? join(home, 'Library', 'Application Support', 'Claude')
+      : join(home, '.config', 'Claude');
   await mkdir(desktopDir, { recursive: true });
   await writeFile(join(desktopDir, 'claude_desktop_config.json'), JSON.stringify({ mcpServers: { other: { command: 'x' } }, theme: 'dark' }));
   const envPath = join(home, 'base.env');
@@ -301,7 +348,7 @@ await test('setup：入力→.env保存→BASE許可→接続チェック→Clau
   const sdir = await mkdtemp(join(tmpdir(), 'base-mcp-setup-'));
   const { BASE_CLIENT_ID, BASE_CLIENT_SECRET, BASE_REDIRECT_URI, ...rest } = env;
   const child = spawn(process.execPath, [join(root, 'setup.mjs')], {
-    env: { ...rest, HOME: home, PATH: dirname(process.execPath), BASE_ENV_PATH: envPath, BASE_DATA_DIR: sdir, BASE_TOKEN_PATH: join(sdir, 'tokens.json'), BASE_SETUP_NO_BROWSER: '1' },
+    env: { ...rest, HOME: home, USERPROFILE: home, APPDATA: join(home, 'AppData', 'Roaming'), PATH: dirname(process.execPath), BASE_ENV_PATH: envPath, BASE_DATA_DIR: sdir, BASE_TOKEN_PATH: join(sdir, 'tokens.json'), BASE_SETUP_NO_BROWSER: '1' },
     stdio: ['pipe', 'pipe', 'inherit'],
   });
   child.stdin.end('myid\nmysecret\ny\ny\n');

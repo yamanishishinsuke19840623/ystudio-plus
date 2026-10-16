@@ -1,0 +1,15 @@
+{
+  "name": "giftmall-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ギフトモール出店者向け：月別明細CSVと注文確認メールをClaudeで扱うMCPサーバー",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node test/run.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "zod": "^4.6.5"
+  }
+}
