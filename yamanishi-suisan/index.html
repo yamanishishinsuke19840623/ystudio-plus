@@ -284,7 +284,7 @@ img{display:block;max-width:100%;height:auto;}
 .card .ph img{width:100%;height:115%;object-fit:cover;will-change:transform;}
 
 /* ── ラインナップ：行にカーソルを乗せると写真がついてくる ── */
-.lineup .head2{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;}
+.lineup .head2,.now .head2{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;}
 .list{margin-top:60px;border-top:3px solid var(--sumi);}
 .item{position:relative;display:grid;grid-template-columns:70px minmax(0,1.2fr) minmax(0,1fr) 40px;align-items:center;gap:20px;padding:28px 6px;border-bottom:2px solid var(--sumi);transition:background-color .3s,color .3s,padding .35s;}
 .item .n{font-family:var(--disp);font-size:22px;}
@@ -310,6 +310,22 @@ img{display:block;max-width:100%;height:auto;}
 .owner .sticker{position:absolute;right:12px;bottom:16px;background:var(--paper);border:2px solid var(--sumi);border-radius:12px;padding:6px 14px;font-weight:900;font-size:13px;letter-spacing:.1em;rotate:4deg;}
 .owner blockquote{font-family:var(--disp);font-size:clamp(28px,3.8vw,48px);line-height:1.5;}
 .owner cite{display:block;margin-top:22px;font-style:normal;font-weight:900;letter-spacing:.12em;font-size:14px;}
+
+/* ── 毎日の山西水産（自動更新） ── */
+.now{background:var(--paper2);}
+.now .upd{margin-top:18px;font-size:12px;font-weight:700;letter-spacing:.1em;opacity:.7;}
+.feed-photos{list-style:none;margin-top:40px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;}
+.feed-photos li{position:relative;border:2px solid var(--sumi);border-radius:16px;overflow:hidden;box-shadow:5px 5px 0 var(--sumi);background:var(--paper);aspect-ratio:4/3;}
+.feed-photos img{width:100%;height:100%;object-fit:cover;}
+.feed-photos time{position:absolute;left:10px;bottom:10px;background:var(--paper);border:2px solid var(--sumi);border-radius:999px;padding:2px 12px;font-size:12px;font-weight:900;letter-spacing:.08em;}
+.feed-h{margin-top:64px;font-family:var(--disp);font-weight:400;font-size:clamp(22px,2.6vw,32px);}
+.feed-videos{list-style:none;margin-top:20px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;}
+.feed-videos a{display:block;height:100%;border:2px solid var(--sumi);border-radius:16px;overflow:hidden;background:var(--paper);box-shadow:5px 5px 0 var(--sumi);transition:transform .2s,box-shadow .2s;}
+.feed-videos a:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--sumi);}
+.feed-videos img{width:100%;aspect-ratio:16/9;object-fit:cover;border-bottom:2px solid var(--sumi);}
+.feed-videos span{display:block;padding:12px 14px 16px;font-size:14px;font-weight:700;line-height:1.6;}
+.feed-videos time{display:block;font-size:12px;color:var(--shu);letter-spacing:.08em;}
+@media (max-width:860px){.feed-photos{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}.feed-videos{grid-template-columns:1fr;}}
 
 /* ── 購入 ── */
 .shops{margin-top:60px;border-top:3px solid var(--sumi);}
@@ -512,6 +528,26 @@ footer .fine a{text-decoration:underline;text-underline-offset:3px;}
       </div>
     </div>
   </section>
+
+  <!-- feed:start（tools/yamanishi-content/update.mjs が毎日自動生成。直接編集しない） -->
+  <section class="sec now" id="now" aria-labelledby="now-h">
+    <div class="wrap">
+      <div class="head2">
+        <div><span class="kicker">Today</span><h2 class="h2" id="now-h">毎日の、<br>山西水産。</h2></div>
+        <a class="all" href="https://www.instagram.com/yamanishisuisan/" target="_blank" rel="noopener">Instagram を見る →</a>
+      </div>
+      <p class="upd">2026.10.17 自動更新</p>
+      <ul class="feed-photos">
+        <li data-up><img src="img/feed/20261017_090002.jpg" alt="山西水産 Instagram 連携の写真（2026年10月17日）" width="900" height="734" loading="lazy" decoding="async"><time datetime="2026-10-17">2026.10.17</time></li>
+        <li data-up><img src="img/feed/20261016_090002.jpg" alt="山西水産 Instagram 連携の写真（2026年10月16日）" width="900" height="734" loading="lazy" decoding="async"><time datetime="2026-10-16">2026.10.16</time></li>
+        <li data-up><img src="img/feed/20261015_090003.jpg" alt="山西水産 Instagram 連携の写真（2026年10月15日）" width="900" height="734" loading="lazy" decoding="async"><time datetime="2026-10-15">2026.10.15</time></li>
+        <li data-up><img src="img/feed/20261014_090002.jpg" alt="山西水産 Instagram 連携の写真（2026年10月14日）" width="900" height="600" loading="lazy" decoding="async"><time datetime="2026-10-14">2026.10.14</time></li>
+        <li data-up><img src="img/feed/20261012_090002.jpg" alt="山西水産 Instagram 連携の写真（2026年10月12日）" width="900" height="731" loading="lazy" decoding="async"><time datetime="2026-10-12">2026.10.12</time></li>
+        <li data-up><img src="img/feed/20261011_090001.jpg" alt="山西水産 Instagram 連携の写真（2026年10月11日）" width="720" height="720" loading="lazy" decoding="async"><time datetime="2026-10-11">2026.10.11</time></li>
+      </ul>
+    </div>
+  </section>
+  <!-- feed:end -->
 
   <!-- 購入 -->
   <section class="sec shop" id="shop">

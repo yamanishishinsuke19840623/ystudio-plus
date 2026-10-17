@@ -1,0 +1,53 @@
+name: 山西水産 毎日の自動更新(Instagram写真・YouTube新着)
+
+# 写真リポジトリには毎朝 9:00 に写真が追加されるので、その後に取り込む
+on:
+  schedule:
+    # 毎日 09:20 JST (00:20 UTC)
+    - cron: "20 0 * * *"
+  workflow_dispatch:
+  push:
+    paths:
+      - "tools/yamanishi-content/**"
+      - ".github/workflows/yamanishi-content.yml"
+
+concurrency:
+  group: yamanishi-content-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install
+        working-directory: tools/yamanishi-content
+        run: npm ci
+
+      - name: Fetch photos and videos, update page
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          node tools/yamanishi-content/update.mjs
+          node tools/yamanishi-seo/build.mjs
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A yamanishi-suisan/feed.json yamanishi-suisan/img/feed yamanishi-suisan/index.html
+          if ! git diff --cached --quiet; then
+            git commit -m "山西水産: 毎日の写真・YouTube新着を更新"
+            git pull --rebase && git push
+          else
+            echo "変更なし"
+          fi

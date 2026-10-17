@@ -36,3 +36,9 @@
 - `node tools/yamanishi-seo/build.mjs` で JSON-LD（Organization / Person / WebPage / VideoObject / ItemList）と OGP を `index.html` の `seo:start〜seo:end` に生成。GitHub Actions `yamanishi-seo.yml` が push 時に自動実行
 - 商品は価格・在庫が未確認のため Product ではなく ItemList（名前・URL・画像）にしている
 - noindex のままなので、検索に効くのは noindex を外す判断の後。外すなら元LP（lp.yamanisi.co.jp）側にも同じ JSON-LD を入れる
+
+## 毎日の自動更新（2026-10 追加）
+- セクション「毎日の、山西水産。」（`#now`、やまちゃんと購入の間）。`<!-- feed:start〜feed:end -->` は自動生成
+- `tools/yamanishi-content/update.mjs`: 写真リポジトリ `posts/` の新しい6枚を 900px に縮めて `img/feed/` へ（古いものは削除）＋ YouTube @shimofugu の公開RSSから新着3本（タイトルは本人のものをそのまま）
+- GitHub Actions `yamanishi-content.yml` が毎日 09:20 JST に実行（写真は毎朝 9:00 追加のため）。取得に失敗した側は前回のまま残す
+- キャプションは写真リポジトリに無い（Windows 側の photo_queue.json）ので、写真には日付だけ付けている。AIで文章は作らない
