@@ -18,6 +18,8 @@ const PHOTO_REPO = "yamanishishinsuke19840623/yamanishisuisan-ig-images";
 const PHOTO_COUNT = 6;
 const YT_HANDLE = "shimofugu";
 const VIDEO_COUNT = 3;
+// 載せるのは、タイトルにふぐ・魚・山西水産の言葉が入った動画だけ（イベントなど他の話題は外す）
+const VIDEO_KEYWORDS = ["ふぐ", "フグ", "ふく", "フク", "河豚", "魚", "山西水産", "てっちり", "とらふぐ", "あんこう", "アンコウ", "クエ", "刺身", "南風泊"];
 
 const prev = existsSync(feedPath) ? JSON.parse(readFileSync(feedPath, "utf8")) : { photos: [], videos: [] };
 
@@ -55,13 +57,13 @@ async function fetchPhotos() {
   return photos;
 }
 
-// 動画: チャンネルページから channel_id を読み、公開 RSS から新しい順に
+// 動画: チャンネルページから channel_id を読み、公開 RSS（新しい15本）から絞り込んで新しい順に
 async function fetchVideos() {
   const page = await get(`https://www.youtube.com/@${YT_HANDLE}`);
   const id = (page.match(/"externalId":"(UC[\w-]{22})"/) || page.match(/channel_id=(UC[\w-]{22})/) || page.match(/\/channel\/(UC[\w-]{22})/) || [])[1];
   if (!id) throw new Error("YouTube の channel_id が読めません");
   const xml = await get(`https://www.youtube.com/feeds/videos.xml?channel_id=${id}`);
-  return parseYouTubeFeed(xml).slice(0, VIDEO_COUNT);
+  return parseYouTubeFeed(xml).filter((v) => VIDEO_KEYWORDS.some((k) => v.title.includes(k))).slice(0, VIDEO_COUNT);
 }
 
 const unxml = (s) => s.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, "&");

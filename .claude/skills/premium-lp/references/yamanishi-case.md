@@ -39,6 +39,6 @@
 
 ## 毎日の自動更新（2026-10 追加）
 - セクション「毎日の、山西水産。」（`#now`、やまちゃんと購入の間）。`<!-- feed:start〜feed:end -->` は自動生成
-- `tools/yamanishi-content/update.mjs`: 写真リポジトリ `posts/` の新しい6枚を 900px に縮めて `img/feed/` へ（古いものは削除）＋ YouTube @shimofugu の公開RSSから新着3本（タイトルは本人のものをそのまま）
+- `tools/yamanishi-content/update.mjs`: 写真リポジトリ `posts/` の新しい6枚を 900px に縮めて `img/feed/` へ（古いものは削除）＋ YouTube @shimofugu の公開RSSから、タイトルにふぐ・魚・山西水産などの言葉が入った新着3本（タイトルは本人のものをそのまま。言葉の一覧は update.mjs の VIDEO_KEYWORDS）
 - GitHub Actions `yamanishi-content.yml` が毎日 09:20 JST に実行（写真は毎朝 9:00 追加のため）。取得に失敗した側は前回のまま残す
 - キャプションは写真リポジトリに無い（Windows 側の photo_queue.json）ので、写真には日付だけ付けている。AIで文章は作らない
