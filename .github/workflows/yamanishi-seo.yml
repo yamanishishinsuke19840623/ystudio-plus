@@ -1,0 +1,44 @@
+name: 山西水産 構造化データ(facts.json → index.html)
+
+# facts.json（確認済みの事実だけ）を直したら、JSON-LD と OGP を index.html に自動反映する
+on:
+  push:
+    paths:
+      - "yamanishi-suisan/facts.json"
+      - "yamanishi-suisan/index.html"
+      - "tools/yamanishi-seo/**"
+      - ".github/workflows/yamanishi-seo.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: yamanishi-seo-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Build JSON-LD from facts.json
+        run: node tools/yamanishi-seo/build.mjs
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add yamanishi-suisan/index.html
+          if ! git diff --cached --quiet; then
+            git commit -m "山西水産: facts.json の内容を構造化データに反映"
+            git push
+          else
+            echo "変更なし"
+          fi

@@ -30,3 +30,9 @@
 ## 残っている宿題
 - あんこう鍋の高画質写真（本人から受け取ったら `img/p3.jpg` を差し替え、PVの商品カットにも戻す）
 - noindex を外すか・トップからリンクするか（本人判断）
+
+## 構造化データ（2026-10 追加）
+- 事実の置き場: `yamanishi-suisan/facts.json`（FACT のみ。富任町は書かない）
+- `node tools/yamanishi-seo/build.mjs` で JSON-LD（Organization / Person / WebPage / VideoObject / ItemList）と OGP を `index.html` の `seo:start〜seo:end` に生成。GitHub Actions `yamanishi-seo.yml` が push 時に自動実行
+- 商品は価格・在庫が未確認のため Product ではなく ItemList（名前・URL・画像）にしている
+- noindex のままなので、検索に効くのは noindex を外す判断の後。外すなら元LP（lp.yamanisi.co.jp）側にも同じ JSON-LD を入れる
