@@ -1,0 +1,46 @@
+{
+  "_note": "山西水産ページの構造化データ（JSON-LD）の元。ここには確認済みの事実（FACT）だけを書く。推測・未確認の情報は入れない。富任町（町名・番地）は出さない。編集したら tools/yamanishi-seo/build.mjs が index.html に反映する（GitHub Actions でも自動実行）。",
+  "pageUrl": "https://ystudio.yamanisi.co.jp/yamanishi-suisan/",
+  "company": {
+    "name": "山西水産株式会社",
+    "alternateName": "山西水産",
+    "officialUrl": "https://lp.yamanisi.co.jp/",
+    "description": "明治12年（1879年）創業、下関のふぐ老舗問屋。南風泊市場から直接買付し、ふぐ処理施設として許可された自社工場で処理したふぐ料理を全国へ届ける。",
+    "foundingDate": "1879",
+    "telephone": "+81-83-258-0032",
+    "addressRegion": "山口県",
+    "addressLocality": "下関市",
+    "logo": "img/logo.jpg",
+    "image": "img/spread.jpg",
+    "sameAs": [
+      "https://www.rakuten.co.jp/yamanishisuisan/",
+      "https://store.shopping.yahoo.co.jp/yamanishisuisan/",
+      "https://yamanishi.theshop.jp/",
+      "https://www.youtube.com/@shimofugu",
+      "https://www.instagram.com/yamanishisuisan/",
+      "https://www.tiktok.com/@fuguyayamachan"
+    ]
+  },
+  "owner": {
+    "name": "山西伸典",
+    "alternateName": "下関ふぐ屋やまちゃん",
+    "jobTitle": "4代目",
+    "image": "img/yamachan.jpg"
+  },
+  "video": {
+    "name": "60秒で、山西水産。",
+    "description": "山西水産のブランドPV。BGMはオリジナルテーマソング「潮風と、ふくと。」。四代の歴史・ふぐ解禁の地・商品・やまちゃん。",
+    "thumbnail": "media/pv-poster.jpg",
+    "content": "media/pv.mp4",
+    "uploadDate": "2026-10-10",
+    "duration": "PT60S"
+  },
+  "products": [
+    { "name": "ふぐ刺し（薄造り）", "url": "https://yamanishi.theshop.jp/items/48364387", "image": "img/p1.jpg" },
+    { "name": "てっちり鍋セット", "url": "https://yamanishi.theshop.jp/items/80659147", "image": "img/p2.jpg" },
+    { "name": "あんこう鍋", "url": "https://yamanishi.theshop.jp/items/18674300", "image": "img/p3.jpg" },
+    { "name": "ふぐの唐揚げ", "url": "https://yamanishi.theshop.jp/items/18674376", "image": "img/p4.jpg" },
+    { "name": "クエ鍋セット", "url": "https://yamanishi.theshop.jp/items/18674343", "image": "img/p5.jpg" },
+    { "name": "ふぐ炊き込みご飯", "url": "https://yamanishi.theshop.jp/items/18674200", "image": "img/p6.jpg" }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "photos": [
+    {
+      "file": "img/feed/20261017_090002.jpg",
+      "date": "2026-10-17",
+      "width": 900,
+      "height": 734
+    },
+    {
+      "file": "img/feed/20261016_090002.jpg",
+      "date": "2026-10-16",
+      "width": 900,
+      "height": 734
+    },
+    {
+      "file": "img/feed/20261015_090003.jpg",
+      "date": "2026-10-15",
+      "width": 900,
+      "height": 734
+    },
+    {
+      "file": "img/feed/20261014_090002.jpg",
+      "date": "2026-10-14",
+      "width": 900,
+      "height": 600
+    },
+    {
+      "file": "img/feed/20261012_090002.jpg",
+      "date": "2026-10-12",
+      "width": 900,
+      "height": 731
+    },
+    {
+      "file": "img/feed/20261011_090001.jpg",
+      "date": "2026-10-11",
+      "width": 720,
+      "height": 720
+    }
+  ],
+  "videos": [
+    {
+      "id": "eMG0XMNcMgM",
+      "title": "山西水産ブランドサイトプロモーションビデオ",
+      "date": "2026-10-16"
+    },
+    {
+      "id": "b7izYrhLsf0",
+      "title": "下関ふく",
+      "date": "2026-10-02"
+    },
+    {
+      "id": "9voIH4TRst0",
+      "title": "天然ふぐ炙りたたき #下関",
+      "date": "2026-09-25"
+    }
+  ],
+  "updated": "2026-10-18"
+}
