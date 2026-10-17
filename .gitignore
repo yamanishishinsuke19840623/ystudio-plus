@@ -1,1 +1,6 @@
 node_modules/
+
+# APIキー・秘密情報（.env.example は残す）
+.env
+.env.*
+!.env.example
