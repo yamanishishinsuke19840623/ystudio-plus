@@ -2,16 +2,18 @@
 """請求書PDFをつくる（Ystudioプラス用）。
 
 使い方:
-  python3 -I make_invoice.py invoice.json 出力先ディレクトリ
+  python3 -I make_invoice.py invoice.json 出力先ディレクトリ [--embed]
 
 出力:
-  <出力先>/<file_name>.pdf   … 請求書本体（4KB前後。Gmail添付にそのまま使える）
+  <出力先>/<file_name>.pdf   … 請求書本体
   <出力先>/<file_name>.png   … 目視確認用のプレビュー
   <出力先>/<file_name>.b64   … Gmail create_draft の attachments.content にそのまま入れる文字列
 
-フォントは埋め込まない（HeiseiKakuGo-W5 = 閲覧側の日本語フォントで表示）ので軽い。
-その代わり、閲覧アプリによっては「¥」が「\」に化ける（スマホのGmailで実際に起きた）。
-だから金額は必ず「22,000円」のように「円」で書き、¥ / ￥ / バックスラッシュは使わない。
+既定はフォントを埋め込まない軽い版（4KB前後）。Gmail下書きへの添付（base64を手で渡す）に向く。
+  ・閲覧側の日本語フォントで表示されるので、スマホのGmailでは「¥」が「\」に化けた。
+    → 金額は「22,000円」のように「円」で書く。¥ / ￥ / バックスラッシュは検出したら止める。
+--embed を付けると、IPAゴシックを使う文字だけ埋め込む（50KB前後）。どの環境でも同じ見た目になる。
+  本人に直接渡して、本人が添付するときはこちら。
 """
 import json
 import os
@@ -21,9 +23,16 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.cidfonts import UnicodeCIDFont
+from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 
-FONT = "HeiseiKakuGo-W5"
+# 埋め込む日本語TrueTypeフォント。上から順に探す。
+FONT_CANDIDATES = [
+    "/usr/share/fonts/opentype/ipafont-gothic/ipagp.ttf",
+    "/usr/share/fonts/opentype/ipafont-gothic/ipag.ttf",
+    "/usr/share/fonts/truetype/fonts-japanese-gothic.ttf",
+    "/usr/share/fonts/truetype/ipaexfont-gothic/ipaexg.ttf",
+]
 # 閲覧環境で化ける・意味が変わる文字。見つけたら止める。
 BANNED = {"¥": "円表記にする", "￥": "円表記にする", "\\": "円表記にする"}
 
@@ -47,11 +56,47 @@ def check_text(data):
     walk(data, "invoice")
 
 
-def build(d, out_pdf):
-    pdfmetrics.registerFont(UnicodeCIDFont(FONT))
+class RecordingCanvas(canvas.Canvas):
+    """描いた文字を集める（フォントを使う文字だけに絞るため）。"""
+
+    def __init__(self, *a, **kw):
+        super().__init__(*a, **kw)
+        self.used = set()
+
+    def drawString(self, x, y, text, *a, **kw):
+        self.used.update(text)
+        return super().drawString(x, y, text, *a, **kw)
+
+    def drawRightString(self, x, y, text, *a, **kw):
+        self.used.update(text)
+        return super().drawRightString(x, y, text, *a, **kw)
+
+    def drawCentredString(self, x, y, text, *a, **kw):
+        self.used.update(text)
+        return super().drawCentredString(x, y, text, *a, **kw)
+
+
+def slim_font(src, chars, dst):
+    """使う文字だけ・ヒンティングなしのフォントを作る。PDFが小さくなり、Gmail添付の受け渡しが楽になる。"""
+    from fontTools import subset
+    from fontTools.ttLib import TTFont as FTFont
+    opts = subset.Options()
+    opts.hinting = False
+    opts.layout_features = []
+    opts.drop_tables += ["DSIG", "GSUB", "GPOS", "GDEF", "kern", "vhea", "vmtx", "gasp"]
+    opts.name_IDs = [1, 2]
+    f = FTFont(src)
+    sub = subset.Subsetter(opts)
+    sub.populate(text="".join(chars))
+    sub.subset(f)
+    f.save(dst)
+
+
+def build(d, out_pdf, font_name, record=False):
     W, H = A4
     L, R = 18 * mm, W - 18 * mm
-    c = canvas.Canvas(out_pdf, pagesize=A4)
+    c = RecordingCanvas(out_pdf, pagesize=A4)
+    FONT = font_name
     c.setTitle(f"請求書 {d['to']['company']}様")
     c.setAuthor(f"{d['from']['name']} {d['from']['person']}")
 
@@ -170,19 +215,46 @@ def build(d, out_pdf):
         ty -= 6 * mm
 
     c.save()
-    return subtotal, tax, total
+    return subtotal, tax, total, c.used
 
 
 def main():
-    if len(sys.argv) != 3:
+    args = [a for a in sys.argv[1:] if a != "--embed"]
+    embed = "--embed" in sys.argv[1:]
+    if len(args) != 2:
         sys.exit(__doc__)
-    with open(sys.argv[1], encoding="utf-8") as f:
+    with open(args[0], encoding="utf-8") as f:
         d = json.load(f)
     check_text(d)
-    os.makedirs(sys.argv[2], exist_ok=True)
-    base = os.path.join(sys.argv[2], d["file_name"])
-    subtotal, tax, total = build(d, base + ".pdf")
+    os.makedirs(args[1], exist_ok=True)
+    base = os.path.join(args[1], d["file_name"])
+    if not embed:
+        pdfmetrics.registerFont(UnicodeCIDFont("HeiseiKakuGo-W5"))
+        subtotal, tax, total, _ = build(d, base + ".pdf", "HeiseiKakuGo-W5")
+        return finish(base, subtotal, tax, total)
+    src = next((p for p in FONT_CANDIDATES if os.path.exists(p)), None)
+    if src is None:
+        sys.exit("NG: 埋め込める日本語フォントがない（FONT_CANDIDATES を確認）")
+    pdfmetrics.registerFont(TTFont("JPFULL", src))
+    # 1回目：使う文字を集める
+    import io
+    *_, used = build(d, io.BytesIO(), "JPFULL")
+    # 2回目：使う文字だけのフォントで本番
+    try:
+        slim = base + ".font.ttf"
+        slim_font(src, used, slim)
+        pdfmetrics.registerFont(TTFont("JP", slim))
+        font = "JP"
+    except ImportError:
+        print("fonttools が無いのでフォントを絞れない（pip install fonttools）。PDFが大きくなる")
+        font = "JPFULL"
+    subtotal, tax, total, _ = build(d, base + ".pdf", font)
+    if font == "JP":
+        os.remove(slim)
+    finish(base, subtotal, tax, total)
 
+
+def finish(base, subtotal, tax, total):
     import base64
     with open(base + ".pdf", "rb") as f:
         b = f.read()
