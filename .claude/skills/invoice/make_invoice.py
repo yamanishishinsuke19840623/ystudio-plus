@@ -2,18 +2,18 @@
 """請求書PDFをつくる（Ystudioプラス用）。
 
 使い方:
-  python3 -I make_invoice.py invoice.json 出力先ディレクトリ [--embed]
+  python3 -I make_invoice.py invoice.json 出力先ディレクトリ [--light]
 
 出力:
   <出力先>/<file_name>.pdf   … 請求書本体
   <出力先>/<file_name>.png   … 目視確認用のプレビュー
   <出力先>/<file_name>.b64   … Gmail create_draft の attachments.content にそのまま入れる文字列
 
-既定はフォントを埋め込まない軽い版（4KB前後）。Gmail下書きへの添付（base64を手で渡す）に向く。
-  ・閲覧側の日本語フォントで表示されるので、スマホのGmailでは「¥」が「\」に化けた。
-    → 金額は「22,000円」のように「円」で書く。¥ / ￥ / バックスラッシュは検出したら止める。
---embed を付けると、IPAゴシックを使う文字だけ埋め込む（50KB前後）。どの環境でも同じ見た目になる。
-  本人に直接渡して、本人が添付するときはこちら。
+既定は IPAゴシックの「使う文字だけ」を埋め込む（20KB前後）。どの閲覧アプリでも同じ見た目で開ける。
+  ・埋め込まない版はスマホのGmailで「¥」が「\」に化け、「PDFを表示できません」にもなった（2026/10/20）。
+  ・輪郭の座標を 1/64em 刻みに丸め、ヒンティングを外して小さくしている（印刷サイズでは見分けがつかない）。
+--light を付けると埋め込まない4KB前後の版を作る（非常用）。
+金額は「22,000円」のように「円」で書く。¥ / ￥ / バックスラッシュは検出したら止める。
 """
 import json
 import os
@@ -84,11 +84,20 @@ def slim_font(src, chars, dst):
     opts.hinting = False
     opts.layout_features = []
     opts.drop_tables += ["DSIG", "GSUB", "GPOS", "GDEF", "kern", "vhea", "vmtx", "gasp"]
-    opts.name_IDs = [1, 2]
+    opts.name_IDs = [1, 2, 6]
     f = FTFont(src)
     sub = subset.Subsetter(opts)
     sub.populate(text="".join(chars))
     sub.subset(f)
+    # 輪郭の座標を 1/64em 刻みに丸める。印刷サイズでは見分けがつかず、圧縮が効いて小さくなる
+    q = max(1, f["head"].unitsPerEm // 64)
+    glyf = f["glyf"]
+    for name in glyf.keys():
+        g = glyf[name]
+        if g.numberOfContours > 0:
+            g.coordinates.toInt()
+            for i, (x, y) in enumerate(g.coordinates):
+                g.coordinates[i] = (round(x / q) * q, round(y / q) * q)
     f.save(dst)
 
 
@@ -129,7 +138,7 @@ def build(d, out_pdf, font_name, record=False):
         c.drawString(L, y - 9 * mm, f"{d['to']['person']} 様")
 
     # 差出人
-    fx, fy = W / 2 + 12 * mm, y
+    fx, fy = W / 2 + 6 * mm, y
     c.setFont(FONT, 12)
     c.drawString(fx, fy, d["from"]["name"])
     c.setFont(FONT, 9.5)
@@ -219,8 +228,8 @@ def build(d, out_pdf, font_name, record=False):
 
 
 def main():
-    args = [a for a in sys.argv[1:] if a != "--embed"]
-    embed = "--embed" in sys.argv[1:]
+    args = [a for a in sys.argv[1:] if a != "--light"]
+    embed = "--light" not in sys.argv[1:]
     if len(args) != 2:
         sys.exit(__doc__)
     with open(args[0], encoding="utf-8") as f:
@@ -235,10 +244,10 @@ def main():
     src = next((p for p in FONT_CANDIDATES if os.path.exists(p)), None)
     if src is None:
         sys.exit("NG: 埋め込める日本語フォントがない（FONT_CANDIDATES を確認）")
-    pdfmetrics.registerFont(TTFont("JPFULL", src))
-    # 1回目：使う文字を集める
+    # 1回目：使う文字を集める（ここで元のTTFを登録すると、本番でもそちらが丸ごと埋め込まれてしまう）
     import io
-    *_, used = build(d, io.BytesIO(), "JPFULL")
+    pdfmetrics.registerFont(UnicodeCIDFont("HeiseiKakuGo-W5"))
+    *_, used = build(d, io.BytesIO(), "HeiseiKakuGo-W5")
     # 2回目：使う文字だけのフォントで本番
     try:
         slim = base + ".font.ttf"
@@ -247,6 +256,7 @@ def main():
         font = "JP"
     except ImportError:
         print("fonttools が無いのでフォントを絞れない（pip install fonttools）。PDFが大きくなる")
+        pdfmetrics.registerFont(TTFont("JPFULL", src))
         font = "JPFULL"
     subtotal, tax, total, _ = build(d, base + ".pdf", font)
     if font == "JP":
