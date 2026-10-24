@@ -64,6 +64,13 @@ async function main() {
     ],
   });
 
+  if (!response || !Array.isArray(response.choices) || !response.choices[0]?.message?.content) {
+    throw new Error(
+      "GitHub Models から予期しない応答が返りました（choices がありません）。応答の先頭: " +
+        JSON.stringify(response).slice(0, 300)
+    );
+  }
+
   const scriptBody = response.choices[0].message.content;
 
   const today = new Date().toISOString().slice(0, 10);
