@@ -28,7 +28,7 @@ jobs:
       - name: Generate script draft
         working-directory: tools/youtube-ai-dx-scripts
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: npm run generate
 
       - name: Commit and push if changed
