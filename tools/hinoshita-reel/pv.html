@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>日下まりあさん 応援リール（絵コンテ兼描画）</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;800&family=Zen+Kaku+Gothic+New:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#222;color:#eee;font:14px system-ui;display:flex;flex-direction:column;align-items:center;gap:10px;padding:10px}
+  canvas{width:360px;height:640px;background:#000}
+  input{width:360px}
+</style>
+</head>
+<body>
+<!-- 1080x1920（縦）。ブラウザで開くとスライダーで確認できる。?end=b でエンドカードB。render.mjs は window.renderAt(秒) を1コマずつ呼ぶ -->
+<canvas id="v" width="1080" height="1920"></canvas>
+<input id="t" type="range" min="0" max="30" step="0.02" value="0"><span id="tl">0.00s</span>
+<script>
+// ── 絵コンテ（SCRIPT.md の9カット。80BPM・1小節3秒）──
+//  1  0.0–3.0   好き、6割。好きになれない、4割。（黒地・数字だけ色）
+//  2  3.0–6.0   若者は出ていく。百貨店は閉まる。終バスは早まる。（1行ずつスマッシュカット）
+//  3  6.0–9.0   それでも、下関の日常を面白がるひとたちに出会った。（暗→明）
+//  4  9.0–13.0  本人ポートレートにドリーイン＋名前・肩書き
+//  5  13.0–16.0 まちあるき。ゴミ拾い。「日々下関」で日常を届ける。（カードが重なる）
+//  6  16.0–19.0 行政と市民の、橋渡しがしたい。（左右の線が中央でつながる）
+//  7  19.0–22.5 まち肯定感
+//  8  22.5–26.0 『下関を、もっと好きに。』（夕暮れの橋）
+//  9  26.0–30.0 エンドカード A：挑戦の表明（事実のみ）／ B：選挙に触れない
+// 文言はすべて 2026-10-30 の本人投稿にある言葉から。投票のお願いは入れない（告示前）。
+const W = 1080, H = 1920;
+window.DURATION = 30;
+const END = new URLSearchParams(location.search).get("end") === "b" ? "b" : "a";
+const C = { navy: "#14213d", deep: "#0b1120", paper: "#f5f1e8", ink: "#14213d", sun: "#f0b44c", mute: "#7d8aa3", grey: "#1c2029" };
+const MIN = "'Shippori Mincho'", GO = "'Zen Kaku Gothic New'";
+const cv = document.getElementById("v"), x = cv.getContext("2d");
+const IMG = {};
+window.ready = new Promise((ok, ng) => {
+  const i = new Image();
+  i.onload = () => { IMG.portrait = i; ok(); };
+  i.onerror = () => ng(new Error("photos/portrait.jpg がありません"));
+  i.src = "photos/portrait.jpg";
+}).then(() => Promise.all([`800 150px ${MIN}`, `600 80px ${MIN}`, `700 60px ${GO}`, `500 44px ${GO}`].map((f) => document.fonts.load(f, "下関好き割日々"))));
+
+// ── 道具 ──
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const range = (t, a, b) => clamp((t - a) / (b - a));
+const easeOut = (p) => 1 - Math.pow(1 - p, 3);
+const easeInOut = (p) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
+const back = (p) => { const s = 1.6; p -= 1; return p * p * ((s + 1) * p + s) + 1; };
+const mix = (a, b, p) => {
+  const h = (c) => [1, 3, 5].map((i) => parseInt(c.slice(i, i + 2), 16));
+  const A = h(a), B = h(b);
+  return `rgb(${A.map((v, i) => Math.round(v + (B[i] - v) * p)).join(",")})`;
+};
+const bg = (c) => { x.fillStyle = c; x.fillRect(0, 0, W, H); };
+// 文字：parts = [[文字, 色], ...] を中央揃えで1行に描く
+function line(parts, y, size, font, { weight = 800, alpha = 1, dy = 0, spacing = 0 } = {}) {
+  if (typeof parts === "string") parts = [[parts, null]];
+  x.save();
+  x.globalAlpha *= alpha;
+  x.font = `${weight} ${size}px ${font}`;
+  x.letterSpacing = spacing + "px";
+  x.textBaseline = "middle";
+  const total = parts.reduce((s, [t]) => s + x.measureText(t).width, 0);
+  let cx = (W - total) / 2;
+  for (const [t, col] of parts) {
+    x.fillStyle = col || x.fillStyle;
+    x.fillText(t, cx, y + dy);
+    cx += x.measureText(t).width;
+  }
+  x.restore();
+}
+// 下から出てくる文字（start 秒から dur 秒）
+const rise = (t, start, dur = 0.5) => { const p = easeOut(range(t, start, start + dur)); return { alpha: p, dy: (1 - p) * 40 }; };
+
+// ── 場面 ──
+const S = [];
+// 1: 好き、6割。好きになれない、4割。
+S.push({ start: 0, end: 3, fade: 0, draw(t) {
+  bg(C.deep);
+  x.fillStyle = C.paper;
+  const a = rise(t, 0.15, 0.6);
+  line([["好き、", C.paper], ["6割。", C.sun]], 820, 150, MIN, a);
+  const p = range(t, 1.3, 1.65);
+  x.fillStyle = C.paper;
+  line([["好きになれない、", C.paper], ["4割。", C.mute]], 1060, 90, MIN, { alpha: clamp(p * 3), dy: (1 - back(p)) * 120 });
+} });
+// 2: 若者は出ていく。百貨店は閉まる。終バスは早まる。
+S.push({ start: 3, end: 6, fade: 0, draw(t) {
+  bg(C.grey);
+  const L = ["若者は出ていく。", "百貨店は閉まる。", "終バスは早まる。"];
+  L.forEach((s, i) => {
+    const st = 3.1 + i * 0.85;
+    if (t < st) return;
+    const p = easeOut(range(t, st, st + 0.35));
+    const dim = i < L.length - 1 && t > st + 0.85 ? 0.38 : 1;
+    x.save();
+    x.translate((1 - p) * 60, 0);
+    x.fillStyle = C.paper;
+    line(s, 760 + i * 200, 96, GO, { weight: 700, alpha: p * dim });
+    x.restore();
+  });
+} });
+// 3: それでも、下関の日常を面白がるひとたちに出会った。
+S.push({ start: 6, end: 9, fade: 0.25, draw(t) {
+  const p = easeInOut(range(t, 6.0, 7.2));
+  bg(mix(C.grey, C.paper, p));
+  // 光
+  const g = x.createRadialGradient(880, 380, 0, 880, 380, 700);
+  g.addColorStop(0, `rgba(240,180,76,${0.35 * p})`);
+  g.addColorStop(1, "rgba(240,180,76,0)");
+  x.fillStyle = g;
+  x.fillRect(0, 0, W, H);
+  const col = mix(C.paper, C.ink, p);
+  [["それでも、", 640, 6.2, 100], ["下関の日常を", 860, 6.9, 88], ["面白がるひとたちに", 1000, 7.3, 88], ["出会った。", 1140, 7.7, 88]].forEach(([s, y, st, sz]) => {
+    x.fillStyle = col;
+    line(s, y, sz, MIN, rise(t, st, 0.6));
+  });
+} });
+// 4: ポートレート＋名前
+S.push({ start: 9, end: 13, fade: 0.3, draw(t) {
+  const img = IMG.portrait;
+  const sw = img.height * W / H, sh = img.height;
+  const z = 1 + 0.08 * easeInOut(range(t, 9, 13));
+  // 顔のあたり（横40%・縦25%）に向かって寄る
+  const fx = 0.4, fy = 0.25;
+  x.save();
+  x.translate(W * fx, H * fy);
+  x.scale(z, z);
+  x.translate(-W * fx, -H * fy);
+  x.drawImage(img, 0, 0, sw, sh, 0, 0, W, H);
+  x.restore();
+  const g = x.createLinearGradient(0, H * 0.42, 0, H);
+  g.addColorStop(0, "rgba(11,17,32,0)");
+  g.addColorStop(0.6, "rgba(11,17,32,0.8)");
+  g.addColorStop(1, "rgba(11,17,32,0.95)");
+  x.fillStyle = g;
+  x.fillRect(0, 0, W, H);
+  // 名前を1文字ずつ
+  const name = "日下まりあ";
+  x.font = `800 150px ${MIN}`;
+  x.letterSpacing = "12px";
+  const total = x.measureText(name).width;
+  let cx = (W - total) / 2;
+  [...name].forEach((ch, i) => {
+    const r = rise(t, 9.5 + i * 0.12, 0.45);
+    x.save();
+    x.globalAlpha *= r.alpha;
+    x.fillStyle = C.paper;
+    x.textBaseline = "middle";
+    x.letterSpacing = "12px";
+    x.font = `800 150px ${MIN}`;
+    x.fillText(ch, cx, 1290 + r.dy);
+    x.restore();
+    cx += x.measureText(ch).width;
+  });
+  x.letterSpacing = "0px";
+  x.fillStyle = C.sun;
+  const bar = easeOut(range(t, 10.3, 10.8));
+  x.fillRect(W / 2 - 160 * bar, 1400, 320 * bar, 4);
+  x.fillStyle = C.paper;
+  line("「日々下関」主宰・編集／フリーディレクター", 1480, 46, GO, { weight: 500, ...rise(t, 10.6) });
+  line("下関出身・唐戸地区在住・27歳", 1555, 46, GO, { weight: 500, ...rise(t, 10.9) });
+} });
+// 5: 活動カード
+S.push({ start: 13, end: 16, fade: 0.25, draw(t) {
+  bg(C.paper);
+  const cards = [
+    { st: 13.2, y: 560, rot: -4, lines: ["まちあるき。"] },
+    { st: 13.9, y: 960, rot: 3, lines: ["ゴミ拾い。"] },
+    { st: 14.6, y: 1380, rot: -2, lines: ["「日々下関」で", "日常を届ける。"] },
+  ];
+  for (const c of cards) {
+    if (t < c.st) continue;
+    const p = easeOut(range(t, c.st, c.st + 0.4));
+    const s = 1.25 - 0.25 * p;
+    const h = c.lines.length > 1 ? 330 : 250;
+    x.save();
+    x.globalAlpha *= p;
+    x.translate(W / 2, c.y);
+    x.rotate((c.rot * Math.PI) / 180);
+    x.scale(s, s);
+    x.shadowColor = "rgba(20,33,61,0.18)";
+    x.shadowBlur = 40;
+    x.shadowOffsetY = 14;
+    x.fillStyle = "#ffffff";
+    x.fillRect(-400, -h / 2, 800, h);
+    x.shadowColor = "transparent";
+    x.fillStyle = C.sun;
+    x.fillRect(-400, -h / 2, 14, h);
+    x.translate(-W / 2, 0);
+    x.fillStyle = C.ink;
+    c.lines.forEach((l, i) => line(l, (i - (c.lines.length - 1) / 2) * 110, 84, MIN));
+    x.restore();
+  }
+} });
+// 6: 行政と市民の、橋渡しがしたい。
+S.push({ start: 16, end: 19, fade: 0.25, draw(t) {
+  bg(C.navy);
+  const y = 1150;
+  const p = easeInOut(range(t, 16.2, 17.5));
+  x.strokeStyle = C.paper;
+  x.lineWidth = 6;
+  x.lineCap = "round";
+  x.beginPath();
+  x.moveTo(110, y); x.lineTo(110 + (W / 2 - 110) * p, y);
+  x.moveTo(W - 110, y); x.lineTo(W - 110 - (W / 2 - 110) * p, y);
+  x.stroke();
+  x.fillStyle = C.paper;
+  x.beginPath(); x.arc(110, y, 14, 0, 7); x.arc(W - 110, y, 14, 0, 7); x.fill();
+  if (p >= 1) {
+    const q = range(t, 17.5, 18.2);
+    const g = x.createRadialGradient(W / 2, y, 0, W / 2, y, 160);
+    g.addColorStop(0, `rgba(240,180,76,${0.9 * (1 - q * 0.5)})`);
+    g.addColorStop(1, "rgba(240,180,76,0)");
+    x.fillStyle = g;
+    x.fillRect(W / 2 - 200, y - 200, 400, 400);
+    x.fillStyle = C.sun;
+    x.beginPath(); x.arc(W / 2, y, 16, 0, 7); x.fill();
+  }
+  x.fillStyle = C.mute;
+  x.save(); x.translate(-(W / 2 - 110), 0); line("行政", y + 70, 40, GO, { weight: 700, ...rise(t, 16.3) }); x.restore();
+  x.save(); x.translate(W / 2 - 110, 0); line("市民", y + 70, 40, GO, { weight: 700, ...rise(t, 16.3) }); x.restore();
+  x.fillStyle = C.paper;
+  line("行政と市民の、", 760, 96, MIN, rise(t, 16.4, 0.6));
+  line("橋渡しがしたい。", 900, 110, MIN, rise(t, 17.0, 0.6));
+} });
+// 7: まち肯定感
+S.push({ start: 19, end: 22.5, fade: 0.25, draw(t) {
+  bg(C.paper);
+  const p = easeOut(range(t, 19.1, 19.9));
+  x.fillStyle = `rgba(240,180,76,${0.28 * p})`;
+  x.beginPath(); x.arc(W / 2, 820, 330 * (0.8 + 0.2 * p), 0, 7); x.fill();
+  x.fillStyle = C.ink;
+  line("キーワード", 600, 40, GO, { weight: 700, ...rise(t, 19.1) });
+  line("まち肯定感", 820, 150, MIN, { alpha: p, spacing: 24 - 16 * p });
+  line("ここで暮らしてよかった。", 1240, 54, GO, { weight: 500, ...rise(t, 20.2, 0.6) });
+  line("ここにいる自分が好きだと思える感覚。", 1340, 54, GO, { weight: 500, ...rise(t, 20.8, 0.6) });
+} });
+// 8: 『下関を、もっと好きに。』 夕暮れの吊り橋
+S.push({ start: 22.5, end: 26, fade: 0.35, draw(t) {
+  const g = x.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, C.deep);
+  g.addColorStop(0.55, "#3a3f63");
+  g.addColorStop(0.78, "#e09a5a");
+  g.addColorStop(0.8, "#1a2440");
+  g.addColorStop(1, C.deep);
+  x.fillStyle = g;
+  x.fillRect(0, 0, W, H);
+  // 橋（わずかに横移動）
+  const ox = -30 * easeInOut(range(t, 22.5, 26));
+  x.save();
+  x.translate(ox, 0);
+  const deck = 1500, t1 = 260, t2 = 860, top = 1180;
+  x.strokeStyle = "rgba(11,17,32,0.9)";
+  x.fillStyle = "rgba(11,17,32,0.9)";
+  x.fillRect(-100, deck, W + 200, 18);
+  x.fillRect(t1 - 12, top, 24, deck - top + 120);
+  x.fillRect(t2 - 12, top, 24, deck - top + 120);
+  x.lineWidth = 5;
+  x.beginPath();
+  x.moveTo(-100, deck - 40);
+  x.quadraticCurveTo((-100 + t1) / 2, deck - 30, t1, top);
+  x.quadraticCurveTo(W / 2 + 30, deck + 120 - 200, t2, top);
+  x.quadraticCurveTo((t2 + W + 100) / 2, deck - 30, W + 100, deck - 40);
+  x.stroke();
+  x.lineWidth = 2;
+  for (let hx = t1 + 30; hx < t2; hx += 30) {
+    const u = (hx - t1) / (t2 - t1);
+    const cy = (1 - u) * (1 - u) * top + 2 * (1 - u) * u * (deck - 80) + u * u * top;
+    x.beginPath(); x.moveTo(hx, cy); x.lineTo(hx, deck); x.stroke();
+  }
+  x.restore();
+  // 水面の光
+  x.fillStyle = "rgba(240,180,76,0.25)";
+  for (let i = 0; i < 6; i++) x.fillRect(380 + Math.sin(t * 2 + i) * 20, 1560 + i * 40, 320 - i * 40, 4);
+  x.fillStyle = C.paper;
+  line("『下関を、", 700, 124, MIN, rise(t, 23.0, 0.7));
+  line("もっと好きに。』", 880, 124, MIN, rise(t, 23.5, 0.7));
+} });
+// 9: エンドカード
+S.push({ start: 26, end: 30, fade: 0.35, draw(t) {
+  bg(C.navy);
+  x.fillStyle = C.paper;
+  if (END === "a") {
+    x.fillStyle = C.sun;
+    line("2026.10.30", 640, 48, GO, { weight: 700, ...rise(t, 26.2) });
+    x.fillStyle = C.paper;
+    line("2027年1月の", 800, 76, MIN, rise(t, 26.4));
+    line("下関市議会議員選挙への", 920, 76, MIN, rise(t, 26.6));
+    line("挑戦を表明", 1060, 100, MIN, rise(t, 26.8));
+    x.fillStyle = C.mute;
+    line("想いの全文は本人の投稿で", 1300, 44, GO, { weight: 500, ...rise(t, 27.4) });
+    x.fillStyle = C.paper;
+    line("@5x5_npo   @hibishimonoseki", 1390, 46, GO, { weight: 700, ...rise(t, 27.6) });
+  } else {
+    line("「日々下関」は", 760, 84, MIN, rise(t, 26.2));
+    line("ライフワーク。", 880, 84, MIN, rise(t, 26.4));
+    x.fillStyle = C.mute;
+    line("これからも、もっと、", 1100, 54, GO, { weight: 500, ...rise(t, 26.9) });
+    line("下関のことを話していこう。", 1190, 54, GO, { weight: 500, ...rise(t, 27.1) });
+    x.fillStyle = C.paper;
+    line("@hibishimonoseki", 1390, 46, GO, { weight: 700, ...rise(t, 27.6) });
+  }
+  // 最後にフェードアウト
+  x.fillStyle = `rgba(0,0,0,${range(t, 29.3, 30)})`;
+  x.fillRect(0, 0, W, H);
+} });
+
+window.renderAt = function (t) {
+  t = clamp(t, 0, window.DURATION - 1e-6);
+  const i = S.findIndex((s) => t < s.end);
+  const s = S[i];
+  x.save(); x.globalAlpha = 1; x.letterSpacing = "0px";
+  if (i > 0 && s.fade && t - s.start < s.fade) {
+    S[i - 1].draw(Math.min(t, S[i - 1].end - 1e-3));
+    x.globalAlpha = easeInOut((t - s.start) / s.fade);
+  }
+  s.draw(t);
+  x.restore();
+};
+
+const sl = document.getElementById("t"), tl = document.getElementById("tl");
+sl.oninput = () => { window.renderAt(+sl.value); tl.textContent = (+sl.value).toFixed(2) + "s"; };
+window.ready.then(() => window.renderAt(0));
+</script>
+</body>
+</html>

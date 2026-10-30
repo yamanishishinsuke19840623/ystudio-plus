@@ -1,0 +1,13 @@
+{
+  "name": "hinoshita-reel",
+  "private": true,
+  "type": "module",
+  "description": "日下まりあさん応援リール（縦 1080x1920・約30秒）を pv.html から描画して out/ に書き出す",
+  "scripts": {
+    "render": "node render.mjs",
+    "stills": "PV_ONLY=stills node render.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.56.1"
+  }
+}
