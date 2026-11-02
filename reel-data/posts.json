@@ -1,8 +1,17 @@
 {
   "site": "https://www.kanmonnote.com",
   "source": "rest",
-  "fetchedAt": "2026-10-25T22:55:31.242Z",
+  "fetchedAt": "2026-11-02T00:02:36.597Z",
   "posts": [
+    {
+      "id": 47950,
+      "title": "かんもんノートの取材先を3D地図で探せる「取材先3Dマップ」を作りました！！",
+      "date": "2026-10-28T10:45:09",
+      "link": "https://www.kanmonnote.com/kanmon-map/",
+      "category": "観光",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/10/kanmon-map-thumbnail-768x432.jpg",
+      "localImage": "img/47950.jpg"
+    },
     {
       "id": 47611,
       "title": "団体で訪れ、次はひとりで。“帰ってきたくなる”スナック「ばぁ～びぃ〜Boo」",
@@ -38,18 +47,15 @@
       "category": "観光",
       "image": "https://www.kanmonnote.com/wp-content/uploads/2026/06/IMG_1115-1-768x1024.jpeg",
       "localImage": "img/47385.jpg"
-    },
-    {
-      "id": 47301,
-      "title": "BTSファンで賑わう、釜山へ行ってきました！⑤",
-      "date": "2026-07-06T19:30:52",
-      "link": "https://www.kanmonnote.com/bts-busan5/",
-      "category": "お店（飲食以外）",
-      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/06/IMG_1111-scaled.jpeg",
-      "localImage": "img/47301.jpg"
     }
   ],
   "excluded": [
+    {
+      "id": 47933,
+      "title": "【イベント】11月21日（土）ご縁を結ぶ交流会を開催。美味しいお抹茶をいただきながら、素敵な出会いを。",
+      "date": "2026-10-26T16:53:47",
+      "reason": "キーワード「【イベント】」"
+    },
     {
       "id": 47865,
       "title": "【イベント】君の”好き”で まちを仕立てよう ワークショップ～第1回「伝える」～in SHIMONOSEKI TAILORS（シモノセキテイラーズ）",

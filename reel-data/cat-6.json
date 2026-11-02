@@ -1,7 +1,7 @@
 {
   "site": "https://www.kanmonnote.com",
   "source": "rest",
-  "fetchedAt": "2026-10-25T22:55:31.242Z",
+  "fetchedAt": "2026-11-02T00:02:36.597Z",
   "category": {
     "id": 6,
     "name": "イベント",
@@ -16,18 +16,15 @@
       "category": "お店（飲食以外）",
       "image": "https://www.kanmonnote.com/wp-content/uploads/2025/12/33979239_s.jpeg",
       "localImage": "img/45583.jpg"
-    },
-    {
-      "id": 45100,
-      "title": "【お願い】決選投票へご協力をお願いします！下関と北九州を結ぶ関門エリアプロモーションマーク作成",
-      "date": "2025-09-01T12:33:01",
-      "link": "https://www.kanmonnote.com/20250825jc/",
-      "category": "イベント",
-      "image": "https://www.kanmonnote.com/wp-content/uploads/2025/08/IMG_6616-768x1086.jpeg",
-      "localImage": "img/45100.jpg"
     }
   ],
   "excluded": [
+    {
+      "id": 47933,
+      "title": "【イベント】11月21日（土）ご縁を結ぶ交流会を開催。美味しいお抹茶をいただきながら、素敵な出会いを。",
+      "date": "2026-10-26T16:53:47",
+      "reason": "キーワード「【イベント】」"
+    },
     {
       "id": 47865,
       "title": "【イベント】君の”好き”で まちを仕立てよう ワークショップ～第1回「伝える」～in SHIMONOSEKI TAILORS（シモノセキテイラーズ）",

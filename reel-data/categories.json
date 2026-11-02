@@ -1,32 +1,32 @@
 {
-  "fetchedAt": "2026-10-25T22:55:31.242Z",
+  "fetchedAt": "2026-11-02T00:02:36.597Z",
   "categories": [
     {
       "id": 5,
       "name": "グルメ",
       "slug": "gourmet",
-      "count": 502,
+      "count": 501,
       "file": "cat-5.json"
     },
     {
       "id": 6,
       "name": "イベント",
       "slug": "event",
-      "count": 265,
+      "count": 266,
       "file": "cat-6.json"
     },
     {
       "id": 1,
       "name": "お店（飲食以外）",
       "slug": "shop",
-      "count": 262,
+      "count": 263,
       "file": "cat-1.json"
     },
     {
       "id": 84,
       "name": "観光",
       "slug": "tourism",
-      "count": 256,
+      "count": 257,
       "file": "cat-84.json"
     },
     {
