@@ -7,7 +7,7 @@
 |---|---|---|
 | qr-homepage.png / .svg | https://www.kanmonnote.com/ | 作成・読み取り確認済み |
 | qr-instagram.png / .svg | https://www.instagram.com/kanmon_note/ | 作成・読み取り確認済み |
-| qr-contact | お問い合わせ先URL | URL未確認のため未作成 |
+| qr-contact.png / .svg | mailto:yamanishishinsuke19840623@gmail.com（読むとメール作成画面が開く） | 作成・読み取り確認済み |
 
 ## 差し替えのポイント
 - 印刷は **SVG** を使う（拡大してもぼやけない）
