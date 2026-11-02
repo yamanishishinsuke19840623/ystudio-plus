@@ -6,7 +6,7 @@
 | ファイル | 中身 | 状態 |
 |---|---|---|
 | qr-homepage.png / .svg | https://www.kanmonnote.com/ | 作成・読み取り確認済み |
-| qr-instagram | かんもんノートのInstagram URL | URL未確認のため未作成 |
+| qr-instagram.png / .svg | https://www.instagram.com/kanmon_note/ | 作成・読み取り確認済み |
 | qr-contact | お問い合わせ先URL | URL未確認のため未作成 |
 
 ## 差し替えのポイント
