@@ -5,7 +5,7 @@ import json, os, sys
 import numpy as np
 from scipy.signal import fftconvolve
 LIB = os.environ['LIB']; sys.path.insert(0, os.path.join(LIB, 'core', 'audio'))
-from sfx import SR, t_, env_exp, bp, lp, hp, noise, brown, norm, add, limit
+from sfx import SR, t_, env_exp, bp, lp, hp, noise, brown, norm, add, limit, compress
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 EV = json.load(open(os.path.join(HERE, 'events.json')))
@@ -169,7 +169,7 @@ g = np.clip(1 - (tt - 25.0) / .6, 0, 1); g[tt < 25.0] = 1; g[tt >= 25.6] = 0
 gfx = np.where((tt >= 25.6) & (tt < 25.9), 0.0, 1.0)
 mix = mus * .9 * g[:, None] + fx * gfx[:, None] + end
 fade = np.clip((DUR - tt) / .6, 0, 1); mix *= fade[:, None]
-mix = np.stack([limit(mix[:, c] / max(1e-9, np.abs(mix).max()) * .85) for c in range(2)], 1)
+mix = mix / max(1e-9, np.abs(mix).max()); mix = np.stack([limit(compress(mix[:, c], thr=.3, ratio=3, att=.002, rel=.1) * 1.6, ceil=.6) for c in range(2)], 1)
 os.makedirs(os.path.join(HERE, 'out'), exist_ok=True)
 import soundfile as sf
 sf.write(os.path.join(HERE, 'out', 'mix.wav'), mix.astype(np.float32), SR, subtype='PCM_16')
