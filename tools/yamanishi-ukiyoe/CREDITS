@@ -1,0 +1,13 @@
+山西水産「ふくと生きる」浮世絵 30秒 — 素材と出典・ライセンス
+
+絵        すべてコードで描画（views.js / main.js）。和紙・木目・バレン・色版・人物・ふく・皿。
+          既存の版画・キャラクター・ロゴは写していない（北斎・広重は文法のみ参考）。
+版画エンジン print.js は Lemo-Opuscar「Ukiyo-e」スタイルの print.js（MIT License, Copyright (c) 2026 LemoLab,
+          https://github.com/lemomo-ai/lemo-opuscar）を縦型 1080×1920 用に改変したもの。
+制作ツール Lemo-Opuscar core/（render, audio/sfx.py）MIT License。
+音楽      オリジナル（mix.py）。三味線・琴＝Karplus-Strong 物理モデル、尺八・太鼓・締太鼓・拍子木＝合成。サンプル音源なし。
+効果音    すべて合成（mix.py + Lemo-Opuscar core/audio/sfx.py）。録音素材なし。
+ナレーション なし（字幕のみ）。
+フォント  Shippori Mincho（FONTDASU）、Yuji Syuku（Kinuta Font Factory）— Google Fonts, SIL Open Font License 1.1。
+          fonts/ は fonts.gstatic.com が text= で配信したサブセット（無改変）。
+内容の事実 山西水産株式会社の確認済み情報（創業 明治12年＝1879年、南風泊市場、毎朝の目利き、「ふくと生きる」）。
