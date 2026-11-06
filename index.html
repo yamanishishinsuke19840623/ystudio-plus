@@ -884,6 +884,8 @@ body.cursor-link #cur-inner{transform:translate(-50%,-50%) scale(0);}
 .reason-title{font-size:18px;font-weight:900;color:var(--white);line-height:1.3;}
 .reason-title em{color:var(--gold);font-style:normal;}
 .reason-text{font-size:13px;color:var(--sub);line-height:1.9;}
+.reasons-grid{grid-template-columns:repeat(4,1fr);}
+@media(max-width:1024px){.reasons-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:768px){.reasons-grid{grid-template-columns:1fr;}}
 
 
@@ -1554,6 +1556,10 @@ footer .related-sites__arrow{width:18px;height:18px;flex:0 0 18px;color:var(--re
 <!-- MEDIA BAR -->
 <div class="media-bar reveal">
   <div class="media-item">
+    <div class="media-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></div>
+    <div class="media-text"><strong>AI専門家 登録</strong>山口商工会議所エキスパート・バンク（AI・DX）</div>
+  </div>
+  <div class="media-item">
     <div class="media-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M3 10h18"/><path d="M12 3l9 7H3z"/><line x1="6" y1="10" x2="6" y2="21"/><line x1="10" y1="10" x2="10" y2="21"/><line x1="14" y1="10" x2="14" y2="21"/><line x1="18" y1="10" x2="18" y2="21"/></svg></div>
     <div class="media-text"><strong>山口銀行様 主催</strong>AI研修 講師 2026</div>
   </div>
@@ -1593,7 +1599,7 @@ footer .related-sites__arrow{width:18px;height:18px;flex:0 0 18px;color:var(--re
       AI担当者を雇う前に、<br>私を<span class="gold">1日借りませんか？</span>
     </h1>
     <div class="hero-typing"><span class="ttype" id="ttype"></span><span class="tcursor">|</span></div>
-<p class="hero-desc reveal">コンサルは提案書を出す。Yスタジオ＋は「実装して、動くまで帰らない」スタイルです。<br>下関ふぐ屋の社長 × AI教育者 × 3児のパパが現場に入ります。</p>
+<p class="hero-desc reveal">コンサルは提案書を出す。Yスタジオ＋は「実装して、動くまで帰らない」スタイルです。<br>山口商工会議所エキスパート・バンク登録のAI専門家 × 下関ふぐ屋の社長 × 3児のパパが現場に入ります。</p>
     <div class="hero-btns reveal">
       <a href="#contact" class="btn-gold">無料相談を申し込む</a>
       <a href="#results" class="btn-line">実績を見る</a>
@@ -1974,7 +1980,7 @@ footer .related-sites__arrow{width:18px;height:18px;flex:0 0 18px;color:var(--re
 <section class="sec reasons-sec" id="reasons">
   <div class="container">
     <div class="sec-label reveal"><div class="sec-label-line"></div><span class="sec-label-text">Why Ystudio+</span></div>
-    <h2 class="sec-title reveal">選ばれる<br><span class="light">3つの理由。</span></h2>
+    <h2 class="sec-title reveal">選ばれる<br><span class="light">4つの理由。</span></h2>
     <p class="sec-desc reveal">「提案書だけで終わらない。動くまで帰らない。」それがYスタジオ＋です。</p>
     <div class="reasons-grid reveal">
       <div class="reason-card">
@@ -1999,6 +2005,14 @@ footer .related-sites__arrow{width:18px;height:18px;flex:0 0 18px;color:var(--re
         <div>
           <div class="reason-title"><em>地域密着</em></div>
           <div class="reason-text">下関・山口県内は<strong style="color:var(--gold)">訪問無料</strong>。消防団10年・PTA・地域活動12年。地元の事業者の課題と文化を知っています。</div>
+        </div>
+      </div>
+      <div class="reason-card">
+        <div class="reason-num">04</div>
+        <div class="reason-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></div>
+        <div>
+          <div class="reason-title"><em>公的に登録されたAI専門家</em></div>
+          <div class="reason-text"><strong style="color:var(--gold)">山口商工会議所エキスパート・バンクにAI・DXの専門家として登録</strong>。専門家派遣で地元事業者のAI導入を継続支援し、山口銀行様主催のAI研修でも講師を務めました。</div>
         </div>
       </div>
     </div>
@@ -2251,6 +2265,14 @@ footer .related-sites__arrow{width:18px;height:18px;flex:0 0 18px;color:var(--re
         <div class="tl-desc">Yスタジオ＋の新たな軸として、FDE（Forward Deployed Engineer）スタイルのAI伴走支援事業を本格開始。「自分が実証したことだけを届ける」——現場に直接入って、動くまで帰らない。</div>
         <span class="tl-badge">現在進行中</span>
       </div>
+      <!-- 9.5 -->
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-year">2026.08〜</div>
+        <div class="tl-title">山口商工会議所エキスパート・バンク AI・DX専門家として派遣支援</div>
+        <div class="tl-desc">AI・DX分野の登録専門家として、山口商工会議所の専門家派遣制度で地元・建設業の事業者様のAI導入を支援。現場写真の整理や日報のデジタル化など、毎回その場で動く仕組みをつくり、10月までに7回の派遣を重ねています。</div>
+        <span class="tl-badge">登録専門家</span>
+      </div>
       <!-- 10 -->
       <div class="tl-item">
         <div class="tl-dot"></div>
@@ -2298,7 +2320,7 @@ footer .related-sites__arrow{width:18px;height:18px;flex:0 0 18px;color:var(--re
           <div class="profile-axis">
             <div class="profile-axis-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="12" rx="2"/><path d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"/><line x1="8" y1="11" x2="8.01" y2="11" stroke-width="3"/><line x1="12" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="8.01" y2="15" stroke-width="3"/><line x1="12" y1="15" x2="14" y2="15"/></svg></div>
             <div class="profile-axis-label">AI</div>
-            <div class="profile-axis-text">AI教育者 / DXで現場に余白を<br>月30時間超の業務削減を自社で実証</div>
+            <div class="profile-axis-text">山口商工会議所エキスパート・バンク 登録専門家（AI・DX）<br>AI教育者 / 月30時間超の業務削減を自社で実証</div>
           </div>
           <div class="profile-axis">
             <div class="profile-axis-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12.5v4.5c0 1.5 2.7 2.5 6 2.5s6-1 6-2.5V12.5"/></svg></div>
@@ -2324,6 +2346,8 @@ footer .related-sites__arrow{width:18px;height:18px;flex:0 0 18px;color:var(--re
         </div>
 
         <div class="profile-tags">
+          <span class="profile-tag">AI専門家（エキスパート・バンク登録）</span>
+          <span class="profile-tag">山口銀行様主催 AI研修講師</span>
           <span class="profile-tag">老舗ふぐ屋 4代目</span>
           <span class="profile-tag">楽天優良ショップ受賞</span>
           <span class="profile-tag">集客5,000人イベント主催</span>
