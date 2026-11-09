@@ -1,8 +1,17 @@
 {
   "site": "https://www.kanmonnote.com",
   "source": "rest",
-  "fetchedAt": "2026-11-02T00:02:36.597Z",
+  "fetchedAt": "2026-11-09T00:17:57.120Z",
   "posts": [
+    {
+      "id": 47734,
+      "title": "【イベントレポ】高校生が司会、ものづくり、販売まで！未来のクリエイターが集う「SHIMONOSEKI TAILORS 」がオープン",
+      "date": "2026-11-05T16:47:38",
+      "link": "https://www.kanmonnote.com/tailors-opening-event/",
+      "category": "イベント",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/11/3655-768x512.png",
+      "localImage": "img/47734.png"
+    },
     {
       "id": 47950,
       "title": "かんもんノートの取材先を3D地図で探せる「取材先3Dマップ」を作りました！！",
@@ -38,18 +47,21 @@
       "category": "お店（飲食以外）",
       "image": "https://www.kanmonnote.com/wp-content/uploads/2026/07/IMG_1223-768x576.jpeg",
       "localImage": "img/47414.jpg"
-    },
-    {
-      "id": 47385,
-      "title": "BTSファンで賑わう、釜山へ行ってきました！⑥",
-      "date": "2026-07-07T19:30:30",
-      "link": "https://www.kanmonnote.com/bts-busan6/",
-      "category": "観光",
-      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/06/IMG_1115-1-768x1024.jpeg",
-      "localImage": "img/47385.jpg"
     }
   ],
   "excluded": [
+    {
+      "id": 48022,
+      "title": "【イベントレポ】高校生たちがかんもんノートのライターに！？SHIMONOSEKI TAILORS(下関テイラーズ)ワークショップ第1回が開催されました",
+      "date": "2026-11-08T19:30:22",
+      "reason": "キーワード「開催」"
+    },
+    {
+      "id": 47958,
+      "title": "【イベント】11月22日(日) 火の山と唐戸が大賑わい！Kanmon Autumn Festival（関門オータムフェスティバル）",
+      "date": "2026-11-06T12:08:31",
+      "reason": "キーワード「【イベント】」"
+    },
     {
       "id": 47933,
       "title": "【イベント】11月21日（土）ご縁を結ぶ交流会を開催。美味しいお抹茶をいただきながら、素敵な出会いを。",
@@ -103,12 +115,6 @@
       "title": "【開店】唐揚げ専門店の新しい挑戦！新店舗にてカレー屋さんをプレオープン中です！！",
       "date": "2026-06-28T19:30:57",
       "reason": "キーワード「プレオープン」"
-    },
-    {
-      "id": 47270,
-      "title": "【イベント】6月27日、子どもの「できた！」「たのしい！」があふれる体験型イベントが開催されます",
-      "date": "2026-06-22T19:30:58",
-      "reason": "キーワード「【イベント】」"
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-11-02T00:02:36.597Z",
+  "fetchedAt": "2026-11-09T00:17:57.120Z",
   "categories": [
     {
       "id": 5,
@@ -12,7 +12,7 @@
       "id": 6,
       "name": "イベント",
       "slug": "event",
-      "count": 266,
+      "count": 269,
       "file": "cat-6.json"
     },
     {
