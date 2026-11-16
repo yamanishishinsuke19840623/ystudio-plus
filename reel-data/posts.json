@@ -1,8 +1,17 @@
 {
   "site": "https://www.kanmonnote.com",
   "source": "rest",
-  "fetchedAt": "2026-11-09T00:17:57.120Z",
+  "fetchedAt": "2026-11-16T00:32:15.282Z",
   "posts": [
+    {
+      "id": 47922,
+      "title": "全国でも最安のプログラミング教室が下関に！子どもの好きを伸ばすおすすめの教室",
+      "date": "2026-11-10T12:50:10",
+      "link": "https://www.kanmonnote.com/miyell-minecraftscholl/",
+      "category": "習い事",
+      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/10/IMG_6213-768x576.jpeg",
+      "localImage": "img/47922.jpg"
+    },
     {
       "id": 47734,
       "title": "【イベントレポ】高校生が司会、ものづくり、販売まで！未来のクリエイターが集う「SHIMONOSEKI TAILORS 」がオープン",
@@ -38,18 +47,27 @@
       "category": "ふぐ",
       "image": "https://www.kanmonnote.com/wp-content/uploads/2026/07/5fb1965471d9ba33276f9a3ba40099b4-768x461.jpg",
       "localImage": "img/47488.jpg"
-    },
-    {
-      "id": 47414,
-      "title": "BTSファンで賑わう、釜山へ行ってきました！⑦終",
-      "date": "2026-07-08T19:30:05",
-      "link": "https://www.kanmonnote.com/bts-busan7/",
-      "category": "お店（飲食以外）",
-      "image": "https://www.kanmonnote.com/wp-content/uploads/2026/07/IMG_1223-768x576.jpeg",
-      "localImage": "img/47414.jpg"
     }
   ],
   "excluded": [
+    {
+      "id": 48139,
+      "title": "【イベント】君の”好き”で まちを仕立てよう ワークショップ～第２回「作る」～in SHIMONOSEKI TAILORS（シモノセキテイラーズ）",
+      "date": "2026-11-13T13:18:36",
+      "reason": "キーワード「【イベント】」"
+    },
+    {
+      "id": 48017,
+      "title": "【イベント】いいプサン（１１２３）の日はリトル釜山フェスタへ！！",
+      "date": "2026-11-11T12:14:14",
+      "reason": "キーワード「【イベント】」"
+    },
+    {
+      "id": 48089,
+      "title": "【イベント】下関の特産品が勢ぞろい！今年も下関農業まつりが開催されます",
+      "date": "2026-11-10T22:04:11",
+      "reason": "キーワード「【イベント】」"
+    },
     {
       "id": 48022,
       "title": "【イベントレポ】高校生たちがかんもんノートのライターに！？SHIMONOSEKI TAILORS(下関テイラーズ)ワークショップ第1回が開催されました",
@@ -109,12 +127,6 @@
       "title": "【夏限定】抹茶好き必見。かき氷×下関銘菓を楽しめる「茶房 風舞(ふわり)」",
       "date": "2026-07-30T17:33:31",
       "reason": "日付・期限の表記(【夏限定】)"
-    },
-    {
-      "id": 47353,
-      "title": "【開店】唐揚げ専門店の新しい挑戦！新店舗にてカレー屋さんをプレオープン中です！！",
-      "date": "2026-06-28T19:30:57",
-      "reason": "キーワード「プレオープン」"
     }
   ]
 }
