@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>山西水産 来期予算表</title>
+<link rel="icon" href="img/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Yuji+Syuku&family=Zen+Kaku+Gothic+New:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+ --paper:#f4efe4;--paper2:#ebe3d3;--card:#fffdf8;--sumi:#1b1a18;--mute:#6b655b;--line:#d6ccb8;
+ --shu:#e0442a;--ok:#2f7a4a;--ng:#c0392b;
+ --disp:'Yuji Syuku','Zen Kaku Gothic New',serif;
+ --body:'Zen Kaku Gothic New','Hiragino Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--sumi);font-family:var(--body);font-size:15px;line-height:1.7}
+.wrap{max-width:1280px;margin:0 auto;padding:0 16px 80px}
+header{padding:36px 0 20px;border-bottom:2px solid var(--sumi);margin-bottom:24px}
+.kick{color:var(--shu);font-weight:900;letter-spacing:.14em;font-size:12px}
+h1{font-family:var(--disp);font-weight:400;font-size:clamp(30px,6vw,52px);line-height:1.2;margin:4px 0 8px}
+.sub{color:var(--mute);font-size:13px}
+h2{font-size:17px;font-weight:900;margin:0 0 12px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+h2 small{font-weight:400;color:var(--mute);font-size:12px}
+section{background:var(--card);border:2px solid var(--sumi);border-radius:14px;padding:18px;margin-bottom:20px}
+.vision textarea{width:100%;font-family:var(--disp);font-size:clamp(20px,3.4vw,30px);line-height:1.45;border:0;border-bottom:2px dashed var(--line);background:transparent;resize:vertical;padding:4px 0;color:var(--sumi)}
+.vision .q{margin-top:10px;font-size:13px;color:var(--mute)}
+.vision .q b{color:var(--shu)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--mute)}
+input,select{font:inherit;color:var(--sumi);background:#fff;border:1px solid var(--line);border-radius:6px;padding:6px 8px;min-width:0}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--shu);outline-offset:1px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.card{border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--paper)}
+.card .k{font-size:12px;color:var(--mute);font-weight:700}
+.card .v{font-size:24px;font-weight:900;font-variant-numeric:tabular-nums;line-height:1.3}
+.card .n{font-size:12px;color:var(--mute)}
+.pos{color:var(--ok)}.neg{color:var(--ng)}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:8px;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;min-width:1180px;font-variant-numeric:tabular-nums}
+th,td{border-bottom:1px solid var(--line);padding:4px 5px;text-align:right;white-space:nowrap;font-size:13px}
+thead th{background:var(--paper2);font-weight:900;position:sticky;top:0}
+th.l,td.l{text-align:left;position:sticky;left:0;background:var(--card);z-index:1;min-width:150px}
+thead th.l{background:var(--paper2);z-index:2}
+td input{width:100%;text-align:right;padding:4px 5px;font-size:13px;border-color:transparent;background:#fbf8f1}
+td input:hover{border-color:var(--line)}
+td.l input{text-align:left;font-weight:700;background:transparent}
+td.rate{min-width:76px;width:76px}
+td.m{min-width:68px}
+tr.sum td{font-weight:900;background:var(--paper)}
+tr.sum td.l{background:var(--paper)}
+tr.total td{font-weight:900;border-top:2px solid var(--sumi);background:#fff3ea}
+tr.total td.l{background:#fff3ea}
+tr.group td{background:var(--sumi);color:var(--paper);font-weight:900;text-align:left;letter-spacing:.08em;padding:4px 10px}
+td.yr{font-weight:900;background:var(--paper)}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+button{font:inherit;font-weight:700;font-size:13px;border:2px solid var(--sumi);background:#fff;border-radius:999px;padding:6px 14px;cursor:pointer;color:var(--sumi)}
+button:hover{background:var(--paper2)}
+button.pri{background:var(--shu);color:#fff}
+button.x{border:0;background:transparent;padding:2px 6px;color:var(--mute);font-size:15px}
+button.mini{padding:2px 8px;font-size:11px;border-width:1px}
+.inv{display:grid;gap:10px}
+.inv .row{display:grid;grid-template-columns:2fr 1fr 1fr 3fr auto auto;gap:8px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--paper)}
+.inv .yes{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;white-space:nowrap}
+.inv .row.nv{border-color:var(--ng);background:#fdeeee}
+.note{font-size:12px;color:var(--mute);margin-top:8px}
+.tag{display:inline-block;font-size:11px;font-weight:900;border:1px solid currentColor;border-radius:4px;padding:0 6px;margin-right:4px}
+.tag.fact{color:var(--ok)}.tag.voice{color:#2b5d8a}.tag.input{color:var(--shu)}
+.save{font-size:12px;color:var(--mute)}
+@media (max-width:760px){
+ .inv .row{grid-template-columns:1fr 1fr}
+ .inv .row .why{grid-column:1/-1}
+}
+@media print{
+ body{background:#fff}.btns,.noprint{display:none!important}
+ section{break-inside:avoid;border-width:1px}
+ .tw{overflow:visible}table{min-width:0}
+ td input{border:0;background:transparent}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+ <div class="kick">YAMANISHI SUISAN · BUDGET</div>
+ <h1>山西水産 来期予算表</h1>
+ <p class="sub">決算書は終わった1年の答え合わせ。この表は、次の1年を決めるためのもの。<br>
+ 入力した数字は<b>この端末のブラウザの中にだけ</b>保存されます（サーバーには送りません）。</p>
+ <p class="sub" style="margin-top:6px">
+  <span class="tag fact">FACT</span>サイト掲載の事実
+  <span class="tag voice">VOICE</span>サイト掲載の言葉
+  <span class="tag input">入力</span>やまちゃんが入れる数字（初期値はすべて空欄です）
+ </p>
+</header>
+
+<section class="vision">
+ <h2>ビジョン <small><span class="tag voice">VOICE</span>サイト「次の100年」から引用・書き換え自由</small></h2>
+ <textarea id="vision" rows="2"></textarea>
+ <p class="q">支出に迷ったら、「これで儲かるか」ではなく<b>「これをやったら、ビジョンに近づくか」</b>で決める。</p>
+</section>
+
+<section>
+ <h2>前提 <small>期首月と単位、去年の実績、伸ばしたい率</small></h2>
+ <div class="grid">
+  <label class="f">期首月（決算月の翌月）<select id="fyStart"></select></label>
+  <label class="f">金額の単位<select id="unit"><option>千円</option><option>万円</option><option>円</option></select></label>
+  <label class="f">前期の売上実績（年額）<input id="prevSales" inputmode="decimal" placeholder="決算書の売上高"></label>
+  <label class="f">前期の営業利益実績（年額）<input id="prevProfit" inputmode="decimal" placeholder="決算書の営業利益"></label>
+  <label class="f">目標の伸び率（%）<input id="growth" inputmode="decimal" placeholder="例：10〜15"></label>
+ </div>
+ <p class="note">参考：毎年10%なら15年で約4.2倍、15%なら約8.1倍になります。急がず、毎年少しずつ伸ばす目安に。</p>
+</section>
+
+<section>
+ <h2>いまの計画 <small>表を入れると自動で計算されます</small></h2>
+ <div class="cards" id="cards"></div>
+</section>
+
+<section>
+ <h2>月別の予算 <small>販路ごとの売上 → 変動費 → 固定費 → 利益</small></h2>
+ <div class="noprint" style="margin-bottom:10px">
+  <p class="note" style="margin:0 0 6px">月ごとの配分の比率：ふぐは季節で売れ方が変わるので、前期の月別実績を見て比率を入れておくと、「年額を配分」ボタンでその比率どおりに割り振れます（空欄のときは均等）。</p>
+ </div>
+ <div class="tw"><table id="tbl"></table></div>
+ <div class="btns noprint">
+  <button id="addCh">＋ 販路を追加</button>
+  <button id="addFx">＋ 固定費を追加</button>
+ </div>
+ <p class="note">原価率：仕入・加工・資材など、売上に比例する費用の割合。手数料率：モール手数料・決済・送料負担など、売上に比例する費用の割合。<br>
+ 販路名の初期値（楽天市場・Yahoo!ショッピング・BASE・卸/仲卸）はサイトの記載から入れています<span class="tag fact" style="margin-left:4px">FACT</span>。実際の販路に合わせて変えてください。</p>
+</section>
+
+<section>
+ <h2>ビジョン投資 <small>すぐには儲からないけれど、ビジョンに近づくための支出</small></h2>
+ <div class="inv" id="inv"></div>
+ <div class="btns noprint"><button id="addInv">＋ 投資を追加</button></div>
+ <p class="note">「ビジョンに近づく」にチェックが入らない支出は赤く表示します。迷ったら、上のビジョンの一文と見比べてください。</p>
+</section>
+
+<section class="noprint">
+ <h2>保存・書き出し</h2>
+ <div class="btns" style="margin-top:0">
+  <button class="pri" id="csv">CSVで書き出す（Excel用）</button>
+  <button id="json">バックアップを保存</button>
+  <button id="load">バックアップを読み込む</button>
+  <button onclick="print()">印刷 / PDF</button>
+  <button id="reset">すべて消す</button>
+  <input type="file" id="file" accept="application/json" hidden>
+ </div>
+ <p class="save" id="saved" style="margin-top:8px"></p>
+</section>
+
+</div>
+<script>
+(function(){
+const KEY='yamanishi-budget-v1';
+const VISION_DEFAULT='下関という地域そのものを、産業として次世代に手渡す。';
+const blank=()=>Array(12).fill('');
+const DEFAULT=()=>({
+ vision:VISION_DEFAULT,fyStart:4,unit:'千円',prevSales:'',prevProfit:'',growth:'',
+ weights:blank(),
+ channels:['楽天市場','Yahoo!ショッピング','BASE','卸・仲卸','その他（店頭・法人など）'].map(n=>({name:n,cost:'',fee:'',m:blank()})),
+ fixed:['人件費','地代家賃','広告宣伝費','水道光熱費','減価償却費','その他経費'].map(n=>({name:n,m:blank()})),
+ invest:[]
+});
+let S;
+try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!S||!S.channels)S=DEFAULT();
+
+const $=id=>document.getElementById(id);
+const num=v=>{if(v===''||v==null)return 0;const n=parseFloat(String(v).replace(/[,，\s]/g,''));return isFinite(n)?n:0};
+const has=v=>v!==''&&v!=null&&isFinite(parseFloat(String(v).replace(/[,，\s]/g,'')));
+const fmt=n=>{if(!isFinite(n))return '—';const r=Math.round(n*10)/10;return r.toLocaleString('ja-JP',{maximumFractionDigits:1})};
+const pct=n=>isFinite(n)?(Math.round(n*10)/10)+'%':'—';
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const months=()=>Array.from({length:12},(_,i)=>((S.fyStart-1+i)%12)+1);
+let timer;
+function save(){clearTimeout(timer);timer=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(S));$('saved').textContent='この端末に保存しました（'+new Date().toLocaleTimeString('ja-JP')+'）'}catch(e){$('saved').textContent='この端末では自動保存できません。「バックアップを保存」を使ってください。'}},300)}
+
+// ---- 前提
+const fy=$('fyStart');for(let i=1;i<=12;i++)fy.add(new Option(i+'月',i));
+function bindTop(){
+ $('vision').value=S.vision;fy.value=S.fyStart;$('unit').value=S.unit;
+ $('prevSales').value=S.prevSales;$('prevProfit').value=S.prevProfit;$('growth').value=S.growth;
+}
+$('vision').oninput=e=>{S.vision=e.target.value;save()};
+fy.onchange=e=>{S.fyStart=+e.target.value;renderTable();calc();save()};
+$('unit').onchange=e=>{S.unit=e.target.value;renderTable();renderInv();calc();save()};
+['prevSales','prevProfit','growth'].forEach(k=>$(k).oninput=e=>{S[k]=e.target.value;calc();save()});
+
+// ---- 月別表
+function renderTable(){
+ const ms=months();
+ let h='<thead><tr><th class="l">科目（単位：'+esc(S.unit)+'）</th><th>原価%</th><th>手数料%</th>'+ms.map(m=>'<th>'+m+'月</th>').join('')+'<th>年計</th><th></th></tr></thead><tbody>';
+ h+='<tr class="sum noprint"><td class="l">月の配分比率</td><td></td><td></td>'+ms.map((m,i)=>'<td class="m"><input data-w="'+i+'" value="'+esc(S.weights[i])+'" inputmode="decimal" placeholder="1"></td>').join('')+'<td></td><td></td></tr>';
+ h+='<tr class="group"><td colspan="17">売上（販路別）</td></tr>';
+ S.channels.forEach((c,ci)=>{
+  h+='<tr><td class="l"><input data-cn="'+ci+'" value="'+esc(c.name)+'"></td>'+
+  '<td class="rate"><input data-cc="'+ci+'" value="'+esc(c.cost)+'" inputmode="decimal"></td>'+
+  '<td class="rate"><input data-cf="'+ci+'" value="'+esc(c.fee)+'" inputmode="decimal"></td>'+
+  c.m.map((v,i)=>'<td class="m"><input data-c="'+ci+'" data-i="'+i+'" value="'+esc(v)+'" inputmode="decimal"></td>').join('')+
+  '<td class="yr" id="cy'+ci+'"></td><td><button class="mini noprint" data-dist="'+ci+'">年額を配分</button><button class="x noprint" data-delc="'+ci+'" title="削除">×</button></td></tr>';
+ });
+ h+=sumRow('売上合計','rSales','sum')+sumRow('変動費（原価＋手数料）','rVar','')+sumRow('限界利益（粗利）','rGross','sum');
+ h+='<tr class="group"><td colspan="17">固定費</td></tr>';
+ S.fixed.forEach((f,fi)=>{
+  h+='<tr><td class="l"><input data-fn="'+fi+'" value="'+esc(f.name)+'"></td><td></td><td></td>'+
+  f.m.map((v,i)=>'<td class="m"><input data-f="'+fi+'" data-i="'+i+'" value="'+esc(v)+'" inputmode="decimal"></td>').join('')+
+  '<td class="yr" id="fy'+fi+'"></td><td><button class="mini noprint" data-same="'+fi+'">毎月同額</button><button class="x noprint" data-delf="'+fi+'" title="削除">×</button></td></tr>';
+ });
+ h+=sumRow('固定費合計','rFixed','sum')+sumRow('ビジョン投資','rInv','')+sumRow('営業利益','rOp','total')+sumRow('営業利益の累計','rCum','');
+ h+='</tbody>';
+ $('tbl').innerHTML=h;
+}
+function sumRow(label,id,cls){return '<tr class="'+cls+'"><td class="l">'+label+'</td><td></td><td></td>'+Array.from({length:12},(_,i)=>'<td id="'+id+i+'"></td>').join('')+'<td class="yr" id="'+id+'Y"></td><td></td></tr>'}
+
+$('tbl').addEventListener('input',e=>{
+ const t=e.target,d=t.dataset,v=t.value;
+ if(d.w!=null)S.weights[+d.w]=v;
+ else if(d.cn!=null)S.channels[+d.cn].name=v;
+ else if(d.cc!=null)S.channels[+d.cc].cost=v;
+ else if(d.cf!=null)S.channels[+d.cf].fee=v;
+ else if(d.c!=null)S.channels[+d.c].m[+d.i]=v;
+ else if(d.fn!=null)S.fixed[+d.fn].name=v;
+ else if(d.f!=null)S.fixed[+d.f].m[+d.i]=v;
+ calc();save();
+});
+$('tbl').addEventListener('click',e=>{
+ const d=e.target.dataset;
+ if(d.dist!=null){
+  const c=S.channels[+d.dist];
+  const a=prompt('「'+c.name+'」の年間の売上（'+S.unit+'）を入れてください。月の配分比率で割り振ります。');
+  if(a==null||!has(a))return;
+  const w=S.weights.map(x=>has(x)?num(x):1);const tw=w.reduce((p,q)=>p+q,0)||12;
+  c.m=w.map(x=>String(Math.round(num(a)*x/tw*10)/10));
+ }else if(d.same!=null){
+  const f=S.fixed[+d.same];
+  const a=prompt('「'+f.name+'」の月額（'+S.unit+'）を入れてください。12か月すべてに入れます。');
+  if(a==null||!has(a))return;f.m=Array(12).fill(String(num(a)));
+ }else if(d.delc!=null){if(!confirm('「'+S.channels[+d.delc].name+'」の行を消しますか？'))return;S.channels.splice(+d.delc,1)}
+ else if(d.delf!=null){if(!confirm('「'+S.fixed[+d.delf].name+'」の行を消しますか？'))return;S.fixed.splice(+d.delf,1)}
+ else return;
+ renderTable();calc();save();
+});
+$('addCh').onclick=()=>{S.channels.push({name:'新しい販路',cost:'',fee:'',m:blank()});renderTable();calc();save()};
+$('addFx').onclick=()=>{S.fixed.push({name:'新しい固定費',m:blank()});renderTable();calc();save()};
+
+// ---- ビジョン投資
+function renderInv(){
+ const ms=months();
+ $('inv').innerHTML=S.invest.length?S.invest.map((x,i)=>
+ '<div class="row'+(x.yes?'':' nv')+'" data-r="'+i+'">'+
+ '<input data-k="name" value="'+esc(x.name)+'" placeholder="何に使う？">'+
+ '<input data-k="amount" value="'+esc(x.amount)+'" inputmode="decimal" placeholder="金額（'+esc(S.unit)+'）">'+
+ '<select data-k="month">'+ms.map(m=>'<option value="'+m+'"'+(+x.month===m?' selected':'')+'>'+m+'月に計上</option>').join('')+'</select>'+
+ '<input class="why" data-k="why" value="'+esc(x.why)+'" placeholder="なぜビジョンに近づく？（一言で）">'+
+ '<label class="yes"><input type="checkbox" data-k="yes"'+(x.yes?' checked':'')+'>ビジョンに近づく</label>'+
+ '<button class="x noprint" data-deli="'+i+'" title="削除">×</button></div>').join('')
+ :'<p class="note" style="margin:0">まだありません。例：地域の事業者との協業、人材育成、発信など。金額と理由はやまちゃんが決めてください。</p>';
+}
+$('inv').addEventListener('input',e=>{
+ const r=e.target.closest('.row');if(!r)return;const x=S.invest[+r.dataset.r],k=e.target.dataset.k;
+ x[k]=k==='yes'?e.target.checked:e.target.value;
+ if(k==='yes')r.classList.toggle('nv',!x.yes);
+ calc();save();
+});
+$('inv').addEventListener('click',e=>{const d=e.target.dataset.deli;if(d==null)return;S.invest.splice(+d,1);renderInv();calc();save()});
+$('addInv').onclick=()=>{S.invest.push({name:'',amount:'',month:S.fyStart,why:'',yes:false});renderInv();calc();save()};
+
+// ---- 計算
+function compute(){
+ const ms=months();
+ const sales=Array(12).fill(0),vr=Array(12).fill(0),fx=Array(12).fill(0),inv=Array(12).fill(0);
+ const chY=S.channels.map(c=>{let y=0;c.m.forEach((v,i)=>{const s=num(v);y+=s;sales[i]+=s;vr[i]+=s*(num(c.cost)+num(c.fee))/100});return y});
+ const fxY=S.fixed.map(f=>{let y=0;f.m.forEach((v,i)=>{const s=num(v);y+=s;fx[i]+=s});return y});
+ S.invest.forEach(x=>{const i=ms.indexOf(+x.month);if(i>=0)inv[i]+=num(x.amount)});
+ const gross=sales.map((s,i)=>s-vr[i]),op=gross.map((g,i)=>g-fx[i]-inv[i]);
+ let c=0;const cum=op.map(o=>c+=o);
+ const sum=a=>a.reduce((p,q)=>p+q,0);
+ return {sales,vr,gross,fx,inv,op,cum,chY,fxY,Y:{sales:sum(sales),vr:sum(vr),gross:sum(gross),fx:sum(fx),inv:sum(inv),op:sum(op)}};
+}
+function calc(){
+ const R=compute(),u=S.unit;
+ const put=(id,arr,y,signed)=>{arr.forEach((v,i)=>{const el=$(id+i);if(el){el.textContent=fmt(v);el.className=signed?(v<0?'neg':''):''}});const el=$(id+'Y');if(el&&y!=null){el.textContent=fmt(y);if(signed)el.classList.toggle('neg',y<0)}};
+ put('rSales',R.sales,R.Y.sales);put('rVar',R.vr,R.Y.vr);put('rGross',R.gross,R.Y.gross,1);
+ put('rFixed',R.fx,R.Y.fx);put('rInv',R.inv,R.Y.inv);put('rOp',R.op,R.Y.op,1);put('rCum',R.cum,null,1);
+ R.chY.forEach((y,i)=>{const el=$('cy'+i);if(el)el.textContent=fmt(y)});
+ R.fxY.forEach((y,i)=>{const el=$('fy'+i);if(el)el.textContent=fmt(y)});
+ const gr=R.Y.sales?R.Y.gross/R.Y.sales*100:NaN;
+ const bep=gr>0?(R.Y.fx+R.Y.inv)/(gr/100):NaN;
+ const ps=has(S.prevSales)?num(S.prevSales):NaN,g=has(S.growth)?num(S.growth):NaN;
+ const target=isFinite(ps)&&isFinite(g)?ps*(1+g/100):NaN;
+ const yoy=isFinite(ps)&&ps&&R.Y.sales?(R.Y.sales/ps-1)*100:NaN;
+ const pp=has(S.prevProfit)?num(S.prevProfit):NaN;
+ const empty=!R.Y.sales&&!R.Y.fx;
+ const card=(k,v,n,cls)=>'<div class="card"><div class="k">'+k+'</div><div class="v '+(cls||'')+'">'+v+'</div><div class="n">'+n+'</div></div>';
+ $('cards').innerHTML=
+  card('年間売上（計画）',empty?'—':fmt(R.Y.sales),u+(isFinite(yoy)?' ／ 前期比 '+(yoy>=0?'+':'')+pct(yoy):''))+
+  card('目標売上（前期×伸び率）',isFinite(target)?fmt(target):'—',isFinite(target)?u+' ／ 計画との差 '+fmt(R.Y.sales-target):'前期実績と伸び率を入れると出ます',isFinite(target)&&R.Y.sales<target?'neg':'')+
+  card('限界利益率（粗利率）',pct(gr),'売上から変動費を引いた割合')+
+  card('営業利益（計画）',empty?'—':fmt(R.Y.op),u+(isFinite(pp)?' ／ 前期 '+fmt(pp):''),R.Y.op<0?'neg':(R.Y.op>0?'pos':''))+
+  card('損益分岐点の売上',fmt(bep),isFinite(bep)?u+' ／ これを超えると黒字':'売上と原価率を入れると出ます')+
+  card('ビジョン投資',fmt(R.Y.inv),u+' ／ '+S.invest.length+'件中'+S.invest.filter(x=>x.yes).length+'件がビジョンに近づく');
+}
+
+// ---- 書き出し
+function dl(name,text,type){const b=new Blob([text],{type});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
+$('csv').onclick=()=>{
+ const R=compute(),ms=months(),q=s=>'"'+String(s).replace(/"/g,'""')+'"';
+ const rows=[['山西水産 来期予算表（単位：'+S.unit+'）'],['ビジョン',S.vision],[],['科目','原価率%','手数料率%',...ms.map(m=>m+'月'),'年計']];
+ S.channels.forEach((c,i)=>rows.push([c.name,c.cost,c.fee,...c.m.map(num),R.chY[i]]));
+ rows.push(['売上合計','','',...R.sales,R.Y.sales],['変動費','','',...R.vr,R.Y.vr],['限界利益','','',...R.gross,R.Y.gross]);
+ S.fixed.forEach((f,i)=>rows.push([f.name,'','',...f.m.map(num),R.fxY[i]]));
+ rows.push(['固定費合計','','',...R.fx,R.Y.fx],['ビジョン投資','','',...R.inv,R.Y.inv],['営業利益','','',...R.op,R.Y.op]);
+ rows.push([],['ビジョン投資の内訳'],['項目','金額','計上月','理由','ビジョンに近づく']);
+ S.invest.forEach(x=>rows.push([x.name,num(x.amount),x.month+'月',x.why,x.yes?'はい':'いいえ']));
+ const r1=v=>typeof v==='number'?Math.round(v*10)/10:v;
+ dl('山西水産_来期予算表.csv','﻿'+rows.map(r=>r.map(v=>q(r1(v))).join(',')).join('\r\n'),'text/csv');
+};
+$('json').onclick=()=>dl('山西水産_予算表_バックアップ.json',JSON.stringify(S,null,1),'application/json');
+$('load').onclick=()=>$('file').click();
+$('file').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{const o=JSON.parse(t);if(!o.channels)throw 0;S=Object.assign(DEFAULT(),o);all();save()}catch(err){alert('読み込めませんでした。このページで保存したバックアップを選んでください。')}});e.target.value=''};
+$('reset').onclick=()=>{if(!confirm('入力した数字をすべて消して、最初の状態に戻しますか？'))return;S=DEFAULT();all();save()};
+
+function all(){bindTop();renderTable();renderInv();calc()}
+all();
+})();
+</script>
+</body>
+</html>
