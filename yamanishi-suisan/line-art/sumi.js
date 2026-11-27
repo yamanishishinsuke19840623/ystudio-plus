@@ -163,6 +163,7 @@
     const fish = fugu(fishG);
     const arm = layers(root);            // 手前の腕
     const head = layers(root);           // 頭
+    const hatMouth = el('path', { fill: '#c8402a', filter: 'url(#sumi)' }, root);
     const ORDER = [['head', 0, .45], ['face', .35, .35], ['band', .6, .35], ['eye', .85, .2], ['torso', .95, .5], ['apron', 1.3, .55], ['backArm', 1.6, .35], ['arm', 1.75, .4], ['legs', 2.0, .3], ['boots', 2.2, .45], ['ground', 2.5, .4], ['wash', 2.5, .9]];
     const FISH_AT = 1.9;
     const DRAWN = FISH_AT + fish.DRAWN;
@@ -174,63 +175,70 @@
       const breath = Math.sin(sw * 1.4) * 3;
       root.setAttribute('transform', `translate(0,${breath * .3})`);
 
-      // ── 頭（少し前に傾けて、ふぐをのぞき込む）
-      head.g.setAttribute('transform', `rotate(${-6 * k},-10,-708) translate(0,${breath * .4})`);
-      head.set('crown', stroke([[-50, -815], [-5, -834], [42, -820], [68, -782], [62, -742], [40, -716], [12, -706]], 24, prog('head'), 'nara', 14));
-      head.set('face', stroke([[-48, -815], [-62, -792], [-64, -774], [-81, -763], [-64, -753], [-66, -739], [-58, -724], [-40, -712], [-12, -706]], 12, prog('face'), 'nara', 10));
-      const fl = Math.sin(sw * 3.2) * 6, bpr = clamp(prog('band') * 1.4 - .4, 0, 1);
-      head.set('band', stroke([[-68, -797], [-14, -811], [38, -807], [68, -793]], 26, prog('band'), 'even', 12)
-        + ' ' + stroke([[66, -795], [96, -786 + fl * .5], [120, -766 + fl]], 15, bpr, 'nara', 10)
-        + ' ' + stroke([[66, -792], [100, -800 + fl * .6], [130, -794 + fl]], 12, bpr, 'nara', 10));
+      // ── 頭：白いフード＋ふぐの帽子（4代目の写真より）。少し前に傾けて、ふぐをのぞき込む
+      head.g.setAttribute('transform', `rotate(${-6 * k},-10,-700) translate(0,${breath * .4})`);
+      const hp = prog('head');
+      head.set('crown', stroke([[-50, -812], [-34, -828], [4, -834], [40, -818], [54, -782], [48, -744], [30, -722], [6, -710]], 20, hp, 'nara', 14));
+      head.set('face', stroke([[-54, -808], [-62, -788], [-64, -778], [-79, -768], [-64, -758], [-66, -747], [-60, -735], [-46, -724]], 11, prog('face'), 'nara', 10));
+      head.set('hoodEdge', stroke([[-50, -812], [-36, -788], [-30, -758], [-36, -730], [-48, -718], [-18, -704]], 9, prog('face'), 'tip', 10));
+      // ふぐの帽子：ドーム・ひれ・目・朱の口
+      const bpg = prog('band'), fin = Math.sin(sw * 4) * 4;
+      head.set('hat', stroke([[-82, -824], [-74, -858], [-34, -886], [18, -890], [56, -866], [68, -832]], 20, bpg, 'nara', 14)
+        + ' ' + stroke([[-82, -822], [-10, -830], [68, -830]], 11, bpg, 'even', 10));
+      const fp2 = clamp(bpg * 1.4 - .4, 0, 1);
+      head.set('hatFin', stroke([[48, -846], [84, -866 - fin], [82, -820 - fin * .5], [56, -832]], 9, fp2, 'tip', 8)
+        + ' ' + stroke([[-50, -842], [-70, -866 + fin], [-48, -858]], 7, fp2, 'tip', 6));
+      head.set('hatEye', fp2 > .5 ? brushPath(spline(circlePts(-40, -860, 11), 5), 6, (fp2 - .5) * 2, 'even') + ' ' + ellipse(-42, -859, 4.5, 4.5) + ' ' + brushPath(spline(circlePts(-8, -870, 8, -2.2, 4.5, 8), 5), 5, (fp2 - .5) * 2, 'tip') : '');
+      hatMouth.setAttribute('d', fp2 > .7 ? brushPath(spline(circlePts(-87, -826, 7, 0, 6.28, 10), 4), 6, (fp2 - .7) / .3, 'even') : '');
+      // 顔：笑った目・口
       const blink = (t % 4300) < 130 && !st.noBlink;
-      const lx = -4 * k, ly = -5 * k; // 目線をふぐへ
-      head.set('eye', blink ? stroke([[-52, -771], [-36, -771]], 4, prog('eye'), 'tip', 4) : stroke([[-52 + lx, -773 + ly], [-36 + lx, -771 + ly]], 10, prog('eye'), 'tip', 4));
-      head.set('brow', stroke([[-58, -789 - k * 3], [-44, -795 - k * 4], [-28, -792 - k * 2]], 9, prog('eye'), 'nara', 6));
-      head.set('ear', stroke([[8, -780], [20, -767], [9, -752]], 9, prog('eye'), 'tip', 6));
-      head.set('mouth', stroke([[-62, -735], [-50, -733]], 5, prog('eye'), 'tip', 4));
-      washHair.setAttribute('d', poly([[-48, -812], [-5, -832], [42, -818], [68, -782], [62, -756], [20, -796], [-36, -802]]));
+      const lx = -3 * k, ly = -4 * k; // 目線をふぐへ
+      head.set('eye', blink ? stroke([[-54, -776], [-40, -776]], 4, prog('eye'), 'tip', 4) : stroke([[-55 + lx, -774 + ly], [-48 + lx, -780 + ly], [-40 + lx, -775 + ly]], 7, prog('eye'), 'tip', 6));
+      head.set('brow', stroke([[-58, -792 - k * 3], [-46, -797 - k * 4], [-34, -794 - k * 2]], 7, prog('eye'), 'nara', 6));
+      head.set('mouth', stroke([[-63, -743], [-55, -740], [-48, -744]], 5, prog('eye'), 'tip', 4));
+      washHair.setAttribute('d', poly([[-82, -826], [-74, -858], [-34, -886], [18, -890], [56, -866], [68, -832], [-10, -830]]));
       washHair.setAttribute('transform', head.g.getAttribute('transform'));
-      washHair.setAttribute('opacity', .5 * prog('wash'));
+      washHair.setAttribute('opacity', .3 * prog('wash'));
+      hatMouth.setAttribute('transform', head.g.getAttribute('transform'));
 
-      // ── 胴と前掛け（背中を丸め、裾は広がる）
-      body.set('neck', stroke([[-28, -712], [-30, -690]], 10, prog('torso'), 'tip', 4) + ' ' + stroke([[12, -708], [16, -688]], 10, prog('torso'), 'tip', 4));
-      body.set('back', stroke([[14, -694], [72, -668], [102, -590], [106, -480], [94, -360]], 28, prog('torso'), 'nara', 14));
-      body.set('chest', stroke([[-30, -694], [-68, -668], [-86, -596]], 20, prog('torso'), 'nara', 10));
-      const ap = prog('apron'), ap2 = clamp(ap * 1.5 - .5, 0, 1);
-      body.set('apronF', stroke([[-82, -620], [-98, -500], [-114, -380], [-128, -262]], 22, ap, 'nara', 14));
-      body.set('apronB', stroke([[54, -626], [74, -500], [88, -380], [94, -262]], 13, clamp(ap * 1.3 - .2, 0, 1), 'nara', 14));
-      body.set('apronHem', stroke([[-130, -258], [-20, -244], [96, -258]], 15, ap2, 'tip', 10));
-      body.set('strap', stroke([[-70, -622], [-46, -670], [-26, -702]], 7, ap, 'tip', 8) + ' ' + stroke([[-82, -622], [54, -628]], 8, ap, 'tip', 8));
-      const tf = Math.sin(sw * 2.6) * 5;
-      body.set('tie', stroke([[78, -456], [114, -440 + tf], [132, -414 + tf]], 12, ap2, 'nara', 8) + ' ' + stroke([[78, -452], [110, -426 + tf * .7], [120, -396 + tf]], 9, ap2, 'nara', 8));
-      washBody.setAttribute('d', poly([[-30, -706], [14, -706], [72, -668], [102, -590], [106, -480], [94, -360], [-110, -360], [-96, -500], [-86, -596], [-68, -668]]));
-      washBody.setAttribute('opacity', .2 * prog('wash'));
-      washApron.setAttribute('d', poly([[-82, -622], [54, -628], [74, -500], [88, -380], [94, -262], [-20, -246], [-128, -262], [-114, -380], [-98, -500]]));
-      washApron.setAttribute('opacity', .62 * prog('wash'));
+      // ── 白衣（立ち襟・前ファスナー・袖はひじまでまくる）。細身
+      const tp = prog('torso');
+      body.set('collar', stroke([[-36, -712], [-8, -718], [22, -708]], 10, tp, 'tip', 8) + ' ' + stroke([[-36, -712], [-34, -690]], 9, tp, 'tip', 4) + ' ' + stroke([[22, -708], [24, -688]], 9, tp, 'tip', 4));
+      body.set('back', stroke([[18, -700], [58, -684], [80, -640], [88, -560], [92, -460], [96, -382]], 22, tp, 'nara', 14));
+      body.set('chest', stroke([[-34, -700], [-58, -682], [-70, -630], [-80, -520], [-94, -384]], 16, tp, 'nara', 14));
+      const ap = prog('apron');
+      body.set('hem', stroke([[-96, -380], [0, -370], [98, -382]], 12, ap, 'tip', 10));
+      body.set('zip', stroke([[-44, -690], [-54, -560], [-60, -384]], 4, ap, 'even', 10));
+      washBody.setAttribute('d', poly([[18, -700], [58, -684], [80, -640], [88, -560], [92, -460], [96, -382], [40, -380], [40, -600]]));
+      washBody.setAttribute('opacity', .12 * prog('wash'));
+      washApron.setAttribute('opacity', 0);
 
-      // ── 奥の腕
-      body.set('backArm', stroke([[76, -662], [102, -570], [100, -490], [92, -448]], 30, prog('backArm'), 'nara', 12));
-      body.set('backHand', prog('backArm') > .9 ? ellipse(92, -436, 14, 16) : '');
+      // ── 奥の腕（袖→素肌の前腕）
+      const bap = prog('backArm');
+      body.set('backArm', stroke([[66, -664], [86, -610], [86, -560]], 28, bap, 'nara', 10) + ' ' + stroke([[70, -560], [98, -556]], 8, bap, 'tip', 4) + ' ' + stroke([[86, -554], [84, -500], [80, -468]], 14, clamp(bap * 1.4 - .4, 0, 1), 'nara', 8));
+      body.set('backHand', bap > .9 ? ellipse(80, -456, 13, 15) : '');
 
-      // ── 足（前の足を一歩出す）と長靴
+      // ── ズボンと長靴（前の足を一歩出す）
       const lp = prog('legs');
-      body.set('legs', [[[-100, -250], [-112, -172]], [[-44, -246], [-50, -172]], [[2, -246], [18, -172]], [[70, -250], [84, -172]]].map(q => stroke(q, 10, lp, 'tip', 6)).join(' '));
-      washPants.setAttribute('d', poly([[-100, -250], [-44, -246], [-50, -172], [-112, -172]]) + ' ' + poly([[2, -246], [70, -250], [84, -172], [18, -172]]));
-      washPants.setAttribute('opacity', .3 * prog('wash'));
+      body.set('legs', [[[-82, -372], [-104, -178]], [[-30, -366], [-44, -178]], [[2, -366], [16, -178]], [[70, -372], [82, -178]]].map(q => stroke(q, 10, lp, 'tip', 6)).join(' '));
+      washPants.setAttribute('d', poly([[-82, -372], [-30, -366], [-44, -178], [-104, -178]]) + ' ' + poly([[2, -366], [70, -372], [82, -178], [16, -178]]));
+      washPants.setAttribute('opacity', .34 * prog('wash'));
       const bp = easeOut(prog('boots'));
-      const boot = q => bp > 0 ? poly(q.map(([x, y]) => [x, lerp(-178, y, bp)])) : '';
-      body.set('bootL', boot([[-116, -178], [-118, -42], [-142, -30], [-168, -16], [-176, 0], [-164, 10], [-46, 10], [-44, -178]]));
-      body.set('bootR', boot([[14, -178], [20, -36], [-4, -22], [-12, -2], [2, 10], [98, 10], [88, -178]]));
+      const boot = q => bp > 0 ? poly(q.map(([x, y]) => [x, lerp(-180, y, bp)])) : '';
+      body.set('bootL', boot([[-108, -180], [-110, -42], [-136, -30], [-162, -16], [-170, 0], [-158, 10], [-40, 10], [-38, -180]]));
+      body.set('bootR', boot([[12, -180], [18, -36], [-6, -22], [-14, -2], [0, 10], [96, 10], [86, -180]]));
       body.set('ground', stroke([[-360, 14], [-80, 20], [200, 12], [360, 18]], 10, prog('ground'), 'tip', 16));
 
-      // ── 手前の腕（肩→ひじ→手）とふぐ
-      const sh = [-42, -660], el_ = [lerp(-72, -132, k), lerp(-540, -612, k)], hd = [lerp(-152, -194, k), lerp(-490, -738, k)];
+      // ── 手前の腕（袖→まくった前腕→手）とふぐ（背中側から握る）
+      const sh = [-40, -662], el_ = [lerp(-66, -128, k), lerp(-548, -616, k)], hd = [lerp(-150, -192, k), lerp(-500, -742, k)];
       const apm = prog('arm');
-      arm.set('upper', stroke([sh, [lerp(-62, -94, k), lerp(-600, -648, k)], el_], 32, apm, 'nara', 10));
-      arm.set('fore', stroke([el_, [lerp(-110, -168, k), lerp(-512, -676, k)], hd], 24, clamp(apm * 1.4 - .3, 0, 1), 'nara', 10));
-      arm.set('hand', apm > .9 ? ellipse(hd[0], hd[1], 16, 14) : '');
-      const fx = hd[0] - 112, fy = hd[1] - 6 + (raise ? 0 : Math.sin(sw * 1.6) * 2);
-      fishG.setAttribute('transform', `translate(${fx},${fy}) rotate(${lerp(6, -4, k)}) scale(.45)`);
+      arm.set('upper', stroke([sh, [lerp(-56, -90, k), lerp(-606, -652, k)], el_], 30, apm, 'nara', 10));
+      const cuffA = Math.atan2(hd[1] - el_[1], hd[0] - el_[0]) + Math.PI / 2;
+      arm.set('cuff', apm > .5 ? stroke([[el_[0] - Math.cos(cuffA) * 17, el_[1] - Math.sin(cuffA) * 17], [el_[0] + Math.cos(cuffA) * 17, el_[1] + Math.sin(cuffA) * 17]], 8, (apm - .5) * 2, 'tip', 4) : '');
+      arm.set('fore', stroke([el_, [lerp(-106, -164, k), lerp(-520, -682, k)], hd], 15, clamp(apm * 1.4 - .3, 0, 1), 'nara', 10));
+      arm.set('hand', apm > .9 ? ellipse(hd[0], hd[1], 16, 14) + ' ' + stroke([[hd[0] - 14, hd[1] + 4], [hd[0] - 22, hd[1] + 22]], 7, 1, 'tip', 4) : '');
+      const fx = hd[0] - 70, fy = hd[1] + 40 + (raise ? 0 : Math.sin(sw * 1.6) * 2);
+      fishG.setAttribute('transform', `translate(${fx},${fy}) rotate(${lerp(4, -6, k)}) scale(.45)`);
       fish.update(drawT - FISH_AT, t, puff, .4);
     }
     return { g: root, update, DRAWN };
