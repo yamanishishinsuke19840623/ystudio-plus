@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<link rel="icon" href="../img/logo.jpg">
+<title>墨絵の店長 | 山西水産 線画アニメ（絵柄見本）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Yuji+Syuku&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;}
+body{background:#f4efe4;color:#1b1a18;font-family:'Yuji Syuku',serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px;}
+.stage{width:min(100%,calc((100vh - 70px) * .8));aspect-ratio:4/5;}
+svg{display:block;width:100%;height:100%;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.hint{font-size:15px;opacity:.6;}
+.still body{padding:0;}.still .hint{display:none;}.still .stage{width:100vw;height:100vh;}
+</style>
+</head>
+<body>
+<div class="stage">
+<svg id="sv" viewBox="-580 -1030 1080 1350" aria-label="墨で描かれた店長。クリックすると、ふぐを目の高さに上げて目利きします。">
+  <defs></defs>
+  <rect x="-580" y="-1030" width="1080" height="1350" fill="#f4efe4"/>
+  <rect x="-580" y="-1030" width="1080" height="1350" filter="url(#paper)"/>
+  <g id="man"></g>
+  <g id="cap" opacity="0">
+    <text x="-500" y="-930" font-size="54" fill="#1b1a18">毎朝、自ら目利き。</text>
+  </g>
+  <g id="seal" transform="translate(420,230)" opacity="0">
+    <rect x="-38" y="-52" width="76" height="104" rx="6" fill="#c8402a"/>
+    <text x="0" y="-7" font-size="30" text-anchor="middle" fill="#f4efe4">山西</text>
+    <text x="0" y="32" font-size="30" text-anchor="middle" fill="#f4efe4">水産</text>
+  </g>
+</svg>
+</div>
+<p class="hint">店長をクリック（タップ）すると、ふぐを目利き。</p>
+<script src="sumi.js"></script>
+<script>
+(()=>{
+const {clamp,ease}=Sumi;
+const sv=document.getElementById('sv');
+const Q=new URLSearchParams(location.search);
+if(Q.has('still'))document.documentElement.classList.add('still');
+Sumi.defs(sv);
+const man=Sumi.tencho(document.getElementById('man'));
+let t0=null,actT=-1;
+sv.addEventListener('pointerdown',()=>{if(actT<0)actT=performance.now();});
+// 目利きの動き：上げる(0.8s) → 見る・ぷくっ(2.2s) → 下ろす(0.8s)
+function act(now){
+  if(actT<0)return{raise:0,puff:0,cap:0};
+  const s=(now-actT)/1000;
+  if(s>4.2){actT=-1;return{raise:0,puff:0,cap:0};}
+  const raise=s<.8?ease(s/.8):s<3.4?1:1-ease((s-3.4)/.8);
+  const puff=s>1.0&&s<3.0?clamp((s-1.0)*4,0,1)*(1+.08*Math.sin((s-1)*14)*Math.exp(-(s-1)*3)):clamp(1-(s-3.0)*2,0,1)*(s>=3?1:0);
+  const cap=clamp(Math.min((s-.9)*3,(4.2-s)*3),0,1);
+  return{raise,puff,cap};
+}
+function render(drawT,now,st){
+  man.update(drawT,now,st);
+  document.getElementById('cap').setAttribute('opacity',st.cap||0);
+  document.getElementById('seal').setAttribute('opacity',clamp((drawT-man.DRAWN+.2)/.4,0,1));
+}
+if(Q.has('still')){const r=+(Q.get('raise')||0),p=+(Q.get('puff')||0);render(+(Q.get('t')||8),1000,{raise:r,puff:p,cap:+(Q.get('cap')||0),noBlink:1});}
+else requestAnimationFrame(function f(now){if(t0===null)t0=now;render((now-t0)/1000,now,act(now));requestAnimationFrame(f);});
+})();
+</script>
+</body>
+</html>
