@@ -27,6 +27,16 @@ svg{display:block;width:100%;height:100%;user-select:none;-webkit-user-select:no
 #sun{cursor:grab;}
 #sun:active{cursor:grabbing;}
 text{font-family:'Yuji Syuku',serif;fill:var(--sumi);}
+#reelHUD{display:none;}
+.reel body{padding:0;display:block;}
+.reel .hint{display:none;}
+.reel .stage{width:1080px;height:1920px;aspect-ratio:auto;border:0;border-radius:0;}
+.reel #reelHUD{display:block;position:absolute;inset:0;pointer-events:none;}
+#rCap{position:absolute;left:0;right:0;top:250px;text-align:center;font-family:'Yuji Syuku',serif;font-size:104px;line-height:1.35;color:#1b1a18;opacity:0;text-shadow:0 0 18px #f4efe4,0 0 6px #f4efe4;}
+#rEnd{position:absolute;inset:0;background:rgba(244,239,228,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;opacity:0;}
+#rEnd .seal{width:220px;height:220px;background:#e0442a;color:#f4efe4;border-radius:12px;font-family:'Yuji Syuku',serif;font-size:78px;line-height:1.15;display:grid;place-items:center;text-align:center;}
+#rEnd .nm{font-family:'Yuji Syuku',serif;font-size:120px;color:#1b1a18;letter-spacing:.08em;}
+#rEnd .sb{font-family:'Yusei Magic',sans-serif;font-size:46px;color:#1b1a18;}
 .say{font-family:'Yusei Magic',sans-serif;font-size:22px;}
 </style>
 </head>
@@ -44,7 +54,7 @@ text{font-family:'Yuji Syuku',serif;fill:var(--sumi);}
   </defs>
 
   <!-- 空 -->
-  <rect id="sky" x="0" y="0" width="1200" height="675" fill="#4a4572"/>
+  <rect id="sky" x="-200" y="-500" width="1600" height="1200" fill="#4a4572"/>
   <g id="stars" fill="#fff"></g>
 
   <!-- 太陽（ドラッグ） -->
@@ -84,7 +94,7 @@ text{font-family:'Yuji Syuku',serif;fill:var(--sumi);}
     </g>
 
     <!-- 岸壁 -->
-    <rect id="quay" x="0" y="540" width="1200" height="140" fill="#ebe3d3"/>
+    <rect id="quay" x="-200" y="540" width="1600" height="400" fill="#ebe3d3"/>
     <path class="ink" d="M-10,540 L1210,540 M-10,556 L1210,556"/>
     <g class="ink thin" id="quayLines"></g>
     <g transform="translate(110,560)">
@@ -175,17 +185,18 @@ text{font-family:'Yuji Syuku',serif;fill:var(--sumi);}
         <circle class="ink-f" cx="500" cy="542" r="7"/>
       </g>
       <rect class="hit" x="470" y="392" width="110" height="252"/>
+      <text id="puku" class="say" x="430" y="512" font-size="30" text-anchor="middle" opacity="0" style="fill:#e0442a;font-size:30px">ぷくっ！</text>
       <text id="manSay" class="say" x="420" y="372" opacity="0" text-anchor="middle">目利き中…</text>
     </g>
   </g>
 
   <!-- 夜の色（夜明け前ほど濃い） -->
-  <rect id="night" x="0" y="0" width="1200" height="675" fill="#0e1430" opacity=".4" style="mix-blend-mode:multiply;pointer-events:none"/>
+  <rect id="night" x="-200" y="-500" width="1600" height="1500" fill="#0e1430" opacity=".4" style="mix-blend-mode:multiply;pointer-events:none"/>
   <!-- 明かり（夜の色の上） -->
   <g id="lights" style="pointer-events:none"></g>
 
   <!-- 題字と落款 -->
-  <g style="pointer-events:none">
+  <g id="landHUD" style="pointer-events:none">
     <text id="title" x="40" y="70" font-size="34">夜明けの市場</text>
     <text id="sub" x="42" y="104" font-size="18" style="font-family:'Yusei Magic'">山西水産｜毎朝、南風泊市場で目利き</text>
     <g transform="translate(1124,612)">
@@ -196,6 +207,10 @@ text{font-family:'Yuji Syuku',serif;fill:var(--sumi);}
     <text id="caption" x="600" y="660" font-size="20" text-anchor="middle" opacity="0" style="font-family:'Yusei Magic'">毎朝、店長が自ら目利き。</text>
   </g>
 </svg>
+<div id="reelHUD">
+  <div id="rCap">毎朝、<br>自ら目利き。</div>
+  <div id="rEnd"><div class="seal">山西<br>水産</div><div class="nm">山西水産</div><div class="sb">明治十二年創業｜下関のふぐ問屋</div></div>
+</div>
 </div>
 <p class="hint">☀️ 太陽をドラッグして夜を明かす　／　🌬 マウスを動かすと風　／　👆 店長・生け簀のふぐ・猫・カモメ・海をクリック</p>
 
@@ -207,7 +222,8 @@ const el=(tag,attrs,parent)=>{const e=document.createElementNS(NS,tag);for(const
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const lerp=(a,b,t)=>a+(b-a)*t;
 const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
-const AUTO=new URLSearchParams(location.search).has('auto');
+const Q=new URLSearchParams(location.search);const AUTO=Q.has('auto');const REEL=Q.has('reel');
+if(REEL){document.documentElement.classList.add('reel');document.getElementById('scene').setAttribute('preserveAspectRatio','xMidYMid slice');document.getElementById('landHUD').style.display='none';}
 if(AUTO)document.documentElement.classList.add('auto');
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const svg=$('scene');
@@ -225,11 +241,11 @@ const SEA=[[-.3,'#1c2540'],[-.05,'#3f4a72'],[.08,'#9b7f8c'],[.25,'#8ea5bf'],[1,'
 const SUN=[[-.1,'#e0442a'],[.25,'#f07b3c'],[.6,'#fff1cf']];
 
 /* ── 星 ── */
-const stars=[];for(let i=0;i<46;i++){stars.push(el('circle',{cx:Math.random()*1200,cy:Math.random()*330,r:Math.random()*1.6+.5},$('stars')));}
+const stars=[];for(let i=0;i<46;i++){stars.push(el('circle',{cx:Math.random()*1200,cy:Math.random()*650-320,r:Math.random()*1.6+.5},$('stars')));}
 
 /* ── 波・岸壁・屋根の線 ── */
 const waves=[];for(let i=0;i<22;i++){waves.push({x:Math.random()*1200,y:414+Math.random()*118,w:18+Math.random()*26,p:Math.random()*6,e:el('path',{},$('waves'))});}
-for(let x=0;x<1200;x+=90){el('path',{d:`M${x},556 L${x+(Math.random()*10-5)},680`},$('quayLines'));}
+for(let x=0;x<1200;x+=90){el('path',{d:`M${x},556 L${x+(Math.random()*10-5)},900`},$('quayLines'));}
 for(let x=720;x<1214;x+=26){el('line',{x1:x,y1:208,x2:x,y2:262},$('roofLines'));}
 
 /* ── 裸電球 ── */
@@ -300,7 +316,7 @@ $('seaHit').addEventListener('pointerdown',e=>{const p=toSvg(e);addRipple(p.x,p.
 function addRipple(x,y){ripples.push({x,y,t:now,e:[0,1,2].map(()=>el('ellipse',{cx:x,cy:y},$('ripples')))});}
 
 /* ── 線のゆらぎ（約8コマ/秒） ── */
-let seed=1;if(!reduce)setInterval(()=>{seed=(seed%9)+1;$('turb').setAttribute('seed',seed);},125);
+let seed=1;if(!reduce&&!REEL)setInterval(()=>{seed=(seed%9)+1;$('turb').setAttribute('seed',seed);},125);
 
 /* ── 自動再生（?auto=1）：30秒で1周。動画書き出し用 ── */
 function autoplay(t){
@@ -313,10 +329,40 @@ function autoplay(t){
   at(11,()=>addRipple(300,500));at(26.5,()=>addRipple(470,470));at(27,()=>poke(tankFish[1]));
 }
 
+/* ── リール（?reel）：縦1080×1920・15秒。window.__render(ms) で1コマずつ描く ── */
+const CAM=[ // [秒, 中心x, 中心y, 幅]
+  [0,470,505,230],[1.0,470,505,230],[5.2,560,330,430],[6.0,560,330,430],[9.0,520,470,300],[10.2,520,470,300],[10.7,1010,470,300],[15,1010,470,300]];
+let prevS=-1;
+function reel(t){
+  const s=t/1000;
+  const fired=x=>prevS<x&&s>=x;
+  // カメラ（ドリーアウト → プッシュイン → ホイップパン）
+  let i=0;while(i<CAM.length-2&&s>CAM[i+1][0])i++;
+  const[a,b]=[CAM[i],CAM[i+1]];const k=ease(clamp((s-a[0])/(b[0]-a[0]),0,1));
+  const cx=lerp(a[1],b[1],k),cy=lerp(a[2],b[2],k),w=lerp(a[3],b[3],k),h=w*16/9;
+  svg.setAttribute('viewBox',`${cx-w/2} ${cy-h/2} ${w} ${h}`);
+  // 太陽：夜明け前から昇る
+  const ks=ease(clamp(s/8,0,1));sunX=lerp(430,700,ks);sunY=lerp(408,120,ks);
+  windT=(s>2&&s<4.5)?11*Math.sin((s-2)/2.5*Math.PI):windT;
+  if(fired(.25)){manFish.target=1;}
+  if(fired(1.4)){manFish.target=0;}
+  if(fired(6.0))manT=t;
+  if(fired(11.0))catT=t;
+  if(fired(3.2))addRipple(400,470);
+  if(fired(4.4))poke(tankFish[0],2000);
+  $('manSay').style.display='none';$('catSay').style.fontSize='34px';
+  $('puku').setAttribute('opacity',clamp(Math.min((s-.3)*6,(1.4-s)*5),0,1));
+  document.getElementById('rCap').style.opacity=clamp(Math.min((s-6.8)*3,(10.1-s)*4),0,1);
+  document.getElementById('rEnd').style.opacity=clamp((s-12.3)*1.6,0,1);
+  $('turb').setAttribute('seed',Math.floor(t/125)%9+1);
+  prevS=s;
+}
+
 /* ── 毎フレーム ── */
 function frame(t){
   now=t;
   if(AUTO)autoplay(t);
+  if(REEL)reel(t);
   windT*=.985;wind=lerp(wind,windT,.06);
   const h=(400-sunY)/290; // 太陽の高さ
   const nightK=clamp((.18-h)/.4,0,1);
@@ -372,6 +418,7 @@ function frame(t){
     if(k<.7)armA=ease(k/.7);else if(k<2.9)armA=1;else if(k<3.6)armA=1-ease((k-2.9)/.7);else{manT=-1;}
     say=k<3.6?clamp(Math.min(k*3,(3.6-k)*3),0,1):0;
     manFish.target=(k>.8&&k<2.8)?1:0;
+    if(REEL&&k>=3.5)manFish.target=0;
   }
   manFish.puff=lerp(manFish.puff,manFish.target,manFish.target?.12:.05);manFish.set(manFish.puff);
   const breath=Math.sin(t/900)*1.2;
@@ -401,9 +448,9 @@ function frame(t){
     if(k>1){r.e.forEach(e=>e.remove());ripples.splice(i,1);continue;}
     r.e.forEach((e,j)=>{const kk=clamp(k-j*.15,0,1);e.setAttribute('rx',kk*70);e.setAttribute('ry',kk*14);e.setAttribute('opacity',kk>0?1-kk:0);});
   }
-  requestAnimationFrame(frame);
+  if(!REEL)requestAnimationFrame(frame);
 }
-requestAnimationFrame(frame);
+if(REEL){window.__render=ms=>{frame(Math.max(0,ms-16.7));frame(ms);};window.__render(0);}else requestAnimationFrame(frame);
 })();
 </script>
 </body>
