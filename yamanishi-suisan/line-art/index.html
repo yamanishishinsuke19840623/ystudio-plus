@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<link rel="icon" href="../img/logo.jpg">
+<title>夜明けの市場 | 山西水産 線画アニメ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Yuji+Syuku&family=Yusei+Magic&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f4efe4;--paper2:#ebe3d3;--sumi:#1b1a18;--shu:#e0442a;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;}
+body{background:var(--paper);color:var(--sumi);font-family:'Yusei Magic',sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px;}
+.stage{width:min(100%,calc((100vh - 90px) * 16 / 9));aspect-ratio:16/9;position:relative;border:2px solid var(--sumi);border-radius:6px;overflow:hidden;background:#fff;touch-action:none;}
+svg{display:block;width:100%;height:100%;user-select:none;-webkit-user-select:none;}
+.hint{font-size:14px;opacity:.75;text-align:center;line-height:1.6;}
+.auto .hint{display:none;}
+.auto body,.auto{padding:0;}
+.auto .stage{width:100vw;height:100vh;border:0;border-radius:0;}
+.ink{fill:none;stroke:var(--sumi);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;}
+.ink-f{fill:var(--paper);stroke:var(--sumi);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;}
+.thin{stroke-width:1.6;}
+.hit{fill:transparent;cursor:pointer;}
+#sun{cursor:grab;}
+#sun:active{cursor:grabbing;}
+text{font-family:'Yuji Syuku',serif;fill:var(--sumi);}
+#reelHUD{display:none;}
+.reel body{padding:0;display:block;}
+.reel .hint{display:none;}
+.reel .stage{width:1080px;height:1920px;aspect-ratio:auto;border:0;border-radius:0;}
+.reel #reelHUD{display:block;position:absolute;inset:0;pointer-events:none;}
+#rCap{position:absolute;left:0;right:0;top:250px;text-align:center;font-family:'Yuji Syuku',serif;font-size:104px;line-height:1.35;color:#1b1a18;opacity:0;text-shadow:0 0 18px #f4efe4,0 0 6px #f4efe4;}
+#rEnd{position:absolute;inset:0;background:rgba(244,239,228,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;opacity:0;}
+#rEnd .seal{width:220px;height:220px;background:#e0442a;color:#f4efe4;border-radius:12px;font-family:'Yuji Syuku',serif;font-size:78px;line-height:1.15;display:grid;place-items:center;text-align:center;}
+#rEnd .nm{font-family:'Yuji Syuku',serif;font-size:120px;color:#1b1a18;letter-spacing:.08em;}
+#rEnd .sb{font-family:'Yusei Magic',sans-serif;font-size:46px;color:#1b1a18;}
+.say{font-family:'Yusei Magic',sans-serif;font-size:22px;}
+</style>
+</head>
+<body>
+<div class="stage">
+<svg id="scene" viewBox="0 0 1200 675" aria-label="夜明けの市場。太陽をドラッグすると夜が明け、ふぐや猫をクリックすると動きます。">
+  <defs>
+    <!-- ペン線の「ゆらぎ」（線が少しずつ震える手描き感） -->
+    <filter id="boil" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence id="turb" type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="1"/>
+      <feDisplacementMap in="SourceGraphic" scale="2.4"/>
+    </filter>
+    <radialGradient id="glow"><stop offset="0" stop-color="#ffd98a" stop-opacity=".9"/><stop offset="1" stop-color="#ffd98a" stop-opacity="0"/></radialGradient>
+    <clipPath id="tankClip"><rect x="742" y="548" width="176" height="62"/></clipPath>
+  </defs>
+
+  <!-- 空 -->
+  <rect id="sky" x="-200" y="-500" width="1600" height="1200" fill="#4a4572"/>
+  <g id="stars" fill="#fff"></g>
+
+  <!-- 太陽（ドラッグ） -->
+  <g id="sun">
+    <circle id="sunHalo" r="70" fill="url(#glow)" opacity=".0"/>
+    <circle id="sunBody" r="34" class="ink" fill="#e0442a" style="fill:#e0442a"/>
+    <circle r="80" fill="transparent"/>
+  </g>
+
+  <g filter="url(#boil)" id="art">
+    <!-- 遠くの山なみ -->
+    <path id="hills" class="ink-f" d="M-10,402 C60,384 120,372 190,380 C250,387 290,362 360,358 C430,354 470,380 540,384 C600,388 640,372 700,376 L700,402 Z"/>
+
+    <!-- 海 -->
+    <rect id="sea" x="0" y="400" width="1200" height="150" fill="#6f84a8"/>
+    <line class="ink" x1="-10" y1="400" x2="1210" y2="400"/>
+    <g id="waves" class="ink thin"></g>
+    <g id="ripples" class="ink thin"></g>
+    <rect id="seaHit" class="hit" x="0" y="402" width="640" height="136"/>
+
+    <!-- 漁船 -->
+    <g id="boat">
+      <path class="ink-f" d="M-70,0 L70,0 L52,26 L-58,26 Z"/>
+      <path class="ink-f" d="M-30,0 L-30,-26 L14,-26 L22,0"/>
+      <line class="ink" x1="-6" y1="-26" x2="-6" y2="-78"/>
+      <line class="ink thin" x1="-6" y1="-78" x2="60" y2="0"/>
+      <line class="ink thin" x1="-6" y1="-60" x2="-64" y2="0"/>
+      <rect class="ink-f thin" x="-22" y="-20" width="10" height="10"/>
+      <rect class="ink-f thin" x="-6" y="-20" width="10" height="10"/>
+      <circle id="mastLight" cx="-6" cy="-80" r="4" fill="#ffd98a" opacity="0"/>
+    </g>
+
+    <!-- カモメ -->
+    <g id="gull">
+      <path id="gullWing" class="ink" d="M-26,0 Q-13,-12 0,0 Q13,-12 26,0"/>
+      <rect class="hit" x="-34" y="-22" width="68" height="36"/>
+    </g>
+
+    <!-- 岸壁 -->
+    <rect id="quay" x="-200" y="540" width="1600" height="400" fill="#ebe3d3"/>
+    <path class="ink" d="M-10,540 L1210,540 M-10,556 L1210,556"/>
+    <g class="ink thin" id="quayLines"></g>
+    <g transform="translate(110,560)">
+      <path class="ink-f" d="M-14,0 L-14,-22 Q-14,-32 0,-32 Q14,-32 14,-22 L14,0 Z"/>
+      <path class="ink-f" d="M-20,-30 L20,-30 L20,-36 L-20,-36 Z"/>
+    </g>
+
+    <!-- 市場の屋根 -->
+    <g id="shed">
+      <path class="ink-f" d="M612,264 L690,206 L1214,206 L1214,264 Z"/>
+      <g class="ink thin" id="roofLines"></g>
+      <line class="ink" x1="612" y1="264" x2="1214" y2="264"/>
+      <path class="ink" d="M664,264 L664,548 M1150,264 L1150,548"/>
+      <path class="ink thin" d="M664,300 L700,264 M1150,300 L1114,264"/>
+    </g>
+    <!-- 裸電球 -->
+    <g id="lamps"></g>
+
+    <!-- 幟「ふく」 -->
+    <g id="nobori">
+      <line class="ink" x1="612" y1="540" x2="612" y2="270"/>
+      <line class="ink" x1="612" y1="286" x2="670" y2="286"/>
+      <path id="flag" class="ink-f" d=""/>
+      <text id="flagText" x="0" y="0" font-size="34" text-anchor="middle" style="fill:#e0442a">ふく</text>
+    </g>
+
+    <!-- 生け簀 -->
+    <g id="tank">
+      <rect x="742" y="540" width="176" height="70" fill="#9fb6cf" opacity=".55"/>
+      <g clip-path="url(#tankClip)" id="tankFish"></g>
+      <rect class="ink" x="738" y="536" width="184" height="78"/>
+      <path class="ink thin" d="M742,552 q22,-6 44,0 t44,0 t44,0 t44,0"/>
+      <path class="ink-f" d="M732,614 L928,614 L922,628 L738,628 Z"/>
+    </g>
+
+    <!-- トロ箱と猫 -->
+    <g id="crates">
+      <rect class="ink-f" x="950" y="566" width="130" height="44"/>
+      <rect class="ink-f" x="962" y="522" width="108" height="44"/>
+      <path class="ink thin" d="M950,588 L1080,588 M962,544 L1070,544"/>
+    </g>
+    <g id="cat" transform="translate(1016,522)">
+      <path id="catTail" class="ink" d="M24,-6 C44,-8 50,-26 42,-40"/>
+      <path class="ink-f" d="M-22,0 C-26,-22 -18,-40 0,-42 C18,-40 26,-22 22,0 Z"/>
+      <path class="ink-f" d="M-16,-38 C-20,-52 -10,-62 0,-62 C10,-62 20,-52 16,-38 C10,-34 -10,-34 -16,-38 Z"/>
+      <path id="catEarL" class="ink-f" d="M-15,-52 L-14,-70 L-4,-60"/>
+      <path id="catEarR" class="ink-f" d="M15,-52 L14,-70 L4,-60"/>
+      <g id="catEyes"><path class="ink thin" d="M-9,-50 q3,3 6,0 M3,-50 q3,3 6,0"/></g>
+      <path class="ink thin" d="M-2,-45 l2,2 l2,-2 M-4,-44 l-14,-2 M-4,-42 l-14,2 M4,-44 l14,-2 M4,-42 l14,2"/>
+      <path class="ink thin" d="M-10,0 l0,-6 M10,0 l0,-6"/>
+      <text id="catSay" class="say" x="18" y="-74" opacity="0">にゃ</text>
+      <rect class="hit" x="-34" y="-76" width="88" height="80"/>
+    </g>
+
+    <!-- 店長（目利き） -->
+    <g id="man">
+      <g id="manBody">
+        <!-- 長靴 -->
+        <path class="ink-f" d="M520,592 L520,634 Q520,642 512,642 L498,642 Q492,642 494,636 L506,630 L506,592 Z"/>
+        <path class="ink-f" d="M554,592 L554,634 Q554,642 546,642 L532,642 Q526,642 528,636 L540,630 L540,592 Z"/>
+        <!-- ズボン -->
+        <path class="ink-f" d="M502,548 L504,596 L522,596 L528,566 L536,596 L556,596 L560,548 Z"/>
+        <!-- 胴 -->
+        <path class="ink-f" d="M500,462 Q530,448 562,462 L566,552 L496,552 Z"/>
+        <!-- 前掛け -->
+        <path class="ink-f" d="M502,488 L560,488 L564,590 L498,590 Z"/>
+        <path class="ink thin" d="M502,488 L516,462 M560,488 L548,462"/>
+        <text x="531" y="548" font-size="22" text-anchor="middle" style="fill:#e0442a">山西</text>
+        <!-- 奥の腕 -->
+        <path class="ink" d="M560,466 Q572,500 570,536"/>
+        <circle class="ink-f" cx="570" cy="540" r="7"/>
+      </g>
+      <!-- 頭 -->
+      <g id="head">
+        <circle class="ink-f" cx="530" cy="424" r="24"/>
+        <path class="ink" d="M507,414 Q530,404 553,414"/>
+        <path class="ink thin" d="M553,414 l9,-6 M553,414 l10,4"/>
+        <path class="ink thin" d="M552,428 q6,2 2,8"/>
+        <circle id="eye" cx="516" cy="424" r="2.6" fill="#1b1a18"/>
+        <path class="ink thin" d="M507,428 l-4,5 l5,1"/>
+        <path id="mouth" class="ink thin" d="M510,440 q5,2 9,0"/>
+        <path class="ink thin" d="M522,448 L522,456 M538,448 L538,456"/>
+      </g>
+      <!-- 手前の腕＋ふぐ -->
+      <g id="arm">
+        <path class="ink" d="M506,468 Q496,504 500,538"/>
+        <g id="manFish"></g>
+        <circle class="ink-f" cx="500" cy="542" r="7"/>
+      </g>
+      <rect class="hit" x="470" y="392" width="110" height="252"/>
+      <text id="puku" class="say" x="430" y="512" font-size="30" text-anchor="middle" opacity="0" style="fill:#e0442a;font-size:30px">ぷくっ！</text>
+      <text id="manSay" class="say" x="420" y="372" opacity="0" text-anchor="middle">目利き中…</text>
+    </g>
+  </g>
+
+  <!-- 夜の色（夜明け前ほど濃い） -->
+  <rect id="night" x="-200" y="-500" width="1600" height="1500" fill="#0e1430" opacity=".4" style="mix-blend-mode:multiply;pointer-events:none"/>
+  <!-- 明かり（夜の色の上） -->
+  <g id="lights" style="pointer-events:none"></g>
+
+  <!-- 題字と落款 -->
+  <g id="landHUD" style="pointer-events:none">
+    <text id="title" x="40" y="70" font-size="34">夜明けの市場</text>
+    <text id="sub" x="42" y="104" font-size="18" style="font-family:'Yusei Magic'">山西水産｜毎朝、南風泊市場で目利き</text>
+    <g transform="translate(1124,612)">
+      <rect x="-30" y="-30" width="60" height="60" rx="4" fill="#e0442a"/>
+      <text x="0" y="-5" font-size="20" text-anchor="middle" style="fill:#f4efe4">山西</text>
+      <text x="0" y="21" font-size="20" text-anchor="middle" style="fill:#f4efe4">水産</text>
+    </g>
+    <text id="caption" x="600" y="660" font-size="20" text-anchor="middle" opacity="0" style="font-family:'Yusei Magic'">毎朝、店長が自ら目利き。</text>
+  </g>
+</svg>
+<div id="reelHUD">
+  <div id="rCap">毎朝、<br>自ら目利き。</div>
+  <div id="rEnd"><div class="seal">山西<br>水産</div><div class="nm">山西水産</div><div class="sb">明治十二年創業｜下関のふぐ問屋</div></div>
+</div>
+</div>
+<p class="hint">☀️ 太陽をドラッグして夜を明かす　／　🌬 マウスを動かすと風　／　👆 店長・生け簀のふぐ・猫・カモメ・海をクリック</p>
+
+<script>
+(()=>{
+const NS='http://www.w3.org/2000/svg';
+const $=id=>document.getElementById(id);
+const el=(tag,attrs,parent)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;};
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+const Q=new URLSearchParams(location.search);const AUTO=Q.has('auto');const REEL=Q.has('reel');
+if(REEL){document.documentElement.classList.add('reel');document.getElementById('scene').setAttribute('preserveAspectRatio','xMidYMid slice');document.getElementById('landHUD').style.display='none';}
+if(AUTO)document.documentElement.classList.add('auto');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const svg=$('scene');
+
+/* ── 色：太陽の高さ h(-0.3〜1) で空・海を塗る ── */
+const hex=c=>[1,3,5].map(i=>parseInt(c.slice(i,i+2),16));
+const toHex=a=>'#'+a.map(v=>Math.round(v).toString(16).padStart(2,'0')).join('');
+const ramp=(stops,h)=>{
+  if(h<=stops[0][0])return stops[0][1];
+  for(let i=1;i<stops.length;i++){if(h<=stops[i][0]){const[a,ca]=stops[i-1],[b,cb]=stops[i];const t=(h-a)/(b-a);const A=hex(ca),B=hex(cb);return toHex(A.map((v,j)=>lerp(v,B[j],t)));}}
+  return stops[stops.length-1][1];
+};
+const SKY=[[-.3,'#141c36'],[-.05,'#3e3d6a'],[.08,'#e9957a'],[.22,'#f6d9a8'],[.5,'#d8e6ef'],[1,'#c4dbeb']];
+const SEA=[[-.3,'#1c2540'],[-.05,'#3f4a72'],[.08,'#9b7f8c'],[.25,'#8ea5bf'],[1,'#86a6c6']];
+const SUN=[[-.1,'#e0442a'],[.25,'#f07b3c'],[.6,'#fff1cf']];
+
+/* ── 星 ── */
+const stars=[];for(let i=0;i<46;i++){stars.push(el('circle',{cx:Math.random()*1200,cy:Math.random()*650-320,r:Math.random()*1.6+.5},$('stars')));}
+
+/* ── 波・岸壁・屋根の線 ── */
+const waves=[];for(let i=0;i<22;i++){waves.push({x:Math.random()*1200,y:414+Math.random()*118,w:18+Math.random()*26,p:Math.random()*6,e:el('path',{},$('waves'))});}
+for(let x=0;x<1200;x+=90){el('path',{d:`M${x},556 L${x+(Math.random()*10-5)},900`},$('quayLines'));}
+for(let x=720;x<1214;x+=26){el('line',{x1:x,y1:208,x2:x,y2:262},$('roofLines'));}
+
+/* ── 裸電球 ── */
+const lamps=[720,840,960,1080].map(x=>{
+  const g=el('g',{},$('lamps'));
+  el('line',{class:'ink thin',x1:x,y1:264,x2:x,y2:300},g);
+  el('path',{class:'ink-f thin',d:`M${x-7},300 L${x+7},300 L${x+5},306 L${x-5},306 Z`},g);
+  el('circle',{class:'ink-f thin',cx:x,cy:314,r:9},g);
+  const halo=el('circle',{cx:x,cy:314,r:70,fill:'url(#glow)',opacity:0},$('lights'));
+  const core=el('circle',{cx:x,cy:314,r:7,fill:'#ffe9a8',opacity:0},$('lights'));
+  return{x,halo,core,flick:Math.random()*9};
+});
+const mastHalo=el('circle',{r:36,fill:'url(#glow)',opacity:0},$('lights'));
+
+/* ── ふぐ（ぷくっと膨らむ） ── */
+function makeFugu(parent,scale=1){
+  const g=el('g',{},parent);
+  const inner=el('g',{transform:`scale(${scale})`},g);
+  const spikes=el('g',{class:'ink thin',opacity:0},inner);
+  const sp=[];for(let i=0;i<14;i++){sp.push({a:i/14*Math.PI*2,e:el('line',{},spikes)});}
+  const tail=el('path',{class:'ink-f'},inner);
+  const body=el('ellipse',{class:'ink-f',cx:0,cy:0},inner);
+  const belly=el('path',{class:'ink thin'},inner);
+  const dots=el('g',{fill:'#1b1a18'},inner);
+  const dd=[[-2,-9],[8,-7],[3,-12],[14,-3]].map(([x,y])=>el('circle',{cx:x,cy:y,r:1.6},dots));
+  const fin=el('path',{class:'ink thin'},inner);
+  const eye=el('circle',{class:'ink-f thin',r:4},inner);
+  const pupil=el('circle',{r:1.8,fill:'#1b1a18'},inner);
+  const f={g,puff:0,target:0,until:0,set(p){
+    const rx=lerp(26,30,p),ry=lerp(15,28,p);
+    body.setAttribute('rx',rx);body.setAttribute('ry',ry);
+    tail.setAttribute('d',`M${rx-3},0 L${rx+14},${-9-p*2} L${rx+11},0 L${rx+14},${9+p*2} Z`);
+    belly.setAttribute('d',`M${-rx+6},${ry*.35} Q0,${ry*.8} ${rx-6},${ry*.3}`);
+    fin.setAttribute('d',`M2,2 q6,6 12,2`);
+    eye.setAttribute('cx',-rx*.5);eye.setAttribute('cy',-ry*.32);
+    pupil.setAttribute('cx',-rx*.5-1);pupil.setAttribute('cy',-ry*.32);
+    dd.forEach((d,i)=>{d.setAttribute('cy',[-9,-7,-12,-3][i]*lerp(1,1.8,p));});
+    spikes.setAttribute('opacity',clamp(p*1.4-.3,0,1));
+    sp.forEach(s=>{const c=Math.cos(s.a),si=Math.sin(s.a);s.e.setAttribute('x1',c*rx);s.e.setAttribute('y1',si*ry);s.e.setAttribute('x2',c*(rx+6));s.e.setAttribute('y2',si*(ry+6));});
+  }};
+  f.set(0);return f;
+}
+const manFish=makeFugu($('manFish'),.9);
+manFish.g.setAttribute('transform','translate(492,560)');
+const tankFish=[0,1].map(i=>{const f=makeFugu($('tankFish'),.85);f.x=780+i*80;f.y=578+i*8;f.dir=i?1:-1;f.sp=.35+i*.15;return f;});
+const tankHits=tankFish.map(f=>{const r=el('rect',{class:'hit',width:66,height:56},$('tank'));r.addEventListener('pointerdown',e=>{e.stopPropagation();poke(f);});f.hit=r;return r;});
+function poke(f,ms=2200){f.target=1;f.until=now+ms;}
+
+/* ── 状態 ── */
+let now=0,sunX=170,sunY=452,wind=0,windT=0,lastPX=null;
+let manT=-1,catT=-1,gullT=-1;
+const ripples=[];
+
+/* ── 太陽ドラッグ ── */
+let drag=false;
+const toSvg=e=>{const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;return p.matrixTransform(svg.getScreenCTM().inverse());};
+$('sun').addEventListener('pointerdown',e=>{drag=true;$('sun').setPointerCapture(e.pointerId);e.preventDefault();});
+$('sun').addEventListener('pointermove',e=>{if(!drag)return;const p=toSvg(e);sunX=clamp(p.x,40,1160);sunY=clamp(p.y,90,470);});
+$('sun').addEventListener('pointerup',()=>drag=false);
+svg.addEventListener('pointermove',e=>{if(drag)return;const p=toSvg(e);if(lastPX!==null)windT=clamp(windT+(p.x-lastPX)*.06,-14,14);lastPX=p.x;});
+svg.addEventListener('pointerleave',()=>lastPX=null);
+
+/* ── クリック ── */
+$('man').addEventListener('pointerdown',()=>{if(manT<0||now-manT>3800)manT=now;});
+$('cat').addEventListener('pointerdown',()=>{catT=now;});
+$('gull').addEventListener('pointerdown',e=>{e.stopPropagation();if(gullT<0||now-gullT>5000)gullT=now;});
+$('seaHit').addEventListener('pointerdown',e=>{const p=toSvg(e);addRipple(p.x,p.y);});
+function addRipple(x,y){ripples.push({x,y,t:now,e:[0,1,2].map(()=>el('ellipse',{cx:x,cy:y},$('ripples')))});}
+
+/* ── 線のゆらぎ（約8コマ/秒） ── */
+let seed=1;if(!reduce&&!REEL)setInterval(()=>{seed=(seed%9)+1;$('turb').setAttribute('seed',seed);},125);
+
+/* ── 自動再生（?auto=1）：30秒で1周。動画書き出し用 ── */
+function autoplay(t){
+  const s=(t/1000)%30;
+  const k=clamp(s/14,0,1);
+  sunX=lerp(150,820,ease(k));sunY=lerp(462,150,ease(k))-Math.sin(k*Math.PI)*40;
+  windT=(s>5&&s<8)?10*Math.sin((s-5)/3*Math.PI):(s>22&&s<25?-9*Math.sin((s-22)/3*Math.PI):windT);
+  const at=(x,fn)=>{if(Math.abs(s-x)<0.02&&!autoplay[x]){autoplay[x]=1;fn();setTimeout(()=>autoplay[x]=0,500);}};
+  at(9,()=>poke(tankFish[0]));at(15.5,()=>manT=now);at(20.5,()=>catT=now);at(24,()=>gullT=now);
+  at(11,()=>addRipple(300,500));at(26.5,()=>addRipple(470,470));at(27,()=>poke(tankFish[1]));
+}
+
+/* ── リール（?reel）：縦1080×1920・15秒。window.__render(ms) で1コマずつ描く ── */
+const CAM=[ // [秒, 中心x, 中心y, 幅]
+  [0,470,505,230],[1.0,470,505,230],[5.2,560,330,430],[6.0,560,330,430],[9.0,520,470,300],[10.2,520,470,300],[10.7,1010,470,300],[15,1010,470,300]];
+let prevS=-1;
+function reel(t){
+  const s=t/1000;
+  const fired=x=>prevS<x&&s>=x;
+  // カメラ（ドリーアウト → プッシュイン → ホイップパン）
+  let i=0;while(i<CAM.length-2&&s>CAM[i+1][0])i++;
+  const[a,b]=[CAM[i],CAM[i+1]];const k=ease(clamp((s-a[0])/(b[0]-a[0]),0,1));
+  const cx=lerp(a[1],b[1],k),cy=lerp(a[2],b[2],k),w=lerp(a[3],b[3],k),h=w*16/9;
+  svg.setAttribute('viewBox',`${cx-w/2} ${cy-h/2} ${w} ${h}`);
+  // 太陽：夜明け前から昇る
+  const ks=ease(clamp(s/8,0,1));sunX=lerp(430,700,ks);sunY=lerp(408,120,ks);
+  windT=(s>2&&s<4.5)?11*Math.sin((s-2)/2.5*Math.PI):windT;
+  if(fired(.25)){manFish.target=1;}
+  if(fired(1.4)){manFish.target=0;}
+  if(fired(6.0))manT=t;
+  if(fired(11.0))catT=t;
+  if(fired(3.2))addRipple(400,470);
+  if(fired(4.4))poke(tankFish[0],2000);
+  $('manSay').style.display='none';$('catSay').style.fontSize='34px';
+  $('puku').setAttribute('opacity',clamp(Math.min((s-.3)*6,(1.4-s)*5),0,1));
+  document.getElementById('rCap').style.opacity=clamp(Math.min((s-6.8)*3,(10.1-s)*4),0,1);
+  document.getElementById('rEnd').style.opacity=clamp((s-12.3)*1.6,0,1);
+  $('turb').setAttribute('seed',Math.floor(t/125)%9+1);
+  prevS=s;
+}
+
+/* ── 毎フレーム ── */
+function frame(t){
+  now=t;
+  if(AUTO)autoplay(t);
+  if(REEL)reel(t);
+  windT*=.985;wind=lerp(wind,windT,.06);
+  const h=(400-sunY)/290; // 太陽の高さ
+  const nightK=clamp((.18-h)/.4,0,1);
+  $('sky').setAttribute('fill',ramp(SKY,h));
+  $('sea').setAttribute('fill',ramp(SEA,h));
+  $('sunBody').style.fill=ramp(SUN,h);
+  $('sunHalo').setAttribute('opacity',clamp(h*1.4,0,.8));
+  $('sun').setAttribute('transform',`translate(${sunX},${sunY})`);
+  $('night').setAttribute('opacity',nightK*.5);
+  $('stars').setAttribute('opacity',clamp((.05-h)/.25,0,1));
+  stars.forEach((s,i)=>s.setAttribute('opacity',.5+.5*Math.sin(t/700+i)));
+  const tc=nightK>.35?'#f4efe4':'#1b1a18';$('title').style.fill=tc;$('sub').style.fill=tc;
+  $('title').textContent=h<0?'夜明け前の市場':h<.28?'夜明けの市場':'朝の市場';
+
+  // 電球（夜ほど明るく、少しまたたく）
+  lamps.forEach(l=>{const f=.9+.1*Math.sin(t/90+l.flick)*Math.sin(t/37+l.flick);l.halo.setAttribute('opacity',nightK*.85*f);l.core.setAttribute('opacity',.15+nightK*.85);});
+
+  // 波
+  waves.forEach(w=>{const y=w.y+Math.sin(t/900+w.p)*2;const x=((w.x+t*.012*(1+wind*.08))%1240+1240)%1240-20;const a=3+Math.abs(wind)*.25;w.e.setAttribute('d',`M${x},${y} q${w.w/4},${-a} ${w.w/2},0 t${w.w/2},0`);});
+
+  // 船
+  const by=468+Math.sin(t/800)*4,br=Math.sin(t/1100)*2.4+wind*.15;
+  $('boat').setAttribute('transform',`translate(300,${by}) rotate(${br})`);
+  $('mastLight').setAttribute('opacity',nightK);
+  const rad=br*Math.PI/180;mastHalo.setAttribute('cx',300-6*Math.cos(rad)+80*Math.sin(rad));mastHalo.setAttribute('cy',by-80*Math.cos(rad));mastHalo.setAttribute('opacity',nightK*.8);
+
+  // カモメ
+  let gx=220+Math.sin(t/4200)*150+wind*3,gy=210+Math.sin(t/1900)*22,flap=Math.sin(t/260)*7;
+  if(gullT>=0){const k=(t-gullT)/1000;if(k<5){const away=k<2.5?ease(k/2.5):1-ease((k-2.5)/2.5);gx+=away*420;gy-=away*170;flap=Math.sin(t/70)*12;}else gullT=-1;}
+  $('gull').setAttribute('transform',`translate(${gx},${gy})`);
+  $('gullWing').setAttribute('d',`M-26,${flap*.6} Q-13,${-12-flap} 0,0 Q13,${-12-flap} 26,${flap*.6}`);
+
+  // 幟（風でなびく）
+  const fx=616,fy=288,fw=46,fh=196;
+  const sw=Math.sin(t/600)*4+wind*2.4,sw2=Math.sin(t/430+1)*5+wind*3.2;
+  $('flag').setAttribute('d',`M${fx},${fy} L${fx+fw},${fy} C${fx+fw+sw*.5},${fy+fh*.35} ${fx+fw+sw},${fy+fh*.7} ${fx+fw+sw2},${fy+fh} L${fx+sw2},${fy+fh} C${fx+sw},${fy+fh*.7} ${fx+sw*.5},${fy+fh*.35} ${fx},${fy} Z`);
+  $('flagText').setAttribute('transform',`translate(${fx+fw/2+sw*.6},${fy+70}) rotate(${sw*.4})`);
+  $('flagText').setAttribute('writing-mode','tb');
+
+  // 生け簀のふぐ
+  tankFish.forEach(f=>{
+    if(f.target&&t>f.until)f.target=0;
+    f.puff=lerp(f.puff,f.target,f.target?.12:.04);
+    if(!f.target){f.x+=f.sp*f.dir*(1-f.puff);if(f.x<770){f.dir=1;}if(f.x>890){f.dir=-1;}}
+    const y=f.y+Math.sin(t/700+f.x/40)*3-f.puff*4;
+    f.g.setAttribute('transform',`translate(${f.x},${y}) scale(${-f.dir},1)`);
+    f.set(f.puff);f.hit.setAttribute('x',f.x-33);f.hit.setAttribute('y',y-28);
+  });
+
+  // 店長：クリックでふぐを目の高さへ（目利き）
+  let armA=0,headDx=0,say=0;
+  if(manT>=0){const k=(t-manT)/1000;
+    if(k<.7)armA=ease(k/.7);else if(k<2.9)armA=1;else if(k<3.6)armA=1-ease((k-2.9)/.7);else{manT=-1;}
+    say=k<3.6?clamp(Math.min(k*3,(3.6-k)*3),0,1):0;
+    manFish.target=(k>.8&&k<2.8)?1:0;
+    if(REEL&&k>=3.5)manFish.target=0;
+  }
+  manFish.puff=lerp(manFish.puff,manFish.target,manFish.target?.12:.05);manFish.set(manFish.puff);
+  const breath=Math.sin(t/900)*1.2;
+  $('arm').setAttribute('transform',`translate(0,${breath}) rotate(${armA*112},506,468)`);
+  manFish.g.setAttribute('transform',`translate(492,560) rotate(${-armA*112},0,0)`);
+  $('head').setAttribute('transform',`translate(0,${breath}) rotate(${armA*-6},530,440)`);
+  $('manBody').setAttribute('transform',`translate(0,${breath*.4})`);
+  $('eye').setAttribute('cy',424-armA*1.5);
+  $('manSay').setAttribute('opacity',say);
+  $('caption').setAttribute('opacity',say);
+  // まばたき
+  $('eye').setAttribute('r',(t%4200)<120?.6:2.6);
+
+  // 猫
+  let tail=Math.sin(t/800)*6,ear=0,cs=0;
+  if(catT>=0){const k=(t-catT)/1000;if(k<1.6){tail=Math.sin(k*18)*18*(1-k/1.6);ear=Math.sin(k*30)*6*(1-k/1.6);cs=clamp(Math.min(k*5,(1.6-k)*3),0,1);}else catT=-1;}
+  $('catTail').setAttribute('transform',`rotate(${tail},24,-6)`);
+  $('catEarL').setAttribute('transform',`rotate(${-ear},-14,-56)`);
+  $('catEarR').setAttribute('transform',`rotate(${ear},14,-56)`);
+  $('catSay').setAttribute('opacity',cs);
+  $('catSay').setAttribute('y',-74-cs*6);
+  const catSleep=nightK>.6;
+  $('catEyes').firstChild.setAttribute('d',catSleep?'M-9,-50 q3,3 6,0 M3,-50 q3,3 6,0':'M-6,-51 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0 M6,-51 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0');
+
+  // 波紋
+  for(let i=ripples.length-1;i>=0;i--){const r=ripples[i];const k=(t-r.t)/1800;
+    if(k>1){r.e.forEach(e=>e.remove());ripples.splice(i,1);continue;}
+    r.e.forEach((e,j)=>{const kk=clamp(k-j*.15,0,1);e.setAttribute('rx',kk*70);e.setAttribute('ry',kk*14);e.setAttribute('opacity',kk>0?1-kk:0);});
+  }
+  if(!REEL)requestAnimationFrame(frame);
+}
+if(REEL){window.__render=ms=>{frame(Math.max(0,ms-16.7));frame(ms);};window.__render(0);}else requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
