@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<link rel="icon" href="../img/logo.jpg">
+<title>墨絵のとらふぐ | 山西水産 線画アニメ（絵柄見本）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Yuji+Syuku&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f4efe4;--sumi:#1b1a18;--shu:#c8402a;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;}
+body{background:var(--paper);color:var(--sumi);font-family:'Yuji Syuku',serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px;}
+.stage{width:min(100%,calc(100vh - 70px));aspect-ratio:1;position:relative;touch-action:manipulation;}
+svg{display:block;width:100%;height:100%;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.hint{font-size:15px;opacity:.6;}
+.still body{padding:0;}.still .hint{display:none;}.still .stage{width:100vw;height:100vh;}
+</style>
+</head>
+<body>
+<div class="stage">
+<svg id="sv" viewBox="-540 -540 1080 1080" aria-label="墨で描かれたとらふぐ。クリックするとぷくっと膨らみます。">
+  <defs>
+    <!-- 紙のざらつき -->
+    <filter id="paper" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="3" seed="7"/>
+      <feColorMatrix values="0 0 0 0 .45  0 0 0 0 .4  0 0 0 0 .32  0 0 0 .09 0"/>
+    </filter>
+    <!-- 筆のかすれ＋輪郭のざらつき -->
+    <filter id="sumi" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency=".03 .3" numOctaves="2" seed="4" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -6 4.3" result="m"/>
+      <feComposite in="SourceGraphic" in2="m" operator="in" result="k"/>
+      <feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="2" seed="9" result="d"/>
+      <feDisplacementMap in="k" in2="d" scale="4"/>
+    </filter>
+    <!-- 墨のにじみ -->
+    <filter id="bleed" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency=".03" numOctaves="2" seed="2" result="d"/>
+      <feDisplacementMap in="SourceGraphic" in2="d" scale="14" result="w"/>
+      <feGaussianBlur in="w" stdDeviation="5"/>
+    </filter>
+    <!-- 淡墨のぼかし -->
+    <filter id="wash" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency=".012 .03" numOctaves="3" seed="5" result="d"/>
+      <feDisplacementMap in="SourceGraphic" in2="d" scale="30" result="w"/>
+      <feGaussianBlur in="w" stdDeviation="9"/>
+    </filter>
+    <linearGradient id="washG" gradientUnits="userSpaceOnUse" x1="0" x2="0" y1="-120" y2="10">
+      <stop offset="0" stop-color="#1b1a18" stop-opacity="1"/><stop offset=".6" stop-color="#1b1a18" stop-opacity=".7"/><stop offset="1" stop-color="#1b1a18" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect x="-540" y="-540" width="1080" height="1080" fill="#f4efe4"/>
+  <rect x="-540" y="-540" width="1080" height="1080" filter="url(#paper)"/>
+
+  <g id="fishWrap" transform="translate(-20,-10) scale(1.38)"><g id="fish">
+    <g id="washL" filter="url(#wash)"></g>
+    <g id="bleedL" filter="url(#bleed)" opacity=".28"></g>
+    <g id="inkL" filter="url(#sumi)"></g>
+  </g></g>
+
+  <!-- 落款 -->
+  <g id="seal" transform="translate(390,400)" opacity="0">
+    <rect x="-42" y="-58" width="84" height="116" rx="6" fill="#c8402a"/>
+    <text x="0" y="-8" font-size="34" text-anchor="middle" fill="#f4efe4">山西</text>
+    <text x="0" y="36" font-size="34" text-anchor="middle" fill="#f4efe4">水産</text>
+  </g>
+</svg>
+</div>
+<p class="hint">ふぐをクリック（タップ）すると、ぷくっ。</p>
+
+<script>
+(()=>{
+const NS='http://www.w3.org/2000/svg';
+const $=id=>document.getElementById(id);
+const el=(tag,a,p)=>{const e=document.createElementNS(NS,tag);for(const k in a)e.setAttribute(k,a[k]);p&&p.appendChild(e);return e;};
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),lerp=(a,b,t)=>a+(b-a)*t;
+const easeOut=t=>1-Math.pow(1-t,3);
+const Q=new URLSearchParams(location.search);
+if(Q.has('still'))document.documentElement.classList.add('still');
+
+/* ── 曲線：Catmull-Rom で通過点をなめらかにつなぐ ── */
+function spline(pts,n=48){
+  const out=[];
+  for(let i=0;i<pts.length-1;i++){
+    const p0=pts[i-1]||pts[i],p1=pts[i],p2=pts[i+1],p3=pts[i+2]||p2;
+    for(let j=0;j<n;j++){const t=j/n,t2=t*t,t3=t2*t;
+      out.push([0,1].map(k=>.5*((2*p1[k])+(-p0[k]+p2[k])*t+(2*p0[k]-5*p1[k]+4*p2[k]-p3[k])*t2+(-p0[k]+3*p1[k]-3*p2[k]+p3[k])*t3)));}
+  }
+  out.push(pts[pts.length-1]);return out;
+}
+/* ── 筆の線：中心線に「入り・押さえ・抜き」の太さをつけて塗りの形にする ── */
+function brushPath(c,maxW,prog=1,shape='nara'){
+  const n=Math.max(2,Math.floor(c.length*clamp(prog,0,1)));
+  if(n<2)return'';
+  const L=[],R=[];
+  for(let i=0;i<n;i++){
+    const a=c[Math.max(0,i-1)],b=c[Math.min(c.length-1,i+1)];
+    let dx=b[0]-a[0],dy=b[1]-a[1];const d=Math.hypot(dx,dy)||1;dx/=d;dy/=d;
+    const t=i/(c.length-1);
+    let w;
+    if(shape==='nara') w=t<.12?Math.pow(t/.12,.5):1-.75*Math.pow((t-.12)/.88,1.6); // 入りを押さえて抜く
+    else if(shape==='even') w=Math.sin(Math.PI*clamp(t,.04,.96))**.35;
+    else w=Math.sin(Math.PI*t)**.7; // 両端を細く
+    w*=maxW*(1+.18*Math.sin(i*.9)*Math.sin(i*.23)); // 筆圧のゆらぎ
+    L.push([c[i][0]-dy*w/2,c[i][1]+dx*w/2]);R.push([c[i][0]+dy*w/2,c[i][1]-dx*w/2]);
+  }
+  const f=p=>p[0].toFixed(1)+','+p[1].toFixed(1);
+  return'M'+L.map(f).join('L')+'L'+R.reverse().map(f).join('L')+'Z';
+}
+const mix=(A,B,k)=>A.map((p,i)=>[lerp(p[0],B[i][0],k),lerp(p[1],B[i][1],k)]);
+
+/* ── とらふぐの形（ふつう / 膨らみ）左向き ── */
+const S={
+  back:[[[-292,-12],[-262,-72],[-160,-118],[-10,-114],[130,-78],[222,-36],[252,-22]],
+        [[-292,-22],[-268,-160],[-145,-250],[0,-252],[135,-182],[218,-76],[252,-26]]],
+  belly:[[[-286,16],[-226,72],[-84,108],[62,98],[182,52],[252,18]],
+         [[-286,26],[-258,168],[-124,252],[34,256],[170,166],[252,22]]],
+  mid:[[[-270,30],[-120,40],[40,40],[230,20]],[[-270,40],[-120,70],[40,70],[230,20]]],
+  eye:[[-196,-58,17],[-196,-122,19]],
+  spot:[[-8,26,40],[10,58,58]],
+  pect:[[-112,6],[-104,36]],
+  dorsal:[[150,-68],[150,-148]],
+  anal:[[152,62],[150,138]],
+};
+const spots=[[-120,-80],[-60,-95],[0,-88],[60,-70],[110,-55],[-90,-55],[-20,-60],[40,-45],[160,-40],[-150,-45],[90,-30],[10,-30]];
+
+/* ── 描画レイヤー ── */
+const ink=$('inkL'),bleed=$('bleedL'),wash=$('washL');
+const P={};
+['back','belly','tail1','tail2','tail3','mouth','eye','pupil','gill','pect1','pect2','dorsal','anal','spot','ring'].forEach(k=>{P[k]=el('path',{fill:'#1b1a18'},ink);P[k+'B']=el('path',{fill:'#1b1a18'},bleed);});
+const washBack=el('path',{fill:'url(#washG)',opacity:0},wash);
+const dots=spots.map(()=>el('ellipse',{fill:'#1b1a18'},ink));
+const spines=[...Array(16)].map(()=>el('path',{fill:'#1b1a18'},ink));
+const ringGap=el('circle',{fill:'#f4efe4'});ink.insertBefore(ringGap,P.spot);
+
+/* ── 状態 ── */
+let puff=0,pv=0,target=0,until=0,t0=null,drawT=0;
+const DRAW=[ // 書き順と時間（秒）
+  ['back',0,.7],['belly',.55,.6],['tail',1.05,.45],['mouth',1.4,.15],['eye',1.55,.25],['gill',1.8,.2],['pect',1.95,.25],['fins',2.15,.3],['spot',2.45,.35],['wash',2.6,.9],['dots',2.9,.5],['seal',3.4,.4]];
+const prog=k=>{const d=DRAW.find(x=>x[0]===k);return clamp((drawT-d[1])/d[2],0,1);};
+
+function set(name,d){P[name].setAttribute('d',d);P[name+'B'].setAttribute('d',d);}
+function circlePts(cx,cy,r,a0=-2.2,sweep=6.1,n=10){return[...Array(n+1)].map((_,i)=>{const a=a0+sweep*i/n;return[cx+Math.cos(a)*r,cy+Math.sin(a)*r];});}
+
+function render(t){
+  const k=puff, sw=t/1000;
+  // 泳ぎ：上下とわずかな傾き
+  const bob=Math.sin(sw*1.6)*10*(1-k*.4), tilt=Math.sin(sw*1.1)*2.2;
+  $('fish').setAttribute('transform',`translate(0,${bob}) rotate(${tilt})`);
+
+  const back=spline(mix(...S.back,k)),belly=spline(mix(...S.belly,k));
+  set('back',brushPath(back,lerp(30,26,k),prog('back'),'nara'));
+  set('belly',brushPath(belly,lerp(18,16,k),prog('belly'),'nara'));
+
+  // 尾びれ：ひらひら
+  const tb=[lerp(252,252,k),lerp(-22,-26,k)],bb=[252,lerp(18,22,k)];
+  const fl=Math.sin(sw*5)*8;
+  const tp=prog('tail');
+  set('tail1',brushPath(spline([tb,[300,-46+fl*.5],[340,-66+fl]],16),11,tp,'nara'));
+  set('tail2',brushPath(spline([[340,-66+fl],[352,0+fl],[338,64+fl]],16),9,clamp(tp*1.5-.3,0,1),'even'));
+  set('tail3',brushPath(spline([bb,[300,44+fl*.5],[338,64+fl]],16),10,clamp(tp*1.4-.2,0,1),'nara'));
+
+  // 口：くちばしのような小さな歯
+  const mp=prog('mouth');
+  set('mouth',brushPath(spline([[-282,-14],[-306,-2],[-296,6],[-306,12],[-282,20]],8),10,mp,'tip'));
+
+  // 目：輪と黒目
+  const[ex,ey,er]=S.eye[0].map((v,i)=>lerp(v,S.eye[1][i],k));
+  set('eye',brushPath(spline(circlePts(ex,ey,er),6),7,prog('eye'),'even')+' '+brushPath(spline([[ex-er-10,ey-er+2],[ex,ey-er-12],[ex+er+12,ey-er+4]],8),9,prog('eye'),'nara'));
+  const pr=prog('eye')>.8?er*.48:0;
+  set('pupil',`M${ex-pr*.2},${ey} m-${pr},0 a${pr},${pr} 0 1,0 ${pr*2},0 a${pr},${pr} 0 1,0 -${pr*2},0`);
+
+  // えら・胸びれ
+  const[gx,gy]=mix([S.pect[0]],[S.pect[1]],k)[0];
+  set('gill',brushPath(spline([[gx-14,gy-34],[gx-22,gy-6],[gx-12,gy+22]],10),9,prog('gill'),'tip'));
+  const pf=Math.sin(sw*7)*6,pp=prog('pect');
+  set('pect1',brushPath(spline([[gx,gy-6],[gx+26,gy-22+pf],[gx+46,gy-30+pf]],10),9,pp,'nara')+' '+brushPath(spline([[gx+2,gy],[gx+30,gy-4+pf],[gx+50,gy-6+pf]],10),7,clamp(pp*1.3-.15,0,1),'nara'));
+  set('pect2',brushPath(spline([[gx+2,gy+6],[gx+26,gy+14+pf],[gx+44,gy+18+pf]],10),6,clamp(pp*1.4-.3,0,1),'nara'));
+
+  // 背びれ・しりびれ
+  const[dx,dy]=mix([S.dorsal[0]],[S.dorsal[1]],k)[0],[ax,ay]=mix([S.anal[0]],[S.anal[1]],k)[0];
+  const fp=prog('fins');
+  set('dorsal',brushPath(spline([[dx-22,dy+4],[dx+4,dy-34+pf*.6],[dx+30,dy+8]],10),9,fp,'nara'));
+  set('anal',brushPath(spline([[ax-20,ay-4],[ax+6,ay+30-pf*.6],[ax+30,ay-6]],10),8,fp,'nara'));
+
+  // とらふぐの紋：墨を置いて、まわりに白いふち、細い輪
+  const[sx,sy,sr]=S.spot[0].map((v,i)=>lerp(v,S.spot[1][i],k));
+  const spp=easeOut(prog('spot'));
+  const r=sr*spp;
+  P.spot.setAttribute('d',r>0?`M${sx-r*1.25},${sy} C${sx-r*1.2},${sy-r*.95} ${sx+r*.9},${sy-r*1.05} ${sx+r*1.3},${sy-r*.1} C${sx+r*1.4},${sy+r*.8} ${sx-r*.6},${sy+r*1.05} ${sx-r*1.25},${sy} Z`:'');
+  P.spotB.setAttribute('d',P.spot.getAttribute('d'));
+  ringGap.setAttribute('cx',sx);ringGap.setAttribute('cy',sy);ringGap.setAttribute('r',0);
+  set('ring','');
+
+  // 背の淡墨（背中だけ灰色にぼかす）
+  const mid=spline(mix(...S.mid,k),12).reverse();
+  const top=back.filter((_,i)=>i%4===0);
+  washBack.setAttribute('d','M'+top.concat(mid).map(p=>p[0].toFixed(1)+','+(p[1]+(p===top[0]?0:0)).toFixed(1)).join('L')+'Z');
+  washBack.setAttribute('opacity',lerp(.4,.3,k)*prog('wash'));
+  const wg=document.getElementById('washG');wg.setAttribute('y1',lerp(-120,-250,k));wg.setAttribute('y2',lerp(20,40,k));
+
+  // 背の斑点
+  const dp=prog('dots');
+  dots.forEach((d,i)=>{const[x,y]=spots[i];const ky=lerp(1,2.05,k),kx=lerp(1,1.05,k);
+    const s=clamp(dp*spots.length-i,0,1);d.setAttribute('cx',x*kx);d.setAttribute('cy',y*ky-k*8);d.setAttribute('rx',s*(4+i%3*1.5));d.setAttribute('ry',s*(3+i%2));});
+
+  // 膨らんだときだけ見える腹の小さなとげ
+  spines.forEach((sp,i)=>{const a=.35+i/15*2.4;const cx=-60+Math.cos(a)*lerp(150,230,k),cy=Math.sin(a)*lerp(90,220,k)+lerp(0,30,k);
+    const L=lerp(0,14,clamp(k*1.6-.5,0,1));
+    sp.setAttribute('d',L>1?brushPath([[cx,cy],[cx+Math.cos(a)*L,cy+Math.sin(a)*L]],4,1,'tip'):'');});
+
+  $('seal').setAttribute('opacity',prog('seal'));
+}
+
+/* ── クリックで膨らむ（ばねでぷくっ）── */
+function poke(){target=1;until=performance.now()+2200;}
+$('sv').addEventListener('pointerdown',poke);
+
+function frame(now){
+  if(t0===null)t0=now;
+  drawT=(now-t0)/1000;
+  if(target&&now>until)target=0;
+  // ばね：膨らむときは少し行き過ぎて戻る
+  const kSp=target?.09:.035,damp=target?.78:.86;
+  pv=(pv+(target-puff)*kSp)*damp;puff=clamp(puff+pv,-.05,1.08);
+  render(now);
+  if(!Q.has('still'))requestAnimationFrame(frame);
+}
+// 静止画用：?still&t=秒&puff=0〜1
+if(Q.has('still')){drawT=+(Q.get('t')||5);puff=+(Q.get('puff')||0);render(drawT*1000);}
+else requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
